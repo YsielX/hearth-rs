@@ -1,0 +1,17 @@
+return {
+    api_version = 1,
+    id = "AT_103",
+    name = "North Sea Kraken",
+    text = "<b>Battlecry:</b> Deal 4 damage.",
+    set = "TGT",
+    type = "minion",
+    rarity = "common",
+    cost = 9,
+    attack = 9,
+    health = 7,
+    tags = { "beast" },
+    keywords = { "battlecry" },
+    target_mode = "required",
+    targets = function(ctx) return ctx:characters() end,
+    on_battlecry = function(ctx, self, target) ctx:damage(target, 4) end,
+}

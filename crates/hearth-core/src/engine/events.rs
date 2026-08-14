@@ -33,9 +33,11 @@ impl<R: CardRuntime> Game<R> {
             return self.cancel_pending_event(pending);
         }
         match pending.event {
-            GameEvent::Attack { attacker, defender } => {
-                self.prepare_combat(pending.id, attacker, defender, queue)
-            }
+            GameEvent::Attack {
+                attacker,
+                defender,
+                collateral,
+            } => self.prepare_combat(pending.id, attacker, defender, collateral, queue),
             GameEvent::Damaged {
                 source,
                 target,
@@ -77,12 +79,16 @@ impl<R: CardRuntime> Game<R> {
                 });
                 Ok(())
             }
-            GameEvent::CardDrawn { player, card } => {
-                self.commit_reserved_draw(pending.id, player, card, false, queue)
-            }
-            GameEvent::CardBurned { player, card } => {
-                self.commit_reserved_draw(pending.id, player, card, true, queue)
-            }
+            GameEvent::CardDrawn {
+                player,
+                card,
+                source,
+            } => self.commit_reserved_draw(pending.id, player, card, source, false, queue),
+            GameEvent::CardBurned {
+                player,
+                card,
+                source,
+            } => self.commit_reserved_draw(pending.id, player, card, source, true, queue),
             GameEvent::MinionSummoned { player, entity } => self.commit_reserved_summon(
                 pending.id,
                 player,
@@ -103,7 +109,8 @@ impl<R: CardRuntime> Game<R> {
 
     pub(super) fn cancel_pending_event(&mut self, pending: PendingEvent) -> Result<(), GameError> {
         match pending.event {
-            GameEvent::CardDrawn { player, card } | GameEvent::CardBurned { player, card } => {
+            GameEvent::CardDrawn { player, card, .. }
+            | GameEvent::CardBurned { player, card, .. } => {
                 let entity = self
                     .state
                     .entities
@@ -139,7 +146,7 @@ impl<R: CardRuntime> Game<R> {
         position: Option<usize>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
-        let GameEvent::CardPlayed { player, card } = play.event else {
+        let GameEvent::CardPlayed { player, card, cost } = play.event else {
             unreachable!("card play item must contain a card_played event")
         };
         let entity = self
@@ -170,7 +177,7 @@ impl<R: CardRuntime> Game<R> {
             return self.counter_reserved_card(play.id, player, card, queue);
         }
         if definition.kind == CardKind::Weapon {
-            return self.stage_weapon_equip(play.id, player, card, target, queue);
+            return self.stage_weapon_equip(play.id, cost, player, card, target, queue);
         }
 
         let mut items = Vec::new();
@@ -247,6 +254,7 @@ impl<R: CardRuntime> Game<R> {
                 state.hero = card;
                 state.hero_power = new_power;
                 state.hero_power_used = false;
+                state.hero_power_uses_this_turn = 0;
 
                 for event in [
                     GameEvent::HeroReplaced {
@@ -278,6 +286,20 @@ impl<R: CardRuntime> Game<R> {
         }
         self.refresh_auras()?;
 
+        if definition.kind == CardKind::Spell
+            && let Some(target) = target
+        {
+            items.extend(
+                self.publish(GameEvent::SpellTargeted {
+                    player,
+                    spell: card,
+                    target,
+                    generated_by: None,
+                })?
+                .into_iter()
+                .map(ResolutionItem::Effect),
+            );
+        }
         items.extend(
             self.runtime
                 .on_play(&self.state, card, target)
@@ -287,7 +309,7 @@ impl<R: CardRuntime> Game<R> {
         );
         items.push(ResolutionItem::PublishAfter {
             id: play.id,
-            event: GameEvent::CardPlayed { player, card },
+            event: GameEvent::CardPlayed { player, card, cost },
         });
         if definition.kind == CardKind::Minion {
             let played_event = self.begin_event(GameEvent::MinionPlayed {
@@ -335,10 +357,18 @@ impl<R: CardRuntime> Game<R> {
             });
         }
         if definition.kind == CardKind::Spell {
+            let target_was_friendly_minion = target.is_some_and(|target| {
+                self.state.entity(target).is_some_and(|entity| {
+                    entity.controller == player && entity.kind == CardKind::Minion
+                })
+            });
             let cast = self.begin_event(GameEvent::SpellCast {
                 player,
                 spell: card,
                 generated_by: None,
+                target,
+                cost,
+                target_was_friendly_minion,
             })?;
             items.push(ResolutionItem::PublishAfter {
                 id: cast.id,
@@ -468,6 +498,7 @@ impl<R: CardRuntime> Game<R> {
     pub(super) fn stage_weapon_equip(
         &mut self,
         card_play_id: EventId,
+        card_cost: u8,
         player: PlayerId,
         weapon: EntityId,
         target: Option<EntityId>,
@@ -478,6 +509,7 @@ impl<R: CardRuntime> Game<R> {
         queue.push_front(ResolutionItem::CommitWeaponEquip {
             equip,
             card_play_id,
+            card_cost,
             target,
             replacement: None,
         });
@@ -489,6 +521,7 @@ impl<R: CardRuntime> Game<R> {
         &mut self,
         equip: PendingEvent,
         card_play_id: EventId,
+        card_cost: u8,
         target: Option<EntityId>,
         replacement: Option<PendingEvent>,
         queue: &mut VecDeque<ResolutionItem>,
@@ -507,6 +540,7 @@ impl<R: CardRuntime> Game<R> {
         if equip.cancelled {
             return self.finish_weapon_play(
                 card_play_id,
+                card_cost,
                 equip.id,
                 player,
                 weapon,
@@ -528,6 +562,7 @@ impl<R: CardRuntime> Game<R> {
             queue.push_front(ResolutionItem::CommitWeaponEquip {
                 equip,
                 card_play_id,
+                card_cost,
                 target,
                 replacement: Some(destruction),
             });
@@ -548,6 +583,7 @@ impl<R: CardRuntime> Game<R> {
             if replacement.cancelled {
                 return self.finish_weapon_play(
                     card_play_id,
+                    card_cost,
                     equip.id,
                     player,
                     weapon,
@@ -565,6 +601,7 @@ impl<R: CardRuntime> Game<R> {
 
         self.finish_weapon_play(
             card_play_id,
+            card_cost,
             equip.id,
             player,
             weapon,
@@ -575,10 +612,89 @@ impl<R: CardRuntime> Game<R> {
         )
     }
 
+    pub(super) fn commit_effect_weapon_equip(
+        &mut self,
+        equip: PendingEvent,
+        replacement: Option<PendingEvent>,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        let GameEvent::WeaponEquipped { player, weapon } = equip.event else {
+            unreachable!("effect weapon equip item must contain weapon_equipped")
+        };
+        if self
+            .state
+            .entity(weapon)
+            .is_none_or(|entity| entity.zone != Zone::SetAside)
+        {
+            return Err(GameError::InvalidReservedEntity(equip.id));
+        }
+
+        if equip.cancelled {
+            self.state.entities.get_mut(&weapon).unwrap().zone = Zone::Removed;
+            self.refresh_auras()?;
+            return Ok(());
+        }
+
+        if replacement.is_none()
+            && let Some(old_weapon) = self.state.player(player).weapon
+        {
+            let destruction = self.begin_event(GameEvent::WeaponDestroyed {
+                player,
+                weapon: old_weapon,
+            })?;
+            let before = self.trigger_event(&destruction, EventTiming::Before)?;
+            queue.push_front(ResolutionItem::CommitEffectWeaponEquip {
+                equip,
+                replacement: Some(destruction),
+            });
+            Self::prepend_effects(queue, before);
+            return Ok(());
+        }
+
+        let mut destroyed = None;
+        if let Some(replacement) = replacement {
+            let GameEvent::WeaponDestroyed {
+                player: replacement_player,
+                weapon: old_weapon,
+            } = replacement.event
+            else {
+                unreachable!("replacement item must contain weapon_destroyed")
+            };
+            debug_assert_eq!(replacement_player, player);
+            if replacement.cancelled {
+                self.state.entities.get_mut(&weapon).unwrap().zone = Zone::Removed;
+                self.refresh_auras()?;
+                return Ok(());
+            }
+            if self.state.player(player).weapon == Some(old_weapon) {
+                self.destroy_weapon(player, old_weapon);
+                destroyed = Some((replacement.id, old_weapon));
+            }
+        }
+
+        self.equip_weapon_into_empty_slot(weapon, player);
+        self.refresh_auras()?;
+        queue.push_front(ResolutionItem::PublishAfter {
+            id: equip.id,
+            event: GameEvent::WeaponEquipped { player, weapon },
+        });
+        if let Some((id, old_weapon)) = destroyed {
+            queue.push_front(ResolutionItem::PublishAfter {
+                id,
+                event: GameEvent::WeaponDestroyed {
+                    player,
+                    weapon: old_weapon,
+                },
+            });
+        }
+        Ok(())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub(super) fn finish_weapon_play(
         &mut self,
         card_play_id: EventId,
+        card_cost: u8,
         equip_id: EventId,
         player: PlayerId,
         weapon: EntityId,
@@ -606,6 +722,7 @@ impl<R: CardRuntime> Game<R> {
             event: GameEvent::CardPlayed {
                 player,
                 card: weapon,
+                cost: card_cost,
             },
         });
         let played = self.begin_event(GameEvent::WeaponPlayed { player, weapon })?;
@@ -681,9 +798,18 @@ impl<R: CardRuntime> Game<R> {
         if entity.zone != Zone::Hand || entity.controller != player {
             return Ok(());
         }
+        let discarded_card_id = entity.card_id.clone();
 
         self.remove_from_zone(card, Zone::Hand, player);
         self.move_to_graveyard(card, player);
+        self.state
+            .player_mut(player)
+            .discarded_cards_history
+            .push(card);
+        self.state
+            .player_mut(player)
+            .discarded_card_ids_history
+            .push(discarded_card_id);
         self.refresh_auras()?;
         let zone_change = self.begin_event(GameEvent::ZoneChanged {
             entity: card,
@@ -761,9 +887,9 @@ impl<R: CardRuntime> Game<R> {
             },
         });
         if let Some(replacement) = replacement {
-            self.stage_specific_draw(player, replacement, queue)
+            self.stage_specific_draw(player, replacement, Some(card), queue)
         } else {
-            self.stage_draw(player, queue)
+            self.stage_draw(player, Some(card), queue)
         }
     }
 
@@ -771,6 +897,7 @@ impl<R: CardRuntime> Game<R> {
         &mut self,
         player: PlayerId,
         requested: EntityId,
+        source: Option<EntityId>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         let Some(position) = self
@@ -780,15 +907,16 @@ impl<R: CardRuntime> Game<R> {
             .iter()
             .position(|entity| *entity == requested)
         else {
-            return self.stage_draw(player, queue);
+            return self.stage_draw(player, source, queue);
         };
         let card = self.state.player_mut(player).deck.remove(position).unwrap();
-        self.stage_reserved_draw(player, card, queue)
+        self.stage_reserved_draw(player, card, source, queue)
     }
 
     pub(super) fn stage_draw(
         &mut self,
         player: PlayerId,
+        source: Option<EntityId>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         let Some(card) = self.state.player_mut(player).deck.pop_front() else {
@@ -801,21 +929,30 @@ impl<R: CardRuntime> Game<R> {
             Self::prepend_effects(queue, before);
             return Ok(());
         };
-        self.stage_reserved_draw(player, card, queue)
+        self.stage_reserved_draw(player, card, source, queue)
     }
 
     pub(super) fn stage_reserved_draw(
         &mut self,
         player: PlayerId,
         card: EntityId,
+        source: Option<EntityId>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         self.state.entities.get_mut(&card).unwrap().zone = Zone::SetAside;
         self.refresh_auras()?;
         let event = if self.state.player(player).hand.len() < MAX_HAND_SIZE {
-            GameEvent::CardDrawn { player, card }
+            GameEvent::CardDrawn {
+                player,
+                card,
+                source,
+            }
         } else {
-            GameEvent::CardBurned { player, card }
+            GameEvent::CardBurned {
+                player,
+                card,
+                source,
+            }
         };
         let pending = self.begin_event(event)?;
         let before = self.trigger_event(&pending, EventTiming::Before)?;
@@ -840,6 +977,7 @@ impl<R: CardRuntime> Game<R> {
             source: hero,
             target: hero,
             amount: i32::try_from(amount).unwrap_or(i32::MAX),
+            apply_spell_damage: false,
         }));
         queue.push_front(ResolutionItem::PublishAfter {
             id: pending.id,
@@ -853,6 +991,7 @@ impl<R: CardRuntime> Game<R> {
         id: EventId,
         player: PlayerId,
         card: EntityId,
+        source: Option<EntityId>,
         burn: bool,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
@@ -868,7 +1007,11 @@ impl<R: CardRuntime> Game<R> {
         let event = if burn {
             self.state.entities.get_mut(&card).unwrap().zone = Zone::Graveyard;
             self.state.player_mut(player).graveyard.push(card);
-            GameEvent::CardBurned { player, card }
+            GameEvent::CardBurned {
+                player,
+                card,
+                source,
+            }
         } else {
             self.state.entities.get_mut(&card).unwrap().zone = Zone::Hand;
             self.state
@@ -877,7 +1020,11 @@ impl<R: CardRuntime> Game<R> {
                 .unwrap()
                 .entered_hand_turn = Some(self.state.turn);
             self.state.player_mut(player).hand.push(card);
-            GameEvent::CardDrawn { player, card }
+            GameEvent::CardDrawn {
+                player,
+                card,
+                source,
+            }
         };
         self.refresh_auras()?;
         queue.push_front(ResolutionItem::PublishAfter { id, event });
@@ -909,6 +1056,12 @@ impl<R: CardRuntime> Game<R> {
                 ReservedSummonOrigin::Deck { .. } => {
                     self.restore_reserved_recruit(id, entity, &origin)?;
                 }
+                ReservedSummonOrigin::Graveyard { .. } => {
+                    self.restore_reserved_recruit(id, entity, &origin)?;
+                }
+                ReservedSummonOrigin::Removed { .. } => {
+                    self.restore_reserved_recruit(id, entity, &origin)?;
+                }
             }
             self.refresh_auras()?;
             return Ok(());
@@ -931,15 +1084,6 @@ impl<R: CardRuntime> Game<R> {
         entity: EntityId,
         origin: &ReservedSummonOrigin,
     ) -> Result<(), GameError> {
-        let ReservedSummonOrigin::Deck {
-            player,
-            position,
-            previous,
-            next,
-        } = origin
-        else {
-            return Ok(());
-        };
         let reserved = self
             .state
             .entity(entity)
@@ -948,22 +1092,49 @@ impl<R: CardRuntime> Game<R> {
             return Err(GameError::InvalidReservedEntity(event));
         }
 
-        let deck = &self.state.player(*player).deck;
-        let insertion = next
-            .and_then(|anchor| deck.iter().position(|candidate| *candidate == anchor))
-            .or_else(|| {
-                previous
+        match origin {
+            ReservedSummonOrigin::Deck {
+                player,
+                position,
+                previous,
+                next,
+            } => {
+                let deck = &self.state.player(*player).deck;
+                let insertion = next
                     .and_then(|anchor| deck.iter().position(|candidate| *candidate == anchor))
-                    .map(|index| index + 1)
-            })
-            .unwrap_or((*position).min(deck.len()));
-        let restored = self.state.entities.get_mut(&entity).unwrap();
-        restored.zone = Zone::Deck;
-        restored.controller = *player;
-        self.state
-            .player_mut(*player)
-            .deck
-            .insert(insertion, entity);
+                    .or_else(|| {
+                        previous
+                            .and_then(|anchor| {
+                                deck.iter().position(|candidate| *candidate == anchor)
+                            })
+                            .map(|index| index + 1)
+                    })
+                    .unwrap_or((*position).min(deck.len()));
+                let restored = self.state.entities.get_mut(&entity).unwrap();
+                restored.zone = Zone::Deck;
+                restored.controller = *player;
+                self.state
+                    .player_mut(*player)
+                    .deck
+                    .insert(insertion, entity);
+            }
+            ReservedSummonOrigin::Graveyard { player, position } => {
+                let restored = self.state.entities.get_mut(&entity).unwrap();
+                restored.zone = Zone::Graveyard;
+                restored.controller = *player;
+                let position = (*position).min(self.state.player(*player).graveyard.len());
+                self.state
+                    .player_mut(*player)
+                    .graveyard
+                    .insert(position, entity);
+            }
+            ReservedSummonOrigin::Removed { player } => {
+                let restored = self.state.entities.get_mut(&entity).unwrap();
+                restored.zone = Zone::Removed;
+                restored.controller = *player;
+            }
+            ReservedSummonOrigin::Generated => {}
+        }
         Ok(())
     }
 
@@ -972,7 +1143,9 @@ impl<R: CardRuntime> Game<R> {
         player: PlayerId,
         card_id: &str,
         position: usize,
+        attack: Option<i32>,
         health: i32,
+        final_stats: bool,
         without_keywords: &[String],
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
@@ -986,8 +1159,37 @@ impl<R: CardRuntime> Game<R> {
                 copy.disabled_keywords.push(keyword.clone());
             }
         }
-        Self::recompute_entity(copy);
-        copy.damage = (copy.max_health - health.max(1)).max(0);
+        if final_stats {
+            let id = EnchantmentId(self.state.next_enchantment_id);
+            self.state.next_enchantment_id += 1;
+            let mut modifiers = vec![StatModifier {
+                stat: Stat::Health,
+                operation: ModifierOperation::FinalSet,
+                value: health.max(1),
+            }];
+            if let Some(attack) = attack {
+                modifiers.push(StatModifier {
+                    stat: Stat::Attack,
+                    operation: ModifierOperation::FinalSet,
+                    value: attack,
+                });
+            }
+            copy.enchantments.push(Enchantment {
+                id,
+                source: entity,
+                attack: 0,
+                health: 0,
+                modifiers,
+                keywords: Vec::new(),
+                silenciable: true,
+                expires_at: None,
+            });
+            Self::recompute_entity(copy);
+            copy.damage = 0;
+        } else {
+            Self::recompute_entity(copy);
+            copy.damage = (copy.max_health - health.max(1)).max(0);
+        }
 
         let pending = self.begin_event(GameEvent::MinionSummoned { player, entity })?;
         let before = self.trigger_event(&pending, EventTiming::Before)?;

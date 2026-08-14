@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_109", name = "Mini-Mage", text = "<b>Stealth</b>\n<b>Spell Damage +1</b>", set = "GVG", type = "minion", rarity = "epic", cost = 3, attack = 3, health = 1, keywords = { "stealth", "spell_damage" }, keyword_params = { spell_damage = 1 } }

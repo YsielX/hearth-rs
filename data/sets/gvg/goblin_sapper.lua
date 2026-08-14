@@ -5,6 +5,7 @@ return {
     text = "Has +4 Attack while your opponent has 6 or more cards in hand.",
     set = "GVG",
     type = "minion",
+    rarity = "rare",
     cost = 3,
     attack = 2,
     health = 4,

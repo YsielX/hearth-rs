@@ -184,9 +184,20 @@ ctx:active_player()             -- 目前行動玩家，返回 0 或 1
 ctx:cards_played(player)        -- 本局從手牌打出的卡牌 ID；包含被反制的牌
 ctx:spells_cast(player)         -- 本局成功施放的法術 ID
 ctx:minions_played(player)      -- 本局成功打出的隨從 ID
+ctx:minions_summoned(player)    -- 本局成功召喚的隨從 ID（包括打出與效果召喚）
+ctx:minions_died(player)        -- 本局死亡隨從的凍結定義 ID
+ctx:minions_died_this_turn(player) -- 當前回合死亡隨從的凍結定義 ID
+ctx:minion_death_records(player) -- { card_id, turn, had_deathrattle, keywords }
+ctx:discarded_cards(player)     -- 按棄牌事件順序記錄的原實體 ID
+ctx:discarded_card_ids(player)  -- 按棄牌事件順序凍結的卡牌定義 ID
+ctx:starting_deck(player)       -- 凍結的開局牌庫卡牌 ID 多重集
+ctx:cards_added_to_hand(player) -- 開局後按事件順序進入手牌的卡牌 ID
+ctx:overload_queued_total(player) -- 本局累計超載的水晶數
+ctx:hero_was_healed_this_turn(player)
 ctx:weapons_played(player)      -- 本局成功打出的武器 ID
 ctx:locations_played(player)    -- 本局成功打出的地標 ID
 ctx:last_spell_cast(player)     -- 上一張成功完成施放的法術 ID；沒有則為 nil
+ctx:hero_power_uses(player)     -- 本局成功使用英雄技能的累計次數
 ctx:hand(player)                -- 當前手牌順序
 ctx:deck(player)                -- 牌庫頂到牌庫底
 ctx:board(player)               -- 戰場從左到右
@@ -210,24 +221,27 @@ ctx:get_player_data(player, key)
 
 ```text
 id, card_id, name, owner, controller, attack, health, max_health, damage, armor, spell_damage, zone, type,
-keywords（字串陣列）, silenced, frozen, location_cooldown, enchantments,
+keywords（字串陣列）, silenced, frozen, attacks_this_turn, attack_at_death, started_in_deck, location_cooldown, enchantments,
+attached_cards, attached_deathrattles,
 cards_played_before, combo_active
 ```
 
 玩家快照欄位包括：
 
 ```text
-id, class, hero, hero_power, weapon, mana, max_mana, temporary_mana, overload_pending, overloaded_mana,
+id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana,
 cards_played_this_turn, cards_played_this_game, spells_cast_this_game,
-minions_played_this_game, weapons_played_this_game, locations_played_this_game,
+minions_played_this_game, minions_summoned_this_game, weapons_played_this_game, locations_played_this_game,
 fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
 ```
 
 `cards_played_this_turn` 在玩家回合開始時清零。引擎在牌離開手牌並支付費用後增加它，所以被反制的牌仍計入本回合出牌；但當前牌自己的連擊資格使用打出前快照 `cards_played_before`，不會把自己算作前置牌。`combo.lua` 在 lifecycle 階段呼叫 `ctx:combo_active(self)`。目標 selector 發生得更早，帶連擊目標的卡應在 `targets` 中查詢 `ctx:cards_played_this_turn(ctx:controller(self))`，未啟用時返回空陣列。兩種上下文都屬於 Rust 權威狀態，可隨等待選擇、snapshot 和 replay 恢復。
 
-五個歷史查詢返回按發生順序凍結的卡牌定義 ID 陣列，而不是動態反查實體：隨從即使後來變形，歷史中仍保留它打出時的原定義。`cards_played` 在費用支付並離手時記錄，因此反制牌也存在；四個型別歷史在相應 `spell_cast/minion_played/weapon_played/location_played` 成功時記錄。法術自己的 `on_play` 結算期間尚未進入 `spells_cast`，完成正文後才成為 `last_spell_cast`。由 `cast_spell` 產生的法術進入成功施法歷史，但不進入從手牌出牌歷史。這些陣列屬於 Rust 權威狀態並進入 snapshot/replay，不應由 Lua 全域性變數代替。
+`starting_deck` 在開局後保持凍結，牌被抽取、變形或摧毀都不會改變它；`cards_added_to_hand` 記錄成功抽牌、生成牌和區域移動進入手牌，適合整局消耗或進度規則。
 
-卡牌定義快照包含 `id, name, text, set, type, collectible, class, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。其中 `requires_target` 只作為舊指令碼相容欄位；新邏輯應讀取 `target_mode`。例如可以完全在 Lua 中構造動態發現池：
+五個歷史查詢返回按發生順序凍結的卡牌定義 ID 陣列，而不是動態反查實體：隨從即使後來變形，歷史中仍保留它打出時的原定義。`cards_played` 在費用支付並離手時記錄，因此反制牌也存在；四個型別歷史在相應 `spell_cast/minion_played/weapon_played/location_played` 成功時記錄。法術自己的 `on_play` 結算期間尚未進入 `spells_cast`，完成正文後才成為 `last_spell_cast`。只有玩家實際施放的法術進入成功施法歷史；由 `cast_spell`/`cast_random_spells` 產生的法術帶有 `generated_by`，既不進入該歷史，也不觸發「每當你施放法術」。這些陣列屬於 Rust 權威狀態並進入 snapshot/replay，不應由 Lua 全域性變數代替。
+
+卡牌定義快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用於三職業等多職業牌。其中 `requires_target` 只作為舊指令碼相容欄位；新邏輯應讀取 `target_mode`。例如可以完全在 Lua 中構造動態發現池：
 
 ```lua
 local candidates = {}
@@ -246,6 +260,7 @@ ctx:choose_cards(ctx:controller(self), "選擇一張1費隨從", candidates, "on
 
 ```lua
 ctx:damage(target, amount)
+ctx:damage_ignoring_spell_damage(target, amount)
 ctx:damage_all(targets, amount)
 ctx:heal(target, amount)
 ctx:gain_armor(player, amount)
@@ -254,39 +269,88 @@ ctx:unlock_mana(player, amount)
 ctx:clear_overload(player)
 ctx:gain_temporary_mana(player, amount)
 ctx:gain_mana_crystals(player, amount, filled)
+ctx:fill_mana_crystals(player, amount)
+ctx:refresh_mana_crystals(player)
 ctx:destroy_mana_crystals(player, amount)
+ctx:spend_mana(player, amount)
 ctx:draw(player, count)
+ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
 ctx:give_card_at(player, card_id, position)
+ctx:give_copy(player, entity)
+ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
+ctx:give_base_copy(player, entity)
+ctx:give_base_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:shuffle_card_into_deck(player, card_id)
+ctx:replace_hero(player, hero_card_id)
 ctx:replace_hero_power(player, card_id)
 ctx:refresh_hero_power(player)
 ctx:give_merged_minion(player, template_card_id, first_card_id, second_card_id)
 ctx:equip_weapon(player, card_id)
+ctx:lose_weapon_durability(weapon, amount)
 ctx:discard(player, entity)
 ctx:cast_spell(player, card_id, target_or_nil)
+ctx:cast_spell_if_valid(player, card_id, target_or_nil)
+ctx:cast_spell_random_target(player, card_id)
+ctx:cast_random_spells(player, candidate_card_ids, count)
 ctx:cast_drawn(card)
 ctx:summon(player, card_id)
 ctx:summon_at(player, card_id, position)
+ctx:summon_with_stats(player, card_id, attack, health, keywords_or_nil)
+ctx:summon_with_base_stats(player, card_id, attack, health, keywords_or_nil)
 ctx:summon_copy(player, target)
 ctx:summon_copy_at(player, target, position)
+ctx:summon_copy_with_stats(player, target, attack, health)
 ctx:recruit(player, deck_entity)
 ctx:recruit_at(player, deck_entity, position)
 ctx:summon_from_hand(card)
+ctx:summon_existing(player, graveyard_entity)
+ctx:summon_existing_at(player, graveyard_entity, position)
 ctx:move(target, destination)
+ctx:move_to_hand(player, target)
+ctx:shuffle_entity_into_deck(player, target)
+ctx:shuffle_copy_into_deck(player, target)
 ctx:change_controller(target, player)
+ctx:change_controller_until_end_of_turn(target, player)
 ctx:transform(target, card_id)
+ctx:transform_all(targets, card_id)
+ctx:transform_batch({ { target, card_id }, ... })
+ctx:transform_into_copy(target, template, attack_or_nil, health_or_nil)
+ctx:transform_preserving_scripts(target, card_id)
 ctx:destroy(target)
+ctx:destroy_all(targets)
+ctx:damage_batch({ { target, amount }, ... })
+ctx:damage_batch_ignoring_spell_damage({ { target, amount }, ... })
+ctx:damage_from(source, target, amount)
+ctx:add_attack_collateral(event_id, targets, amount)
+ctx:force_attack(attacker, defender)
+ctx:take_extra_turn(player)
+ctx:win_game(player)
+ctx:set_health(target, amount)
+ctx:heal_all(targets, amount)
+ctx:trigger_hook(target, hook)
+ctx:attach_deathrattle(target, card_id)
+ctx:attach_script(target, card_id)
+ctx:board_position(target)
 ctx:buff(target, attack_delta, health_delta)
 ctx:buff_until_end_of_turn(target, attack_delta, health_delta)
+ctx:modify_all(targets, modifier_table)
 ctx:grant_keyword(target, keyword)
+ctx:grant_keyword_until_end_of_turn(target, keyword)
+ctx:grant_keyword_until_next_turn(target, keyword)
 ctx:disable_keyword(target, keyword)
+ctx:grant_player_keyword(player, keyword)
+ctx:disable_player_keyword(player, keyword)
+ctx:set_player_class(player, class_id)
 ctx:summon_fresh_copy(target, position_or_nil, health, without_keywords)
+ctx:summon_fresh_copy_with_stats(target, position_or_nil, attack, health, without_keywords)
 ctx:silence(target)
 ctx:freeze(target)
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
 ctx:set_event_amount(event, amount)
+ctx:set_attack_defender(event_id, defender)
+ctx:set_damage_target(event_id, target)
 ctx:replace_trade_draw(event_id, replacement_entity)
 ctx:continue_with(hook_name)
 ctx:continue_with_entity(hook_name, entity)
@@ -294,15 +358,34 @@ ctx:continue_with_card(hook_name, card_id)
 ctx:continue_with_number(hook_name, number)
 ctx:continue_with_value(hook_name, serializable_value)
 ctx:set_player_data(player, key, value)
+ctx:increment_player_data(player, key, delta)
 ```
 
 所有效果的 `source` 自動設為當前執行 hook 的卡牌實體。
+
+光環中的 `cost` 是加法層；卡牌文字寫「消耗為（1）」時使用 `cost_set = 1`（也可為函式）。屬性層順序為 `SET → ADD → MULTIPLY → FINAL SET → Aura SET → Aura ADD`，同層多個持續 SET 按光環時間戳順序由後者覆蓋。
+
+`spell_damage` 光環可以指向手下或英雄。玩家的法術傷害加成為己方場上手下與英雄所承載數值之和，因此雙方玩家級效果無需任何卡牌特判。
+
+`replace_hero` 要求目標定義為 Hero 且宣告有效的 `hero_power`：新英雄使用定義中的生命上限並回滿生命，保留原英雄的護甲、凍結狀態和本回合攻擊次數，同時替換英雄技能並釋出 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 與 `disable_player_keyword` 管理玩家級腳本機制；它們由當前英雄實體承載 Lua 光環和觸發器，但狀態屬於玩家，因此不受手下沉默、變形、死亡或英雄替換影響。
+
+`destroy_all` 在同一個死亡檢查點摧毀所有目標，適用於「摧毀所有手下」一類同時結算；`move` 的目標區域包括 `hand`、`secret`、`deck_top`、`deck_bottom`、`deck_random`、`graveyard` 和 `removed`。移動到 `secret` 時會校驗該實體確實具有奧秘規則且奧秘區未滿。`shuffle_entity_into_deck` 使用 Rust 確定性隨機把原實體洗入指定玩家牌庫，同時轉移 owner/controller 並執行隱藏區重置。
+
+`transform` 允許手牌和牌庫隱藏區中的實體跨卡牌類型原位替換，並保留實體身分與區域順序。`transform_preserving_scripts` 還會保留 `attached_cards` 與指令碼資料；需要跨自身變形持續的規則應先用 `attach_script` 附加可重用模組。`attach_deathrattle` 為場上手下附加一層有序、可疊加的 `on_deathrattle` 指令碼；沉默會移除已有附加死亡之聲，而沉默後新附加的死亡之聲仍生效。`cast_spell_if_valid` 與 `cast_spell` 相同，但宣告目標不合法時會安全跳過生成施放。`cast_spell_random_target` 從生成法術自身的權威合法目標集合中隨機選擇；`cast_random_spells` 採用有放回抽樣，並在抽取下一張前完整結算當前法術，因此來源變形或離場也不會中斷初始批次。
+
+`damage_ignoring_spell_damage` 仍走普通順序傷害與事件流程，但不疊加來源控制者的法術傷害。`spend_mana` 原子地花費玩家當前可用法力（優先臨時法力），並按實際正數花費發布 `mana_spent`。`increment_player_data` 對玩家指令碼資料執行原子有符號累加，發布帶 `old/new/delta` 的 `player_script_data_changed`，避免同一快照收集出的多個觸發器互相覆蓋。死亡記錄保存卡牌定義是否原生具有死亡之聲：沉默不清除此標記，附加死亡之聲也不會設定它。
+
+`give_copy` 用於向前或同區域複製，保留來源實體的永久狀態；`give_copy_with_stats` 再附加最終攻擊、生命及可選消耗定值。`give_base_copy*` 用於戰場到手牌等向後區域複製，只從印刷定義建立無增益副本。
+
+`draw_entity` 從指定玩家牌庫抽取該原實體，並走可取消的普通 CardDrawn/CardBurned 流程。`summon_existing` 把墓地或移除區的原手下送入完整可取消召喚流程，取消或滿場時恢復；`summon_existing_at` 還會使用記錄的原戰場位置。`move_to_hand` 可把原實體轉入指定玩家手牌，`shuffle_copy_into_deck` 會保留被複製實體的狀態。`summon_fresh_copy_with_stats` 建立無增益模板副本並最終定值攻血。`lose_weapon_durability` 扣除已裝備武器耐久，歸零時走普通可取消的 `weapon_destroyed` 生命週期。`add_attack_collateral` 為待結算攻擊加入同批戰鬥傷害。
+
+`damage_batch` 對凍結目標集原子結算不同傷害值，其忽略法術傷害版本不疊加法強。`modify_all` 同樣對凍結目標組套用一個屬性修改，並支援 `reset_damage = true` 實現同時生命定值。`force_attack` 無需攻擊者處於可攻擊狀態即可發起完整攻擊事件；`take_extra_turn` 為指定玩家排入可回放的額外回合。`grant_keyword_until_next_turn` 在該手下控制者的下回合開始時到期，且不依賴來源實體繼續存在。
 
 區域查詢返回穩定順序的實體 ID 副本，指令碼不能修改 Rust 內部列表。`hand`、`deck` 等介面也允許查詢對手隱藏區；Lua 卡牌是服務端可信規則程式碼，UI 不會直接獲得這些結果。需要向玩家公開或選擇隱藏資訊時，應由卡牌顯式構造 `choose_*` 選項。
 
 `discard` 只對引數玩家當前手牌中的實體生效；實體已被更早效果移走時安全地不做任何事。引擎先發布 `card_discarded/before`，此時目標仍在手牌，因此目標自己的 `active_zones = { "hand" }` 觸發器可以呼叫 `cancel_event`。成功提交後卡牌進入墓地，依次批次釋出 `card_discarded/after` 和 `zone_changed/after`；取消時不釋出二者。事件欄位為 `source`、`player`、`entity`。隨機棄牌應先從 `ctx:hand(player)` 過濾候選，再呼叫 `random_entity` 並在 resume hook 中 `discard`，以保持 Rust RNG、事件日誌和 replay 的確定性。
 
-`cast_spell` 由 Rust 建立一個新的真實法術實體，並用它作為法術傷害、治療和後續事件的來源。普通法術進入墓地，滿足 `enters_secret_zone` Lua 規則的法術進入奧秘/任務區；不支付法力、不產生 `card_played`、不增加連擊計數，也不會觸發只反制手牌出牌的 `card_played/before` 奧秘。法術正文全部結算後釋出 `spell_cast/after` 並進入 `spells_cast` 歷史。該事件額外包含 `generated` 和 `generated_by`；直接從手牌施放時分別為 `false/nil`，效果施放時指向產生它的實體。`cast_drawn` 則移動抽到的同一個實體並執行正文，供“抽到時施放”模組使用。
+`cast_spell` 由 Rust 建立一個新的真實法術實體，並用它作為法術傷害、治療和後續事件的來源。普通法術進入墓地，滿足 `enters_secret_zone` Lua 規則的法術進入奧秘/任務區；不支付法力、不產生 `card_played`、不增加連擊計數，也不會觸發只反制手牌出牌的 `card_played/before` 奧秘。法術正文全部結算後釋出 `spell_cast/after` 並進入 `spells_cast` 歷史。該事件額外包含 `generated`、`generated_by` 和宣告的 `target`；直接從手牌施放時前兩者分別為 `false/nil`，效果施放時指向產生它的實體，無目標法術的 `target` 為 `nil`。`cast_drawn` 則移動抽到的同一個實體並執行正文，供“抽到時施放”模組使用。
 
 目標法術必須傳入目標，且目標必須透過該法術自身的 Lua `targets` 選擇器以及 Rust 的潛行/免疫過濾；缺失或非法目標會令當前玩家命令事務回滾。無目標法術可省略第四個引數。自動施放非 spell 定義同樣是指令碼錯誤。自動施放奧秘時若奧秘區已滿則不產生任何實體或事件。`CastSpell` 本身可序列化，因此可以位於等待選擇的剩餘結算佇列中，並由 snapshot/replay 恢復。
 
@@ -356,16 +439,22 @@ end
 `move` 支援以下目標位置：
 
 ```text
-hand, deck_top, deck_bottom, deck_random, graveyard, removed
+hand, board, secret, deck_top, deck_bottom, deck_random, graveyard, removed
 ```
 
-移動到手牌或牌庫時，實體回到擁有者控制，清除傷害、沉默、enchantment 和 `script_data`。手牌已滿時，返回手牌會改為進入墓地。`deck_random` 只隨機選擇插入位置，不擾亂牌庫中其他卡牌的相對順序；隨機結果由 Rust RNG 決定並可透過 replay 精確重建。英雄、英雄技能、`set_aside` 和 `removed` 實體不能再次透過此 API 移動。
+移動到手牌、牌庫或戰場時，實體回到擁有者控制，清除傷害、沉默、enchantment 和 `script_data`。`board` 只接受墓地中的手下且不會發布 `minion_summoned`，用於休眠復歸等明確不屬於召喚的效果。手牌已滿時，返回手牌會改為進入墓地。`deck_random` 只隨機選擇插入位置，不擾亂牌庫中其他卡牌的相對順序；隨機結果由 Rust RNG 決定並可透過 replay 精確重建。英雄、英雄技能、`set_aside` 和 `removed` 實體不能再次透過此 API 移動。
 
-`change_controller` 只對戰場隨從生效。目標玩家戰場已滿、目標已經離場或控制權已經相同時不產生變化；成功時實體移動到新控制者戰場最右側並進入休眠，再由關鍵詞的 `ready_on_summon` 規則決定是否解除休眠。該操作釋出可取消的 `controller_changed/before`，提交後釋出 `controller_changed/after`。實體的擁有者 `owner` 不變，之後返回手牌或牌庫仍回到擁有者一方。
+`trigger_hook(target, hook)` 在目標實體上呼叫指定的 Lua 生命週期鉤子，按普通效果佇列繼續結算。它適合「觸發一個手下的死亡之聲」這類不伴隨死亡事件的效果；呼叫方仍負責按卡牌規則篩選目標和處理重複次數。
 
-`transform` 只接受戰場隨從和另一張隨從定義。變形保留實體 ID、擁有者、控制者、戰場位置、休眠狀態和本回合攻擊次數；基礎屬性與卡牌指令碼替換為新定義，並清除傷害、凍結、沉默、enchantment、已消耗關鍵字狀態和 `script_data`。變形不算死亡或召喚，釋出可取消的 `transformed/before`，提交後釋出 `transformed/after`。
+`change_controller` 對戰場手下和秘密生效。目標玩家對應區域已滿、目標已經離場或控制權已經相同時不產生變化；手下成功時移動到新控制者戰場最右側並進入休眠，再由關鍵詞的 `ready_on_summon` 規則決定是否解除休眠；秘密則移動到新控制者的秘密區。該操作釋出可取消的 `controller_changed/before`，提交後釋出 `controller_changed/after`。實體的擁有者 `owner` 不變，之後返回手牌或牌庫仍回到擁有者一方。
 
-`destroy` 可以消滅戰場隨從或摧毀戰場地標。隨從進入統一死亡檢查點併發布 `entity_died`；地標立即移入其控制者墓地併發布 `location_destroyed`。其他區域及其他實體型別不會被該效果改變。
+`change_controller_until_end_of_turn` 記錄可逆的戰場手下控制權：沉默會立即把手下歸還原控制者，變形會清除歸還標記並讓目前控制權永久化；回合結束時若原方戰場已滿，該手下會被消滅。`refresh_mana_crystals` 只補滿現有且未被超載鎖定的永久水晶，同時保留暫時法力、目前超載和待結算超載。`summon_with_stats` 使用可沉默的最終屬性層，`summon_with_base_stats` 則直接設定召喚物基礎攻血，沉默不會把翠玉魔像等成長衍生物還原。
+
+`transform` 只接受戰場隨從和另一張隨從定義。變形保留實體 ID、擁有者、控制者、戰場位置、休眠狀態和本回合攻擊次數；基礎屬性與卡牌指令碼替換為新定義，並清除傷害、凍結、沉默、enchantment、已消耗關鍵字狀態和 `script_data`。變形不算死亡或召喚，釋出可取消的 `transformed/before`，提交後釋出 `transformed/after`。`transform_all` 對整組套用同一定義，`transform_batch` 對每個實體套用各自定義，兩者都統一提交並只重算一次光環。`transform_into_copy` 複製模板實體完整狀態，再套用可沉默的最終攻血值。
+
+`destroy` 可以消滅戰場隨從、摧毀戰場地標或已裝備武器。隨從進入統一死亡檢查點併發布 `entity_died`；地標立即移入其控制者墓地併發布 `location_destroyed`；武器走可取消的 `weapon_destroyed` 生命週期。其他區域及其他實體型別不會被該效果改變。
+
+`set_health(target, amount)` 不發布治療事件，直接把目前生命值和生命值上限都設為指定數值。它會建立一個可沉默的永久 enchantment，適合表達生命值交換等卡牌敘述。
 
 `buff` 和 `grant_keyword` 會建立可追蹤的永久 enchantment，而不是直接篡改基礎屬性。`silence` 會移除可沉默 enchantment、印刷關鍵字和指令碼觸發能力。
 
@@ -374,14 +463,14 @@ hand, deck_top, deck_bottom, deck_random, graveyard, removed
 ```lua
 ctx:modify(target, {
     stat = "attack",             -- attack / health / cost / spell_damage
-    operation = "set",           -- set / add / multiply
+    operation = "set",           -- set / add / pre_final_add / multiply / final_set
     value = 5,
     duration = "end_of_turn",    -- permanent（預設）/ end_of_turn
     silenciable = true,           -- 預設 true；持續整局規則可設為 false
 })
 ```
 
-Rust 不依賴建立順序，固定按 `SET → ADD → MULTIPLY → Aura` 計算。回合末 enchantment 在 `turn_ended` 觸發全部結算後統一移除，然後再次進行光環、死亡和勝負檢查。
+沒有 `final_set` 時，永久屬性按 `SET → ADD/PRE_FINAL_ADD → MULTIPLY` 分層。存在 `final_set` 時，最後一層定值成為基準，只繼續套用它之後建立的普通 Set/Add/Multiply；`pre_final_add` 永遠位於該定值之前。即時光環最後套用。回合末 enchantment 在 `turn_ended` 觸發全部結算後統一移除，然後再次進行光環、死亡和勝負檢查。
 
 `ctx:remove_enchantments_from(target, source)` 刪除指定來源建立的全部 enchantment。
 它與 `silenciable = false` 組合，可表達水晶核心這類不能被沉默、但隨控制權變化需要移除的持續規則。
@@ -749,7 +838,7 @@ hero, hero_power, deck, hand, board, weapon, secret, graveyard
 
 ```text
 game_started, turn_started, turn_ended, card_drawn, card_burned, card_created, fatigue,
-card_played, spell_cast, minion_played, weapon_played, location_played, card_countered, card_discarded, card_traded, trade_draw,
+card_played, spell_targeted, spell_cast, minion_played, weapon_played, location_played, card_countered, card_discarded, card_traded, trade_draw,
 minion_summoned, magnetized, weapon_equipped, weapon_destroyed, location_used, location_destroyed,
 hero_power_used, hero_power_replaced, secret_played, secret_revealed, zone_changed, controller_changed, transformed, attack, damaged, damage_prevented, healed,
 armor_gained, overload_queued, mana_locked, mana_unlocked, temporary_mana_gained,
@@ -758,13 +847,15 @@ keyword_disabled, frozen, entity_died, conceded, game_ended,
 choice_requested, choice_made, random_choice_made, random_cards_sampled, random_entities_sampled
 ```
 
-事件 table 始終有 `name`，並按事件包含 `player`、`entity`、`source`、`target`、`amount`、`attacker` 或 `defender` 等欄位。`card_created` 同時包含新實體 `entity` 與建立它的效果來源 `source`。`spell_cast` 還包含布林值 `generated` 和可空的 `generated_by`；`keyword_disabled` 包含 `keyword`；`entity_died` 包含 `player` 和該實體被移除時的零基 `position`。`trade_draw` 包含 `player/entity/replacement`；`card_traded` 包含 `player/entity`，在替換抽牌完成且原實體進入牌庫後釋出。
+事件 table 始終有 `name`，並按事件包含 `player`、`entity`、`source`、`target`、`amount`、`attacker` 或 `defender` 等欄位。`card_created` 同時包含新實體 `entity` 與建立它的效果來源 `source`。`card_drawn` 和 `card_burned` 的 `entity` 是被抽取的牌，`source` 是造成這次抽牌的效果實體；自然回合抽牌與起手抽牌為 nil，指令碼、英雄技能和交易替換抽牌保留實際來源。`spell_targeted` 在成功通過反制後、法術正文前釋出，包含法術 `entity`、宣告的 `target`、`generated` 與 `generated_by`；`spell_cast` 在正文後包含相同欄位，無目標時 `target` 為 nil。`keyword_disabled` 包含 `keyword`；`entity_died` 包含 `player` 和該實體被移除時的零基 `position`。`trade_draw` 包含 `player/entity/replacement`；`card_traded` 包含 `player/entity`，在替換抽牌完成且原實體進入牌庫後釋出。
 
 `damage_prevented` 包含 `source`、`target` 和當前的 `reason = "immune"`，它替代該次傷害的 `damaged/after`。地標不是傷害目標，因此對地標輸出傷害效果時不會建立傷害事件。
 
 `game_ended` 的勝者事件包含 `outcome = "winner"` 和 `winner`；雙方英雄在同一死亡檢查點死亡時，包含 `outcome = "draw"`，沒有 `winner`。
 
-目前 `card_played`、`card_discarded`、`trade_draw`、正常對局中的 `card_drawn/card_burned`、由 `ctx:summon` 產生的 `minion_summoned`、`zone_changed`、`controller_changed`、`transformed`、`fatigue`、`weapon_equipped`、`weapon_destroyed`、`location_used`、`hero_power_used`、`attack`、`damaged` 和普通 `healed` 會發布 `before`；成功提交後釋出 `after`。棄牌引起的附帶 `zone_changed` 目前只發布 after。`spell_cast`、`minion_played`、`weapon_played`、`location_played` 是成功出牌後的細分 after 通知，其中 `minion_played` 與效果召喚產生的 `minion_summoned` 不同。被反制的法術只發布 `card_countered`，不會發布 `card_played/after` 或型別細分事件，但仍消耗費用並啟用後續連擊。初始化起手不會發布 before，直接打出的隨從和地標目前只在 `card_played` 階段可被反制。`card_traded`、`location_destroyed` 與其他列出的事件當前只發布 `after`。
+`card_played.cost` 是提交出牌命令時凍結的實際卡牌費用，不會被離開費用光環或牌面效果後續消耗法力所改變。
+
+目前 `card_played`、`card_discarded`、`trade_draw`、正常對局中的 `card_drawn/card_burned`、由 `ctx:summon` 產生的 `minion_summoned`、`zone_changed`、`controller_changed`、`transformed`、`fatigue`、`weapon_equipped`、`weapon_destroyed`、`location_used`、`hero_power_used`、`attack`、`damaged` 和普通 `healed` 會發布 `before`；成功提交後釋出 `after`。棄牌引起的附帶 `zone_changed` 目前只發布 after。`spell_targeted` 是通過反制後的正文前通知；`spell_cast`、`minion_played`、`weapon_played`、`location_played` 是成功出牌後的細分 after 通知，其中 `minion_played` 與效果召喚產生的 `minion_summoned` 不同。被反制的法術只發布 `card_countered`，不會發布 `spell_targeted`、`card_played/after` 或型別細分事件，但仍消耗費用並啟用後續連擊。初始化起手不會發布 before，直接打出的隨從和地標目前只在 `card_played` 階段可被反制。`card_traded`、`location_destroyed` 與其他列出的事件當前只發布 `after`。
 
 成功提交手牌出牌後，引擎先完整結算卡牌 `on_play` 和關鍵詞 lifecycle hook，再發布 `card_played/after`、型別細分事件及隨從的 `minion_summoned/after`。因此戰吼效果和戰吼內部召喚會先完成，隨後才觸發原卡牌的 After Play / After Summon 監聽器。法術正文同樣先於 `spell_cast/after`，英雄技能正文先於 `hero_power_used/after`。
 

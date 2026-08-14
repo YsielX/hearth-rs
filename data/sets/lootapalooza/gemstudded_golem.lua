@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_365",name="Gemstudded Golem",text="<b>Taunt</b>\nCan only attack if you have 5 or more Armor.",set="LOOTAPALOOZA",type="minion",class="warrior",rarity="common",cost=6,attack=5,health=9,keywords={"taunt"},rules={can_attack=function(ctx,self,current)return current and ctx:entity(ctx:player(ctx:controller(self)).hero).armor>=5 end}}

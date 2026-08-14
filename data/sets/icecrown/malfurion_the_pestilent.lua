@@ -6,6 +6,7 @@ local card = {
     set = "ICECROWN",
     type = "hero",
     class = "druid",
+    rarity = "legendary",
     cost = 7,
     health = 30,
     armor = 5,
@@ -29,10 +30,10 @@ end
 
 function card.on_choose_multiple(ctx, self)
     local player = ctx:controller(self)
-    ctx:summon(player, "ICC_832t4")
-    ctx:summon(player, "ICC_832t4")
     ctx:summon(player, "ICC_832t3")
     ctx:summon(player, "ICC_832t3")
+    ctx:summon(player, "ICC_832t4")
+    ctx:summon(player, "ICC_832t4")
 end
 
 card.tokens = {

@@ -195,7 +195,7 @@ fn casts_when_drawn_casts_bomb_damages_its_owner_and_replaces_its_draw() {
             .iter()
             .any(|event| matches!(
                 event,
-                GameEvent::CardDrawn { player, card }
+                GameEvent::CardDrawn { player, card, .. }
                     if *player == PlayerId::TWO && *card != bomb.id
             ))
     );

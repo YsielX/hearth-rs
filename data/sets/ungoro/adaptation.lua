@@ -11,6 +11,7 @@ local card = {
     set = "UNGORO",
     type = "spell",
     class = "paladin",
+    rarity = "common",
     cost = 0,
     keywords = { "adapt" },
     target_mode = "required",
@@ -30,10 +31,12 @@ end
 
 function card.adapted(ctx, self, adaptation)
     local target = ctx:get_data(self, "adapt_target")
-    if target == nil then return end
+    if target == nil or target == 0 then return end
+    local entity = ctx:entity(target)
+    if entity.zone ~= "board" or entity.controller ~= ctx:controller(self) then return end
     if adaptation == "UNG_999t2" then
-        ctx:set_data(target, "living_spores", 1)
-        ctx:set_data(self, "living_spores_target", target)
+        ctx:attach_deathrattle(target, "UNG_999t2")
+        ctx:grant_keyword(target, "deathrattle")
     elseif adaptation == "UNG_999t3" then
         ctx:buff(target, 3, 0)
     elseif adaptation == "UNG_999t4" then
@@ -47,8 +50,7 @@ function card.adapted(ctx, self, adaptation)
     elseif adaptation == "UNG_999t8" then
         ctx:grant_keyword(target, "divine_shield")
     elseif adaptation == "UNG_999t10" then
-        ctx:grant_keyword(target, "stealth")
-        ctx:set_data(self, "stealth_target", target)
+        ctx:grant_keyword_until_next_turn(target, "stealth")
     elseif adaptation == "UNG_999t13" then
         ctx:grant_keyword(target, "poisonous")
     elseif adaptation == "UNG_999t14" then
@@ -56,36 +58,18 @@ function card.adapted(ctx, self, adaptation)
     end
 end
 
-card.triggers = {
-    {
-        event = "entity_died", timing = "after", active_zones = { "graveyard" },
-        condition = function(ctx, self, event)
-            return ctx:get_data(self, "living_spores_target") == event.entity
-        end,
-        effect = function(ctx, self, event)
-            local player = ctx:controller(event.entity)
-            ctx:summon_at(player, "UNG_999t2t1", event.position)
-            ctx:summon_at(player, "UNG_999t2t1", event.position + 1)
-        end,
-    },
-    {
-        event = "turn_started", timing = "after", active_zones = { "graveyard" },
-        condition = function(ctx, self, event)
-            local target = ctx:get_data(self, "stealth_target")
-            return target ~= nil and target ~= 0
-                and ctx:entity(target).zone == "board"
-                and event.player == ctx:controller(target)
-        end,
-        effect = function(ctx, self, event)
-            local target = ctx:get_data(self, "stealth_target")
-            ctx:remove_enchantments_from(target, self)
-            ctx:set_data(self, "stealth_target", 0)
-        end,
-    },
-}
-
 card.tokens = {
-    { id = "UNG_999t2", name = "Living Spores", text = "<b>Deathrattle:</b> Summon two 1/1 Plants.", set = "UNGORO", type = "spell", class = "neutral", cost = 0 },
+    {
+        id = "UNG_999t2", name = "Living Spores",
+        text = "<b>Deathrattle:</b> Summon two 1/1 Plants.",
+        set = "UNGORO", type = "spell", class = "neutral", cost = 0,
+        keywords = { "deathrattle" },
+        on_deathrattle = function(ctx, self, position)
+            local player = ctx:controller(self)
+            ctx:summon_at(player, "UNG_999t2t1", position)
+            ctx:summon_at(player, "UNG_999t2t1", position)
+        end,
+    },
     { id = "UNG_999t3", name = "Flaming Claws", text = "+3 Attack", set = "UNGORO", type = "spell", class = "neutral", cost = 0 },
     { id = "UNG_999t4", name = "Rocky Carapace", text = "+3 Health", set = "UNGORO", type = "spell", class = "neutral", cost = 0 },
     { id = "UNG_999t5", name = "Liquid Membrane", text = "<b>Elusive</b>", set = "UNGORO", type = "spell", class = "neutral", cost = 0 },

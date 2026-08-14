@@ -7,6 +7,8 @@ return {
     type = "spell",
     class = "shaman",
     cost = 2,
+    rarity = "rare",
+    spell_school = "fire",
     target_mode = "required",
     targets = function(ctx, self) return ctx:characters() end,
     on_play = function(ctx, self, target)

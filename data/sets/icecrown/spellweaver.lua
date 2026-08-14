@@ -1,0 +1,1 @@
+return {api_version=1,id="ICC_856",name="Spellweaver",text="<b>Spell Damage +2</b>",set="ICECROWN",type="minion",rarity="common",cost=6,attack=4,health=4,tags={"undead"},keywords={"spell_damage"},keyword_params={spell_damage=2}}

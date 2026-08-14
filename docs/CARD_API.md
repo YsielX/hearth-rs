@@ -210,9 +210,20 @@ ctx:entered_hand_this_turn(entity)
 ctx:cards_played(player)
 ctx:spells_cast(player)
 ctx:minions_played(player)
+ctx:minions_summoned(player)
+ctx:minions_died(player)
+ctx:minions_died_this_turn(player)
+ctx:minion_death_records(player) -- { card_id, turn, had_deathrattle, keywords }
+ctx:discarded_cards(player)      -- original entity IDs in discard-event order
+ctx:discarded_card_ids(player)   -- frozen definition IDs in discard-event order
+ctx:starting_deck(player)        -- frozen opening card-ID multiset
+ctx:cards_added_to_hand(player)  -- post-start card IDs in event order
+ctx:overload_queued_total(player) -- lifetime overloaded Crystal count
+ctx:hero_was_healed_this_turn(player)
 ctx:weapons_played(player)
 ctx:locations_played(player)
 ctx:last_spell_cast(player)
+ctx:hero_power_uses(player)
 
 ctx:hand(player)
 ctx:deck(player)                 -- top to bottom
@@ -233,11 +244,11 @@ ctx:get_data(entity, key)
 ctx:get_player_data(player, key)
 ```
 
-Entity snapshots include identity, definition, owner/controller, zone/type, Attack, current/max Health, damage, Armor, Cost, Spell Damage, keywords, Silence, Freeze, Location cooldown, enchantments, hand-entry/play context, and script data relevant to rules.
+Entity snapshots include identity, definition, owner/controller, zone/type, Attack, current/max Health, damage, Armor, Cost, Spell Damage, keywords, Silence, Freeze, attacks used this turn, `attack_at_death`, `started_in_deck`, Location cooldown, enchantments, attached scripts/Deathrattles, hand-entry/play context, and script data relevant to rules. `starting_deck` remains frozen when cards move or transform; `cards_added_to_hand` records successful draws, generated cards, and zone moves into Hand.
 
-Player snapshots include class, hero, Hero Power, weapon, mana fields, overload fields, play histories/counts, fatigue, zone sizes, and Hero Power use.
+Player snapshots include class, hero, Hero Power, weapon, player keywords, mana fields, overload fields, played/summoned histories and counts, fatigue, zone sizes, current-turn Hero Power state, and lifetime Hero Power uses.
 
-Card definition snapshots returned by `ctx:card_definition` include `rarity` and `spell_school` when declared. `card_created` events include both the created `entity` and the creating effect's `source`, allowing generated-card mechanics to identify only their own output.
+Card definition snapshots returned by `ctx:card_definition` include `classes` for multi-class cards, plus `rarity` and `spell_school` when declared. `card_created` events include both the created `entity` and the creating effect's `source`, allowing generated-card mechanics to identify only their own output.
 
 Returned arrays/tables are snapshots. Lua cannot mutate Rust containers. Scripts are trusted server rules and may query hidden zones; UI clients do not receive those values automatically.
 
@@ -247,6 +258,7 @@ These functions append validated effects; they do not mutate state during the Lu
 
 ```lua
 ctx:damage(target, amount)
+ctx:damage_ignoring_spell_damage(target, amount)
 ctx:damage_all(targets, amount)
 ctx:heal(target, amount)
 ctx:gain_armor(player, amount)
@@ -256,49 +268,99 @@ ctx:unlock_mana(player, amount)
 ctx:clear_overload(player)
 ctx:gain_temporary_mana(player, amount)
 ctx:gain_mana_crystals(player, amount, filled)
+ctx:fill_mana_crystals(player, amount)
+ctx:refresh_mana_crystals(player)
 ctx:destroy_mana_crystals(player, amount)
+ctx:spend_mana(player, amount)
 
 ctx:draw(player, count)
+ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
 ctx:give_card_at(player, card_id, position)
+ctx:give_copy(player, entity)
+ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
+ctx:give_base_copy(player, entity)
+ctx:give_base_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:shuffle_card_into_deck(player, card_id)
 ctx:discard(player, entity)
 ctx:cast_spell(player, card_id, target_or_nil)
+ctx:cast_spell_random_target(player, card_id)
+ctx:cast_random_spells(player, candidate_card_ids, count)
 ctx:cast_drawn(card)
 
 ctx:summon(player, card_id)
 ctx:summon_at(player, card_id, position)
+ctx:summon_with_stats(player, card_id, attack, health, keywords_or_nil)
+ctx:summon_with_base_stats(player, card_id, attack, health, keywords_or_nil)
 ctx:summon_copy(player, entity)
 ctx:summon_copy_at(player, entity, position)
+ctx:summon_copy_with_stats(player, entity, attack, health)
 ctx:summon_fresh_copy(entity, position_or_nil, health, without_keywords)
+ctx:summon_fresh_copy_with_stats(entity, position_or_nil, attack, health, without_keywords)
 ctx:summon_from_hand(card)
+ctx:summon_existing(player, graveyard_entity)
+ctx:summon_existing_at(player, graveyard_entity, position)
 ctx:recruit(player, deck_entity)
 ctx:recruit_at(player, deck_entity, position)
 
 ctx:equip_weapon(player, card_id)
+ctx:lose_weapon_durability(weapon, amount)
+ctx:cast_spell_if_valid(player, card_id, target_or_nil)
+ctx:replace_hero(player, hero_card_id)
 ctx:replace_hero_power(player, card_id)
 ctx:refresh_hero_power(player)
 ctx:give_merged_minion(player, template_card_id, first_card_id, second_card_id)
 ctx:move(entity, destination)
+ctx:move_to_hand(player, entity)
+ctx:shuffle_entity_into_deck(player, entity)
+ctx:shuffle_copy_into_deck(player, entity)
 ctx:change_controller(entity, player)
+ctx:change_controller_until_end_of_turn(entity, player)
 ctx:transform(entity, card_id)
+ctx:transform_all(entities, card_id)
+ctx:transform_batch({ { entity, card_id }, ... })
+ctx:transform_into_copy(entity, template, attack_or_nil, health_or_nil)
+ctx:transform_preserving_scripts(entity, card_id)
 ctx:destroy(entity)
+ctx:destroy_all(entities)
+ctx:damage_batch({ { entity, amount }, ... })
+ctx:damage_batch_ignoring_spell_damage({ { entity, amount }, ... })
+ctx:damage_from(source, entity, amount)
+ctx:add_attack_collateral(event_id, entities, amount)
+ctx:force_attack(attacker, defender)
+ctx:take_extra_turn(player)
+ctx:win_game(player)
+ctx:set_health(entity, amount)
+ctx:heal_all(entities, amount)
+ctx:trigger_hook(entity, hook)
+ctx:attach_deathrattle(entity, card_id)
+ctx:attach_script(entity, card_id)
+ctx:board_position(entity)
 
 ctx:buff(entity, attack_delta, health_delta)
 ctx:buff_until_end_of_turn(entity, attack_delta, health_delta)
 ctx:modify(entity, modifier_table)
+ctx:modify_all(entities, modifier_table)
 ctx:remove_enchantments_from(entity, source)
 ctx:grant_keyword(entity, keyword_id)
+ctx:grant_keyword_until_end_of_turn(entity, keyword_id)
+ctx:grant_keyword_until_next_turn(entity, keyword_id)
 ctx:disable_keyword(entity, keyword_id)
+ctx:grant_player_keyword(player, keyword_id)
+ctx:disable_player_keyword(player, keyword_id)
+ctx:set_player_class(player, class_id)
 ctx:silence(entity)
 ctx:freeze(entity)
 
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
 ctx:set_event_amount(event, amount)
+ctx:set_attack_defender(event_id, defender)
+ctx:set_damage_target(event_id, target)
 ctx:replace_trade_draw(event_id, replacement_entity)
 ctx:set_data(entity, key, value)
 ctx:set_player_data(player, key, value)
+ctx:increment_player_data(player, key, delta)
 
 ctx:continue_with(hook)
 ctx:continue_with_entity(hook, entity)
@@ -309,21 +371,35 @@ ctx:continue_with_value(hook, serializable_value)
 
 The current hook entity is automatically recorded as the effect source.
 
-`move` destinations are `hand`, `deck_top`, `deck_bottom`, `deck_random`, `graveyard`, and `removed`. Hidden-zone resets clear board-only state. A full hand sends generated/returned cards to the appropriate burn or graveyard path.
+`replace_hero` requires a Hero definition with a valid `hero_power`. The new hero starts at its defined full Health while preserving Armor, frozen state, and attacks used this turn; both replacement events are published. Player keywords are persistent, serializable Lua mechanics hosted by the current hero, so they survive minion silence, transformation, death, and hero replacement.
+
+`move` destinations are `hand`, `secret`, `deck_top`, `deck_bottom`, `deck_random`, `graveyard`, and `removed`. Moving to `secret` validates that the entity is a Secret and that the destination zone has room. `shuffle_entity_into_deck` transfers the original entity to the specified player's deck with deterministic Rust RNG, including ownership/controller transfer and hidden-zone reset. Hidden-zone resets clear board-only state. A full hand sends generated/returned cards to the appropriate burn or graveyard path.
+
+`transform` may replace card kinds while an entity is in the hidden Hand or Deck zones and preserves its identity and zone position. `transform_all` applies one definition atomically; `transform_batch` applies per-entity definitions in one atomic group. `transform_into_copy` copies an entity's complete state before optional silenciable final Attack/Health values. `transform_preserving_scripts` additionally retains `attached_cards` and script data for effects whose behavior must survive their own transformation; attach a reusable module first with `attach_script`. `attach_deathrattle` adds one ordered, stackable `on_deathrattle` script to a board minion; Silence removes existing attachments, while attachments granted after Silence remain active. `cast_spell_if_valid` behaves like `cast_spell`, but safely skips the generated cast when its declared target is not legal. `cast_spell_random_target` chooses from the generated spell's authoritative legal-target set. `cast_random_spells` samples with replacement and fully resolves each spell before sampling the next, so the batch survives transformation or removal of its source.
+
+`damage_ignoring_spell_damage` follows the normal damage/event pipeline but does not add the source controller's Spell Damage. `spend_mana` atomically spends up to the player's current Mana (temporary Mana first) and publishes `mana_spent` for the actual positive amount. `increment_player_data` atomically adds a signed delta to a player script-data key, publishes `player_script_data_changed` with `old/new/delta`, and avoids lost updates from one snapshot. Death records store whether the minion's base definition has Deathrattle: Silence does not clear this flag, and attached Deathrattles do not set it.
+
+`give_copy` preserves the source entity's persistent state for forward or same-zone copies; `give_copy_with_stats` also applies final Attack/Health and optional Cost setters. The `give_base_copy*` variants instantiate the printed definition without copied enchantments, for backward-zone copies such as Battlefield-to-Hand effects.
+
+`draw_entity` removes the specified original entity from that player's deck and uses the normal cancellable CardDrawn/CardBurned pipeline. `summon_existing` moves an original Graveyard or Removed minion through the full cancellable summon pipeline and restores it if the summon is cancelled or the board fills; `summon_existing_at` additionally preserves a remembered board position. `move_to_hand` transfers an original entity to another player's hand; `shuffle_copy_into_deck` preserves the copied entity state. `summon_with_stats` applies silenciable final-set stats; `summon_with_base_stats` replaces printed base stats, so Silence does not revert scaling tokens such as Jade Golems. `summon_fresh_copy_with_stats` creates an unenchanted template copy with final Attack/Health. `lose_weapon_durability` reduces an equipped weapon and uses the normal cancellable `weapon_destroyed` lifecycle at zero. `add_attack_collateral` adds simultaneous combat damage to a pending attack.
+
+`damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage. `modify_all` likewise applies one stat modifier to a frozen group and supports `reset_damage = true` for simultaneous final Health setters. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
+
+`refresh_mana_crystals` fills only the player's existing unlocked permanent crystals. It preserves temporary Mana and both current and pending Overload. `change_controller_until_end_of_turn` records a reversible board-minion control change: Silence immediately returns the minion, transformation makes the current controller permanent, and end of turn returns it or destroys it when the original board is full.
 
 `modify` supports:
 
 ```lua
 ctx:modify(target, {
     stat = "attack",             -- attack / health / cost / spell_damage
-    operation = "set",           -- set / add / multiply
+    operation = "set",           -- set / add / pre_final_add / multiply / final_set
     value = 5,
     duration = "end_of_turn",    -- permanent (default) / end_of_turn
     silenciable = true,
 })
 ```
 
-Stat layers use stable `SET → ADD → MULTIPLY → Aura` ordering.
+Without a `final_set`, permanent stats use stable `SET → ADD/PRE_FINAL_ADD → MULTIPLY` grouping. With a `final_set`, the latest setter becomes the value and only later ordinary Set/Add/Multiply modifiers apply; `pre_final_add` always remains below that setter. Live Aura Set/Add layers apply last.
 
 ## Choices and deterministic randomness
 
@@ -370,7 +446,7 @@ Current event names include:
 ```text
 game_started, turn_started, turn_ended,
 card_drawn, card_burned, card_created, card_played, card_countered,
-card_discarded, card_traded, trade_draw, spell_cast,
+card_discarded, card_traded, trade_draw, spell_targeted, spell_cast,
 minion_played, minion_summoned, magnetized,
 weapon_played, weapon_equipped, weapon_destroyed,
 location_played, location_used, location_destroyed,
@@ -388,6 +464,10 @@ conceded, game_ended
 ```
 
 Before events may be cancelled while pending. `set_event_amount` applies to supported numeric pending events. Cancellation semantics are generic and event-specific: for example, countered hand cards still consume payment, cancelled draws restore the reserved top card, and cancelled effect summons move their reserved token to Removed.
+
+`card_drawn` and `card_burned` expose the drawn card as `entity` and the causal effect entity as `source`. Natural turn and opening-hand draws use `source = nil`; script draws, Hero Power draws, and trade replacement draws retain their actual source.
+
+`card_played` exposes `cost`, the effective card cost captured when the play command was committed. This remains the played cost even if the card leaves a cost aura or its effect spends additional Mana later.
 
 Listeners use APNAP order, then stable entity timestamps. Multiple triggers in one module retain Lua array order. Death checkpoints remove lethal minions in stable entry order, remember removal positions, publish the whole death batch, then execute Deathrattles and Reborn effects.
 
@@ -410,6 +490,8 @@ auras = {
 ```
 
 Numeric aura fields may be integers or read-only `(ctx, self) -> integer` functions. Aura selectors and dynamic values cannot emit effects. Recalculation removes old aura layers, collects every source against one stable no-aura snapshot, aggregates targets, applies the result, then performs invariant/death checks.
+
+`spell_damage` auras may target minions or heroes. A player's spell bonus is the sum on their board minions and hero, which allows symmetric player-level effects without card-specific engine logic.
 
 ## Deck allowances
 

@@ -212,7 +212,26 @@ fn catalog_contains_only_traceable_official_cards() {
         {
             metadata_mismatches.push(format!("{} health/durability", definition.id));
         }
-        let expected_spell_damage = record["spellDamage"].as_i64().unwrap_or(0);
+        let expected_spell_damage = if definition.id == "LOE_051" {
+            // Client data carries the legacy default value 1, but the card's
+            // authoritative text is a symmetric player aura of +2.
+            0
+        } else if record["text"]
+            .as_str()
+            .is_some_and(|text| text.starts_with("<b>Spell Damage +2</b>"))
+        {
+            // A few current client records retain the legacy numeric tag 1
+            // after their authoritative displayed text was buffed to +2.
+            2
+        } else {
+            record["spellDamage"].as_i64().unwrap_or_else(|| {
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.starts_with("<b>Spell Damage +1</b>"))
+                    .map(|_| 1)
+                    .unwrap_or(0)
+            })
+        };
         let actual_spell_damage = definition
             .keyword_params
             .get("spell_damage")
@@ -294,8 +313,10 @@ fn catalog_contains_only_traceable_official_cards() {
             ("COMBO", "combo"),
             ("DEATHRATTLE", "deathrattle"),
             ("DIVINE_SHIELD", "divine_shield"),
+            ("DISCOVER", "discover"),
             ("ELUSIVE", "elusive"),
             ("FORGE", "forge"),
+            ("INSPIRE", "inspire"),
             ("LIFESTEAL", "lifesteal"),
             ("MAGNETIC", "magnetic"),
             ("OVERLOAD", "overload"),
@@ -309,6 +330,7 @@ fn catalog_contains_only_traceable_official_cards() {
             ("STEALTH", "stealth"),
             ("TAUNT", "taunt"),
             ("TRADEABLE", "tradeable"),
+            ("UNTOUCHABLE", "dormant"),
             ("WINDFURY", "windfury"),
         ];
         let expected_keywords = keyword_mapping
@@ -324,8 +346,38 @@ fn catalog_contains_only_traceable_official_cards() {
             .chain(
                 record["text"]
                     .as_str()
+                    .filter(|text| text.contains("<b>Overheal:</b>"))
+                    .map(|_| "overheal".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
                     .filter(|text| text.contains("<b>Prepare</b>"))
                     .map(|_| "prepare".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.contains("<b>Casts When Drawn</b>"))
+                    .map(|_| "casts_when_drawn".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.contains("<b>Mega-Windfury</b>"))
+                    .map(|_| "mega_windfury".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.starts_with("<b>Spell Damage +1</b>"))
+                    .map(|_| "spell_damage".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.starts_with("<b>Taunt</b>"))
+                    .map(|_| "taunt".to_owned()),
             )
             .chain((definition.id == "CS2_146").then(|| "conditional_charge".to_owned()))
             .chain((definition.id == "EX1_287").then(|| "counter".to_owned()))
@@ -456,6 +508,43 @@ fn keyword_catalog_matches_the_constructed_hearthstone_glossary() {
         actual.remove("conditional_charge"),
         "the official Southsea Deckhand helper must remain available"
     );
+    assert!(
+        actual.remove("deathrattle_repeater"),
+        "the generic Baron Rivendare helper must remain available"
+    );
+    assert!(
+        actual.remove("hero_power_can_target_minions"),
+        "the generic Hero Power target-extension helper must remain available"
+    );
+    assert!(
+        actual.remove("dragon_consort_discount"),
+        "the generic player-owned Dragon discount helper must remain available"
+    );
+    assert!(actual.remove("hero_power_twice_per_turn"));
+    assert!(actual.remove("hero_power_unlimited"));
+    assert!(actual.remove("cannot_be_attacked_by_icehowl"));
+    assert!(actual.remove("hero_power_next_turn_surcharge"));
+    assert!(actual.remove("next_hero_power_discount"));
+    assert!(actual.remove("power_word_glory"));
+    assert!(actual.remove("battlecry_repeater"));
+    assert!(actual.remove("costs_health_instead_of_mana"));
+    assert!(actual.remove("cthun_buffs"));
+    assert!(actual.remove("cthun_taunt"));
+    assert!(actual.remove("healing_becomes_damage"));
+    assert!(actual.remove("fools_bane_unlimited_attacks"));
+    assert!(actual.remove("randomize_targets"));
+    assert!(actual.remove("cannot_be_attacked_by_fools_bane"));
+    assert!(actual.remove("raza_hero_power_zero"));
+    assert!(actual.remove("next_secret_cost_one_this_turn"));
+    assert!(actual.remove("next_spell_cost_zero_this_turn"));
+    assert!(actual.remove("next_murloc_costs_health"));
+    assert!(actual.remove("radiant_elemental_minimum_cost"));
+    assert!(actual.remove("cannot_be_attacked_by_charged_devilsaur"));
+    assert!(actual.remove("corrupting_mist_curse"));
+    assert!(actual.remove("next_spell_costs_health"));
+    assert!(actual.remove("weapon_durability_immune"));
+    assert!(actual.remove("hero_power_disabled"));
+    assert!(actual.remove("end_of_turn_repeater"));
     let expected = [
         "adapt",
         "battlecry",
@@ -2495,9 +2584,17 @@ fn finale_keyword_triggers_only_after_spending_all_remaining_mana() {
         .unwrap();
     assert!(exact_mana.state().pending_input.is_none());
     assert_eq!(
-        exact_mana.state().player(PlayerId::ONE).hand.len(),
-        hand_before + 1
+        exact_mana
+            .state()
+            .log
+            .iter()
+            .filter(
+                |event| matches!(event, GameEvent::CardCreated { source, .. } if *source == writer)
+            )
+            .count(),
+        2
     );
+    assert!(exact_mana.state().player(PlayerId::ONE).hand.len() > hand_before);
     let replay = exact_mana.replay();
     let replayed =
         Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay).unwrap();

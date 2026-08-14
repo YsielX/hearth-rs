@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_538",name="Temporus",text="<b>Battlecry:</b> Your opponent takes two turns. Then you take two turns.",set="LOOTAPALOOZA",type="minion",class="priest",rarity="legendary",cost=7,attack=6,health=6,tags={"dragon"}}

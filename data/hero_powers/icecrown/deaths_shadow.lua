@@ -52,7 +52,17 @@ return {
                         return event.player == ctx:controller(self) and event.entity ~= self
                     end,
                     effect = function(ctx, self, event)
-                        ctx:transform(self, ctx:entity(event.entity).card_id)
+                        ctx:attach_script(self, "ICC_827t")
+                        ctx:transform_preserving_scripts(self, ctx:entity(event.entity).card_id)
+                    end,
+                },
+                {
+                    event = "transformed", timing = "after", active_zones = { "hand" },
+                    condition = function(ctx, self, event)
+                        return event.entity == self
+                    end,
+                    effect = function(ctx, self)
+                        ctx:grant_keyword(self, "temporary")
                     end,
                 },
             },

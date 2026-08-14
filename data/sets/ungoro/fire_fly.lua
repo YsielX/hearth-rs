@@ -5,6 +5,7 @@ return {
     text = "<b>Battlecry</b>: Add a 1/2 Elemental to your hand.",
     set = "UNGORO",
     type = "minion",
+    rarity = "common",
     cost = 1,
     attack = 1,
     health = 2,

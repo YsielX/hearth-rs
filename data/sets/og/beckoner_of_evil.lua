@@ -1,0 +1,2 @@
+local function add(ctx,self)local p=ctx:controller(self);ctx:grant_player_keyword(p,"cthun_buffs");ctx:increment_player_data(p,"cthun_attack_buff",2);ctx:increment_player_data(p,"cthun_health_buff",2)end
+return {api_version=1,id="OG_281",name="Beckoner of Evil",text="<b>Battlecry:</b> Give your C'Thun +2/+2 <i>(wherever it is).</i>",set="OG",type="minion",rarity="common",cost=2,attack=2,health=3,keywords={"battlecry"},on_battlecry=add}

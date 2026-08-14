@@ -1,0 +1,1 @@
+return {api_version=1,id="UNG_844",name="Humongous Razorleaf",text="Can't attack.",set="UNGORO",type="minion",class="neutral",rarity="rare",cost=3,attack=4,health=8,rules={can_attack=function() return false end}}

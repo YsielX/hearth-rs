@@ -6,11 +6,11 @@ use rand_chacha::ChaCha8Rng;
 use thiserror::Error;
 
 use crate::{
-    CardDefinition, CardKind, CardRuntime, ChoiceOption, EffectDuration, EffectSpec, Enchantment,
-    EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId, EventTiming, GameEvent,
-    GameOutcome, GameSnapshot, GameState, ModifierOperation, PendingEvent, PlayerCommand, PlayerId,
-    PlayerState, Replay, ReservedSummonOrigin, ResolutionItem, ScriptEvent, Stat, StatModifier,
-    Zone, ZonePlacement,
+    CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoiceValue, EffectDuration, EffectSpec,
+    Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId, EventTiming,
+    GameEvent, GameOutcome, GameSnapshot, GameState, MinionDeathRecord, ModifierOperation,
+    PendingEvent, PlayerCommand, PlayerId, PlayerState, Replay, ReservedSummonOrigin,
+    ResolutionItem, ScriptEvent, SpellCastRecord, Stat, StatModifier, Zone, ZonePlacement,
 };
 
 mod commands;
@@ -27,6 +27,7 @@ const MAX_BOARD_SIZE: usize = 7;
 const MAX_SECRET_SIZE: usize = 5;
 const MAX_RESOLUTION_STEPS: usize = 10_000;
 const MAX_CHOICE_OPTIONS: usize = 256;
+const MAX_RANDOM_CHOICE_OPTIONS: usize = 16 * 1024;
 const MAX_CHOICE_PROMPT_BYTES: usize = 4 * 1024;
 const MAX_CHOICE_LABEL_BYTES: usize = 1024;
 pub const DEFAULT_HERO_POWER: &str = "HERO_08bp";
@@ -46,6 +47,8 @@ pub enum GameError {
     InvalidDeckCard { player: PlayerId, card: String },
     #[error("card {0} is not a hero power")]
     InvalidHeroPower(String),
+    #[error("card {0} is not a hero")]
+    InvalidHero(String),
     #[error("{player} has invalid class {class:?}")]
     InvalidPlayerClass { player: PlayerId, class: String },
     #[error("unknown entity: {0}")]
@@ -62,6 +65,8 @@ pub enum GameError {
     InvalidTradedCard(EntityId),
     #[error("not enough mana: need {needed}, have {available}")]
     NotEnoughMana { needed: u8, available: u8 },
+    #[error("not enough Health to pay the card cost: need {needed}, can spend {available}")]
+    NotEnoughHealth { needed: u8, available: u8 },
     #[error("a target is required")]
     TargetRequired,
     #[error("target {0} is not valid")]
@@ -102,6 +107,10 @@ pub enum GameError {
     InvalidChoiceLabel,
     #[error("a card requested a random choice without options")]
     EmptyRandomChoice,
+    #[error(
+        "a card requested {options} random choice options; the maximum is {MAX_RANDOM_CHOICE_OPTIONS}"
+    )]
+    TooManyRandomChoiceOptions { options: usize },
     #[error("a card requested discovery from an empty card pool")]
     EmptyDiscoverPool,
     #[error("discover count must be at least one")]
@@ -126,6 +135,10 @@ pub enum GameError {
     EventNotPending(EventId),
     #[error("event {0} does not have a replaceable amount")]
     EventAmountNotReplaceable(EventId),
+    #[error("event {0} is not an attack and cannot replace its defender")]
+    EventAttackNotReplaceable(EventId),
+    #[error("event {0} is not damage and cannot replace its target")]
+    EventDamageNotReplaceable(EventId),
     #[error("event {0} is not a trade draw and cannot select a replacement")]
     EventTradeDrawNotReplaceable(EventId),
     #[error("event {0} cannot be committed because its reserved entity is invalid")]
@@ -181,6 +194,9 @@ impl<R: CardRuntime> Game<R> {
         let absorbed = actual.min(entity.armor);
         entity.armor -= absorbed;
         entity.damage += actual - absorbed;
+        if entity.kind == CardKind::Minion && entity.health() <= 0 {
+            entity.death_source = Some(source);
+        }
         Ok(GameEvent::Damaged {
             source,
             target,
@@ -199,12 +215,14 @@ impl<R: CardRuntime> Game<R> {
         if source.kind != CardKind::Spell {
             return amount;
         }
-        self.state
-            .player(source.controller)
+        let player = self.state.player(source.controller);
+        player
             .board
             .iter()
-            .filter_map(|entity| self.state.entity(*entity))
-            .filter(|entity| entity.kind == CardKind::Minion)
+            .copied()
+            .chain(std::iter::once(player.hero))
+            .filter_map(|entity| self.state.entity(entity))
+            .filter(|entity| matches!(entity.kind, CardKind::Minion | CardKind::Hero))
             .fold(amount, |total, entity| {
                 total.saturating_add(entity.spell_damage.max(0))
             })
@@ -220,7 +238,11 @@ impl<R: CardRuntime> Game<R> {
         id: EventId,
         event: GameEvent,
     ) -> Result<Vec<EffectSpec>, GameError> {
+        let hand_history_changed = self.event_adds_card_to_hand(&event);
         self.record_typed_play_history(&event);
+        if hand_history_changed {
+            self.refresh_auras()?;
+        }
         self.state.log.push(event.clone());
         self.collect_triggers(&ScriptEvent {
             id,
@@ -233,9 +255,15 @@ impl<R: CardRuntime> Game<R> {
         &mut self,
         events: Vec<(EventId, GameEvent)>,
     ) -> Result<Vec<EffectSpec>, GameError> {
+        let hand_history_changed = events
+            .iter()
+            .any(|(_, event)| self.event_adds_card_to_hand(event));
         for (_, event) in &events {
             self.record_typed_play_history(event);
             self.state.log.push(event.clone());
+        }
+        if hand_history_changed {
+            self.refresh_auras()?;
         }
         let mut effects = Vec::new();
         for (id, event) in events {
@@ -248,9 +276,101 @@ impl<R: CardRuntime> Game<R> {
         Ok(effects)
     }
 
+    fn event_adds_card_to_hand(&self, event: &GameEvent) -> bool {
+        match event {
+            GameEvent::CardDrawn { card, .. } | GameEvent::CardCreated { card, .. } => self
+                .state
+                .entity(*card)
+                .is_some_and(|entity| entity.zone == Zone::Hand),
+            GameEvent::ZoneChanged { to, .. } => *to == Zone::Hand,
+            _ => false,
+        }
+    }
+
     fn record_typed_play_history(&mut self, event: &GameEvent) {
+        if let GameEvent::Healed { target, amount, .. } = event
+            && *amount > 0
+            && let Some(player) = self
+                .state
+                .players
+                .iter()
+                .find(|player| player.hero == *target)
+                .map(|player| player.id)
+        {
+            self.state.player_mut(player).hero_last_healed_turn = Some(self.state.turn);
+        }
+        if self.state.turn > 0 {
+            let added = match event {
+                GameEvent::CardDrawn { player, card, .. }
+                | GameEvent::CardCreated { player, card, .. }
+                    if self
+                        .state
+                        .entity(*card)
+                        .is_some_and(|entity| entity.zone == Zone::Hand) =>
+                {
+                    Some((*player, *card))
+                }
+                GameEvent::ZoneChanged {
+                    entity,
+                    to: Zone::Hand,
+                    ..
+                } => self
+                    .state
+                    .entity(*entity)
+                    .map(|card| (card.controller, *entity)),
+                _ => None,
+            };
+            if let Some((player, entity)) = added
+                && let Some(card_id) = self.state.entity(entity).map(|card| card.card_id.clone())
+            {
+                self.state
+                    .player_mut(player)
+                    .cards_added_to_hand_history
+                    .push(card_id);
+            }
+        }
+        if let GameEvent::MinionSummoned { player, entity } = event {
+            if let Some(card_id) = self
+                .state
+                .entity(*entity)
+                .map(|entity| entity.card_id.clone())
+            {
+                self.state
+                    .player_mut(*player)
+                    .minions_summoned_history
+                    .push(card_id);
+            }
+            return;
+        }
         let (player, entity, kind) = match event {
-            GameEvent::SpellCast { player, spell, .. } => (*player, *spell, CardKind::Spell),
+            GameEvent::SpellCast {
+                player,
+                spell,
+                generated_by: None,
+                cost,
+                target_was_friendly_minion,
+                ..
+            } => {
+                if let Some(card_id) = self
+                    .state
+                    .entity(*spell)
+                    .map(|entity| entity.card_id.clone())
+                {
+                    self.state
+                        .player_mut(*player)
+                        .spell_cast_records
+                        .push(SpellCastRecord {
+                            card_id,
+                            cost: *cost,
+                            target_was_friendly_minion: *target_was_friendly_minion,
+                        });
+                }
+                (*player, *spell, CardKind::Spell)
+            }
+            GameEvent::SpellCast {
+                generated_by: Some(_),
+                ..
+            } => return,
             GameEvent::MinionPlayed { player, minion } => (*player, *minion, CardKind::Minion),
             GameEvent::WeaponPlayed { player, weapon } => (*player, *weapon, CardKind::Weapon),
             GameEvent::LocationPlayed { player, location } => {
@@ -293,11 +413,26 @@ impl<R: CardRuntime> Game<R> {
 
         let mut effects = Vec::new();
         for (_, _, listener) in listeners {
-            effects.extend(
-                self.runtime
-                    .on_event(&self.state, listener, &event)
-                    .map_err(GameError::Script)?,
-            );
+            let listener_effects = self
+                .runtime
+                .on_event(&self.state, listener, &event)
+                .map_err(GameError::Script)?;
+            let repetitions = match &event.event {
+                GameEvent::TurnEnded { player, .. }
+                    if event.timing == EventTiming::After
+                        && self.state.entity(listener).is_some_and(|entity| {
+                            entity.zone == Zone::Board && entity.controller == *player
+                        }) =>
+                {
+                    let hero = self.state.player(*player).hero;
+                    self.keyword_i32(hero, "end_of_turn_repetitions", 1, None)?
+                        .clamp(1, i32::from(u8::MAX)) as usize
+                }
+                _ => 1,
+            };
+            for _ in 0..repetitions {
+                effects.extend(listener_effects.iter().cloned());
+            }
         }
         Ok(effects)
     }
@@ -326,6 +461,9 @@ impl<R: CardRuntime> Game<R> {
         // measured. Lua deathrattles receive this stable position on entity_died.
         for entity in deaths.iter().copied() {
             let controller = self.state.entities[&entity].controller;
+            let repetitions = self
+                .keyword_i32(entity, "deathrattle_repetitions", 1, None)?
+                .clamp(1, i32::from(u8::MAX)) as u8;
             let position = self
                 .state
                 .player(controller)
@@ -333,17 +471,20 @@ impl<R: CardRuntime> Game<R> {
                 .iter()
                 .position(|candidate| *candidate == entity)
                 .expect("mortal minion must be present on its controller's board");
-            death_info.push((entity, controller, position));
+            let source = self.state.entities[&entity].death_source;
+            death_info.push((entity, controller, position, repetitions, source));
             self.kill(entity);
         }
         self.refresh_auras()?;
 
         let mut events = Vec::with_capacity(deaths.len());
-        for (entity, player, position) in death_info {
+        for (entity, player, position, repetitions, source) in death_info {
             let event = self.begin_event(GameEvent::EntityDied {
                 entity,
                 player,
                 position,
+                source,
+                repetitions,
             })?;
             events.push((event.id, event.event));
         }
@@ -362,7 +503,29 @@ impl<R: CardRuntime> Game<R> {
 
     fn kill(&mut self, entity: EntityId) {
         let controller = self.state.entities[&entity].controller;
+        let card_id = self.state.entities[&entity].card_id.clone();
+        let attack_at_death = self.state.entities[&entity].attack;
+        let had_deathrattle = self.state.entities[&entity]
+            .base_keywords
+            .iter()
+            .any(|keyword| keyword == "deathrattle");
+        let keywords = self.state.entities[&entity].keywords.clone();
+        let turn = self.state.turn;
+        self.state
+            .player_mut(controller)
+            .minions_died_history
+            .push(MinionDeathRecord {
+                card_id,
+                turn,
+                had_deathrattle,
+                keywords,
+            });
         self.remove_from_zone(entity, Zone::Board, controller);
+        self.state
+            .entities
+            .get_mut(&entity)
+            .unwrap()
+            .attack_at_death = Some(attack_at_death);
         self.move_to_graveyard(entity, controller);
     }
 

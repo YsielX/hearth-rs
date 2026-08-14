@@ -15,7 +15,7 @@ return {
         {
             event = "damaged",
             timing = "after",
-            active_zones = { "board", "weapon", "hero_power" },
+            active_zones = { "board", "weapon", "hero_power", "graveyard" },
             condition = function(ctx, self, event)
                 return event.amount > 0 and dealt_by(ctx, self, event)
             end,

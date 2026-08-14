@@ -27,6 +27,7 @@ return {
         {
             id = "KAR_044a",
             name = "Steward",
+            text = "",
             set = "KARA",
             type = "minion",
             cost = 1,

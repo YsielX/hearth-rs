@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "LOE_010",
+    name = "Pit Snake",
+    text = "<b>Poisonous</b>",
+    set = "LOE",
+    type = "minion",
+    class = "rogue",
+    rarity = "common",
+    cost = 1,
+    attack = 2,
+    health = 1,
+    tags = { "beast" },
+    keywords = { "poisonous" },
+}

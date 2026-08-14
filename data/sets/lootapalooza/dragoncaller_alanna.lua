@@ -1,0 +1,3 @@
+local card={api_version=1,id="LOOT_535",name="Dragoncaller Alanna",text="<b>Battlecry:</b> Summon a 5/5 Dragon for each spell you cast this game that costs (5) or more.",set="LOOTAPALOOZA",type="minion",class="mage",rarity="legendary",cost=9,attack=3,health=3,keywords={"battlecry"}}
+function card.on_battlecry(ctx,self)local n=0;for _,r in ipairs(ctx:spell_cast_records(ctx:controller(self)))do if r.cost>=5 then n=n+1 end end;for _=1,n do ctx:summon(ctx:controller(self),"LOOT_535t")end end
+card.tokens={{id="LOOT_535t",name="Dragon",text="",set="LOOTAPALOOZA",type="minion",class="mage",collectible=false,cost=5,attack=5,health=5,tags={"dragon"}}};return card

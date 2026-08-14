@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_351",name="Greedy Sprite",text="<b>Deathrattle:</b> Gain an empty Mana Crystal.",set="LOOTAPALOOZA",type="minion",class="druid",rarity="rare",cost=3,attack=3,health=1,keywords={"deathrattle"},on_deathrattle=function(ctx,self)ctx:gain_mana_crystal(ctx:controller(self),1)end}

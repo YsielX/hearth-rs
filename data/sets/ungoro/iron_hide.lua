@@ -1,0 +1,1 @@
+return {api_version=1,id="UNG_923",name="Iron Hide",text="Gain 5 Armor.",set="UNGORO",type="spell",class="warrior",rarity="common",cost=1,on_play=function(ctx,self) ctx:gain_armor(ctx:controller(self),5) end}

@@ -13,6 +13,7 @@ local card = {
     set = "ICECROWN",
     type = "hero",
     class = "warlock",
+    rarity = "legendary",
     cost = 10,
     health = 30,
     armor = 5,
@@ -22,11 +23,10 @@ local card = {
 
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
-    for _, entity in ipairs(ctx:graveyard(player)) do
-        local dead = ctx:entity(entity)
-        local definition = ctx:card_definition(dead.card_id)
+    for _, card_id in ipairs(ctx:minions_died(player)) do
+        local definition = ctx:card_definition(card_id)
         if definition.type == "minion" and has_tag(definition, "demon") then
-            ctx:summon(player, dead.card_id)
+            ctx:summon(player, card_id)
         end
     end
 end

@@ -6,6 +6,7 @@ return {
     set = "TGT",
     type = "minion",
     class = "priest",
+    rarity = "common",
     cost = 2,
     attack = 1,
     health = 4,

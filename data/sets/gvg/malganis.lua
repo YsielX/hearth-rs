@@ -6,6 +6,7 @@ return {
     set = "GVG",
     type = "minion",
     class = "warlock",
+    rarity = "legendary",
     cost = 9,
     attack = 9,
     health = 7,

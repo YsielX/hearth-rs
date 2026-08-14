@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "GVG_037",
+    name = "Whirling Zap-o-matic",
+    text = "<b>Windfury</b>",
+    set = "GVG",
+    type = "minion",
+    class = "shaman",
+    rarity = "common",
+    cost = 2,
+    attack = 3,
+    health = 2,
+    tags = { "mech" },
+    keywords = { "windfury" },
+}

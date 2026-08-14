@@ -20,8 +20,8 @@ impl<R: CardRuntime> Game<R> {
                             return Ok(());
                         }
                     }
-                    ResolutionItem::DrawOne { player } => {
-                        self.stage_draw(player, &mut queue)?;
+                    ResolutionItem::DrawOne { player, source } => {
+                        self.stage_draw(player, source, &mut queue)?;
                     }
                     ResolutionItem::CommitFatigue(event) => {
                         self.commit_fatigue(event, &mut queue)?;
@@ -57,25 +57,36 @@ impl<R: CardRuntime> Game<R> {
                     ResolutionItem::CommitWeaponEquip {
                         equip,
                         card_play_id,
+                        card_cost,
                         target,
                         replacement,
                     } => {
                         self.commit_weapon_equip(
                             equip,
                             card_play_id,
+                            card_cost,
                             target,
                             replacement,
                             &mut queue,
                         )?;
                     }
+                    ResolutionItem::CommitEffectWeaponEquip { equip, replacement } => {
+                        self.commit_effect_weapon_equip(equip, replacement, &mut queue)?;
+                    }
                     ResolutionItem::CommitWeaponDestruction(event) => {
                         self.commit_weapon_destruction(event, &mut queue)?;
+                    }
+                    ResolutionItem::CommitForcedWeaponDestruction(event) => {
+                        self.commit_forced_weapon_destruction(event, &mut queue)?;
                     }
                     ResolutionItem::CommitCombat { attack, damage } => {
                         self.commit_combat(attack, damage, &mut queue)?;
                     }
                     ResolutionItem::CommitDamageGroup { damage } => {
                         self.commit_damage_group(damage, &mut queue)?;
+                    }
+                    ResolutionItem::CommitHealGroup { healing } => {
+                        self.commit_heal_group(healing, &mut queue)?;
                     }
                     ResolutionItem::CommitSummon {
                         summon,
@@ -97,6 +108,26 @@ impl<R: CardRuntime> Game<R> {
                                     self.restore_reserved_recruit(summon.id, entity, &origin)?;
                                     self.refresh_auras()?;
                                 }
+                                origin @ ReservedSummonOrigin::Graveyard { .. } => {
+                                    let GameEvent::MinionSummoned { entity, .. } = summon.event
+                                    else {
+                                        unreachable!(
+                                            "summon item must contain a minion_summoned event"
+                                        );
+                                    };
+                                    self.restore_reserved_recruit(summon.id, entity, &origin)?;
+                                    self.refresh_auras()?;
+                                }
+                                origin @ ReservedSummonOrigin::Removed { .. } => {
+                                    let GameEvent::MinionSummoned { entity, .. } = summon.event
+                                    else {
+                                        unreachable!(
+                                            "summon item must contain a minion_summoned event"
+                                        );
+                                    };
+                                    self.restore_reserved_recruit(summon.id, entity, &origin)?;
+                                    self.refresh_auras()?;
+                                }
                             }
                         } else if let GameEvent::MinionSummoned { player, entity } = summon.event {
                             self.commit_reserved_summon(
@@ -109,27 +140,87 @@ impl<R: CardRuntime> Game<R> {
                     ResolutionItem::CommitZoneChange {
                         change,
                         destination,
+                        destination_player,
                     } => {
-                        self.commit_zone_change(change, destination, &mut queue)?;
+                        self.commit_zone_change(
+                            change,
+                            destination,
+                            destination_player,
+                            &mut queue,
+                        )?;
                     }
                     ResolutionItem::CommitControllerChange(change) => {
                         self.commit_controller_change(change, &mut queue)?;
                     }
-                    ResolutionItem::CommitTransform(transform) => {
-                        self.commit_transform(transform, &mut queue)?;
+                    ResolutionItem::CommitTemporaryControllerChange {
+                        change,
+                        expires_at_turn,
+                    } => {
+                        let target = match &change.event {
+                            GameEvent::ControllerChanged { entity, .. } => *entity,
+                            _ => unreachable!(
+                                "temporary controller change must contain controller_changed"
+                            ),
+                        };
+                        let original_controller = match &change.event {
+                            GameEvent::ControllerChanged { from, .. } => *from,
+                            _ => unreachable!(),
+                        };
+                        self.commit_controller_change(change, &mut queue)?;
+                        if self.state.entity(target).is_some_and(|entity| {
+                            entity.zone == Zone::Board && entity.controller != original_controller
+                        }) {
+                            self.state
+                                .entities
+                                .get_mut(&target)
+                                .unwrap()
+                                .temporary_control = Some(crate::TemporaryControl {
+                                original_controller,
+                                expires_at_turn,
+                            });
+                        }
+                    }
+                    ResolutionItem::CommitTransform {
+                        transform,
+                        preserve_attached_scripts,
+                    } => {
+                        self.commit_transform(transform, preserve_attached_scripts, &mut queue)?;
+                    }
+                    ResolutionItem::CommitTransformIntoCopy {
+                        transform,
+                        template,
+                        attack,
+                        health,
+                        preserve_attached_scripts,
+                    } => {
+                        self.commit_transform_into_copy(
+                            transform,
+                            template,
+                            attack,
+                            health,
+                            preserve_attached_scripts,
+                            &mut queue,
+                        )?;
+                    }
+                    ResolutionItem::CommitTransformGroup { transforms } => {
+                        self.commit_transform_group(transforms, &mut queue)?;
                     }
                     ResolutionItem::SummonFreshCopy {
                         player,
                         card_id,
                         position,
+                        attack,
                         health,
+                        final_stats,
                         without_keywords,
                     } => {
                         self.stage_fresh_copy(
                             player,
                             &card_id,
                             position,
+                            attack,
                             health,
+                            final_stats,
                             &without_keywords,
                             &mut queue,
                         )?;
@@ -166,7 +257,7 @@ impl<R: CardRuntime> Game<R> {
         while let Some(item) = queue.pop_front() {
             match item {
                 ResolutionItem::CommitCardPlay { play, .. } => {
-                    if let GameEvent::CardPlayed { player, card } = play.event
+                    if let GameEvent::CardPlayed { player, card, .. } = play.event
                         && self
                             .state
                             .entity(card)
@@ -183,6 +274,16 @@ impl<R: CardRuntime> Game<R> {
                             .is_some_and(|entity| entity.zone == Zone::SetAside)
                     {
                         self.move_to_graveyard(weapon, player);
+                    }
+                }
+                ResolutionItem::CommitEffectWeaponEquip { equip, .. } => {
+                    if let GameEvent::WeaponEquipped { weapon, .. } = equip.event
+                        && self
+                            .state
+                            .entity(weapon)
+                            .is_some_and(|entity| entity.zone == Zone::SetAside)
+                    {
+                        self.state.entities.get_mut(&weapon).unwrap().zone = Zone::Removed;
                     }
                 }
                 ResolutionItem::CompleteTrade { player, card }
@@ -206,9 +307,17 @@ impl<R: CardRuntime> Game<R> {
                         self.destroy_weapon(player, weapon);
                     }
                 }
+                ResolutionItem::CommitForcedWeaponDestruction(event) => {
+                    if let GameEvent::WeaponDestroyed { player, weapon } = event.event
+                        && self.state.player(player).weapon == Some(weapon)
+                        && !event.cancelled
+                    {
+                        self.destroy_weapon(player, weapon);
+                    }
+                }
                 ResolutionItem::CommitEvent(event) => match event.event {
-                    GameEvent::CardDrawn { player, card }
-                    | GameEvent::CardBurned { player, card }
+                    GameEvent::CardDrawn { player, card, .. }
+                    | GameEvent::CardBurned { player, card, .. }
                         if self
                             .state
                             .entity(card)
@@ -241,6 +350,12 @@ impl<R: CardRuntime> Game<R> {
                                 self.state.entities.get_mut(&entity).unwrap().zone = Zone::Removed;
                             }
                             origin @ ReservedSummonOrigin::Deck { .. } => {
+                                self.restore_reserved_recruit(summon.id, entity, &origin)?;
+                            }
+                            origin @ ReservedSummonOrigin::Graveyard { .. } => {
+                                self.restore_reserved_recruit(summon.id, entity, &origin)?;
+                            }
+                            origin @ ReservedSummonOrigin::Removed { .. } => {
                                 self.restore_reserved_recruit(summon.id, entity, &origin)?;
                             }
                         }

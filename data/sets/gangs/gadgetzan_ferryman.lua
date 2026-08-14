@@ -6,6 +6,7 @@ return {
     set = "GANGS",
     type = "minion",
     class = "rogue",
+    rarity = "rare",
     cost = 2,
     attack = 2,
     health = 3,

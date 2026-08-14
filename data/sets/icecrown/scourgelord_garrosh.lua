@@ -6,6 +6,7 @@ local card = {
     set = "ICECROWN",
     type = "hero",
     class = "warrior",
+    rarity = "legendary",
     cost = 8,
     health = 30,
     armor = 5,
@@ -25,7 +26,7 @@ card.tokens = {
         cost = 8, attack = 4, health = 3,
         triggers = {
             {
-                event = "attack", timing = "after", active_zones = { "weapon" },
+                event = "attack", timing = "before", active_zones = { "weapon" },
                 condition = function(ctx, self, event)
                     local player = ctx:controller(self)
                     return event.attacker == ctx:player(player).hero
@@ -33,9 +34,11 @@ card.tokens = {
                 end,
                 effect = function(ctx, self, event)
                     local amount = ctx:entity(self).attack
-                    for _, adjacent in ipairs(ctx:adjacent_minions(event.defender)) do
-                        ctx:damage(adjacent, amount)
-                    end
+                    ctx:add_attack_collateral(
+                        event.event_id,
+                        ctx:adjacent_minions(event.defender),
+                        amount
+                    )
                 end,
             },
         },

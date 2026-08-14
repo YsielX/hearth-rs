@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "AT_028",
+    name = "Shado-Pan Rider",
+    text = "<b>Combo:</b> Gain +4 Attack.",
+    set = "TGT",
+    type = "minion",
+    class = "rogue",
+    rarity = "common",
+    cost = 5,
+    attack = 3,
+    health = 7,
+    keywords = { "combo" },
+    on_combo = function(ctx, self) ctx:buff(self, 4, 0) end,
+}

@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "GVG_018",
+    name = "Queen of Pain",
+    text = "<b>Lifesteal</b>",
+    set = "GVG",
+    type = "minion",
+    class = "warlock",
+    rarity = "rare",
+    cost = 2,
+    attack = 1,
+    health = 4,
+    tags = { "demon" },
+    keywords = { "lifesteal" },
+}

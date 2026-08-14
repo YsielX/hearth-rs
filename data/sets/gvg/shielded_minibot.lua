@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "GVG_058",
+    name = "Shielded Minibot",
+    text = "<b>Divine Shield</b>",
+    set = "GVG",
+    type = "minion",
+    class = "paladin",
+    rarity = "common",
+    cost = 2,
+    attack = 2,
+    health = 2,
+    tags = { "mech" },
+    keywords = { "divine_shield" },
+}

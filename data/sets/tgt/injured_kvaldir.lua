@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "AT_105",
+    name = "Injured Kvaldir",
+    text = "<b>Battlecry:</b> Deal 3 damage to this minion.",
+    set = "TGT",
+    type = "minion",
+    rarity = "rare",
+    cost = 1,
+    attack = 2,
+    health = 4,
+    tags = { "undead" },
+    keywords = { "battlecry" },
+    on_battlecry = function(ctx, self) ctx:damage(self, 3) end,
+}

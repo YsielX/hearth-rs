@@ -1,0 +1,2 @@
+local function murloc(ctx,e)for _,t in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags or {})do if t=="murloc" or t=="all" then return true end end return false end
+return {api_version=1,id="OG_161",name="Corrupted Seer",text="<b>Battlecry:</b> Deal 2 damage to all non-Murloc minions.",set="OG",type="minion",rarity="rare",cost=6,attack=2,health=3,tags={"murloc"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p={};for _,m in ipairs(ctx:minions())do if not murloc(ctx,m)then p[#p+1]=m end end;ctx:damage_all(p,2)end}

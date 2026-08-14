@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_079", name = "Force-Tank MAX", text = "<b>Divine Shield</b>", set = "GVG", type = "minion", rarity = "common", cost = 8, attack = 7, health = 7, tags = { "mech" }, keywords = { "divine_shield" } }

@@ -5,6 +5,7 @@ return {
     text = "<b>Battlecry:</b> Summon a 1/1 Ooze with <b>Taunt</b>.",
     set = "OG",
     type = "minion",
+    rarity = "common",
     cost = 2,
     attack = 2,
     health = 1,

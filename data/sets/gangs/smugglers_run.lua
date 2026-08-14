@@ -5,8 +5,8 @@ return {
     text = "Give all minions in your hand +1/+1.",
     set = "GANGS",
     type = "spell",
-    spell_school = "holy",
     class = "paladin",
+    rarity = "common",
     cost = 1,
 
     on_play = function(ctx, self)

@@ -5,13 +5,13 @@ return {
     text = "<b>Deathrattle:</b> Restore #4 Health to each hero.",
     set = "GANGS",
     type = "minion",
+    rarity = "common",
     cost = 1,
     attack = 2,
     health = 2,
     tags = { "undead" },
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:heal(ctx:player(0).hero, 4)
-        ctx:heal(ctx:player(1).hero, 4)
+        ctx:heal_all({ ctx:player(0).hero, ctx:player(1).hero }, 4)
     end,
 }

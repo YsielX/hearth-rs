@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "AT_055",
+    name = "Flash Heal",
+    text = "Restore #5 Health.",
+    set = "TGT",
+    type = "spell",
+    class = "priest",
+    rarity = "common",
+    spell_school = "holy",
+    cost = 1,
+    target_mode = "required",
+    targets = function(ctx) return ctx:characters() end,
+    on_play = function(ctx, self, target) ctx:heal(target, 5) end,
+}

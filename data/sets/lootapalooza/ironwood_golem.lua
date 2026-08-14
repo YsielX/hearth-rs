@@ -1,0 +1,1 @@
+return { api_version=1, id="LOOT_048", name="Ironwood Golem", text="<b>Taunt</b>\nCan only attack if you have 3 or more Armor.", set="LOOTAPALOOZA", type="minion", class="druid", rarity="common", cost=4, attack=3, health=6, keywords={"taunt"}, rules={can_attack=function(ctx,self,current) return current and ctx:entity(ctx:player(ctx:controller(self)).hero).armor>=3 end} }

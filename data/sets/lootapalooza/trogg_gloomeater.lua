@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_315",name="Trogg Gloomeater",text="<b>Taunt</b>\n<b>Poisonous</b>",set="LOOTAPALOOZA",type="minion",rarity="common",cost=5,attack=1,health=5,keywords={"taunt","poisonous"}}

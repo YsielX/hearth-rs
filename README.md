@@ -29,7 +29,7 @@ Lua owns card and keyword semantics: target selection, Battlecries, Deathrattles
 
 ## Official cards
 
-The repository currently contains 248 official collectible/token/Hero Power definitions across 45 sets. This includes all 11 basic class Hero Powers, all nine Knights of the Frozen Throne Hero cards with their replacement Hero Powers, and at least one implemented official card for every tracked Constructed keyword. It also implements a playable historical Caverns Quest Rogue list. This is a representative rules corpus, not the complete Hearthstone card pool.
+The repository currently contains 1,386 official collectible/token/Hero/Hero Power definitions across 45 sets. This includes the complete 30-card Curse of Naxxramas, 123-card Goblins vs Gnomes, 31-card Blackrock Mountain, 132-card Grand Tournament, 45-card League of Explorers, 134-card Whispers of the Old Gods, 45-card One Night in Karazhan, 132-card Mean Streets of Gadgetzan, 135-card Journey to Un'Goro, and 135-card Knights of the Frozen Throne sets, all 11 basic class Hero Powers, and at least one implemented official card for every tracked Constructed keyword. It also implements a playable historical Caverns Quest Rogue list. This is a representative rules corpus, not the complete Hearthstone card pool.
 
 Official IDs, stats, sets, names, and card text come from HearthstoneJSON client data. The selected English source snapshot is [data/hearthstonejson/selected.enUS.json](data/hearthstonejson/selected.enUS.json); translated display catalogs are under [data/locales](data/locales). See the [data provenance notes](data/hearthstonejson/README.md).
 

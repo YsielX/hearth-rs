@@ -1,0 +1,3 @@
+local card={api_version=1,id="LOOT_380",name="Woecleaver",text="After your hero attacks, <b>Recruit</b> a minion.",set="LOOTAPALOOZA",type="weapon",class="warrior",rarity="legendary",cost=8,attack=3,health=3,triggers={{event="attack",timing="after",active_zones={"weapon","graveyard"},condition=function(ctx,self,e)return e.attacker==ctx:player(ctx:controller(self)).hero end,effect=function(ctx,self)local c={}for _,x in ipairs(ctx:deck(ctx:controller(self)))do if ctx:entity(x).type=="minion"then c[#c+1]=x end end;if #c>0 then ctx:random_value(c,"recruit_selected")end end}}}
+function card.recruit_selected(ctx,self,e)ctx:recruit(ctx:controller(self),e)end
+return card

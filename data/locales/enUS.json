@@ -1,8 +1,458 @@
 [
   {
+    "id": "AT_001",
+    "name": "Flame Lance",
+    "text": "Deal $25 damage\nto a minion."
+  },
+  {
+    "id": "AT_002",
+    "name": "Effigy",
+    "text": "<b>Secret:</b> When a friendly minion dies, summon a random minion with the same Cost."
+  },
+  {
+    "id": "AT_003",
+    "name": "Fallen Hero",
+    "text": "Your Hero Power deals 1 extra damage."
+  },
+  {
+    "id": "AT_004",
+    "name": "Arcane Blast",
+    "text": "Deal $2 damage to a minion. This spell gets double bonus from <b>Spell Damage</b>."
+  },
+  {
+    "id": "AT_005",
+    "name": "Polymorph: Boar",
+    "text": "Transform a minion into a 4/2 Boar with <b>Charge</b>."
+  },
+  {
+    "id": "AT_005t",
+    "name": "Boar",
+    "text": "<b>Charge</b>"
+  },
+  {
+    "id": "AT_006",
+    "name": "Dalaran Aspirant",
+    "text": "<b>Spell Damage +1</b>\n<b>Inspire:</b> Gain <b>Spell Damage +1</b>."
+  },
+  {
+    "id": "AT_007",
+    "name": "Spellslinger",
+    "text": "<b>Battlecry:</b> Both players\nget a random spell.\nYours costs (2) less."
+  },
+  {
+    "id": "AT_008",
+    "name": "Coldarra Drake",
+    "text": "You can use your Hero Power any number of times."
+  },
+  {
+    "id": "AT_009",
+    "name": "Rhonin",
+    "text": "<b>Deathrattle:</b> Add 3 copies of Arcane Missiles to your hand."
+  },
+  {
+    "id": "AT_010",
+    "name": "Ram Wrangler",
+    "text": "<b>Battlecry:</b> If you have a Beast, summon a\nrandom Beast."
+  },
+  {
     "id": "AT_011",
     "name": "Holy Champion",
     "text": "<b>Overheal:</b> Gain +2 Attack."
+  },
+  {
+    "id": "AT_012",
+    "name": "Spawn of Shadows",
+    "text": "<b>Battlecry and Inspire:</b>\nDeal 4 damage to\neach hero."
+  },
+  {
+    "id": "AT_013",
+    "name": "Power Word: Glory",
+    "text": "Choose a minion. Whenever it attacks, restore #4 Health to\nyour hero."
+  },
+  {
+    "id": "AT_014",
+    "name": "Shadowfiend",
+    "text": "Whenever you draw a card, reduce its Cost by (1)."
+  },
+  {
+    "id": "AT_015",
+    "name": "Convert",
+    "text": "Put a copy of an enemy minion into your hand. It costs (1)."
+  },
+  {
+    "id": "AT_016",
+    "name": "Confuse",
+    "text": "Swap the Attack and Health of all minions."
+  },
+  {
+    "id": "AT_017",
+    "name": "Twilight Guardian",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, gain +1 Attack and <b>Taunt</b>."
+  },
+  {
+    "id": "AT_018",
+    "name": "Confessor Paletress",
+    "text": "<b>Battlecry and Inspire:</b> Summon a random <b>Legendary</b> minion."
+  },
+  {
+    "id": "AT_019",
+    "name": "Dreadsteed",
+    "text": "<b>Deathrattle:</b> At the end\n of the turn, summon a Dreadsteed."
+  },
+  {
+    "id": "AT_020",
+    "name": "Fearsome Doomguard",
+    "text": ""
+  },
+  {
+    "id": "AT_021",
+    "name": "Tiny Knight of Evil",
+    "text": "Whenever you discard a card, gain +2/+1."
+  },
+  {
+    "id": "AT_022",
+    "name": "Fist of Jaraxxus",
+    "text": "When you play or discard this, deal $4 damage to a random enemy."
+  },
+  {
+    "id": "AT_023",
+    "name": "Void Crusher",
+    "text": "<b>Inspire:</b> Destroy a random minion for each player."
+  },
+  {
+    "id": "AT_024",
+    "name": "Demonfuse",
+    "text": "Give a Demon +3/+3."
+  },
+  {
+    "id": "AT_025",
+    "name": "Dark Bargain",
+    "text": "Destroy 2 random enemy minions. Discard 2 random cards."
+  },
+  {
+    "id": "AT_026",
+    "name": "Wrathguard",
+    "text": "Whenever this minion takes damage, also deal that amount to your hero."
+  },
+  {
+    "id": "AT_027",
+    "name": "Wilfred Fizzlebang",
+    "text": "Cards you draw from your Hero Power cost (0)."
+  },
+  {
+    "id": "AT_028",
+    "name": "Shado-Pan Rider",
+    "text": "<b>Combo:</b> Gain +4 Attack."
+  },
+  {
+    "id": "AT_029",
+    "name": "Buccaneer",
+    "text": "Whenever you equip a weapon, give it +1 Attack."
+  },
+  {
+    "id": "AT_030",
+    "name": "Undercity Valiant",
+    "text": "<b>Combo:</b> Deal 1 damage."
+  },
+  {
+    "id": "AT_031",
+    "name": "Cutpurse",
+    "text": "Whenever this minion attacks a hero, add the Coin to your hand."
+  },
+  {
+    "id": "AT_032",
+    "name": "Shady Dealer",
+    "text": "<b>Battlecry:</b> If you have a Pirate, gain +1/+1."
+  },
+  {
+    "id": "AT_033",
+    "name": "Burgle",
+    "text": "Get 3 random\ncards <i>(from your\nopponent's class)</i>."
+  },
+  {
+    "id": "AT_034",
+    "name": "Poisoned Blade",
+    "text": "Your Hero Power gives this +1 Attack instead\nof replacing it."
+  },
+  {
+    "id": "AT_035",
+    "name": "Beneath the Grounds",
+    "text": "Shuffle 3 Ambushes into your opponent's deck. When drawn, you summon a 4/4 Nerubian."
+  },
+  {
+    "id": "AT_035t",
+    "name": "Nerubian Ambush!",
+    "text": "<b>Casts When Drawn</b>\nSummon a 4/4 Nerubian for your opponent."
+  },
+  {
+    "id": "AT_036",
+    "name": "Anub'arak",
+    "text": "<b>Deathrattle:</b> Summon a 4/4 Nerubian with \"<b>Deathrattle:</b> \nSummon Anub'arak.\""
+  },
+  {
+    "id": "AT_036t",
+    "name": "Nerubian",
+    "text": "<b>Deathrattle:</b> Summon Anub'arak."
+  },
+  {
+    "id": "AT_037",
+    "name": "Living Roots",
+    "text": "<b>Choose One -</b> Deal $2 damage; or Summon two 1/1 Saplings."
+  },
+  {
+    "id": "AT_037t",
+    "name": "Sapling",
+    "text": ""
+  },
+  {
+    "id": "AT_038",
+    "name": "Darnassus Aspirant",
+    "text": "<b>Battlecry:</b> Gain an empty Mana Crystal.\n<b>Deathrattle:</b> Lose a Mana Crystal."
+  },
+  {
+    "id": "AT_039",
+    "name": "Savage Combatant",
+    "text": "<b>Inspire:</b> Give your hero +2 Attack this turn."
+  },
+  {
+    "id": "AT_040",
+    "name": "Wildwalker",
+    "text": "<b>Battlecry:</b> Give a friendly Beast +3 Health."
+  },
+  {
+    "id": "AT_041",
+    "name": "Knight of the Wild",
+    "text": "Costs (1) less for each Beast you've summoned this game."
+  },
+  {
+    "id": "AT_042",
+    "name": "Druid of the Saber",
+    "text": "[x]<b>Choose One -</b> Transform\ninto a 2/1 with <b>Charge</b>;\nor a 3/2 with <b>Stealth</b>."
+  },
+  {
+    "id": "AT_042a",
+    "name": "Lion Form",
+    "text": "<b>Charge</b>"
+  },
+  {
+    "id": "AT_042b",
+    "name": "Panther Form",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "AT_042t",
+    "name": "Druid of the Saber",
+    "text": "<b>Charge</b>"
+  },
+  {
+    "id": "AT_042t2",
+    "name": "Druid of the Saber",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "AT_043",
+    "name": "Astral Communion",
+    "text": "Gain 10 Mana Crystals. Discard your hand."
+  },
+  {
+    "id": "AT_044",
+    "name": "Mulch",
+    "text": "Destroy a minion.\nAdd a random minion to your opponent's hand."
+  },
+  {
+    "id": "AT_045",
+    "name": "Aviana",
+    "text": "Your minions cost (1)."
+  },
+  {
+    "id": "AT_046",
+    "name": "Tuskarr Totemic",
+    "text": "<b>Battlecry:</b> Summon a random basic Totem."
+  },
+  {
+    "id": "AT_047",
+    "name": "Draenei Totemcarver",
+    "text": "<b>Battlecry:</b> Gain +1/+1 for each friendly Totem."
+  },
+  {
+    "id": "AT_048",
+    "name": "Healing Wave",
+    "text": "Restore #8 Health. Reveal a minion in each deck. If yours costs more, restore #16 instead."
+  },
+  {
+    "id": "AT_049",
+    "name": "Thunder Bluff Valiant",
+    "text": "<b>Battlecry and Inspire:</b>\nGive your Totems\n+2 Attack."
+  },
+  {
+    "id": "AT_050",
+    "name": "Charged Hammer",
+    "text": "<b>Deathrattle:</b> Your Hero Power becomes 'Deal 2 damage.'"
+  },
+  {
+    "id": "AT_050t",
+    "name": "Lightning Jolt",
+    "text": "Deal $2 damage."
+  },
+  {
+    "id": "AT_051",
+    "name": "Elemental Destruction",
+    "text": "Deal $4-$5 damage to all minions. <b>Overload:</b> (2)"
+  },
+  {
+    "id": "AT_052",
+    "name": "Totem Golem",
+    "text": "<b>Overload:</b> (1)"
+  },
+  {
+    "id": "AT_053",
+    "name": "Ancestral Knowledge",
+    "text": "Draw 2 cards. <b>Overload:</b> (1)"
+  },
+  {
+    "id": "AT_054",
+    "name": "The Mistcaller",
+    "text": "<b>Battlecry:</b> Give all minions in your hand and deck +1/+1."
+  },
+  {
+    "id": "AT_055",
+    "name": "Flash Heal",
+    "text": "Restore #5 Health."
+  },
+  {
+    "id": "AT_056",
+    "name": "Powershot",
+    "text": "Deal $2 damage to a minion and the minions next to it."
+  },
+  {
+    "id": "AT_057",
+    "name": "Stablemaster",
+    "text": "<b>Battlecry:</b> Give a friendly Beast <b>Immune</b> this turn."
+  },
+  {
+    "id": "AT_058",
+    "name": "King's Elekk",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, draw it."
+  },
+  {
+    "id": "AT_059",
+    "name": "Brave Archer",
+    "text": "<b>Inspire:</b> If your hand is empty, deal 2 damage to the enemy hero."
+  },
+  {
+    "id": "AT_060",
+    "name": "Bear Trap",
+    "text": "<b>Secret:</b> After your hero is attacked, summon a 3/3 Bear with <b>Taunt</b>."
+  },
+  {
+    "id": "AT_061",
+    "name": "Lock and Load",
+    "text": "Each time you cast a spell this turn, get a random Hunter card."
+  },
+  {
+    "id": "AT_062",
+    "name": "Ball of Spiders",
+    "text": "Summon three 1/1 Webspinners\nwith \"<b>Deathrattle:</b> Get\na random Beast.\""
+  },
+  {
+    "id": "AT_063",
+    "name": "Acidmaw",
+    "text": "Whenever an enemy minion takes damage, destroy it."
+  },
+  {
+    "id": "AT_063t",
+    "name": "Dreadscale",
+    "text": "At the end of your turn, deal 1 damage to all enemies."
+  },
+  {
+    "id": "AT_064",
+    "name": "Bash",
+    "text": "Deal $3 damage.\nGain 3 Armor."
+  },
+  {
+    "id": "AT_065",
+    "name": "King's Defender",
+    "text": "<b>Battlecry:</b> If you have a minion with <b>Taunt</b>, gain +1 Durability."
+  },
+  {
+    "id": "AT_066",
+    "name": "Orgrimmar Aspirant",
+    "text": "<b>Inspire:</b> Give your weapon +1 Attack."
+  },
+  {
+    "id": "AT_067",
+    "name": "Magnataur Alpha",
+    "text": "Also damages the minions next to whomever\nhe attacks."
+  },
+  {
+    "id": "AT_068",
+    "name": "Bolster",
+    "text": "Give your <b>Taunt</b> minions +2/+2."
+  },
+  {
+    "id": "AT_069",
+    "name": "Sparring Partner",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Give a\nminion <b>Taunt</b>."
+  },
+  {
+    "id": "AT_070",
+    "name": "Skycap'n Kragg",
+    "text": "<b>Charrrrrge</b>\nCosts (1) less for each friendly Pirate."
+  },
+  {
+    "id": "AT_071",
+    "name": "Alexstrasza's Champion",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, gain +1 Attack and <b>Charge</b>."
+  },
+  {
+    "id": "AT_072",
+    "name": "Varian Wrynn",
+    "text": "<b>Battlecry:</b> Draw 3 cards.\nPut any minions you drew directly into the battlefield."
+  },
+  {
+    "id": "AT_073",
+    "name": "Competitive Spirit",
+    "text": "<b>Secret:</b> When your turn starts, give your minions +1/+1."
+  },
+  {
+    "id": "AT_074",
+    "name": "Seal of Champions",
+    "text": "Give a minion\n+3 Attack and <b>Divine Shield</b>."
+  },
+  {
+    "id": "AT_075",
+    "name": "Warhorse Trainer",
+    "text": "Your Silver Hand Recruits have +2 Attack and <b>Taunt</b>."
+  },
+  {
+    "id": "AT_076",
+    "name": "Murloc Knight",
+    "text": "<b>Inspire:</b> Summon a random Murloc."
+  },
+  {
+    "id": "AT_077",
+    "name": "Argent Lance",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, +1 Durability."
+  },
+  {
+    "id": "AT_078",
+    "name": "Enter the Coliseum",
+    "text": "Destroy all minions except each player's highest Attack minion."
+  },
+  {
+    "id": "AT_079",
+    "name": "Mysterious Challenger",
+    "text": "<b>Battlecry:</b> Put one of each <b>Secret</b> from your deck into the battlefield."
+  },
+  {
+    "id": "AT_080",
+    "name": "Garrison Commander",
+    "text": "You can use your Hero Power twice a turn."
+  },
+  {
+    "id": "AT_081",
+    "name": "Eadric the Pure",
+    "text": "<b>Battlecry:</b> Change all enemy minions'\nAttack to 1."
   },
   {
     "id": "AT_082",
@@ -10,9 +460,279 @@
     "text": "<b>Inspire:</b> Gain +1 Attack."
   },
   {
+    "id": "AT_083",
+    "name": "Dragonhawk Rider",
+    "text": "<b>Inspire:</b> Gain <b>Windfury</b>\nthis turn."
+  },
+  {
+    "id": "AT_084",
+    "name": "Lance Carrier",
+    "text": "<b>Battlecry:</b> Give a friendly minion +2 Attack."
+  },
+  {
+    "id": "AT_085",
+    "name": "Maiden of the Lake",
+    "text": "Your Hero Power costs (1)."
+  },
+  {
+    "id": "AT_086",
+    "name": "Saboteur",
+    "text": "<b>Battlecry:</b> Your opponent's Hero Power costs (5) more next turn."
+  },
+  {
     "id": "AT_087",
     "name": "Argent Horserider",
     "text": "<b>Charge</b>\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "AT_088",
+    "name": "Mogor's Champion",
+    "text": "50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "AT_089",
+    "name": "Boneguard Lieutenant",
+    "text": "<b>Inspire:</b> Gain +1 Health."
+  },
+  {
+    "id": "AT_090",
+    "name": "Mukla's Champion",
+    "text": "<b>Inspire:</b> Give your other minions +1/+1."
+  },
+  {
+    "id": "AT_091",
+    "name": "Tournament Medic",
+    "text": "<b>Inspire:</b> Restore #2 Health to your hero."
+  },
+  {
+    "id": "AT_092",
+    "name": "Ice Rager",
+    "text": ""
+  },
+  {
+    "id": "AT_093",
+    "name": "Frigid Snobold",
+    "text": "<b>Spell Damage +1</b>"
+  },
+  {
+    "id": "AT_094",
+    "name": "Flame Juggler",
+    "text": "<b>Battlecry:</b> Deal 1 damage to a random enemy."
+  },
+  {
+    "id": "AT_095",
+    "name": "Silent Knight",
+    "text": "<b>Stealth</b>\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "AT_096",
+    "name": "Clockwork Knight",
+    "text": "<b>Battlecry:</b> Give a friendly Mech +1/+1."
+  },
+  {
+    "id": "AT_097",
+    "name": "Tournament Attendee",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "AT_098",
+    "name": "Sideshow Spelleater",
+    "text": "<b>Battlecry:</b> Copy your opponent's Hero Power."
+  },
+  {
+    "id": "AT_099",
+    "name": "Kodorider",
+    "text": "<b>Inspire:</b> Summon a 3/5 War Kodo."
+  },
+  {
+    "id": "AT_099t",
+    "name": "War Kodo",
+    "text": ""
+  },
+  {
+    "id": "AT_100",
+    "name": "Silver Hand Regent",
+    "text": "<b>Inspire:</b> Summon a {0} Silver Hand Recruit."
+  },
+  {
+    "id": "AT_101",
+    "name": "Pit Fighter",
+    "text": ""
+  },
+  {
+    "id": "AT_102",
+    "name": "Captured Jormungar",
+    "text": ""
+  },
+  {
+    "id": "AT_103",
+    "name": "North Sea Kraken",
+    "text": "<b>Battlecry:</b> Deal 4 damage."
+  },
+  {
+    "id": "AT_104",
+    "name": "Tuskarr Jouster",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, restore #7 Health to your hero."
+  },
+  {
+    "id": "AT_105",
+    "name": "Injured Kvaldir",
+    "text": "<b>Battlecry:</b> Deal 3 damage to this minion."
+  },
+  {
+    "id": "AT_106",
+    "name": "Light's Champion",
+    "text": "<b>Battlecry:</b> <b>Silence</b> a Demon."
+  },
+  {
+    "id": "AT_108",
+    "name": "Armored Warhorse",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, gain <b>Charge</b>."
+  },
+  {
+    "id": "AT_109",
+    "name": "Argent Watchman",
+    "text": "Can't attack.\n<b>Inspire:</b> Can attack as normal this turn."
+  },
+  {
+    "id": "AT_110",
+    "name": "Coliseum Manager",
+    "text": "<b>Inspire:</b> Return this minion to your hand."
+  },
+  {
+    "id": "AT_111",
+    "name": "Refreshment Vendor",
+    "text": "<b>Battlecry:</b> Restore #4 Health to each hero."
+  },
+  {
+    "id": "AT_112",
+    "name": "Master Jouster",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, gain <b>Taunt</b> and <b>Divine Shield</b>."
+  },
+  {
+    "id": "AT_113",
+    "name": "Recruiter",
+    "text": "<b>Inspire:</b> Add a 2/2 Squire to your hand."
+  },
+  {
+    "id": "AT_114",
+    "name": "Evil Heckler",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "AT_115",
+    "name": "Fencing Coach",
+    "text": "<b>Battlecry:</b> The next time you use your Hero Power, it costs (2) less."
+  },
+  {
+    "id": "AT_116",
+    "name": "Wyrmrest Agent",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, gain +1 Attack and <b>Taunt</b>."
+  },
+  {
+    "id": "AT_117",
+    "name": "Master of Ceremonies",
+    "text": "<b>Battlecry:</b> If you have a minion with <b>Spell Damage</b>, gain +2/+2."
+  },
+  {
+    "id": "AT_118",
+    "name": "Grand Crusader",
+    "text": "<b>Battlecry:</b> Add a random Paladin card to your hand."
+  },
+  {
+    "id": "AT_119",
+    "name": "Kvaldir Raider",
+    "text": "<b>Inspire:</b> Gain +2/+2."
+  },
+  {
+    "id": "AT_120",
+    "name": "Frost Giant",
+    "text": "Costs (1) less for each time you used your Hero Power this game."
+  },
+  {
+    "id": "AT_121",
+    "name": "Crowd Favorite",
+    "text": "Whenever you play a card with <b>Battlecry</b>, gain +1/+1."
+  },
+  {
+    "id": "AT_122",
+    "name": "Gormok the Impaler",
+    "text": "<b>Battlecry:</b> If you have at least 4 other minions, deal 4 damage."
+  },
+  {
+    "id": "AT_123",
+    "name": "Chillmaw",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> If you're holding\na Dragon, deal 3 damage\nto all minions."
+  },
+  {
+    "id": "AT_124",
+    "name": "Bolf Ramshield",
+    "text": "Whenever your hero takes damage, this minion takes it instead."
+  },
+  {
+    "id": "AT_125",
+    "name": "Icehowl",
+    "text": "<b>Charge</b>\nCan't attack heroes."
+  },
+  {
+    "id": "AT_127",
+    "name": "Nexus-Champion Saraad",
+    "text": "<b>Inspire:</b> Add a random spell to your hand."
+  },
+  {
+    "id": "AT_128",
+    "name": "The Skeleton Knight",
+    "text": "<b>Deathrattle:</b> Reveal a minion in each deck. If yours costs more, return this to your hand."
+  },
+  {
+    "id": "AT_129",
+    "name": "Fjola Lightbane",
+    "text": "Whenever <b>you</b> target this minion with a spell, gain <b><b>Divine Shield</b>.</b>"
+  },
+  {
+    "id": "AT_130",
+    "name": "Sea Reaver",
+    "text": "When you draw this, deal 1 damage to your minions."
+  },
+  {
+    "id": "AT_131",
+    "name": "Eydis Darkbane",
+    "text": "Whenever <b>you</b> target this minion with a spell, deal 3 damage to a random enemy."
+  },
+  {
+    "id": "AT_132",
+    "name": "Justicar Trueheart",
+    "text": "<b>Battlecry:</b> Replace your starting Hero Power with a better one."
+  },
+  {
+    "id": "AT_132_ROGUEt",
+    "name": "Poisoned Dagger",
+    "text": ""
+  },
+  {
+    "id": "AT_132_SHAMANa",
+    "name": "Healing Totem",
+    "text": "At the end of your turn, restore #1 Health to all friendly minions."
+  },
+  {
+    "id": "AT_132_SHAMANb",
+    "name": "Searing Totem",
+    "text": ""
+  },
+  {
+    "id": "AT_132_SHAMANc",
+    "name": "Stoneclaw Totem",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "AT_132_SHAMANd",
+    "name": "Wrath of Air Totem",
+    "text": "<b>Spell Damage +1</b>"
+  },
+  {
+    "id": "AT_133",
+    "name": "Gadgetzan Jouster",
+    "text": "<b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, gain +1/+1."
   },
   {
     "id": "AV_121",
@@ -55,9 +775,204 @@
     "text": "<b>Magnetic</b>"
   },
   {
+    "id": "BRM_001",
+    "name": "Solemn Vigil",
+    "text": "Draw 2 cards. Costs (1) less for each minion that died this turn."
+  },
+  {
+    "id": "BRM_002",
+    "name": "Flamewaker",
+    "text": "After you cast a spell, deal 2 damage randomly split among all enemies."
+  },
+  {
+    "id": "BRM_003",
+    "name": "Dragon's Breath",
+    "text": "Deal $4 damage. Costs (1) less for each minion that died this turn."
+  },
+  {
+    "id": "BRM_004",
+    "name": "Twilight Whelp",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, gain +2 Health."
+  },
+  {
+    "id": "BRM_004t",
+    "name": "Whelp",
+    "text": ""
+  },
+  {
+    "id": "BRM_005",
+    "name": "Demonwrath",
+    "text": "[x]Deal $2 damage to all\nminions except Demons."
+  },
+  {
+    "id": "BRM_006",
+    "name": "Imp Gang Boss",
+    "text": "Whenever this minion takes damage, summon a 1/1 Imp."
+  },
+  {
+    "id": "BRM_006t",
+    "name": "Imp",
+    "text": ""
+  },
+  {
+    "id": "BRM_007",
+    "name": "Gang Up",
+    "text": "Choose a minion. Shuffle 3 copies of it into your deck."
+  },
+  {
+    "id": "BRM_008",
+    "name": "Dark Iron Skulker",
+    "text": "<b>Battlecry:</b> Deal 2 damage to all undamaged\nenemy minions."
+  },
+  {
+    "id": "BRM_009",
+    "name": "Volcanic Lumberer",
+    "text": "<b>Taunt</b>\nCosts (1) less for each minion that died this turn."
+  },
+  {
+    "id": "BRM_010",
+    "name": "Druid of the Flame",
+    "text": "<b>Choose One -</b> Transform into a 5/2 minion; or a 2/5 minion."
+  },
+  {
+    "id": "BRM_010t",
+    "name": "Druid of the Flame",
+    "text": ""
+  },
+  {
+    "id": "BRM_010t2",
+    "name": "Druid of the Flame",
+    "text": ""
+  },
+  {
     "id": "BRM_011",
     "name": "Lava Shock",
     "text": "Deal $2 damage.\nUnlock your <b>Overloaded</b> Mana Crystals."
+  },
+  {
+    "id": "BRM_012",
+    "name": "Fireguard Destroyer",
+    "text": "<b>Battlecry:</b> Gain 1-4 Attack. <b>Overload:</b> (1)"
+  },
+  {
+    "id": "BRM_013",
+    "name": "Quick Shot",
+    "text": "Deal $3 damage.\nIf your hand is empty, draw a card."
+  },
+  {
+    "id": "BRM_014",
+    "name": "Core Rager",
+    "text": "<b>Battlecry:</b> If your hand is empty, gain +3/+3."
+  },
+  {
+    "id": "BRM_015",
+    "name": "Revenge",
+    "text": "Deal $1 damage to all minions. If you have 12 or less Health, deal $3 damage instead."
+  },
+  {
+    "id": "BRM_016",
+    "name": "Axe Flinger",
+    "text": "Whenever this minion takes damage, deal 2 damage to the enemy hero."
+  },
+  {
+    "id": "BRM_017",
+    "name": "Resurrect",
+    "text": "Summon a random friendly minion that died this game."
+  },
+  {
+    "id": "BRM_018",
+    "name": "Dragon Consort",
+    "text": "<b>Battlecry:</b> The next Dragon you play costs (2) less."
+  },
+  {
+    "id": "BRM_019",
+    "name": "Grim Patron",
+    "text": "After this minion survives damage, summon another Grim Patron."
+  },
+  {
+    "id": "BRM_020",
+    "name": "Dragonkin Sorcerer",
+    "text": "Whenever <b>you</b> target this minion with a spell, gain +1/+1."
+  },
+  {
+    "id": "BRM_022",
+    "name": "Dragon Egg",
+    "text": "Whenever this minion takes damage, summon a 2/1 Whelp."
+  },
+  {
+    "id": "BRM_022t",
+    "name": "Black Whelp",
+    "text": ""
+  },
+  {
+    "id": "BRM_024",
+    "name": "Drakonid Crusher",
+    "text": "<b>Battlecry:</b> If your opponent has 15 or less Health, gain +3/+3."
+  },
+  {
+    "id": "BRM_025",
+    "name": "Volcanic Drake",
+    "text": "Costs (1) less for each minion that died this turn."
+  },
+  {
+    "id": "BRM_026",
+    "name": "Hungry Dragon",
+    "text": "<b>Battlecry:</b> Summon a random 1-Cost minion for your opponent."
+  },
+  {
+    "id": "BRM_027",
+    "name": "Majordomo Executus",
+    "text": "<b>Deathrattle:</b> Replace your hero with Ragnaros the Firelord."
+  },
+  {
+    "id": "BRM_027h",
+    "name": "Ragnaros the Firelord",
+    "text": ""
+  },
+  {
+    "id": "BRM_027p",
+    "name": "DIE, INSECT!",
+    "text": "Deal $8 damage to a random enemy."
+  },
+  {
+    "id": "BRM_027pH",
+    "name": "DIE, INSECTS!",
+    "text": "Deal $8 damage to a\nrandom enemy. TWICE."
+  },
+  {
+    "id": "BRM_028",
+    "name": "Emperor Thaurissan",
+    "text": "At the end of your turn, reduce the Cost of cards\nin your hand by (1)."
+  },
+  {
+    "id": "BRM_029",
+    "name": "Rend Blackhand",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, destroy a <b>Legendary</b> minion."
+  },
+  {
+    "id": "BRM_030",
+    "name": "Nefarian",
+    "text": "<b>Battlecry:</b> Add 2 random spells to your hand <i>(from your opponent's class)</i>."
+  },
+  {
+    "id": "BRM_030t",
+    "name": "Tail Swipe",
+    "text": "Deal $4 damage."
+  },
+  {
+    "id": "BRM_031",
+    "name": "Chromaggus",
+    "text": "Whenever you draw a card, put another copy into your hand."
+  },
+  {
+    "id": "BRM_033",
+    "name": "Blackwing Technician",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, gain +1/+1."
+  },
+  {
+    "id": "BRM_034",
+    "name": "Blackwing Corruptor",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, deal 5 damage."
   },
   {
     "id": "BT_127",
@@ -115,9 +1030,89 @@
     "text": "<b>Prepare</b>\n<b>Spell Damage +1</b>"
   },
   {
+    "id": "CFM_020",
+    "name": "Raza the Chained",
+    "text": "[x]  <b>Battlecry:</b> If your deck has  \nno duplicates, your Hero\n Power costs (0) this game."
+  },
+  {
+    "id": "CFM_021",
+    "name": "Freezing Potion",
+    "text": "<b>Freeze</b> an enemy."
+  },
+  {
+    "id": "CFM_025",
+    "name": "Wind-up Burglebot",
+    "text": "Whenever this attacks a minion and survives, draw a card."
+  },
+  {
+    "id": "CFM_026",
+    "name": "Hidden Cache",
+    "text": "<b>Secret:</b> After your opponent plays a minion, give a random minion in your hand +2/+2."
+  },
+  {
+    "id": "CFM_039",
+    "name": "Street Trickster",
+    "text": "<b>Spell Damage +2</b>"
+  },
+  {
+    "id": "CFM_060",
+    "name": "Red Mana Wyrm",
+    "text": "Whenever you cast a spell, gain +2 Attack."
+  },
+  {
+    "id": "CFM_061",
+    "name": "Jinyu Waterspeaker",
+    "text": "[x]<b>Battlecry:</b> Restore #6 Health.\n<b>Overload:</b> (1)"
+  },
+  {
+    "id": "CFM_062",
+    "name": "Grimestreet Protector",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Give adjacent\n minions <b>Divine Shield</b>."
+  },
+  {
+    "id": "CFM_063",
+    "name": "Kooky Chemist",
+    "text": "<b>Battlecry:</b> Swap the Attack and Health of a minion."
+  },
+  {
+    "id": "CFM_064",
+    "name": "Blubber Baron",
+    "text": "Whenever you summon a <b>Battlecry</b> minion while this is in your hand, gain +1/+1."
+  },
+  {
+    "id": "CFM_065",
+    "name": "Volcanic Potion",
+    "text": "Deal $2 damage to all minions."
+  },
+  {
+    "id": "CFM_066",
+    "name": "Kabal Lackey",
+    "text": "[x]<b>Battlecry:</b> The next <b>Secret</b>\nyou play this turn costs (1)."
+  },
+  {
+    "id": "CFM_067",
+    "name": "Hozen Healer",
+    "text": "<b>Battlecry</b>: Restore a minion to full Health."
+  },
+  {
+    "id": "CFM_094",
+    "name": "Felfire Potion",
+    "text": "Deal $5 damage to all characters."
+  },
+  {
+    "id": "CFM_095",
+    "name": "Weasel Tunneler",
+    "text": "<b>Deathrattle:</b> Shuffle this minion into your opponent's deck."
+  },
+  {
     "id": "CFM_120",
     "name": "Mistress of Mixtures",
     "text": "<b>Deathrattle:</b> Restore #4 Health to each hero."
+  },
+  {
+    "id": "CFM_300",
+    "name": "Public Defender",
+    "text": "<b>Taunt</b>"
   },
   {
     "id": "CFM_305",
@@ -125,14 +1120,834 @@
     "text": "Give all minions in your hand +1/+1."
   },
   {
+    "id": "CFM_308",
+    "name": "Kun the Forgotten King",
+    "text": "<b>Choose One -</b> Gain 10 Armor; or Refresh your Mana Crystals."
+  },
+  {
+    "id": "CFM_310",
+    "name": "Call in the Finishers",
+    "text": "Summon four\n1/1 Murlocs."
+  },
+  {
+    "id": "CFM_310t",
+    "name": "Murloc Razorgill",
+    "text": ""
+  },
+  {
+    "id": "CFM_312",
+    "name": "Jade Chieftain",
+    "text": "<b>Battlecry:</b> Summon a{1} {0} <b>Jade Golem</b>. Give it <b>Taunt</b>."
+  },
+  {
+    "id": "CFM_313",
+    "name": "Finders Keepers",
+    "text": "<b>Discover</b> a card with <b>Overload</b>. <b>Overload:</b> (1)"
+  },
+  {
+    "id": "CFM_315",
+    "name": "Alleycat",
+    "text": "<b>Battlecry:</b> Summon a 1/1 Cat."
+  },
+  {
+    "id": "CFM_315t",
+    "name": "Tabbycat",
+    "text": ""
+  },
+  {
+    "id": "CFM_316",
+    "name": "Rat Pack",
+    "text": "[x]<b>Deathrattle:</b> Summon a\nnumber of 1/1 Rats equal\n to this minion's Attack."
+  },
+  {
+    "id": "CFM_316t",
+    "name": "Rat",
+    "text": ""
+  },
+  {
+    "id": "CFM_321",
+    "name": "Grimestreet Informant",
+    "text": "[x]<b>Battlecry:</b> <b>Discover</b>\na Hunter, Paladin, or\nWarrior card."
+  },
+  {
+    "id": "CFM_324",
+    "name": "White Eyes",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Shuffle\n'The Storm Guardian' into your deck."
+  },
+  {
+    "id": "CFM_324t",
+    "name": "The Storm Guardian",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "CFM_325",
+    "name": "Small-Time Buccaneer",
+    "text": "Has +2 Attack while you have a weapon equipped."
+  },
+  {
+    "id": "CFM_328",
+    "name": "Fight Promoter",
+    "text": "[x]<b>Battlecry:</b> If you control\na minion with 6 or more\n Health, draw two cards."
+  },
+  {
+    "id": "CFM_333",
+    "name": "Knuckles",
+    "text": "After this attacks a\nminion, it also hits the enemy hero."
+  },
+  {
+    "id": "CFM_334",
+    "name": "Smuggler's Crate",
+    "text": "Give a random Beast in your hand +2/+2."
+  },
+  {
+    "id": "CFM_335",
+    "name": "Dispatch Kodo",
+    "text": "<b>Battlecry:</b> Deal damage equal to this minion's Attack."
+  },
+  {
+    "id": "CFM_336",
+    "name": "Shaky Zipgunner",
+    "text": "[x]<b>Deathrattle:</b> Give a random\nminion in your hand +2/+2."
+  },
+  {
+    "id": "CFM_337",
+    "name": "Piranha Launcher",
+    "text": "[x]After your hero attacks,\nsummon a 1/1 Piranha."
+  },
+  {
+    "id": "CFM_337t",
+    "name": "Piranha",
+    "text": ""
+  },
+  {
+    "id": "CFM_338",
+    "name": "Trogg Beastrager",
+    "text": "<b>Battlecry:</b> Give a random Beast in your hand +1/+1."
+  },
+  {
+    "id": "CFM_341",
+    "name": "Sergeant Sally",
+    "text": "<b>Deathrattle:</b> Deal damage equal to this minion's Attack to all enemy minions."
+  },
+  {
+    "id": "CFM_342",
+    "name": "Luckydo Buccaneer",
+    "text": "<b>Battlecry:</b> If your weapon has at least 3 Attack, gain +4/+4."
+  },
+  {
+    "id": "CFM_343",
+    "name": "Jade Behemoth",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Summon a{1}\n{0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_344",
+    "name": "Finja, the Flying Star",
+    "text": "[x]<b>Stealth</b>\n   Whenever this attacks and   \nkills a minion, summon 2\n Murlocs from your deck."
+  },
+  {
+    "id": "CFM_602",
+    "name": "Jade Idol",
+    "text": "<b>Choose One -</b> Summon a{1} {0} <b>Jade Golem</b>; or Shuffle 3 copies of this card into your deck."
+  },
+  {
+    "id": "CFM_603",
+    "name": "Potion of Madness",
+    "text": "Gain control of an enemy minion with 2 or less Attack until end of turn."
+  },
+  {
+    "id": "CFM_604",
+    "name": "Greater Healing Potion",
+    "text": "Restore #12 Health to a friendly character. Draw a card."
+  },
+  {
+    "id": "CFM_605",
+    "name": "Drakonid Operative",
+    "text": "[x]<b>Battlecry:</b> If you're holding\na Dragon, <b>Discover</b> a\ncopy of a card in your\nopponent's deck."
+  },
+  {
+    "id": "CFM_606",
+    "name": "Mana Geode",
+    "text": "<b>Overheal:</b> Summon a\n2/2 Crystal."
+  },
+  {
+    "id": "CFM_606t",
+    "name": "Crystal",
+    "text": ""
+  },
+  {
+    "id": "CFM_608",
+    "name": "Blastcrystal Potion",
+    "text": "Destroy a minion and one of your Mana Crystals."
+  },
+  {
+    "id": "CFM_609",
+    "name": "Fel Orc Soulfiend",
+    "text": "At the start of your turn, deal 2 damage to this minion."
+  },
+  {
+    "id": "CFM_610",
+    "name": "Crystalweaver",
+    "text": "<b>Battlecry:</b> Give your Demons +1/+1."
+  },
+  {
+    "id": "CFM_611",
+    "name": "Bloodfury Potion",
+    "text": "[x]Give a minion +3 Attack.\nIf it's a Demon, also\ngive it +3 Health."
+  },
+  {
+    "id": "CFM_614",
+    "name": "Mark of the Lotus",
+    "text": "Give your minions +1/+1."
+  },
+  {
+    "id": "CFM_616",
+    "name": "Pilfered Power",
+    "text": "Gain an empty Mana Crystal for each friendly minion."
+  },
+  {
+    "id": "CFM_617",
+    "name": "Celestial Dreamer",
+    "text": "[x]<b>Battlecry:</b> If you control a\nminion with 5 or more\nAttack, gain +2/+2."
+  },
+  {
+    "id": "CFM_619",
+    "name": "Kabal Chemist",
+    "text": "<b>Battlecry:</b> Add a random Potion to your hand."
+  },
+  {
+    "id": "CFM_620",
+    "name": "Potion of Polymorph",
+    "text": "<b>Secret:</b> After your opponent plays a minion, transform it into a\n1/1 Sheep."
+  },
+  {
+    "id": "CFM_621",
+    "name": "Kazakus",
+    "text": "[x]<b>Battlecry:</b> If your deck\nhas no duplicates,\n create a custom spell."
+  },
+  {
+    "id": "CFM_621_m2",
+    "name": "Kabal Demon",
+    "text": ""
+  },
+  {
+    "id": "CFM_621_m3",
+    "name": "Kabal Demon",
+    "text": ""
+  },
+  {
+    "id": "CFM_621_m4",
+    "name": "Kabal Demon",
+    "text": ""
+  },
+  {
+    "id": "CFM_621_m5",
+    "name": "Sheep",
+    "text": ""
+  },
+  {
+    "id": "CFM_621t",
+    "name": "Kazakus Potion",
+    "text": "{0}\n{1}"
+  },
+  {
+    "id": "CFM_621t10",
+    "name": "Netherbloom",
+    "text": "Summon a 2/2 Demon."
+  },
+  {
+    "id": "CFM_621t11",
+    "name": "Lesser Potion",
+    "text": "Create a 1-Cost spell."
+  },
+  {
+    "id": "CFM_621t12",
+    "name": "Greater Potion",
+    "text": "Create a 5-Cost spell."
+  },
+  {
+    "id": "CFM_621t13",
+    "name": "Superior Potion",
+    "text": "Create a 10-Cost spell."
+  },
+  {
+    "id": "CFM_621t14",
+    "name": "Kazakus Potion",
+    "text": "{0}\n{1}"
+  },
+  {
+    "id": "CFM_621t15",
+    "name": "Kazakus Potion",
+    "text": "{0}\n{1}"
+  },
+  {
+    "id": "CFM_621t16",
+    "name": "Heart of Fire",
+    "text": "Deal $5 damage."
+  },
+  {
+    "id": "CFM_621t17",
+    "name": "Stonescale Oil",
+    "text": "Gain 7 Armor."
+  },
+  {
+    "id": "CFM_621t18",
+    "name": "Felbloom",
+    "text": "Deal $4 damage to all minions."
+  },
+  {
+    "id": "CFM_621t19",
+    "name": "Icecap",
+    "text": "<b>Freeze</b> 2 random enemy minions."
+  },
+  {
+    "id": "CFM_621t2",
+    "name": "Heart of Fire",
+    "text": "Deal $3 damage."
+  },
+  {
+    "id": "CFM_621t20",
+    "name": "Netherbloom",
+    "text": "Summon a 5/5 Demon."
+  },
+  {
+    "id": "CFM_621t21",
+    "name": "Mystic Wool",
+    "text": "Transform a random enemy minion into a 1/1 Sheep."
+  },
+  {
+    "id": "CFM_621t22",
+    "name": "Kingsblood",
+    "text": "Draw 2 cards."
+  },
+  {
+    "id": "CFM_621t23",
+    "name": "Shadow Oil",
+    "text": "Add 2 random Demons to your hand."
+  },
+  {
+    "id": "CFM_621t24",
+    "name": "Goldthorn",
+    "text": "Give your minions +4 Health."
+  },
+  {
+    "id": "CFM_621t25",
+    "name": "Heart of Fire",
+    "text": "Deal $8 damage."
+  },
+  {
+    "id": "CFM_621t26",
+    "name": "Stonescale Oil",
+    "text": "Gain 10 Armor."
+  },
+  {
+    "id": "CFM_621t27",
+    "name": "Icecap",
+    "text": "<b>Freeze</b> 3 random enemy minions."
+  },
+  {
+    "id": "CFM_621t28",
+    "name": "Netherbloom",
+    "text": "Summon an 8/8 Demon."
+  },
+  {
+    "id": "CFM_621t29",
+    "name": "Mystic Wool",
+    "text": "Transform all minions into 1/1 Sheep."
+  },
+  {
+    "id": "CFM_621t3",
+    "name": "Stonescale Oil",
+    "text": "Gain 4 Armor."
+  },
+  {
+    "id": "CFM_621t30",
+    "name": "Kingsblood",
+    "text": "Draw 3 cards."
+  },
+  {
+    "id": "CFM_621t31",
+    "name": "Shadow Oil",
+    "text": "Add 3 random Demons to your hand."
+  },
+  {
+    "id": "CFM_621t32",
+    "name": "Goldthorn",
+    "text": "Give your minions +6 Health."
+  },
+  {
+    "id": "CFM_621t33",
+    "name": "Felbloom",
+    "text": "Deal $6 damage to all minions."
+  },
+  {
+    "id": "CFM_621t37",
+    "name": "Ichor of Undeath",
+    "text": "Summon a friendly minion that died this game."
+  },
+  {
+    "id": "CFM_621t38",
+    "name": "Ichor of Undeath",
+    "text": "Summon 2 friendly minions that died this game."
+  },
+  {
+    "id": "CFM_621t39",
+    "name": "Ichor of Undeath",
+    "text": "Summon 3 friendly minions that died this game."
+  },
+  {
+    "id": "CFM_621t4",
+    "name": "Felbloom",
+    "text": "Deal $2 damage to all minions."
+  },
+  {
+    "id": "CFM_621t5",
+    "name": "Icecap",
+    "text": "<b>Freeze</b> a random enemy minion."
+  },
+  {
+    "id": "CFM_621t6",
+    "name": "Goldthorn",
+    "text": "Give your minions +2 Health."
+  },
+  {
+    "id": "CFM_621t8",
+    "name": "Kingsblood",
+    "text": "Draw a card."
+  },
+  {
+    "id": "CFM_621t9",
+    "name": "Shadow Oil",
+    "text": "Add a random Demon to your hand."
+  },
+  {
+    "id": "CFM_623",
+    "name": "Greater Arcane Missiles",
+    "text": "Shoot three missiles at random enemies that deal $3 damage each."
+  },
+  {
+    "id": "CFM_626",
+    "name": "Kabal Talonpriest",
+    "text": "<b>Battlecry:</b> Give a friendly minion +3 Health."
+  },
+  {
+    "id": "CFM_630",
+    "name": "Counterfeit Coin",
+    "text": "Gain 1 Mana Crystal this turn only."
+  },
+  {
+    "id": "CFM_631",
+    "name": "Brass Knuckles",
+    "text": "[x]After your hero attacks,\ngive a random minion in\nyour hand +1/+1."
+  },
+  {
+    "id": "CFM_634",
+    "name": "Lotus Assassin",
+    "text": "<b>Stealth</b>. Whenever this attacks and kills a minion, gain <b>Stealth</b>."
+  },
+  {
+    "id": "CFM_636",
+    "name": "Shadow Rager",
+    "text": "<b>Stealth</b>"
+  },
+  {
     "id": "CFM_637",
     "name": "Patches the Pirate",
     "text": "[x]After you play a Pirate,\nsummon this minion\nfrom your deck."
   },
   {
+    "id": "CFM_639",
+    "name": "Grimestreet Enforcer",
+    "text": "At the end of your turn, give all minions in your hand +1/+1."
+  },
+  {
+    "id": "CFM_643",
+    "name": "Hobart Grapplehammer",
+    "text": "[x]<b>Battlecry:</b> If you have a\nweapon equipped, give\nall minions in your hand\nand deck +2/+2."
+  },
+  {
+    "id": "CFM_646",
+    "name": "Backstreet Leper",
+    "text": "[x]<b>Deathrattle:</b> Deal 2 damage\nto the enemy hero."
+  },
+  {
+    "id": "CFM_647",
+    "name": "Blowgill Sniper",
+    "text": "<b>Battlecry:</b> Deal 1 damage."
+  },
+  {
+    "id": "CFM_648",
+    "name": "Big-Time Racketeer",
+    "text": "<b>Battlecry:</b> Summon a 6/6 Ogre."
+  },
+  {
+    "id": "CFM_648t",
+    "name": "\"Little Friend\"",
+    "text": ""
+  },
+  {
+    "id": "CFM_649",
+    "name": "Kabal Courier",
+    "text": "<b>Battlecry:</b> <b>Discover</b>\na Mage, Priest, or\nWarlock card."
+  },
+  {
+    "id": "CFM_650",
+    "name": "Grimscale Chum",
+    "text": "[x]<b>Battlecry:</b> Give a random\nMurloc in your hand +1/+1."
+  },
+  {
+    "id": "CFM_651",
+    "name": "Naga Corsair",
+    "text": "<b>Battlecry:</b> Give your weapon +1 Attack."
+  },
+  {
+    "id": "CFM_652",
+    "name": "Second-Rate Bruiser",
+    "text": "[x]<b>Taunt</b>\nCosts (2) less if your\nopponent has at least\nthree minions."
+  },
+  {
+    "id": "CFM_653",
+    "name": "Hired Gun",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "CFM_654",
+    "name": "Friendly Bartender",
+    "text": "At the end of your turn, restore #1 Health to your hero."
+  },
+  {
+    "id": "CFM_655",
+    "name": "Toxic Sewer Ooze",
+    "text": "<b>Battlecry:</b> Remove 1 Durability from your opponent's weapon."
+  },
+  {
+    "id": "CFM_656",
+    "name": "Streetwise Investigator",
+    "text": "<b>Battlecry:</b> Enemy minions lose <b>Stealth</b>."
+  },
+  {
+    "id": "CFM_657",
+    "name": "Kabal Songstealer",
+    "text": "[x]<b>Battlecry:</b> <b>Silence</b> a minion."
+  },
+  {
+    "id": "CFM_658",
+    "name": "Backroom Bouncer",
+    "text": "Whenever a friendly minion dies, gain +1 Attack."
+  },
+  {
+    "id": "CFM_659",
+    "name": "Gadgetzan Socialite",
+    "text": "<b>Battlecry:</b> Restore #2 Health."
+  },
+  {
+    "id": "CFM_660",
+    "name": "Manic Soulcaster",
+    "text": "<b>Battlecry:</b> Choose a friendly minion. Shuffle a copy into your deck."
+  },
+  {
+    "id": "CFM_661",
+    "name": "Pint-Size Potion",
+    "text": "[x]Give all enemy minions\n-3 Attack this turn only."
+  },
+  {
+    "id": "CFM_662",
+    "name": "Dragonfire Potion",
+    "text": "[x]Deal $5 damage to all\nminions except Dragons."
+  },
+  {
+    "id": "CFM_663",
+    "name": "Kabal Trafficker",
+    "text": "[x]At the end of your turn,\nadd a random Demon\nto your hand."
+  },
+  {
+    "id": "CFM_665",
+    "name": "Worgen Greaser",
+    "text": ""
+  },
+  {
+    "id": "CFM_666",
+    "name": "Grook Fu Master",
+    "text": "<b>Windfury</b>"
+  },
+  {
+    "id": "CFM_667",
+    "name": "Bomb Squad",
+    "text": "[x]<b>Battlecry:</b> Deal 5 damage\nto an enemy minion.\n<b>Deathrattle:</b> Deal 5 damage\nto your hero."
+  },
+  {
+    "id": "CFM_668",
+    "name": "Doppelgangster",
+    "text": "<b>Battlecry:</b> Summon 2 copies of this minion."
+  },
+  {
+    "id": "CFM_668t",
+    "name": "Doppelgangster",
+    "text": "<b>Battlecry:</b> Summon 2 copies of this minion."
+  },
+  {
+    "id": "CFM_668t2",
+    "name": "Doppelgangster",
+    "text": "<b>Battlecry:</b> Summon 2 copies of this minion."
+  },
+  {
+    "id": "CFM_669",
+    "name": "Burgly Bully",
+    "text": "Whenever your opponent casts a spell, add a Coin to your hand."
+  },
+  {
+    "id": "CFM_670",
+    "name": "Mayor Noggenfogger",
+    "text": "All targets are chosen randomly."
+  },
+  {
+    "id": "CFM_671",
+    "name": "Cryomancer",
+    "text": "<b>Battlecry:</b> If an enemy is <b>Frozen</b>, gain +2/+2."
+  },
+  {
+    "id": "CFM_672",
+    "name": "Madam Goya",
+    "text": "<b>Battlecry:</b> Choose a friendly\nminion. Summon any copies\nof it in your deck."
+  },
+  {
+    "id": "CFM_685",
+    "name": "Don Han'Cho",
+    "text": "<b>Battlecry:</b> Give a\nrandom minion in your hand +5/+5."
+  },
+  {
+    "id": "CFM_687",
+    "name": "Inkmaster Solia",
+    "text": "[x]<b>Battlecry:</b> If your deck has\nno duplicates, the next\nspell you cast this turn\ncosts (0)."
+  },
+  {
+    "id": "CFM_688",
+    "name": "Spiked Hogrider",
+    "text": "<b>Battlecry:</b> If an enemy minion has <b>Taunt</b>, gain <b>Charge</b>."
+  },
+  {
+    "id": "CFM_690",
+    "name": "Jade Shuriken",
+    "text": "Deal $3 damage.\n<b>Combo:</b> Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_691",
+    "name": "Jade Swarmer",
+    "text": "<b>Stealth</b>\n<b>Deathrattle:</b> Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
     "id": "CFM_693",
     "name": "Gadgetzan Ferryman",
     "text": "<b>Combo:</b> Return a friendly minion to your hand."
+  },
+  {
+    "id": "CFM_694",
+    "name": "Shadow Sensei",
+    "text": "<b>Battlecry:</b> Give a <b>Stealthed</b> minion +2/+2."
+  },
+  {
+    "id": "CFM_696",
+    "name": "Devolve",
+    "text": "Transform all enemy minions into random ones that cost (1) less."
+  },
+  {
+    "id": "CFM_697",
+    "name": "Lotus Illusionist",
+    "text": "[x]After this minion attacks\na hero, transform it into a\n random 6-Cost minion."
+  },
+  {
+    "id": "CFM_699",
+    "name": "Seadevil Stinger",
+    "text": "[x]<b>Battlecry:</b> The next Murloc\nyou play this turn costs\n Health instead of Mana."
+  },
+  {
+    "id": "CFM_707",
+    "name": "Jade Lightning",
+    "text": "Deal $3 damage. Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_712_t01",
+    "name": "Jade Golem",
+    "text": ""
+  },
+  {
+    "id": "CFM_712_t04",
+    "name": "Jade Golem",
+    "text": ""
+  },
+  {
+    "id": "CFM_712_t07",
+    "name": "Jade Golem",
+    "text": ""
+  },
+  {
+    "id": "CFM_712_t20",
+    "name": "Jade Golem",
+    "text": ""
+  },
+  {
+    "id": "CFM_713",
+    "name": "Jade Blossom",
+    "text": "Summon a{1} {0} <b>Jade Golem</b>. Gain an empty Mana Crystal."
+  },
+  {
+    "id": "CFM_715",
+    "name": "Jade Spirit",
+    "text": "<b>Battlecry:</b> Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_716",
+    "name": "Sleep with the Fishes",
+    "text": "Deal $3 damage to all damaged minions."
+  },
+  {
+    "id": "CFM_717",
+    "name": "Jade Claws",
+    "text": "<b>Battlecry:</b> Summon a{1} {0} <b>Jade Golem</b>.\n<b><b>Overload</b>:</b> (1)0<b>Battlecry:</b> Summon a <b>Jade Golem</b>.\n<b><b>Overload</b>:</b> (1)"
+  },
+  {
+    "id": "CFM_750",
+    "name": "Krul the Unshackled",
+    "text": "[x]<b>Battlecry:</b> If your deck has\nno duplicates, summon all\n Demons from your hand. "
+  },
+  {
+    "id": "CFM_751",
+    "name": "Abyssal Enforcer",
+    "text": "<b>Battlecry:</b> Deal 3 damage to all other characters."
+  },
+  {
+    "id": "CFM_752",
+    "name": "Stolen Goods",
+    "text": "Draw a <b>Taunt</b> minion.\nGive it +2/+2."
+  },
+  {
+    "id": "CFM_753",
+    "name": "Grimestreet Outfitter",
+    "text": "<b>Battlecry:</b> Give all minions in your hand +1/+1."
+  },
+  {
+    "id": "CFM_754",
+    "name": "Grimy Gadgeteer",
+    "text": "At the end of your turn, give a random minion in your hand +2/+2."
+  },
+  {
+    "id": "CFM_755",
+    "name": "Grimestreet Pawnbroker",
+    "text": "<b>Battlecry:</b> Give a random weapon in your hand +1/+1."
+  },
+  {
+    "id": "CFM_756",
+    "name": "Alley Armorsmith",
+    "text": "[x]<b>Taunt</b>\nWhenever this minion\ndeals damage, gain\nthat much Armor."
+  },
+  {
+    "id": "CFM_759",
+    "name": "Meanstreet Marshal",
+    "text": "<b>Deathrattle:</b> If this minion has 2 or more Attack, draw a card."
+  },
+  {
+    "id": "CFM_760",
+    "name": "Kabal Crystal Runner",
+    "text": "Costs (2) less for each <b>Secret</b> you've played this game."
+  },
+  {
+    "id": "CFM_781",
+    "name": "Shaku, the Collector",
+    "text": "[x]<b>Stealth</b>\nWhenever this attacks,\nadd a card from another\nclass to your hand."
+  },
+  {
+    "id": "CFM_790",
+    "name": "Dirty Rat",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Your opponent\nsummons a random minion\nfrom their hand."
+  },
+  {
+    "id": "CFM_800",
+    "name": "Getaway Kodo",
+    "text": "<b>Secret:</b> When a friendly minion dies, return it to your hand."
+  },
+  {
+    "id": "CFM_806",
+    "name": "Wrathion",
+    "text": "<b>Taunt</b>. <b>Battlecry:</b> Draw cards until you draw one that isn't a Dragon."
+  },
+  {
+    "id": "CFM_807",
+    "name": "Auctionmaster Beardo",
+    "text": "After you cast a spell, refresh your Hero Power."
+  },
+  {
+    "id": "CFM_808",
+    "name": "Genzo, the Shark",
+    "text": "Whenever this attacks, both players draw until they have 3 cards."
+  },
+  {
+    "id": "CFM_809",
+    "name": "Tanaris Hogchopper",
+    "text": "[x]<b>Battlecry:</b> If your opponent's\nhand is empty, gain <b>Charge</b>."
+  },
+  {
+    "id": "CFM_810",
+    "name": "Leatherclad Hogleader",
+    "text": "<b>Battlecry:</b> If your opponent has 6 or more cards in hand, gain <b>Charge</b>."
+  },
+  {
+    "id": "CFM_811",
+    "name": "Lunar Visions",
+    "text": "Draw 2 cards. Minions drawn cost (2) less."
+  },
+  {
+    "id": "CFM_815",
+    "name": "Wickerflame Burnbristle",
+    "text": "<b>Taunt</b>\n<b>Divine Shield</b>\n<b>Lifesteal</b>"
+  },
+  {
+    "id": "CFM_816",
+    "name": "Virmen Sensei",
+    "text": "<b>Battlecry:</b> Give a friendly Beast +3/+3."
+  },
+  {
+    "id": "CFM_851",
+    "name": "Daring Reporter",
+    "text": "Whenever your opponent draws a card, gain +1/+1."
+  },
+  {
+    "id": "CFM_852",
+    "name": "Lotus Agents",
+    "text": "<b>Battlecry:</b> <b>Discover</b>\na Druid, Rogue, or\nShaman card."
+  },
+  {
+    "id": "CFM_853",
+    "name": "Grimestreet Smuggler",
+    "text": "<b>Battlecry:</b> Give a random minion in your hand +1/+1."
+  },
+  {
+    "id": "CFM_854",
+    "name": "Ancient of Blossoms",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "CFM_855",
+    "name": "Defias Cleaner",
+    "text": "<b>Battlecry:</b> <b>Silence</b> a minion with <b>Deathrattle</b>."
+  },
+  {
+    "id": "CFM_900",
+    "name": "Unlicensed Apothecary",
+    "text": "After you summon a minion, deal 5 damage to your hero."
+  },
+  {
+    "id": "CFM_902",
+    "name": "Aya Blackpaw",
+    "text": "<b>Battlecry and Deathrattle:</b> Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_905",
+    "name": "Small-Time Recruits",
+    "text": "[x]Draw three 1-Cost\nminions from your deck."
+  },
+  {
+    "id": "CFM_940",
+    "name": "I Know a Guy",
+    "text": "<b>Discover</b> a <b>Taunt</b> minion. Give it +1/+2."
   },
   {
     "id": "CS1_113",
@@ -158,6 +1973,11 @@
     "id": "CS2_024",
     "name": "Frostbolt",
     "text": "Deal $3 damage to a character and <b>Freeze</b> it."
+  },
+  {
+    "id": "CS2_027",
+    "name": "Mirror Image",
+    "text": "Summon two 0/2 minions with <b>Taunt</b>."
   },
   {
     "id": "CS2_029",
@@ -190,6 +2010,11 @@
     "text": ""
   },
   {
+    "id": "CS2_091",
+    "name": "Light's Justice",
+    "text": ""
+  },
+  {
     "id": "CS2_101t",
     "name": "Silver Hand Recruit",
     "text": ""
@@ -215,6 +2040,11 @@
     "text": "Has <b>Charge</b> while you have a weapon equipped."
   },
   {
+    "id": "CS2_152",
+    "name": "Squire",
+    "text": ""
+  },
+  {
     "id": "CS2_171",
     "name": "Stonetusk Boar",
     "text": "<b>Charge</b>"
@@ -228,6 +2058,11 @@
     "id": "CS2_231",
     "name": "Wisp",
     "text": ""
+  },
+  {
+    "id": "CS2_mirror",
+    "name": "Mirror Image",
+    "text": "<b>Taunt</b>"
   },
   {
     "id": "CS2_tk1",
@@ -355,6 +2190,11 @@
     "text": "<b>Battlecry:</b> <b>Discover</b> a spell. <b>Finale:</b> <b>Discover</b> another."
   },
   {
+    "id": "EX1_001",
+    "name": "Lightwarden",
+    "text": "Whenever a character is healed, gain +2 Attack."
+  },
+  {
     "id": "EX1_005",
     "name": "Big Game Hunter",
     "text": "[x]<b>Tradeable</b>\n<b>Battlecry:</b> Destroy a minion\nwith 7 or more Attack."
@@ -375,9 +2215,19 @@
     "text": "<b>Spell Damage +1</b>\n<b>Deathrattle:</b> Draw a card."
   },
   {
+    "id": "EX1_014t",
+    "name": "Bananas",
+    "text": "Give a minion +1/+1."
+  },
+  {
     "id": "EX1_015",
     "name": "Novice Engineer",
     "text": "<b>Battlecry:</b> Draw a card."
+  },
+  {
+    "id": "EX1_029",
+    "name": "Leper Gnome",
+    "text": "<b>Deathrattle:</b> Deal 2 damage to the enemy hero."
   },
   {
     "id": "EX1_033",
@@ -430,6 +2280,11 @@
     "text": "Gain 1 Mana Crystal this turn only."
   },
   {
+    "id": "EX1_170",
+    "name": "Emperor Cobra",
+    "text": "<b>Poisonous</b>"
+  },
+  {
     "id": "EX1_238",
     "name": "Lightning Bolt",
     "text": "Deal $3 damage. <b>Overload:</b> (1)"
@@ -438,6 +2293,11 @@
     "id": "EX1_250",
     "name": "Earth Elemental",
     "text": "<b>Taunt</b>\n<b><b>Overload</b>:</b> (2)"
+  },
+  {
+    "id": "EX1_277",
+    "name": "Arcane Missiles",
+    "text": "Deal $3 damage randomly split among all enemies."
   },
   {
     "id": "EX1_287",
@@ -470,6 +2330,11 @@
     "text": "<b>Combo:</b> Gain +2/+2 for each other card you've played this turn."
   },
   {
+    "id": "FP1_001",
+    "name": "Zombie Chow",
+    "text": "<b>Deathrattle:</b> Restore #5 Health to the enemy hero."
+  },
+  {
     "id": "FP1_002",
     "name": "Haunted Creeper",
     "text": "<b>Deathrattle:</b> Summon two 1/1 Spectral Spiders."
@@ -478,6 +2343,166 @@
     "id": "FP1_002t",
     "name": "Spectral Spider",
     "text": ""
+  },
+  {
+    "id": "FP1_003",
+    "name": "Echoing Ooze",
+    "text": "<b>Battlecry:</b> Summon an exact copy of this minion at the end of the turn."
+  },
+  {
+    "id": "FP1_004",
+    "name": "Mad Scientist",
+    "text": "<b>Deathrattle:</b> Put a <b>Secret</b> from your deck into the battlefield."
+  },
+  {
+    "id": "FP1_005",
+    "name": "Shade of Naxxramas",
+    "text": "<b><b>Stealth</b>.</b> At the start of your turn, gain +1/+1."
+  },
+  {
+    "id": "FP1_007",
+    "name": "Nerubian Egg",
+    "text": "<b>Deathrattle:</b> Summon a 4/4 Nerubian."
+  },
+  {
+    "id": "FP1_007t",
+    "name": "Nerubian",
+    "text": ""
+  },
+  {
+    "id": "FP1_008",
+    "name": "Spectral Knight",
+    "text": "<b>Elusive</b>"
+  },
+  {
+    "id": "FP1_009",
+    "name": "Deathlord",
+    "text": "<b>Taunt. Deathrattle:</b> Your opponent puts a minion from their deck into the battlefield."
+  },
+  {
+    "id": "FP1_010",
+    "name": "Maexxna",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "FP1_011",
+    "name": "Webspinner",
+    "text": "<b>Deathrattle:</b> Get a\nrandom Beast."
+  },
+  {
+    "id": "FP1_012",
+    "name": "Sludge Belcher",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> Summon a\n1/2 Slime with <b>Taunt</b>."
+  },
+  {
+    "id": "FP1_012t",
+    "name": "Putrid Slime",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "FP1_013",
+    "name": "Kel'Thuzad",
+    "text": "At the end of each turn, summon all friendly minions that died this turn."
+  },
+  {
+    "id": "FP1_014",
+    "name": "Stalagg",
+    "text": "<b>Deathrattle:</b> If Feugen also died this game, summon Thaddius."
+  },
+  {
+    "id": "FP1_014t",
+    "name": "Thaddius",
+    "text": ""
+  },
+  {
+    "id": "FP1_015",
+    "name": "Feugen",
+    "text": "<b>Deathrattle:</b> If Stalagg also died this game, summon Thaddius."
+  },
+  {
+    "id": "FP1_016",
+    "name": "Wailing Soul",
+    "text": "<b>Battlecry: Silence</b> your other minions."
+  },
+  {
+    "id": "FP1_017",
+    "name": "Nerub'ar Weblord",
+    "text": "Minions with <b>Battlecry</b> cost (2) more."
+  },
+  {
+    "id": "FP1_018",
+    "name": "Duplicate",
+    "text": "<b>Secret:</b> When a friendly minion dies, put 2 copies of it into your hand."
+  },
+  {
+    "id": "FP1_019",
+    "name": "Poison Seeds",
+    "text": "Destroy all minions and summon 2/2 Treants to replace them."
+  },
+  {
+    "id": "FP1_019t",
+    "name": "Treant",
+    "text": ""
+  },
+  {
+    "id": "FP1_020",
+    "name": "Avenge",
+    "text": "<b>Secret:</b> When one of your minions dies, give a random friendly minion +3/+2."
+  },
+  {
+    "id": "FP1_021",
+    "name": "Death's Bite",
+    "text": "<b>Deathrattle:</b> Deal 1 damage to all minions."
+  },
+  {
+    "id": "FP1_022",
+    "name": "Voidcaller",
+    "text": "<b>Deathrattle:</b> Put a random Demon from your hand into the battlefield."
+  },
+  {
+    "id": "FP1_023",
+    "name": "Dark Cultist",
+    "text": "<b>Deathrattle:</b> Give a random friendly minion +3 Health."
+  },
+  {
+    "id": "FP1_024",
+    "name": "Unstable Ghoul",
+    "text": "<b>Taunt</b>. <b>Deathrattle:</b> Deal 1 damage to all minions."
+  },
+  {
+    "id": "FP1_025",
+    "name": "Reincarnate",
+    "text": "Destroy a minion,\nthen return it to life with full Health."
+  },
+  {
+    "id": "FP1_026",
+    "name": "Anub'ar Ambusher",
+    "text": "<b>Deathrattle:</b> Return a random friendly minion to your hand."
+  },
+  {
+    "id": "FP1_027",
+    "name": "Stoneskin Gargoyle",
+    "text": "At the start of your turn, restore this minion to full Health."
+  },
+  {
+    "id": "FP1_028",
+    "name": "Undertaker",
+    "text": "Whenever you summon a minion with <b>Deathrattle</b>, gain +1/+1."
+  },
+  {
+    "id": "FP1_029",
+    "name": "Dancing Swords",
+    "text": "<b>Deathrattle:</b> Your opponent draws a card."
+  },
+  {
+    "id": "FP1_030",
+    "name": "Loatheb",
+    "text": "<b>Battlecry:</b> Enemy spells cost (5) more next turn."
+  },
+  {
+    "id": "FP1_031",
+    "name": "Baron Rivendare",
+    "text": "Your minions trigger their <b>Deathrattles</b> twice."
   },
   {
     "id": "GAME_005",
@@ -515,9 +2540,444 @@
     "text": "[x]<b>Battlecry:</b> Deal 3 damage to\nthe enemy hero. Restore\n#3 Health to your hero."
   },
   {
+    "id": "GVG_001",
+    "name": "Flamecannon",
+    "text": "Deal $4 damage to a random enemy minion."
+  },
+  {
+    "id": "GVG_002",
+    "name": "Snowchugger",
+    "text": "<b>Freeze</b> any character damaged by this minion."
+  },
+  {
+    "id": "GVG_003",
+    "name": "Unstable Portal",
+    "text": "Add a random minion to your hand. It costs (3) less."
+  },
+  {
+    "id": "GVG_004",
+    "name": "Goblin Blastmage",
+    "text": "[x]<b>Battlecry:</b> If you control\na Mech, deal 6 damage\nrandomly split among\nall enemies."
+  },
+  {
+    "id": "GVG_005",
+    "name": "Echo of Medivh",
+    "text": "Put a copy of each friendly minion into your hand."
+  },
+  {
+    "id": "GVG_006",
+    "name": "Mechwarper",
+    "text": "Your Mechs cost (1) less."
+  },
+  {
+    "id": "GVG_007",
+    "name": "Flame Leviathan",
+    "text": "[x]<b>Rush</b>\nWhen you draw this, deal\n2 damage to all characters\nexcept Mechs."
+  },
+  {
+    "id": "GVG_008",
+    "name": "Lightbomb",
+    "text": "Deal damage to each minion equal to its Attack."
+  },
+  {
+    "id": "GVG_009",
+    "name": "Shadowbomber",
+    "text": "<b>Battlecry:</b> Deal 3 damage to each hero."
+  },
+  {
+    "id": "GVG_010",
+    "name": "Velen's Chosen",
+    "text": "Give a minion +2/+4 and <b>Spell Damage +1</b>."
+  },
+  {
+    "id": "GVG_011",
+    "name": "Shrinkmeister",
+    "text": "<b>Battlecry:</b> Give a minion -3 Attack this turn."
+  },
+  {
+    "id": "GVG_012",
+    "name": "Light of the Naaru",
+    "text": "Restore #3 Health. If the target is still damaged, summon a Lightwarden."
+  },
+  {
+    "id": "GVG_013",
+    "name": "Cogmaster",
+    "text": "Has +2 Attack while you have a Mech."
+  },
+  {
+    "id": "GVG_014",
+    "name": "Vol'jin",
+    "text": "<b>Battlecry:</b> Swap Health with another minion."
+  },
+  {
+    "id": "GVG_015",
+    "name": "Darkbomb",
+    "text": "Deal $3 damage to a character. If it dies, draw a Shadow spell."
+  },
+  {
+    "id": "GVG_016",
+    "name": "Fel Reaver",
+    "text": "Whenever your opponent plays a card, remove the top 3 cards of your deck."
+  },
+  {
+    "id": "GVG_017",
+    "name": "Call Pet",
+    "text": "Draw a card.\nIf it's a Beast, it costs (4) less."
+  },
+  {
+    "id": "GVG_018",
+    "name": "Queen of Pain",
+    "text": "<b>Lifesteal</b>"
+  },
+  {
+    "id": "GVG_019",
+    "name": "Demonheart",
+    "text": "Deal $5 damage to a minion.  If it's a friendly Demon, give it +5/+5 instead."
+  },
+  {
+    "id": "GVG_020",
+    "name": "Fel Cannon",
+    "text": "At the end of your turn, deal 2 damage to a non-Mech minion."
+  },
+  {
     "id": "GVG_021",
     "name": "Mal'Ganis",
     "text": "Your hero is <b>Immune</b>.\nYour other Demons\nhave +2/+2."
+  },
+  {
+    "id": "GVG_022",
+    "name": "Tinker's Sharpsword Oil",
+    "text": "Give your weapon +3 Attack. <b>Combo:</b> Give a random friendly minion +3 Attack."
+  },
+  {
+    "id": "GVG_023",
+    "name": "Goblin Auto-Barber",
+    "text": "<b>Battlecry:</b> Give your weapon +1 Attack."
+  },
+  {
+    "id": "GVG_024",
+    "name": "Cogmaster's Wrench",
+    "text": "Has +2 Attack while you have a Mech."
+  },
+  {
+    "id": "GVG_025",
+    "name": "One-eyed Cheat",
+    "text": "Whenever you summon a Pirate, gain <b>Stealth</b>."
+  },
+  {
+    "id": "GVG_026",
+    "name": "Feign Death",
+    "text": "Trigger all <b>Deathrattles</b> on your minions."
+  },
+  {
+    "id": "GVG_027",
+    "name": "Iron Sensei",
+    "text": "At the end of your turn, give another friendly Mech +2/+2."
+  },
+  {
+    "id": "GVG_028",
+    "name": "Trade Prince Gallywix",
+    "text": "Whenever your opponent casts a spell, gain a copy of it and give them a Coin."
+  },
+  {
+    "id": "GVG_028t",
+    "name": "Gallywix's Coin",
+    "text": "Gain 1 Mana Crystal this turn only.\n<i>(Won't trigger Gallywix.)</i>"
+  },
+  {
+    "id": "GVG_029",
+    "name": "Ancestor's Call",
+    "text": "Put a random minion from each player's hand into the battlefield."
+  },
+  {
+    "id": "GVG_030",
+    "name": "Anodized Robo Cub",
+    "text": "<b>Taunt</b>. <b>Choose One -</b>\n+1 Attack; or +1 Health."
+  },
+  {
+    "id": "GVG_031",
+    "name": "Recycle",
+    "text": "Shuffle an enemy minion into your opponent's deck."
+  },
+  {
+    "id": "GVG_032",
+    "name": "Grove Tender",
+    "text": "<b>Choose One -</b> Give each player a Mana Crystal; or Each player draws a card."
+  },
+  {
+    "id": "GVG_033",
+    "name": "Tree of Life",
+    "text": "Restore all characters to full Health."
+  },
+  {
+    "id": "GVG_034",
+    "name": "Mech-Bear-Cat",
+    "text": "Whenever this minion takes damage, add a <b>Spare Part</b> card to your hand."
+  },
+  {
+    "id": "GVG_035",
+    "name": "Malorne",
+    "text": "<b>Deathrattle:</b> Go <b>Dormant</b>. Revive after 2 friendly Beasts die."
+  },
+  {
+    "id": "GVG_036",
+    "name": "Powermace",
+    "text": "<b>Deathrattle:</b> Give a random friendly Mech +2/+2."
+  },
+  {
+    "id": "GVG_037",
+    "name": "Whirling Zap-o-matic",
+    "text": "<b>Windfury</b>"
+  },
+  {
+    "id": "GVG_038",
+    "name": "Crackle",
+    "text": "Deal $3-$6 damage. <b>Overload:</b> (1)"
+  },
+  {
+    "id": "GVG_039",
+    "name": "Vitality Totem",
+    "text": "At the end of your turn, restore #4 Health to your hero."
+  },
+  {
+    "id": "GVG_040",
+    "name": "Siltfin Spiritwalker",
+    "text": "Whenever another friendly Murloc dies, draw a card. <b><b>Overload</b>:</b> (1)"
+  },
+  {
+    "id": "GVG_041",
+    "name": "Dark Wispers",
+    "text": "<b>Choose One -</b> Summon 5 Wisps; or Give a minion +5/+5 and <b>Taunt</b>."
+  },
+  {
+    "id": "GVG_042",
+    "name": "Neptulon",
+    "text": "<b>Battlecry:</b> Add 4 random Murlocs to your hand. <b>Overload:</b> (3)"
+  },
+  {
+    "id": "GVG_043",
+    "name": "Glaivezooka",
+    "text": "<b>Battlecry:</b> Give a random friendly minion +1 Attack."
+  },
+  {
+    "id": "GVG_044",
+    "name": "Spider Tank",
+    "text": ""
+  },
+  {
+    "id": "GVG_045",
+    "name": "Imp-losion",
+    "text": "Deal $2-$4 damage to a minion. Summon a 1/1 Imp for each damage dealt."
+  },
+  {
+    "id": "GVG_045t",
+    "name": "Imp",
+    "text": ""
+  },
+  {
+    "id": "GVG_046",
+    "name": "King of Beasts",
+    "text": "[x]<b>Taunt</b>\nHas +1 Attack for each\nother Beast you control."
+  },
+  {
+    "id": "GVG_047",
+    "name": "Sabotage",
+    "text": "Destroy a random enemy minion. <b>Combo:</b> And your opponent's weapon."
+  },
+  {
+    "id": "GVG_048",
+    "name": "Metaltooth Leaper",
+    "text": "<b>Battlecry:</b> Give your other Mechs +2 Attack."
+  },
+  {
+    "id": "GVG_049",
+    "name": "Gahz'rilla",
+    "text": "Whenever this minion takes damage, double its Attack."
+  },
+  {
+    "id": "GVG_050",
+    "name": "Bouncing Blade",
+    "text": "Deal $1 damage to a random minion. Repeat until a minion dies."
+  },
+  {
+    "id": "GVG_051",
+    "name": "Warbot",
+    "text": "Has +1 Attack while damaged."
+  },
+  {
+    "id": "GVG_052",
+    "name": "Crush",
+    "text": "Destroy a minion. If you have a damaged minion, this costs (4) less."
+  },
+  {
+    "id": "GVG_053",
+    "name": "Shieldmaiden",
+    "text": "<b>Battlecry:</b> Gain 5 Armor."
+  },
+  {
+    "id": "GVG_054",
+    "name": "Ogre Warmaul",
+    "text": "50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "GVG_055",
+    "name": "Screwjank Clunker",
+    "text": "<b>Battlecry:</b> Give a friendly Mech +2/+2."
+  },
+  {
+    "id": "GVG_056",
+    "name": "Iron Juggernaut",
+    "text": "[x]<b>Battlecry and Deathrattle:</b>\nShuffle a Mine into your\nopponent's deck. When drawn,\nexplode for 10 damage!"
+  },
+  {
+    "id": "GVG_056t",
+    "name": "Burrowing Mine",
+    "text": "<b>Casts When Drawn</b>\nYou take 10 damage."
+  },
+  {
+    "id": "GVG_057",
+    "name": "Seal of Light",
+    "text": "Restore #4 Health to your hero and gain +2 Attack this turn."
+  },
+  {
+    "id": "GVG_058",
+    "name": "Shielded Minibot",
+    "text": "<b>Divine Shield</b>"
+  },
+  {
+    "id": "GVG_059",
+    "name": "Coghammer",
+    "text": "<b>Battlecry:</b> Give a random friendly minion <b>Divine Shield</b> and <b>Taunt</b>."
+  },
+  {
+    "id": "GVG_060",
+    "name": "Quartermaster",
+    "text": "<b>Battlecry:</b> Give your Silver Hand Recruits +2/+2."
+  },
+  {
+    "id": "GVG_061",
+    "name": "Muster for Battle",
+    "text": "Summon three {0} Silver Hand Recruits. Equip a 1/4 Weapon."
+  },
+  {
+    "id": "GVG_062",
+    "name": "Cobalt Guardian",
+    "text": "Whenever you summon a Mech, gain <b>Divine Shield</b>."
+  },
+  {
+    "id": "GVG_063",
+    "name": "Bolvar Fordragon",
+    "text": "Whenever a friendly minion dies while this is in your hand, gain +1 Attack."
+  },
+  {
+    "id": "GVG_064",
+    "name": "Puddlestomper",
+    "text": ""
+  },
+  {
+    "id": "GVG_065",
+    "name": "Ogre Brute",
+    "text": "50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "GVG_066",
+    "name": "Dunemaul Shaman",
+    "text": "<b>Windfury, Overload:</b> (1)\n50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "GVG_067",
+    "name": "Stonesplinter Trogg",
+    "text": "Whenever your opponent casts a spell, gain +1 Attack."
+  },
+  {
+    "id": "GVG_068",
+    "name": "Burly Rockjaw Trogg",
+    "text": "Whenever your opponent casts a spell, gain +2 Attack."
+  },
+  {
+    "id": "GVG_069",
+    "name": "Antique Healbot",
+    "text": "<b>Battlecry:</b> Restore #8 Health to your hero."
+  },
+  {
+    "id": "GVG_070",
+    "name": "Salty Dog",
+    "text": ""
+  },
+  {
+    "id": "GVG_071",
+    "name": "Lost Tallstrider",
+    "text": ""
+  },
+  {
+    "id": "GVG_072",
+    "name": "Shadowboxer",
+    "text": "Whenever a minion is healed, deal 1 damage to a random enemy."
+  },
+  {
+    "id": "GVG_073",
+    "name": "Cobra Shot",
+    "text": "Deal $3 damage to\na minion and the\nenemy hero."
+  },
+  {
+    "id": "GVG_074",
+    "name": "Kezan Mystic",
+    "text": "<b>Battlecry:</b> Take control of a random enemy <b>Secret</b>."
+  },
+  {
+    "id": "GVG_075",
+    "name": "Ship's Cannon",
+    "text": "[x]After you summon a\nPirate, deal 2 damage\nto a random enemy."
+  },
+  {
+    "id": "GVG_076",
+    "name": "Explosive Sheep",
+    "text": "<b>Deathrattle:</b> Deal 2 damage to all minions."
+  },
+  {
+    "id": "GVG_077",
+    "name": "Anima Golem",
+    "text": "At the end of each turn, destroy this minion if it's your only one."
+  },
+  {
+    "id": "GVG_078",
+    "name": "Mechanical Yeti",
+    "text": "<b>Deathrattle:</b> Give each player a <b>Spare Part.</b>"
+  },
+  {
+    "id": "GVG_079",
+    "name": "Force-Tank MAX",
+    "text": "<b>Divine Shield</b>"
+  },
+  {
+    "id": "GVG_080",
+    "name": "Druid of the Fang",
+    "text": "<b>Battlecry:</b> If you have a Beast, transform this minion into a 7/7."
+  },
+  {
+    "id": "GVG_080t",
+    "name": "Druid of the Fang",
+    "text": ""
+  },
+  {
+    "id": "GVG_081",
+    "name": "Gilblin Stalker",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "GVG_082",
+    "name": "Clockwork Gnome",
+    "text": "<b>Deathrattle:</b> Add a <b>Spare Part</b> card to your hand."
+  },
+  {
+    "id": "GVG_083",
+    "name": "Upgraded Repair Bot",
+    "text": "<b>Battlecry:</b> Give a friendly Mech +4 Health."
+  },
+  {
+    "id": "GVG_084",
+    "name": "Flying Machine",
+    "text": "<b>Windfury</b>"
   },
   {
     "id": "GVG_085",
@@ -525,9 +2985,209 @@
     "text": "<b>Taunt</b>\n<b>Divine Shield</b>"
   },
   {
+    "id": "GVG_086",
+    "name": "Siege Engine",
+    "text": "Whenever you gain Armor, give this minion +1 Attack."
+  },
+  {
+    "id": "GVG_087",
+    "name": "Steamwheedle Sniper",
+    "text": "Your Hero Power can target minions."
+  },
+  {
+    "id": "GVG_088",
+    "name": "Ogre Ninja",
+    "text": "<b>Stealth</b>\n50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "GVG_089",
+    "name": "Illuminator",
+    "text": "If you control a <b>Secret</b> at the end of your turn, restore #4 Health to your hero."
+  },
+  {
+    "id": "GVG_090",
+    "name": "Madder Bomber",
+    "text": "<b>Battlecry:</b> Deal 6 damage randomly split between all other characters."
+  },
+  {
+    "id": "GVG_091",
+    "name": "Arcane Nullifier X-21",
+    "text": "<b>Taunt</b>\n<b>Elusive</b>"
+  },
+  {
+    "id": "GVG_092",
+    "name": "Gnomish Experimenter",
+    "text": "<b>Battlecry:</b> Draw a card. If it's a minion, transform it into a Chicken."
+  },
+  {
+    "id": "GVG_092t",
+    "name": "Chicken",
+    "text": ""
+  },
+  {
+    "id": "GVG_093",
+    "name": "Target Dummy",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "GVG_094",
+    "name": "Jeeves",
+    "text": "At the end of each player's turn, that player draws until they have 3 cards."
+  },
+  {
     "id": "GVG_095",
     "name": "Goblin Sapper",
     "text": "Has +4 Attack while your opponent has 6 or more cards in hand."
+  },
+  {
+    "id": "GVG_096",
+    "name": "Piloted Shredder",
+    "text": "<b>Deathrattle:</b> Summon a random 2-Cost minion."
+  },
+  {
+    "id": "GVG_097",
+    "name": "Lil' Exorcist",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Gain +1/+1 for each enemy <b>Deathrattle</b> minion."
+  },
+  {
+    "id": "GVG_098",
+    "name": "Gnomeregan Infantry",
+    "text": "<b>Charge</b>\n<b>Taunt</b>"
+  },
+  {
+    "id": "GVG_099",
+    "name": "Bomb Lobber",
+    "text": "<b>Battlecry:</b> Deal 4 damage to a random enemy minion."
+  },
+  {
+    "id": "GVG_100",
+    "name": "Floating Watcher",
+    "text": "Whenever your hero takes damage on your turn, gain +2/+2."
+  },
+  {
+    "id": "GVG_101",
+    "name": "Scarlet Purifier",
+    "text": "<b>Battlecry:</b> Deal 2 damage to all minions with <b>Deathrattle</b>."
+  },
+  {
+    "id": "GVG_102",
+    "name": "Tinkertown Technician",
+    "text": "<b>Battlecry:</b> If you have a Mech, gain +1/+1 and add a <b>Spare Part</b> to your hand."
+  },
+  {
+    "id": "GVG_103",
+    "name": "Micro Machine",
+    "text": "At the start of each turn, gain +1 Attack."
+  },
+  {
+    "id": "GVG_104",
+    "name": "Hobgoblin",
+    "text": "Whenever you play a 1-Attack minion, give it +2/+2."
+  },
+  {
+    "id": "GVG_105",
+    "name": "Piloted Sky Golem",
+    "text": "<b>Deathrattle:</b> Summon a random 4-Cost minion."
+  },
+  {
+    "id": "GVG_106",
+    "name": "Junkbot",
+    "text": "Whenever a friendly Mech dies, gain +2/+2."
+  },
+  {
+    "id": "GVG_107",
+    "name": "Enhance-o Mechano",
+    "text": "<b>Battlecry:</b> Give your other minions <b>Windfury</b>, <b>Taunt</b>, or <b>Divine Shield</b>\n<i>(at random)</i>."
+  },
+  {
+    "id": "GVG_108",
+    "name": "Recombobulator",
+    "text": "<b>Battlecry:</b> Transform a friendly minion into a random minion with the same Cost."
+  },
+  {
+    "id": "GVG_109",
+    "name": "Mini-Mage",
+    "text": "<b>Stealth</b>\n<b>Spell Damage +1</b>"
+  },
+  {
+    "id": "GVG_110",
+    "name": "Dr. Boom",
+    "text": "<b>Battlecry:</b> Summon two 1/1 Boom Bots. <i>WARNING: Bots may explode.</i>"
+  },
+  {
+    "id": "GVG_110t",
+    "name": "Boom Bot",
+    "text": "<b>Deathrattle:</b> Deal 1-4 damage to a random enemy."
+  },
+  {
+    "id": "GVG_111",
+    "name": "Mimiron's Head",
+    "text": "At the start of your turn, if you have at least 3 Mechs, destroy them all and form V-07-TR-0N."
+  },
+  {
+    "id": "GVG_111t",
+    "name": "V-07-TR-0N",
+    "text": "<b>Charge</b>\n<b>Mega-Windfury</b>"
+  },
+  {
+    "id": "GVG_112",
+    "name": "Mogor the Ogre",
+    "text": "All minions have a 50% chance to attack the wrong enemy."
+  },
+  {
+    "id": "GVG_113",
+    "name": "Foe Reaper 4000",
+    "text": "Also damages the minions next to whomever it attacks."
+  },
+  {
+    "id": "GVG_114",
+    "name": "Sneed's Old Shredder",
+    "text": "<b>Deathrattle:</b> Summon a random <b>Legendary</b> minion."
+  },
+  {
+    "id": "GVG_115",
+    "name": "Toshley",
+    "text": "<b>Battlecry and Deathrattle:</b> Add a <b>Spare Part</b> card to your hand."
+  },
+  {
+    "id": "GVG_116",
+    "name": "Mekgineer Thermaplugg",
+    "text": "Whenever an enemy minion dies, summon a Leper Gnome."
+  },
+  {
+    "id": "GVG_117",
+    "name": "Gazlowe",
+    "text": "Whenever you cast a 1-Cost spell, add a random Mech to your hand."
+  },
+  {
+    "id": "GVG_118",
+    "name": "Troggzor the Earthinator",
+    "text": "Whenever your opponent casts a spell, summon a Burly Rockjaw Trogg."
+  },
+  {
+    "id": "GVG_119",
+    "name": "Blingtron 3000",
+    "text": "<b>Battlecry:</b> Equip a random weapon for each player."
+  },
+  {
+    "id": "GVG_120",
+    "name": "Hemet Nesingwary",
+    "text": "<b>Battlecry:</b> Destroy a Beast."
+  },
+  {
+    "id": "GVG_121",
+    "name": "Clockwork Giant",
+    "text": "Costs (1) less for each card in your opponent's hand."
+  },
+  {
+    "id": "GVG_122",
+    "name": "Wee Spellstopper",
+    "text": "Adjacent minions\nhave <b>Elusive</b>."
+  },
+  {
+    "id": "GVG_123",
+    "name": "Soot Spewer",
+    "text": "<b>Spell Damage +1</b>\n<b>Battlecry:</b> If you control\nanother Mech, get a random Fire spell."
   },
   {
     "id": "HERO_01bp",
@@ -535,9 +3195,19 @@
     "text": "<b>Hero Power</b>\nGain $d2 Armor."
   },
   {
+    "id": "HERO_01bp2",
+    "name": "Tank Up!",
+    "text": "<b>Hero Power</b>\nGain $d4 Armor."
+  },
+  {
     "id": "HERO_02bp",
     "name": "Totemic Call",
     "text": "<b>Hero Power</b>\nSummon a random basic Totem."
+  },
+  {
+    "id": "HERO_02bp2",
+    "name": "Totemic Slam",
+    "text": "<b>Hero Power</b>\nSummon a Totem of your choice."
   },
   {
     "id": "HERO_03bp",
@@ -545,9 +3215,19 @@
     "text": "<b>Hero Power</b>\nEquip a 1/2 Dagger."
   },
   {
+    "id": "HERO_03bp2",
+    "name": "Poisoned Daggers",
+    "text": "<b>Hero Power</b>\nEquip a 2/2 Weapon."
+  },
+  {
     "id": "HERO_04bp",
     "name": "Reinforce",
     "text": "<b>Hero Power</b>\nSummon a {0} Silver Hand Recruit."
+  },
+  {
+    "id": "HERO_04bp2",
+    "name": "The Silver Hand",
+    "text": "<b>Hero Power</b>\nSummon two {0} Recruits."
   },
   {
     "id": "HERO_05bp",
@@ -555,9 +3235,19 @@
     "text": "<b>Hero Power</b>\nDeal $2 damage to the enemy hero."
   },
   {
+    "id": "HERO_05bp2",
+    "name": "Ballista Shot",
+    "text": "<b>Hero Power</b>\nDeal $3 damage to the enemy hero."
+  },
+  {
     "id": "HERO_06bp",
     "name": "Shapeshift",
     "text": "<b>Hero Power</b>\n+$a1 Attack this turn.\n+$d1 Armor."
+  },
+  {
+    "id": "HERO_06bp2",
+    "name": "Dire Shapeshift",
+    "text": "<b>Hero Power</b>\n+$a2 Attack this turn.\n+$d2 Armor."
   },
   {
     "id": "HERO_07bp",
@@ -565,9 +3255,19 @@
     "text": "<b>Hero Power</b>\nDraw a card and take $2 damage."
   },
   {
+    "id": "HERO_07bp2",
+    "name": "Soul Tap",
+    "text": "<b>Hero Power</b>\nDraw a card."
+  },
+  {
     "id": "HERO_08bp",
     "name": "Fireblast",
     "text": "<b>Hero Power</b>\nDeal $1 damage."
+  },
+  {
+    "id": "HERO_08bp2",
+    "name": "Fireblast Rank 2",
+    "text": "<b>Hero Power</b>\nDeal $2 damage."
   },
   {
     "id": "HERO_09bp",
@@ -575,9 +3275,19 @@
     "text": "<b>Hero Power</b>\nRestore #2 Health."
   },
   {
+    "id": "HERO_09bp2",
+    "name": "Heal",
+    "text": "<b>Hero Power</b>\nRestore #4 Health."
+  },
+  {
     "id": "HERO_10bp",
     "name": "Demon Claws",
     "text": "[x]<b>Hero Power</b>\n+$a1 Attack this turn."
+  },
+  {
+    "id": "HERO_10bp2",
+    "name": "Demon's Bite",
+    "text": "[x]<b>Hero Power</b>\n+$a2 Attack this turn."
   },
   {
     "id": "HERO_11bp",
@@ -590,6 +3300,541 @@
     "text": "[x]<b>Charge</b>\nAt the end of your turn,\nthis minion dies."
   },
   {
+    "id": "ICC_018",
+    "name": "Phantom Freebooter",
+    "text": "<b>Battlecry:</b> Gain stats equal to your weapon's."
+  },
+  {
+    "id": "ICC_019",
+    "name": "Skelemancer",
+    "text": "<b>Deathrattle:</b> If it's your opponent's turn, summon an 8/8 Skeleton."
+  },
+  {
+    "id": "ICC_019t",
+    "name": "Skeletal Flayer",
+    "text": ""
+  },
+  {
+    "id": "ICC_021",
+    "name": "Exploding Bloatbat",
+    "text": "<b>Deathrattle:</b>\nDeal 2 damage to all enemy minions."
+  },
+  {
+    "id": "ICC_023",
+    "name": "Snowflipper Penguin",
+    "text": ""
+  },
+  {
+    "id": "ICC_025",
+    "name": "Rattling Rascal",
+    "text": "[x]<b>Battlecry:</b> Summon a\n5/5 Skeleton.\n<b>Deathrattle:</b> Summon one\nfor your opponent."
+  },
+  {
+    "id": "ICC_025t",
+    "name": "Skeletal Enforcer",
+    "text": ""
+  },
+  {
+    "id": "ICC_026",
+    "name": "Grim Necromancer",
+    "text": "<b>Battlecry:</b> Summon two 1/1 Skeletons."
+  },
+  {
+    "id": "ICC_026t",
+    "name": "Skeleton",
+    "text": ""
+  },
+  {
+    "id": "ICC_027",
+    "name": "Bone Drake",
+    "text": "<b>Deathrattle:</b> Add a random Dragon to your hand."
+  },
+  {
+    "id": "ICC_028",
+    "name": "Sunborne Val'kyr",
+    "text": "<b>Battlecry:</b> Give adjacent minions +2 Health."
+  },
+  {
+    "id": "ICC_029",
+    "name": "Cobalt Scalebane",
+    "text": "At the end of your turn, give another random friendly minion +3 Attack."
+  },
+  {
+    "id": "ICC_031",
+    "name": "Night Howler",
+    "text": "Whenever this minion takes\ndamage, gain +2 Attack."
+  },
+  {
+    "id": "ICC_032",
+    "name": "Venomancer",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_034",
+    "name": "Arrogant Crusader",
+    "text": "<b>Deathrattle:</b> If it's your opponent's turn, summon a 2/2 Ghoul."
+  },
+  {
+    "id": "ICC_038",
+    "name": "Righteous Protector",
+    "text": "<b>Taunt</b>\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "ICC_039",
+    "name": "Dark Conviction",
+    "text": "Set a minion's Attack and Health to 3."
+  },
+  {
+    "id": "ICC_041",
+    "name": "Defile",
+    "text": "Deal $1 damage to all minions. If any die, cast this again."
+  },
+  {
+    "id": "ICC_047",
+    "name": "Fatespinner",
+    "text": "<b>Choose a Deathrattle (Secretly) -</b> Deal 3 damage to all minions; or Give them +2/+2."
+  },
+  {
+    "id": "ICC_047a",
+    "name": "Growth",
+    "text": "<b>Deathrattle:</b> Give all minions +2/+2."
+  },
+  {
+    "id": "ICC_047b",
+    "name": "Decay",
+    "text": "<b>Deathrattle:</b> Deal 3 damage to all minions."
+  },
+  {
+    "id": "ICC_047t",
+    "name": "Fatespinner",
+    "text": "<b>Secret Deathrattle:</b> Deal 3 damage to all minions; or Give them +2/+2.@<b>Secret Deathrattle:</b> Give +2/+2 to all minions.@<b>Secret Deathrattle:</b> Deal 3 damage to all minions."
+  },
+  {
+    "id": "ICC_047t2",
+    "name": "Fatespinner",
+    "text": "<b>Deathrattle:</b> Deal 3 damage to all minions and give them +2/+2."
+  },
+  {
+    "id": "ICC_049",
+    "name": "Toxic Arrow",
+    "text": "Deal $2 damage to a minion. If it survives, give it <b>Poisonous</b>."
+  },
+  {
+    "id": "ICC_050",
+    "name": "Webweave",
+    "text": "Summon two 1/2 <b>Poisonous</b> Spiders."
+  },
+  {
+    "id": "ICC_051",
+    "name": "Druid of the Swarm",
+    "text": "<b>Choose One -</b> Transform into a 1/2 with <b>Poisonous</b>; or a 1/5 with <b>Taunt</b>."
+  },
+  {
+    "id": "ICC_051a",
+    "name": "Spider Form",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_051b",
+    "name": "Scarab Form",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "ICC_051t",
+    "name": "Druid of the Swarm",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_051t2",
+    "name": "Druid of the Swarm",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "ICC_051t3",
+    "name": "Druid of the Swarm",
+    "text": "<b>Taunt</b>\n<b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_052",
+    "name": "Play Dead",
+    "text": "Trigger a friendly minion's <b>Deathrattle</b>."
+  },
+  {
+    "id": "ICC_054",
+    "name": "Spreading Plague",
+    "text": "Summon a 1/5 Scarab with <b>Taunt</b>. If your opponent has more minions, cast this again."
+  },
+  {
+    "id": "ICC_055",
+    "name": "Drain Soul",
+    "text": "<b>Lifesteal</b>\nDeal $3 damage\nto a minion."
+  },
+  {
+    "id": "ICC_056",
+    "name": "Cryostasis",
+    "text": "Give a minion +3/+3 and <b>Freeze</b> it."
+  },
+  {
+    "id": "ICC_058",
+    "name": "Brrrloc",
+    "text": "<b>Battlecry:</b> <b>Freeze</b> an enemy."
+  },
+  {
+    "id": "ICC_062",
+    "name": "Mountainfire Armor",
+    "text": "<b>Deathrattle:</b> If it's your opponent's turn,\ngain 6 Armor."
+  },
+  {
+    "id": "ICC_064",
+    "name": "Blood Razor",
+    "text": "<b>Battlecry and Deathrattle:</b>\nDeal 1 damage to all minions."
+  },
+  {
+    "id": "ICC_065",
+    "name": "Bone Baron",
+    "text": "<b>Deathrattle:</b> Add two 1/1 Skeletons to your hand."
+  },
+  {
+    "id": "ICC_067",
+    "name": "Vryghoul",
+    "text": "[x]<b>Deathrattle:</b> If it's your\nopponent's turn,\nsummon a 2/2 Ghoul."
+  },
+  {
+    "id": "ICC_068",
+    "name": "Ice Walker",
+    "text": "Your Hero Power also <b><b>Freeze</b>s</b> the target."
+  },
+  {
+    "id": "ICC_069",
+    "name": "Ghastly Conjurer",
+    "text": "<b>Battlecry:</b> Add a 'Mirror Image' spell to your hand."
+  },
+  {
+    "id": "ICC_071",
+    "name": "Light's Sorrow",
+    "text": "After a friendly minion loses <b>Divine Shield</b>, gain +1 Attack."
+  },
+  {
+    "id": "ICC_075",
+    "name": "Despicable Dreadlord",
+    "text": "At the end of your turn, deal 1 damage to all enemy minions."
+  },
+  {
+    "id": "ICC_078",
+    "name": "Avalanche",
+    "text": "<b>Freeze</b> a minion and deal $3 damage to adjacent ones."
+  },
+  {
+    "id": "ICC_079",
+    "name": "Gnash",
+    "text": "Give your hero +3 Attack this turn. Gain 3 Armor."
+  },
+  {
+    "id": "ICC_081",
+    "name": "Drakkari Defender",
+    "text": "<b>Taunt</b>\n<b>Overload:</b> (3)"
+  },
+  {
+    "id": "ICC_082",
+    "name": "Frozen Clone",
+    "text": "<b>Secret:</b> After your opponent plays a minion, add two copies of it to your hand."
+  },
+  {
+    "id": "ICC_083",
+    "name": "Doomed Apprentice",
+    "text": "Your opponent's spells cost (1) more."
+  },
+  {
+    "id": "ICC_085",
+    "name": "Ultimate Infestation",
+    "text": "[x]Deal $5 damage. Draw\n5 cards. Gain 5 Armor.\nSummon a 5/5 Ghoul."
+  },
+  {
+    "id": "ICC_085t",
+    "name": "Ghoul Infestor",
+    "text": ""
+  },
+  {
+    "id": "ICC_086",
+    "name": "Glacial Mysteries",
+    "text": "Put one of each <b>Secret</b> from your deck into\nthe battlefield."
+  },
+  {
+    "id": "ICC_088",
+    "name": "Voodoo Hexxer",
+    "text": "<b>Taunt</b>\n<b>Freeze</b> any character damaged by this minion."
+  },
+  {
+    "id": "ICC_089",
+    "name": "Ice Fishing",
+    "text": "Draw 2 Murlocs from your deck."
+  },
+  {
+    "id": "ICC_090",
+    "name": "Snowfury Giant",
+    "text": "Costs (1) less for each Mana Crystal you've <b><b>Overload</b>ed</b> this game."
+  },
+  {
+    "id": "ICC_091",
+    "name": "Dead Man's Hand",
+    "text": "Shuffle a copy of your hand into your deck."
+  },
+  {
+    "id": "ICC_092",
+    "name": "Acherus Veteran",
+    "text": "<b>Battlecry:</b> Give a friendly minion +1 Attack."
+  },
+  {
+    "id": "ICC_093",
+    "name": "Tuskarr Fisherman",
+    "text": "<b>Battlecry:</b> Give a friendly minion <b>Spell Damage +1</b>."
+  },
+  {
+    "id": "ICC_094",
+    "name": "Fallen Sun Cleric",
+    "text": "<b>Battlecry:</b> Give a friendly minion +1/+1."
+  },
+  {
+    "id": "ICC_096",
+    "name": "Furnacefire Colossus",
+    "text": "<b>Battlecry:</b> Discard all weapons from your hand and gain their stats."
+  },
+  {
+    "id": "ICC_097",
+    "name": "Grave Shambler",
+    "text": "Whenever your weapon is destroyed, gain +1/+1."
+  },
+  {
+    "id": "ICC_098",
+    "name": "Tomb Lurker",
+    "text": "[x]<b>Battlecry:</b> Add a random\n<b>Deathrattle</b> minion that died\nthis game to your hand."
+  },
+  {
+    "id": "ICC_099",
+    "name": "Ticking Abomination",
+    "text": "<b>Deathrattle:</b> Deal 5 damage to your minions."
+  },
+  {
+    "id": "ICC_200",
+    "name": "Venomstrike Trap",
+    "text": "<b>Secret:</b> When one of your minions is attacked, summon a 2/3 <b>Poisonous</b> Cobra."
+  },
+  {
+    "id": "ICC_201",
+    "name": "Roll the Bones",
+    "text": "Draw a card.\nIf it has <b>Deathrattle</b>, cast this again."
+  },
+  {
+    "id": "ICC_204",
+    "name": "Professor Putricide",
+    "text": "After you play a <b>Secret</b>,\nput a random Hunter <b>Secret</b> into the battlefield."
+  },
+  {
+    "id": "ICC_206",
+    "name": "Treachery",
+    "text": "Choose a friendly minion and give it to your opponent."
+  },
+  {
+    "id": "ICC_207",
+    "name": "Devour Mind",
+    "text": "Copy 3 cards in your opponent's deck and add them to your hand."
+  },
+  {
+    "id": "ICC_210",
+    "name": "Shadow Ascendant",
+    "text": "[x]At the end of your turn,\ngive another random\nfriendly minion +1/+1."
+  },
+  {
+    "id": "ICC_212",
+    "name": "Acolyte of Agony",
+    "text": "<b>Lifesteal</b>"
+  },
+  {
+    "id": "ICC_213",
+    "name": "Eternal Servitude",
+    "text": "<b>Discover</b> a friendly minion that died this game. Summon it."
+  },
+  {
+    "id": "ICC_214",
+    "name": "Obsidian Statue",
+    "text": "[x]<b>Taunt, Lifesteal</b>\n<b>Deathrattle:</b> Destroy a\n random enemy minion."
+  },
+  {
+    "id": "ICC_215",
+    "name": "Archbishop Benedictus",
+    "text": "<b>Battlecry:</b> Shuffle a copy of your opponent's deck into your deck."
+  },
+  {
+    "id": "ICC_218",
+    "name": "Howlfiend",
+    "text": "Whenever this minion takes damage, discard a random card."
+  },
+  {
+    "id": "ICC_220",
+    "name": "Deadscale Knight",
+    "text": "<b>Lifesteal</b>"
+  },
+  {
+    "id": "ICC_221",
+    "name": "Leeching Poison",
+    "text": "Give your weapon <b>Lifesteal</b> this turn."
+  },
+  {
+    "id": "ICC_233",
+    "name": "Doomerang",
+    "text": "Throw your weapon at a minion. It deals its damage, then returns to your hand."
+  },
+  {
+    "id": "ICC_235",
+    "name": "Shadow Essence",
+    "text": "Summon a 5/5 copy of a random minion in your deck."
+  },
+  {
+    "id": "ICC_236",
+    "name": "Ice Breaker",
+    "text": "Destroy any <b>Frozen</b> minion damaged by this."
+  },
+  {
+    "id": "ICC_238",
+    "name": "Animated Berserker",
+    "text": "After you play a minion, deal 1 damage to it."
+  },
+  {
+    "id": "ICC_240",
+    "name": "Runeforge Haunter",
+    "text": "During your turn, your weapon doesn't lose Durability."
+  },
+  {
+    "id": "ICC_243",
+    "name": "Corpse Widow",
+    "text": "Your <b>Deathrattle</b> cards cost (2) less."
+  },
+  {
+    "id": "ICC_244",
+    "name": "Desperate Stand",
+    "text": "Give a minion \"<b>Deathrattle:</b> Return this to life with 1 Health.\""
+  },
+  {
+    "id": "ICC_245",
+    "name": "Blackguard",
+    "text": "Whenever your hero is healed, deal that much damage to a random enemy minion."
+  },
+  {
+    "id": "ICC_252",
+    "name": "Coldwraith",
+    "text": "<b>Battlecry:</b> If an enemy is <b>Frozen</b>, draw a card."
+  },
+  {
+    "id": "ICC_257",
+    "name": "Corpse Raiser",
+    "text": "[x]<b>Battlecry:</b> Give a friendly\nminion \"<b>Deathrattle:</b>\n  Resummon this minion.\""
+  },
+  {
+    "id": "ICC_281",
+    "name": "Forge of Souls",
+    "text": "Draw 2 weapons from your deck."
+  },
+  {
+    "id": "ICC_289",
+    "name": "Moorabi",
+    "text": "Whenever another minion is <b>Frozen</b>, add a copy of it to your hand."
+  },
+  {
+    "id": "ICC_314",
+    "name": "The Lich King",
+    "text": "[x]<b>Taunt</b>\nAt the end of your turn,\nadd a random <b>Lich King</b>\ncard to your hand."
+  },
+  {
+    "id": "ICC_314t1",
+    "name": "Frostmourne",
+    "text": "<b>Deathrattle:</b> Summon every minion killed by this weapon."
+  },
+  {
+    "id": "ICC_314t2",
+    "name": "Army of the Frozen Throne",
+    "text": "Remove the top 5 cards of your deck. Summon any minions removed."
+  },
+  {
+    "id": "ICC_314t3",
+    "name": "Doom Pact",
+    "text": "[x]Destroy all minions. \nRemove the top card \nfrom your deck for each\nminion destroyed."
+  },
+  {
+    "id": "ICC_314t4",
+    "name": "Death Grip",
+    "text": "Steal a minion from your opponent's deck and add it to your hand."
+  },
+  {
+    "id": "ICC_314t5",
+    "name": "Death Coil",
+    "text": "Deal $5 damage to an enemy, or restore #5 Health to a friendly character."
+  },
+  {
+    "id": "ICC_314t6",
+    "name": "Obliterate",
+    "text": "Destroy a minion. Your hero takes damage equal to its Health."
+  },
+  {
+    "id": "ICC_314t7",
+    "name": "Anti-Magic Shell",
+    "text": "Give your minions +2/+2 and <b>Elusive</b>."
+  },
+  {
+    "id": "ICC_314t8",
+    "name": "Death and Decay",
+    "text": "Deal $3 damage to all enemies."
+  },
+  {
+    "id": "ICC_405",
+    "name": "Rotface",
+    "text": "[x]After this minion\nsurvives damage,\nsummon a random\n<b>Legendary</b> minion."
+  },
+  {
+    "id": "ICC_407",
+    "name": "Gnomeferatu",
+    "text": "<b>Battlecry:</b> Remove\nthe top card of your opponent's deck."
+  },
+  {
+    "id": "ICC_408",
+    "name": "Val'kyr Soulclaimer",
+    "text": "[x]After this minion\nsurvives damage,\nsummon a 2/2 Ghoul."
+  },
+  {
+    "id": "ICC_415",
+    "name": "Stitched Tracker",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a copy of a minion in your deck."
+  },
+  {
+    "id": "ICC_419",
+    "name": "Bearshark",
+    "text": "<b>Elusive</b>"
+  },
+  {
+    "id": "ICC_450",
+    "name": "Death Revenant",
+    "text": "<b>Battlecry:</b> Gain +1/+1 for each damaged minion."
+  },
+  {
+    "id": "ICC_466",
+    "name": "Saronite Chain Gang",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Summon a\nSaronite Chain Gang."
+  },
+  {
+    "id": "ICC_467",
+    "name": "Deathspeaker",
+    "text": "<b>Battlecry:</b> Give a friendly minion <b>Immune</b> this turn."
+  },
+  {
+    "id": "ICC_468",
+    "name": "Wretched Tiller",
+    "text": "Whenever this minion attacks, deal 2 damage to the enemy hero."
+  },
+  {
+    "id": "ICC_469",
+    "name": "Unwilling Sacrifice",
+    "text": "Choose a friendly minion. Destroy it and a random enemy minion."
+  },
+  {
     "id": "ICC_481",
     "name": "Thrall, Deathseer",
     "text": "<b>Battlecry:</b> Transform your minions into random ones that cost (2) more."
@@ -598,6 +3843,86 @@
     "id": "ICC_481p",
     "name": "Transmute Spirit",
     "text": "[x]Transform a friendly\nminion into a random one\nthat costs (1) more."
+  },
+  {
+    "id": "ICC_700",
+    "name": "Happy Ghoul",
+    "text": "Costs (0) if your hero was healed this turn."
+  },
+  {
+    "id": "ICC_701",
+    "name": "Skulking Geist",
+    "text": "<b>Battlecry:</b> Destroy all\n1-Cost spells in both hands and decks."
+  },
+  {
+    "id": "ICC_702",
+    "name": "Shallow Gravedigger",
+    "text": "<b>Deathrattle:</b> Add a random <b>Deathrattle</b> minion to your hand."
+  },
+  {
+    "id": "ICC_705",
+    "name": "Bonemare",
+    "text": "<b>Battlecry:</b> Give a friendly minion +4/+4 and <b>Taunt</b>."
+  },
+  {
+    "id": "ICC_706",
+    "name": "Nerubian Unraveler",
+    "text": "Spells cost (2) more."
+  },
+  {
+    "id": "ICC_801",
+    "name": "Howling Commander",
+    "text": "<b>Battlecry:</b> Draw a <b>Divine Shield</b> minion from your deck."
+  },
+  {
+    "id": "ICC_802",
+    "name": "Spirit Lash",
+    "text": "<b>Lifesteal</b>\nDeal $1 damage to all minions."
+  },
+  {
+    "id": "ICC_807",
+    "name": "Strongshell Scavenger",
+    "text": "<b>Battlecry:</b> Give your <b>Taunt</b> minions +2/+2."
+  },
+  {
+    "id": "ICC_808",
+    "name": "Crypt Lord",
+    "text": "[x]<b>Taunt</b>\nAfter you summon a minion,\n gain +1 Health."
+  },
+  {
+    "id": "ICC_809",
+    "name": "Plague Scientist",
+    "text": "<b>Combo:</b> Give a friendly minion <b>Poisonous</b>."
+  },
+  {
+    "id": "ICC_810",
+    "name": "Deathaxe Punisher",
+    "text": "<b>Battlecry:</b> Give a random <b>Lifesteal</b> minion in your hand +2/+2."
+  },
+  {
+    "id": "ICC_811",
+    "name": "Lilian Voss",
+    "text": "<b>Battlecry:</b> Replace spells in your hand with random spells <i>(from your opponent's class).</i>"
+  },
+  {
+    "id": "ICC_812",
+    "name": "Meat Wagon",
+    "text": "[x]<b>Deathrattle:</b> Summon a\nminion from your deck\nwith less Attack than\nthis minion."
+  },
+  {
+    "id": "ICC_820",
+    "name": "Chillblade Champion",
+    "text": "<b>Charge</b>\n<b>Lifesteal</b>"
+  },
+  {
+    "id": "ICC_823",
+    "name": "Simulacrum",
+    "text": "Copy the lowest Cost minion in your hand."
+  },
+  {
+    "id": "ICC_825",
+    "name": "Abominable Bowman",
+    "text": "[x]<b>Deathrattle:</b> Summon\na random friendly Beast\nthat died this game."
   },
   {
     "id": "ICC_827",
@@ -628,6 +3953,36 @@
     "id": "ICC_828t",
     "name": "Zombeast",
     "text": "{0}\n{1}"
+  },
+  {
+    "id": "ICC_828t2",
+    "name": "Stubborn Gastropod",
+    "text": "<b>Taunt</b>\n  <b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_828t3",
+    "name": "Giant Wasp",
+    "text": "<b>Stealth</b>\n <b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_828t4",
+    "name": "Stoneskin Basilisk",
+    "text": "<b>Divine Shield</b>\n <b>Poisonous</b>"
+  },
+  {
+    "id": "ICC_828t5",
+    "name": "Hunting Mastiff",
+    "text": "<b>Echo</b>\n<b>Rush</b>"
+  },
+  {
+    "id": "ICC_828t6",
+    "name": "Vilebrood Skitterer",
+    "text": "<b>Poisonous</b>\n<b>Rush</b>"
+  },
+  {
+    "id": "ICC_828t7",
+    "name": "Vicious Scalehide",
+    "text": "<b>Lifesteal</b>\n<b>Rush</b>"
   },
   {
     "id": "ICC_829",
@@ -735,6 +4090,131 @@
     "text": "Also damages the minions next to whomever your hero attacks."
   },
   {
+    "id": "ICC_835",
+    "name": "Hadronox",
+    "text": "<b>Deathrattle:</b> Summon your <b>Taunt</b> minions that\ndied this game."
+  },
+  {
+    "id": "ICC_836",
+    "name": "Breath of Sindragosa",
+    "text": "Deal $2 damage to a random enemy minion and <b>Freeze</b> it."
+  },
+  {
+    "id": "ICC_837",
+    "name": "Bring It On!",
+    "text": "Gain 10 Armor. Reduce the Cost of minions in your opponent's hand by (2)."
+  },
+  {
+    "id": "ICC_838",
+    "name": "Sindragosa",
+    "text": "<b>Battlecry:</b> Summon two 0/1 Frozen Champions."
+  },
+  {
+    "id": "ICC_838t",
+    "name": "Frozen Champion",
+    "text": "[x]<b>Deathrattle:</b> Add a\nrandom <b>Legendary</b> minion\nto your hand."
+  },
+  {
+    "id": "ICC_841",
+    "name": "Blood-Queen Lana'thel",
+    "text": "[x]<b>Lifesteal</b>\nHas +1 Attack for each\ncard you've discarded\nthis game."
+  },
+  {
+    "id": "ICC_849",
+    "name": "Embrace Darkness",
+    "text": "[x]Choose an enemy minion.\nAt the start of your turn,\ngain control of it."
+  },
+  {
+    "id": "ICC_850",
+    "name": "Shadowblade",
+    "text": "<b>Battlecry:</b> Your hero is <b>Immune</b> this turn."
+  },
+  {
+    "id": "ICC_851",
+    "name": "Prince Keleseth",
+    "text": "<b>Battlecry:</b> If your deck has no 2-Cost cards, give all minions in your deck +1/+1."
+  },
+  {
+    "id": "ICC_852",
+    "name": "Prince Taldaram",
+    "text": "<b>Battlecry:</b> If your deck has no 3-Cost cards, transform into a 3/3 copy of a minion."
+  },
+  {
+    "id": "ICC_853",
+    "name": "Prince Valanar",
+    "text": "<b>Battlecry:</b> If your deck has no 4-Cost cards, gain <b>Lifesteal</b> and <b>Taunt</b>."
+  },
+  {
+    "id": "ICC_854",
+    "name": "Arfus",
+    "text": "[x]<b>Deathrattle:</b> Add a random\n<b>Lich King</b> card to your hand."
+  },
+  {
+    "id": "ICC_855",
+    "name": "Hyldnir Frostrider",
+    "text": "<b>Battlecry:</b> <b>Freeze</b> your other minions."
+  },
+  {
+    "id": "ICC_856",
+    "name": "Spellweaver",
+    "text": "<b>Spell Damage +2</b>"
+  },
+  {
+    "id": "ICC_858",
+    "name": "Bolvar, Fireblood",
+    "text": "<b>Divine Shield</b>\nAfter a friendly minion loses <b>Divine Shield</b>, gain +2 Attack."
+  },
+  {
+    "id": "ICC_900",
+    "name": "Necrotic Geist",
+    "text": "Whenever one of your other minions dies, summon a 2/2 Ghoul."
+  },
+  {
+    "id": "ICC_900t",
+    "name": "Ghoul",
+    "text": ""
+  },
+  {
+    "id": "ICC_901",
+    "name": "Drakkari Enchanter",
+    "text": "Your end of turn effects trigger twice."
+  },
+  {
+    "id": "ICC_902",
+    "name": "Mindbreaker",
+    "text": "Hero Powers are disabled."
+  },
+  {
+    "id": "ICC_903",
+    "name": "Sanguine Reveler",
+    "text": "<b>Battlecry:</b> Destroy a friendly minion and gain +2/+2."
+  },
+  {
+    "id": "ICC_904",
+    "name": "Wicked Skeleton",
+    "text": "<b>Battlecry:</b> Gain +1/+1 for each minion that died this turn."
+  },
+  {
+    "id": "ICC_905",
+    "name": "Bloodworm",
+    "text": "<b>Lifesteal</b>"
+  },
+  {
+    "id": "ICC_910",
+    "name": "Spectral Pillager",
+    "text": "[x]<b>Combo:</b> Deal 2 damage to\na minion for each other card\nyou've played this turn."
+  },
+  {
+    "id": "ICC_911",
+    "name": "Keening Banshee",
+    "text": "Whenever you play a card, remove the top 3 cards of your deck."
+  },
+  {
+    "id": "ICC_912",
+    "name": "Corpsetaker",
+    "text": "[x]<b>Battlecry:</b> Gain <b>Taunt</b> if your\ndeck has a <b>Taunt</b> minion.\nRepeat for <b>Divine Shield</b>,\n<b>Lifesteal</b>, <b>Windfury</b>."
+  },
+  {
     "id": "ICC_913",
     "name": "Tainted Zealot",
     "text": "<b>Divine Shield</b>\n<b>Spell Damage +1</b>"
@@ -743,6 +4223,16 @@
     "id": "JAIL_720",
     "name": "Lotus Bookie",
     "text": "<b>Deathrattle:</b> Get a Coin."
+  },
+  {
+    "id": "KAR_004",
+    "name": "Cat Trick",
+    "text": "<b>Secret:</b> After your opponent casts a spell, summon a 4/2 Panther with <b>Stealth</b>."
+  },
+  {
+    "id": "KAR_004a",
+    "name": "Cat in a Hat",
+    "text": "<b>Stealth</b>"
   },
   {
     "id": "KAR_005",
@@ -755,6 +4245,111 @@
     "text": ""
   },
   {
+    "id": "KAR_006",
+    "name": "Cloaked Huntress",
+    "text": "Your <b>Secrets</b> cost (0)."
+  },
+  {
+    "id": "KAR_009",
+    "name": "Babbling Book",
+    "text": "<b>Battlecry:</b> Add a random Mage spell to your hand."
+  },
+  {
+    "id": "KAR_010",
+    "name": "Nightbane Templar",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, summon two 1/1 Whelps."
+  },
+  {
+    "id": "KAR_010a",
+    "name": "Whelp",
+    "text": ""
+  },
+  {
+    "id": "KAR_011",
+    "name": "Pompous Thespian",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "KAR_013",
+    "name": "Purify",
+    "text": "<b>Silence</b> a friendly minion. Draw a card."
+  },
+  {
+    "id": "KAR_021",
+    "name": "Wicked Witchdoctor",
+    "text": "Whenever you cast a spell, summon a random basic Totem."
+  },
+  {
+    "id": "KAR_025",
+    "name": "Kara Kazham!",
+    "text": "Summon a 1/1 Candle, 2/2 Broom, and 3/3 Teapot."
+  },
+  {
+    "id": "KAR_025a",
+    "name": "Candle",
+    "text": ""
+  },
+  {
+    "id": "KAR_025b",
+    "name": "Broom",
+    "text": ""
+  },
+  {
+    "id": "KAR_025c",
+    "name": "Teapot",
+    "text": ""
+  },
+  {
+    "id": "KAR_026",
+    "name": "Protect the King!",
+    "text": "For each enemy minion, summon a 1/1 Pawn with <b>Taunt</b>."
+  },
+  {
+    "id": "KAR_026t",
+    "name": "Pawn",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "KAR_028",
+    "name": "Fool's Bane",
+    "text": "Unlimited attacks each turn. Can't attack heroes."
+  },
+  {
+    "id": "KAR_029",
+    "name": "Runic Egg",
+    "text": "<b>Deathrattle:</b> Draw a card."
+  },
+  {
+    "id": "KAR_030a",
+    "name": "Pantry Spider",
+    "text": "<b>Battlecry:</b> Summon a\n1/3 Spider."
+  },
+  {
+    "id": "KAR_033",
+    "name": "Book Wyrm",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, destroy an enemy minion with 3 or less Attack."
+  },
+  {
+    "id": "KAR_035",
+    "name": "Priest of the Feast",
+    "text": "Whenever you cast a spell, restore #3 Health to\nyour hero."
+  },
+  {
+    "id": "KAR_036",
+    "name": "Arcane Anomaly",
+    "text": "After you cast a spell, give this minion +1 Health."
+  },
+  {
+    "id": "KAR_037",
+    "name": "Avian Watcher",
+    "text": "<b>Battlecry:</b> If you control a <b>Secret</b>, gain +1/+1\nand <b>Taunt</b>."
+  },
+  {
+    "id": "KAR_041",
+    "name": "Moat Lurker",
+    "text": "<b>Battlecry:</b> Destroy a minion. <b>Deathrattle:</b> Resummon it."
+  },
+  {
     "id": "KAR_044",
     "name": "Moroes",
     "text": "<b>Stealth</b>\nAt the end of your turn, summon a 1/1 Steward."
@@ -765,9 +4360,89 @@
     "text": ""
   },
   {
+    "id": "KAR_057",
+    "name": "Ivory Knight",
+    "text": "[x]<b>Battlecry:</b> <b>Discover</b> a spell.\nRestore Health to your hero\nequal to its Cost."
+  },
+  {
+    "id": "KAR_061",
+    "name": "The Curator",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Draw a Beast, Dragon, and Murloc."
+  },
+  {
+    "id": "KAR_062",
+    "name": "Netherspite Historian",
+    "text": "<b>Battlecry:</b> If you're holding a Dragon, <b>Discover</b>\na Dragon."
+  },
+  {
+    "id": "KAR_063",
+    "name": "Spirit Claws",
+    "text": "[x]Has +2 Attack while you\nhave <b>Spell Damage</b>."
+  },
+  {
+    "id": "KAR_065",
+    "name": "Menagerie Warden",
+    "text": "<b>Battlecry:</b> Choose a friendly Beast. Summon a copy of it."
+  },
+  {
     "id": "KAR_069",
     "name": "Swashburglar",
     "text": "<b>Battlecry:</b> Add a random card from another class to your hand."
+  },
+  {
+    "id": "KAR_070",
+    "name": "Ethereal Peddler",
+    "text": "<b>Battlecry:</b> If you're holding any cards from another class, reduce their Cost by (2)."
+  },
+  {
+    "id": "KAR_073",
+    "name": "Maelstrom Portal",
+    "text": "Deal $1 damage to all enemy minions. Summon a random\n1-Cost minion."
+  },
+  {
+    "id": "KAR_075",
+    "name": "Moonglade Portal",
+    "text": "Restore #6 Health. Summon a random\n6-Cost minion."
+  },
+  {
+    "id": "KAR_076",
+    "name": "Firelands Portal",
+    "text": "Deal $6 damage. Summon a random\n6-Cost minion."
+  },
+  {
+    "id": "KAR_077",
+    "name": "Silvermoon Portal",
+    "text": "Give a minion +2/+2. Summon a random\n2-Cost minion."
+  },
+  {
+    "id": "KAR_089",
+    "name": "Malchezaar's Imp",
+    "text": "Whenever you discard a card, draw a card."
+  },
+  {
+    "id": "KAR_091",
+    "name": "Ironforge Portal",
+    "text": "Gain 4 Armor.\nSummon a random\n4-Cost minion."
+  },
+  {
+    "id": "KAR_092",
+    "name": "Medivh's Valet",
+    "text": "<b>Battlecry:</b> If you control a <b>Secret</b>, deal 3 damage."
+  },
+  {
+    "id": "KAR_094",
+    "name": "Deadly Fork",
+    "text": "<b>Deathrattle:</b> Add a 3/2 weapon to your hand."
+  },
+  {
+    "id": "KAR_094a",
+    "name": "Sharp Fork",
+    "text": ""
+  },
+  {
+    "id": "KAR_095",
+    "name": "Zoobot",
+    "text": "<b>Battlecry:</b> Give a random friendly Beast, Dragon, and Murloc +1/+1."
   },
   {
     "id": "KAR_096",
@@ -775,9 +4450,354 @@
     "text": "[x]<b>Start of Game:</b>\nAdd 5 extra <b>Legendary</b>\nminions to your deck."
   },
   {
+    "id": "KAR_097",
+    "name": "Medivh, the Guardian",
+    "text": "<b>Battlecry:</b> Equip Atiesh, Greatstaff of the Guardian."
+  },
+  {
+    "id": "KAR_097t",
+    "name": "Atiesh",
+    "text": "[x]After you cast a spell,\nsummon a random\nminion of that Cost.\nLose 1 Durability."
+  },
+  {
+    "id": "KAR_114",
+    "name": "Barnes",
+    "text": "<b>Battlecry:</b> Summon a 1/1 copy of a random minion in your deck."
+  },
+  {
+    "id": "KAR_204",
+    "name": "Onyx Bishop",
+    "text": "<b>Battlecry:</b> Summon a random friendly minion\nthat died this game."
+  },
+  {
+    "id": "KAR_205",
+    "name": "Silverware Golem",
+    "text": "If you discard this minion, summon it."
+  },
+  {
+    "id": "KAR_300",
+    "name": "Enchanted Raven",
+    "text": ""
+  },
+  {
+    "id": "KAR_702",
+    "name": "Menagerie Magician",
+    "text": "<b>Battlecry:</b> Give a random friendly Beast, Dragon, and Murloc +2/+2."
+  },
+  {
+    "id": "KAR_710",
+    "name": "Arcanosmith",
+    "text": "<b>Battlecry:</b> Summon a 0/5 minion with <b>Taunt</b>."
+  },
+  {
+    "id": "KAR_710m",
+    "name": "Animated Shield",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "KAR_711",
+    "name": "Arcane Giant",
+    "text": "[x]Costs (1) less for each spell\nyou've cast this game."
+  },
+  {
+    "id": "KAR_712",
+    "name": "Violet Illusionist",
+    "text": "During your turn, your hero is <b>Immune</b>."
+  },
+  {
+    "id": "LOEA10_3",
+    "name": "Murloc Tinyfin",
+    "text": ""
+  },
+  {
+    "id": "LOEA16_3",
+    "name": "Lantern of Power",
+    "text": "Give a minion +10/+10."
+  },
+  {
+    "id": "LOEA16_4",
+    "name": "Timepiece of Horror",
+    "text": "Deal $10 damage randomly split among all enemies."
+  },
+  {
+    "id": "LOEA16_5",
+    "name": "Mirror of Doom",
+    "text": "Fill your board with 3/3 Mummy Zombies."
+  },
+  {
+    "id": "LOEA16_5t",
+    "name": "Mummy Zombie",
+    "text": ""
+  },
+  {
+    "id": "LOE_002",
+    "name": "Forgotten Torch",
+    "text": "Deal $3 damage. Shuffle a 'Roaring Torch' into your deck that deals 6 damage."
+  },
+  {
+    "id": "LOE_002t",
+    "name": "Roaring Torch",
+    "text": "Deal $6 damage."
+  },
+  {
+    "id": "LOE_003",
+    "name": "Ethereal Conjurer",
+    "text": "<b>Battlecry: Discover</b> a spell."
+  },
+  {
+    "id": "LOE_006",
+    "name": "Museum Curator",
+    "text": "<b>Battlecry: Discover</b> a <b>Deathrattle</b> card.\nIt costs (1) less."
+  },
+  {
+    "id": "LOE_007",
+    "name": "Curse of Rafaam",
+    "text": "Give your opponent a 'Cursed!' card.\nWhile they hold it, they take 2 damage on their turn."
+  },
+  {
+    "id": "LOE_007t",
+    "name": "Cursed!",
+    "text": "While this is in your hand, take 2 damage at the start of your turn."
+  },
+  {
+    "id": "LOE_009",
+    "name": "Obsidian Destroyer",
+    "text": "At the end of your turn, summon a 1/1 Scarab with <b>Taunt</b>."
+  },
+  {
+    "id": "LOE_009t",
+    "name": "Scarab",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "LOE_010",
+    "name": "Pit Snake",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "LOE_011",
+    "name": "Reno Jackson",
+    "text": "<b>Battlecry:</b> If your deck has no duplicates, fully heal your hero."
+  },
+  {
     "id": "LOE_012",
     "name": "Tomb Pillager",
     "text": "<b>Deathrattle:</b> Get a Coin."
+  },
+  {
+    "id": "LOE_016",
+    "name": "Rumbling Elemental",
+    "text": "After you play a <b>Battlecry</b> minion, deal 2 damage to a random enemy."
+  },
+  {
+    "id": "LOE_016t",
+    "name": "Rock",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "LOE_017",
+    "name": "Keeper of Uldaman",
+    "text": "<b>Battlecry:</b> Set a minion's Attack and Health to 3."
+  },
+  {
+    "id": "LOE_018",
+    "name": "Tunnel Trogg",
+    "text": "Whenever you <b>Overload</b>, gain +1 Attack per locked Mana Crystal."
+  },
+  {
+    "id": "LOE_019",
+    "name": "Unearthed Raptor",
+    "text": "<b>Battlecry:</b> Choose a friendly minion. Gain a copy of its <b>Deathrattle</b>."
+  },
+  {
+    "id": "LOE_019t",
+    "name": "Map to the Golden Monkey",
+    "text": "Shuffle the Golden Monkey into your deck. Draw a card."
+  },
+  {
+    "id": "LOE_019t2",
+    "name": "Golden Monkey",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Replace your hand and deck with <b>Legendary</b> minions."
+  },
+  {
+    "id": "LOE_020",
+    "name": "Desert Camel",
+    "text": "<b>Battlecry:</b> Put a 1-Cost minion from each deck into the battlefield."
+  },
+  {
+    "id": "LOE_021",
+    "name": "Dart Trap",
+    "text": "<b>Secret:</b> After an opposing Hero Power is used, deal $5 damage to a random enemy."
+  },
+  {
+    "id": "LOE_022",
+    "name": "Fierce Monkey",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "LOE_023",
+    "name": "Dark Peddler",
+    "text": "<b>Battlecry: Discover</b> a\n1-Cost card."
+  },
+  {
+    "id": "LOE_026",
+    "name": "Anyfin Can Happen",
+    "text": "Summon 7 Murlocs that died this game."
+  },
+  {
+    "id": "LOE_027",
+    "name": "Sacred Trial",
+    "text": "<b>Secret:</b> After your opponent has at least 3 minions and plays another, destroy it."
+  },
+  {
+    "id": "LOE_029",
+    "name": "Jeweled Scarab",
+    "text": "<b>Battlecry: Discover</b> a\n3-Cost card."
+  },
+  {
+    "id": "LOE_038",
+    "name": "Naga Sea Witch",
+    "text": "Your cards cost (5)."
+  },
+  {
+    "id": "LOE_039",
+    "name": "Gorillabot A-3",
+    "text": "<b>Battlecry:</b> If you control another Mech, <b>Discover</b> a Mech."
+  },
+  {
+    "id": "LOE_046",
+    "name": "Huge Toad",
+    "text": "<b>Deathrattle:</b> Deal 1 damage to a random enemy."
+  },
+  {
+    "id": "LOE_047",
+    "name": "Tomb Spider",
+    "text": "<b>Battlecry: Discover</b> a Beast."
+  },
+  {
+    "id": "LOE_050",
+    "name": "Mounted Raptor",
+    "text": "<b>Deathrattle:</b> Summon a random 1-Cost minion."
+  },
+  {
+    "id": "LOE_051",
+    "name": "Jungle Moonkin",
+    "text": "Both players have\n<b>Spell Damage +2</b>."
+  },
+  {
+    "id": "LOE_053",
+    "name": "Djinni of Zephyrs",
+    "text": "After you cast a spell on another friendly minion, cast a copy of it on this one."
+  },
+  {
+    "id": "LOE_061",
+    "name": "Anubisath Sentinel",
+    "text": "<b>Deathrattle:</b> Give a random friendly minion +3/+3."
+  },
+  {
+    "id": "LOE_073",
+    "name": "Fossilized Devilsaur",
+    "text": "<b>Battlecry:</b> If you control another Beast, gain <b>Taunt</b>."
+  },
+  {
+    "id": "LOE_076",
+    "name": "Sir Finley Mrrgglton",
+    "text": "<b><b>Battlecry:</b> Discover</b> a new basic Hero Power."
+  },
+  {
+    "id": "LOE_077",
+    "name": "Brann Bronzebeard",
+    "text": "Your <b>Battlecries</b> trigger twice."
+  },
+  {
+    "id": "LOE_079",
+    "name": "Elise Starseeker",
+    "text": "<b>Battlecry:</b> Shuffle the 'Map to the Golden Monkey'   into your deck."
+  },
+  {
+    "id": "LOE_086",
+    "name": "Summoning Stone",
+    "text": "Whenever you cast a spell, summon a random minion of the same Cost."
+  },
+  {
+    "id": "LOE_089",
+    "name": "Wobbling Runts",
+    "text": "<b>Deathrattle:</b> Summon three 2/2 Runts."
+  },
+  {
+    "id": "LOE_089t",
+    "name": "Rascally Runt",
+    "text": ""
+  },
+  {
+    "id": "LOE_089t2",
+    "name": "Wily Runt",
+    "text": ""
+  },
+  {
+    "id": "LOE_089t3",
+    "name": "Grumbly Runt",
+    "text": ""
+  },
+  {
+    "id": "LOE_092",
+    "name": "Arch-Thief Rafaam",
+    "text": "<b>Battlecry: Discover</b> a powerful Artifact."
+  },
+  {
+    "id": "LOE_104",
+    "name": "Entomb",
+    "text": "Choose an enemy minion.\nShuffle it into your deck."
+  },
+  {
+    "id": "LOE_105",
+    "name": "Explorer's Hat",
+    "text": "Give a minion +1/+1 and \"<b>Deathrattle:</b> Get an Explorer's Hat.\""
+  },
+  {
+    "id": "LOE_107",
+    "name": "Eerie Statue",
+    "text": "Can’t attack unless it’s the only minion on the battlefield."
+  },
+  {
+    "id": "LOE_110",
+    "name": "Ancient Shade",
+    "text": "<b>Battlecry:</b> Shuffle an 'Ancient Curse' into your deck that deals 7 damage to you when drawn."
+  },
+  {
+    "id": "LOE_110t",
+    "name": "Ancient Curse",
+    "text": "<b>Casts When Drawn</b>\nYou take 7 damage."
+  },
+  {
+    "id": "LOE_111",
+    "name": "Excavated Evil",
+    "text": "Deal $3 damage to all minions.\nShuffle this card into your opponent's deck."
+  },
+  {
+    "id": "LOE_113",
+    "name": "Everyfin is Awesome",
+    "text": "Give your minions +2/+2.\nCosts (1) less for each Murloc you control."
+  },
+  {
+    "id": "LOE_115",
+    "name": "Raven Idol",
+    "text": "<b>Choose One -</b>\n<b>Discover</b> a minion; or <b>Discover</b> a spell."
+  },
+  {
+    "id": "LOE_116",
+    "name": "Reliquary Seeker",
+    "text": "<b>Battlecry:</b> If you have 6 other minions, gain +4/+4."
+  },
+  {
+    "id": "LOE_118",
+    "name": "Cursed Blade",
+    "text": "Double all damage dealt to your hero."
+  },
+  {
+    "id": "LOE_119",
+    "name": "Animated Armor",
+    "text": "Your hero can only take 1 damage at a time."
   },
   {
     "id": "LOOT_014",
@@ -825,9 +4845,364 @@
     "text": ""
   },
   {
+    "id": "NEW1_032",
+    "name": "Misha",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "NEW1_033",
+    "name": "Leokk",
+    "text": "Your other minions have +1 Attack."
+  },
+  {
+    "id": "NEW1_034",
+    "name": "Huffer",
+    "text": "<b>Charge</b>"
+  },
+  {
+    "id": "OG_006",
+    "name": "Vilefin Inquisitor",
+    "text": "<b>Battlecry:</b> Your Hero Power becomes 'Summon a   1/1 Murloc.'"
+  },
+  {
+    "id": "OG_006a",
+    "name": "Silver Hand Murloc",
+    "text": ""
+  },
+  {
+    "id": "OG_006b",
+    "name": "The Tidal Hand",
+    "text": "Summon a 1/1 Silver Hand Murloc."
+  },
+  {
+    "id": "OG_023",
+    "name": "Primal Fusion",
+    "text": "Give a minion +1/+1 for each of your Totems."
+  },
+  {
+    "id": "OG_024",
+    "name": "Flamewreathed Faceless",
+    "text": "<b>Overload:</b> (2)"
+  },
+  {
+    "id": "OG_026",
+    "name": "Eternal Sentinel",
+    "text": "<b>Battlecry:</b> Unlock your <b>Overloaded</b> Mana Crystals."
+  },
+  {
+    "id": "OG_027",
+    "name": "Evolve",
+    "text": "Transform your minions into random minions that cost (1) more."
+  },
+  {
+    "id": "OG_028",
+    "name": "Thing from Below",
+    "text": "[x]<b>Taunt</b>\nCosts (1) less for each\nTotem you've summoned\nthis game."
+  },
+  {
+    "id": "OG_031",
+    "name": "Hammer of Twilight",
+    "text": "<b>Deathrattle:</b> Summon a 4/2 Elemental."
+  },
+  {
+    "id": "OG_031a",
+    "name": "Twilight Elemental",
+    "text": ""
+  },
+  {
+    "id": "OG_033",
+    "name": "Tentacles for Arms",
+    "text": "<b>Deathrattle:</b> Return this to your hand."
+  },
+  {
+    "id": "OG_034",
+    "name": "Silithid Swarmer",
+    "text": "Can only attack if your hero attacked this turn."
+  },
+  {
+    "id": "OG_042",
+    "name": "Y'Shaarj, Rage Unbound",
+    "text": "At the end of your turn, put a minion from your deck into the battlefield."
+  },
+  {
     "id": "OG_044",
     "name": "Fandral Staghelm",
     "text": "Your <b>Choose One</b> cards and powers have both effects combined."
+  },
+  {
+    "id": "OG_044a",
+    "name": "Druid of the Claw",
+    "text": "<b>Rush</b>\n<b>Taunt</b>"
+  },
+  {
+    "id": "OG_044b",
+    "name": "Druid of the Flame",
+    "text": ""
+  },
+  {
+    "id": "OG_044c",
+    "name": "Druid of the Saber",
+    "text": "<b>Charge</b>\n<b>Stealth</b>"
+  },
+  {
+    "id": "OG_045",
+    "name": "Infest",
+    "text": "Give your minions \"<b>Deathrattle:</b> Add a random Beast to your hand.\""
+  },
+  {
+    "id": "OG_047",
+    "name": "Feral Rage",
+    "text": "<b>Choose One -</b> Give your hero +4 Attack this turn; or Gain 8 Armor."
+  },
+  {
+    "id": "OG_048",
+    "name": "Mark of Y'Shaarj",
+    "text": "Give a minion +2/+2.\nIf it's a Beast, draw\na card."
+  },
+  {
+    "id": "OG_051",
+    "name": "Forbidden Ancient",
+    "text": "<b>Battlecry:</b> Spend all your Mana. Gain +1/+1 for each Mana spent."
+  },
+  {
+    "id": "OG_058",
+    "name": "Rusty Hook",
+    "text": ""
+  },
+  {
+    "id": "OG_061",
+    "name": "On the Hunt",
+    "text": "Deal $1 damage.\nSummon a 1/1 Mastiff."
+  },
+  {
+    "id": "OG_061t",
+    "name": "Mastiff",
+    "text": ""
+  },
+  {
+    "id": "OG_070",
+    "name": "Bladed Cultist",
+    "text": "<b>Combo:</b> Gain +1/+1."
+  },
+  {
+    "id": "OG_072",
+    "name": "Journey Below",
+    "text": "<b>Discover</b> a <b>Deathrattle</b> card."
+  },
+  {
+    "id": "OG_073",
+    "name": "Thistle Tea",
+    "text": "Draw a card. Add 2 extra copies of it to your hand."
+  },
+  {
+    "id": "OG_080",
+    "name": "Xaril, Poisoned Mind",
+    "text": "<b>Battlecry and Deathrattle:</b> Add a random Toxin card to your hand."
+  },
+  {
+    "id": "OG_080b",
+    "name": "Kingsblood Toxin",
+    "text": "Draw a card."
+  },
+  {
+    "id": "OG_080c",
+    "name": "Bloodthistle Toxin",
+    "text": "Return a friendly minion to your hand.\nIt costs (2) less."
+  },
+  {
+    "id": "OG_080d",
+    "name": "Briarthorn Toxin",
+    "text": "Give a minion +3 Attack."
+  },
+  {
+    "id": "OG_080e",
+    "name": "Fadeleaf Toxin",
+    "text": "Give a friendly minion <b>Stealth</b> until your next turn."
+  },
+  {
+    "id": "OG_080f",
+    "name": "Firebloom Toxin",
+    "text": "Deal $2 damage."
+  },
+  {
+    "id": "OG_081",
+    "name": "Shatter",
+    "text": "Destroy a <b>Frozen</b> minion."
+  },
+  {
+    "id": "OG_082",
+    "name": "Evolved Kobold",
+    "text": "<b>Spell Damage +2</b>"
+  },
+  {
+    "id": "OG_083",
+    "name": "Twilight Flamecaller",
+    "text": "<b>Battlecry:</b> Deal 1 damage to all enemy minions."
+  },
+  {
+    "id": "OG_085",
+    "name": "Demented Frostcaller",
+    "text": "After you cast a spell, <b>Freeze</b> a random enemy."
+  },
+  {
+    "id": "OG_086",
+    "name": "Forbidden Flame",
+    "text": "Spend all your Mana. Deal that much damage to a minion."
+  },
+  {
+    "id": "OG_087",
+    "name": "Servant of Yogg-Saron",
+    "text": "[x]<b>Battlecry:</b> Cast a random\n spell that costs (5) or MORE \n <i>(targets chosen randomly)</i>."
+  },
+  {
+    "id": "OG_090",
+    "name": "Cabalist's Tome",
+    "text": "Get 3 random\nMage spells."
+  },
+  {
+    "id": "OG_094",
+    "name": "Power Word: Tentacles",
+    "text": "Give a minion +2/+6."
+  },
+  {
+    "id": "OG_096",
+    "name": "Twilight Darkmender",
+    "text": "<b>Battlecry:</b> If your C'Thun  has at least 10 Attack, restore #10 Health to your hero."
+  },
+  {
+    "id": "OG_100",
+    "name": "Shadow Word: Horror",
+    "text": "Destroy all minions with 2 or less Attack."
+  },
+  {
+    "id": "OG_101",
+    "name": "Forbidden Shaping",
+    "text": "Spend all your Mana. Summon a random minion that costs that much."
+  },
+  {
+    "id": "OG_102",
+    "name": "Darkspeaker",
+    "text": "<b>Battlecry:</b> Swap stats with a friendly minion."
+  },
+  {
+    "id": "OG_104",
+    "name": "Embrace the Shadow",
+    "text": "This turn, your healing effects deal damage instead."
+  },
+  {
+    "id": "OG_109",
+    "name": "Darkshire Librarian",
+    "text": "<b>Battlecry:</b>\nDiscard a random card. <b>Deathrattle:</b>\nDraw a card."
+  },
+  {
+    "id": "OG_113",
+    "name": "Darkshire Councilman",
+    "text": "[x]After you summon a minion,\n gain +1 Attack."
+  },
+  {
+    "id": "OG_114",
+    "name": "Forbidden Ritual",
+    "text": "Spend all your Mana. Summon that many 1/1 Tentacles."
+  },
+  {
+    "id": "OG_114a",
+    "name": "Icky Tentacle",
+    "text": ""
+  },
+  {
+    "id": "OG_116",
+    "name": "Spreading Madness",
+    "text": "Deal $13 damage randomly split among ALL characters."
+  },
+  {
+    "id": "OG_118",
+    "name": "Renounce Darkness",
+    "text": "Replace your Hero Power and Warlock cards with another class's. The cards cost (1) less."
+  },
+  {
+    "id": "OG_120",
+    "name": "Anomalus",
+    "text": "<b>Deathrattle:</b> Deal 8 damage to all minions."
+  },
+  {
+    "id": "OG_121",
+    "name": "Cho'gall",
+    "text": "[x]<b>Battlecry:</b> Return all cards\nyou discarded this game to\nyour hand. They cost Health\ninstead of Mana."
+  },
+  {
+    "id": "OG_122",
+    "name": "Mukla, Tyrant of the Vale",
+    "text": "<b>Battlecry:</b> Add 2 Bananas to your hand."
+  },
+  {
+    "id": "OG_123",
+    "name": "Shifter Zerus",
+    "text": "Each turn this is in your hand, transform it into a random minion."
+  },
+  {
+    "id": "OG_131",
+    "name": "Twin Emperor Vek'lor",
+    "text": "[x]<b><b>Taunt</b>\nBattlecry:</b> If your C'Thun has\nat least 10 Attack, summon\nanother Emperor."
+  },
+  {
+    "id": "OG_133",
+    "name": "N'Zoth, the Corruptor",
+    "text": "<b>Battlecry:</b> Summon your <b>Deathrattle</b> minions that died this game."
+  },
+  {
+    "id": "OG_134",
+    "name": "Yogg-Saron, Hope's End",
+    "text": "[x]<b>Battlecry:</b> Cast a random\nspell for each spell you've\ncast this game <i>(targets\nchosen randomly)</i>."
+  },
+  {
+    "id": "OG_138",
+    "name": "Nerubian Prophet",
+    "text": "At the start of your turn, reduce this card's\nCost by (1)."
+  },
+  {
+    "id": "OG_141",
+    "name": "Faceless Behemoth",
+    "text": ""
+  },
+  {
+    "id": "OG_142",
+    "name": "Eldritch Horror",
+    "text": ""
+  },
+  {
+    "id": "OG_145",
+    "name": "Psych-o-Tron",
+    "text": "<b>Taunt</b>\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "OG_147",
+    "name": "Corrupted Healbot",
+    "text": "<b>Deathrattle:</b> Restore #8 Health to the enemy hero."
+  },
+  {
+    "id": "OG_149",
+    "name": "Ravaging Ghoul",
+    "text": "<b>Battlecry:</b> Deal 1 damage to all other minions."
+  },
+  {
+    "id": "OG_150",
+    "name": "Aberrant Berserker",
+    "text": "Has +2 Attack while damaged."
+  },
+  {
+    "id": "OG_151",
+    "name": "Tentacle of N'Zoth",
+    "text": "<b>Deathrattle:</b> Deal 1 damage to all minions."
+  },
+  {
+    "id": "OG_152",
+    "name": "Grotesque Dragonhawk",
+    "text": "<b>Windfury</b>"
+  },
+  {
+    "id": "OG_153",
+    "name": "Bog Creeper",
+    "text": "<b>Taunt</b>"
   },
   {
     "id": "OG_156",
@@ -838,6 +5213,481 @@
     "id": "OG_156a",
     "name": "Ooze",
     "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "OG_158",
+    "name": "Zealous Initiate",
+    "text": "<b>Deathrattle:</b> Give a random friendly minion +1/+1."
+  },
+  {
+    "id": "OG_161",
+    "name": "Corrupted Seer",
+    "text": "<b>Battlecry:</b> Deal 2 damage to all non-Murloc minions."
+  },
+  {
+    "id": "OG_162",
+    "name": "Disciple of C'Thun",
+    "text": "<b>Battlecry:</b> Deal 2 damage. Give your C'Thun +2/+2 <i>(wherever it is)</i>."
+  },
+  {
+    "id": "OG_173",
+    "name": "Blood of The Ancient One",
+    "text": "If you control two of these\nat the end of your turn, merge them into 'The Ancient One'."
+  },
+  {
+    "id": "OG_173a",
+    "name": "The Ancient One",
+    "text": ""
+  },
+  {
+    "id": "OG_174",
+    "name": "Faceless Shambler",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Copy a friendly minion's Attack and Health."
+  },
+  {
+    "id": "OG_176",
+    "name": "Shadow Strike",
+    "text": "Deal $5 damage to an undamaged character."
+  },
+  {
+    "id": "OG_179",
+    "name": "Fiery Bat",
+    "text": "<b>Deathrattle:</b> Deal 1 damage to a random enemy."
+  },
+  {
+    "id": "OG_188",
+    "name": "Klaxxi Amber-Weaver",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> If your C'Thun\nhas at least 10 Attack,\ngain +5 Health."
+  },
+  {
+    "id": "OG_195",
+    "name": "Wisps of the Old Gods",
+    "text": "<b>Choose One -</b> Summon seven 1/1 Wisps; or Give your minions +2/+2."
+  },
+  {
+    "id": "OG_195c",
+    "name": "Wisp",
+    "text": ""
+  },
+  {
+    "id": "OG_198",
+    "name": "Forbidden Healing",
+    "text": "Spend all your Mana. Restore twice that much Health."
+  },
+  {
+    "id": "OG_200",
+    "name": "Validated Doomsayer",
+    "text": "At the start of your turn, set this minion's Attack to 7."
+  },
+  {
+    "id": "OG_202",
+    "name": "Mire Keeper",
+    "text": "[x]<b>Choose One -</b> Summon a\n2/2 Slime; or Gain an\nempty Mana Crystal."
+  },
+  {
+    "id": "OG_202c",
+    "name": "Slime",
+    "text": ""
+  },
+  {
+    "id": "OG_206",
+    "name": "Stormcrack",
+    "text": "Deal $4 damage to a minion. <b>Overload:</b> (1)"
+  },
+  {
+    "id": "OG_207",
+    "name": "Faceless Summoner",
+    "text": "<b>Battlecry:</b> Summon a random 3-Cost minion."
+  },
+  {
+    "id": "OG_209",
+    "name": "Hallazeal the Ascended",
+    "text": "<b>Spell Damage +1</b>\nYour spells have <b>Lifesteal</b>."
+  },
+  {
+    "id": "OG_211",
+    "name": "Call of the Wild",
+    "text": "Summon all three Animal Companions."
+  },
+  {
+    "id": "OG_216",
+    "name": "Infested Wolf",
+    "text": "<b>Deathrattle:</b> Summon two 1/1 Spiders."
+  },
+  {
+    "id": "OG_216a",
+    "name": "Spider",
+    "text": ""
+  },
+  {
+    "id": "OG_218",
+    "name": "Bloodhoof Brave",
+    "text": "<b>Taunt</b>\nHas +3 Attack while damaged."
+  },
+  {
+    "id": "OG_220",
+    "name": "Malkorok",
+    "text": "<b>Battlecry:</b> Equip a random weapon."
+  },
+  {
+    "id": "OG_221",
+    "name": "Selfless Hero",
+    "text": "<b>Deathrattle:</b> Give a random friendly minion <b>Divine Shield</b>."
+  },
+  {
+    "id": "OG_222",
+    "name": "Rallying Blade",
+    "text": "<b>Battlecry:</b> Give +1/+1 to your minions with <b>Divine Shield</b>."
+  },
+  {
+    "id": "OG_223",
+    "name": "Divine Strength",
+    "text": "Give a minion +1/+2."
+  },
+  {
+    "id": "OG_229",
+    "name": "Ragnaros, Lightlord",
+    "text": "At the end of your turn, restore #8 Health to a damaged friendly character."
+  },
+  {
+    "id": "OG_234",
+    "name": "Darkshire Alchemist",
+    "text": "<b>Battlecry:</b> Restore\n#5 Health."
+  },
+  {
+    "id": "OG_239",
+    "name": "DOOM!",
+    "text": "Destroy all minions. Draw a card for each."
+  },
+  {
+    "id": "OG_241",
+    "name": "Possessed Villager",
+    "text": "<b>Deathrattle:</b> Summon a 1/1 Shadowbeast."
+  },
+  {
+    "id": "OG_241a",
+    "name": "Shadowbeast",
+    "text": ""
+  },
+  {
+    "id": "OG_247",
+    "name": "Twisted Worgen",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "OG_248",
+    "name": "Am'gam Rager",
+    "text": ""
+  },
+  {
+    "id": "OG_249",
+    "name": "Infested Tauren",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Summon a 2/2 Slime."
+  },
+  {
+    "id": "OG_249a",
+    "name": "Slime",
+    "text": ""
+  },
+  {
+    "id": "OG_254",
+    "name": "Eater of Secrets",
+    "text": "<b>Battlecry:</b> Destroy all enemy <b>Secrets</b>. Gain +1/+1 for each."
+  },
+  {
+    "id": "OG_255",
+    "name": "Doomcaller",
+    "text": "<b>Battlecry:</b> Give your C'Thun +2/+2 <i>(wherever it is).</i> If it's dead, shuffle it into your deck."
+  },
+  {
+    "id": "OG_256",
+    "name": "Spawn of N'Zoth",
+    "text": "<b>Deathrattle:</b> Give your minions +1/+1."
+  },
+  {
+    "id": "OG_267",
+    "name": "Southsea Squidface",
+    "text": "<b>Deathrattle:</b> Give your weapon +2 Attack."
+  },
+  {
+    "id": "OG_271",
+    "name": "Scaled Nightmare",
+    "text": "At the start of your turn, double this minion's Attack."
+  },
+  {
+    "id": "OG_272",
+    "name": "Twilight Summoner",
+    "text": "<b>Deathrattle:</b> Summon a 5/5 Faceless Destroyer."
+  },
+  {
+    "id": "OG_272t",
+    "name": "Faceless Destroyer",
+    "text": ""
+  },
+  {
+    "id": "OG_273",
+    "name": "Stand Against Darkness",
+    "text": "Summon five {0} Silver Hand Recruits."
+  },
+  {
+    "id": "OG_276",
+    "name": "Blood Warriors",
+    "text": "Add a copy of each damaged friendly minion to your hand."
+  },
+  {
+    "id": "OG_280",
+    "name": "C'Thun",
+    "text": "<b>Battlecry:</b> Deal damage\nequal to this minion's\nAttack randomly split among all enemies."
+  },
+  {
+    "id": "OG_281",
+    "name": "Beckoner of Evil",
+    "text": "<b>Battlecry:</b> Give your C'Thun +2/+2 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_282",
+    "name": "Blade of C'Thun",
+    "text": "<b>Battlecry:</b> Destroy a minion. Add its Attack and Health to your C'Thun's <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_283",
+    "name": "C'Thun's Chosen",
+    "text": "[x]<b>Divine Shield</b>\n<b>Battlecry:</b> Give your C'Thun\n+3/+3 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_284",
+    "name": "Twilight Geomancer",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Give your\nC'Thun +1/+1 and <b>Taunt</b> <i>(wherever it is)</i>."
+  },
+  {
+    "id": "OG_286",
+    "name": "Twilight Elder",
+    "text": "At the end of your turn, give your C'Thun +1/+1 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_290",
+    "name": "Ancient Harbinger",
+    "text": "At the start of your turn, put a 10-Cost minion from your deck into your hand."
+  },
+  {
+    "id": "OG_291",
+    "name": "Shadowcaster",
+    "text": "<b>Battlecry:</b> Choose a friendly minion. Add a 1/1 copy to your hand that costs (1)."
+  },
+  {
+    "id": "OG_292",
+    "name": "Forlorn Stalker",
+    "text": "<b>Battlecry:</b> Give all <b>Deathrattle</b> minions in your hand +1/+1."
+  },
+  {
+    "id": "OG_293",
+    "name": "Dark Arakkoa",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Give your C'Thun\n+4/+4 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_295",
+    "name": "Cult Apothecary",
+    "text": "<b>Battlecry:</b> For each enemy minion, restore #2 Health to your hero."
+  },
+  {
+    "id": "OG_300",
+    "name": "The Boogeymonster",
+    "text": "Whenever this attacks and kills a minion, gain +2/+2."
+  },
+  {
+    "id": "OG_301",
+    "name": "Ancient Shieldbearer",
+    "text": "<b>Battlecry:</b> If your C'Thun has at least 10 Attack, gain 10 Armor."
+  },
+  {
+    "id": "OG_302",
+    "name": "Usher of Souls",
+    "text": "Whenever a minion dies, give your C'Thun +1/+1\n<i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_303",
+    "name": "Cult Sorcerer",
+    "text": "[x]<b><b>Spell Damage</b> +1</b>\nAfter you cast a spell,\ngive your C'Thun +1/+1\n<i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_308",
+    "name": "Giant Sand Worm",
+    "text": "Whenever this attacks and kills a minion, it may attack again."
+  },
+  {
+    "id": "OG_309",
+    "name": "Princess Huhuran",
+    "text": "<b>Battlecry:</b> Trigger a friendly minion's <b>Deathrattle</b>."
+  },
+  {
+    "id": "OG_310",
+    "name": "Steward of Darkshire",
+    "text": "Whenever you summon a 1-Health minion, give it <b>Divine Shield</b>."
+  },
+  {
+    "id": "OG_311",
+    "name": "A Light in the Darkness",
+    "text": "<b>Discover</b> a Paladin minion. Give it +2/+2."
+  },
+  {
+    "id": "OG_312",
+    "name": "N'Zoth's First Mate",
+    "text": "<b>Battlecry:</b> Equip a 1/3 Rusty Hook."
+  },
+  {
+    "id": "OG_313",
+    "name": "Addled Grizzly",
+    "text": "After you summon a\nBeast, give it +1/+1."
+  },
+  {
+    "id": "OG_314",
+    "name": "Blood To Ichor",
+    "text": "Deal $1 damage to a minion. If it survives, summon a 2/2 Slime."
+  },
+  {
+    "id": "OG_314b",
+    "name": "Slime",
+    "text": ""
+  },
+  {
+    "id": "OG_315",
+    "name": "Bloodsail Cultist",
+    "text": "<b>Battlecry:</b> If you control another Pirate, give your weapon +1/+1."
+  },
+  {
+    "id": "OG_316",
+    "name": "Herald Volazj",
+    "text": "<b>Battlecry:</b> Summon a 1/1 copy of each of your other minions."
+  },
+  {
+    "id": "OG_317",
+    "name": "Deathwing, Dragonlord",
+    "text": "<b>Deathrattle:</b> Put all Dragons from your hand into the battlefield."
+  },
+  {
+    "id": "OG_318",
+    "name": "Hogger, Doom of Elwynn",
+    "text": "Whenever this minion takes damage, summon a 2/2 Gnoll with <b>Taunt</b>."
+  },
+  {
+    "id": "OG_318t",
+    "name": "Gnoll",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "OG_319",
+    "name": "Twin Emperor Vek'nilash",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "OG_320",
+    "name": "Midnight Drake",
+    "text": "<b>Battlecry:</b> Gain +1 Attack for each other card\nin your hand."
+  },
+  {
+    "id": "OG_321",
+    "name": "Crazed Worshipper",
+    "text": "[x]<b>Taunt</b>\nWhenever this minion takes\ndamage, give your C'Thun\n+1/+1 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_322",
+    "name": "Blackwater Pirate",
+    "text": "Your weapons cost (2) less."
+  },
+  {
+    "id": "OG_323",
+    "name": "Polluted Hoarder",
+    "text": "<b>Deathrattle:</b> Draw a card."
+  },
+  {
+    "id": "OG_325",
+    "name": "Carrion Grub",
+    "text": ""
+  },
+  {
+    "id": "OG_326",
+    "name": "Duskboar",
+    "text": ""
+  },
+  {
+    "id": "OG_327",
+    "name": "Squirming Tentacle",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "OG_328",
+    "name": "Master of Evolution",
+    "text": "<b>Battlecry:</b> Transform a friendly minion into a random one that costs (1) more."
+  },
+  {
+    "id": "OG_330",
+    "name": "Undercity Huckster",
+    "text": "<b>Deathrattle:</b> Get a\nrandom card <i>(from your\nopponent's class)</i>."
+  },
+  {
+    "id": "OG_334",
+    "name": "Hooded Acolyte",
+    "text": "[x]<b>Taunt</b>\nWhenever a character is\nhealed, give your C'Thun\n+1/+1 <i>(wherever it is).</i>"
+  },
+  {
+    "id": "OG_335",
+    "name": "Shifting Shade",
+    "text": "[x]<b>Deathrattle:</b> Copy a card\nfrom your opponent's deck\n and add it to your hand."
+  },
+  {
+    "id": "OG_337",
+    "name": "Cyclopian Horror",
+    "text": "<b>Taunt</b>. <b>Battlecry:</b> Gain      +1 Health for each enemy minion."
+  },
+  {
+    "id": "OG_338",
+    "name": "Nat, the Darkfisher",
+    "text": "At the start of your opponent's turn, they have a 50% chance to draw an extra card."
+  },
+  {
+    "id": "OG_339",
+    "name": "Skeram Cultist",
+    "text": "[x]<b>Battlecry:</b> Give your C'Thun\n+2/+2 <i>(wherever it is)</i>."
+  },
+  {
+    "id": "OG_340",
+    "name": "Soggoth the Slitherer",
+    "text": "<b>Taunt</b>\n<b>Elusive</b>"
+  },
+  {
+    "id": "PART_001",
+    "name": "Armor Plating",
+    "text": "Give a minion +1 Health."
+  },
+  {
+    "id": "PART_002",
+    "name": "Time Rewinder",
+    "text": "Return a friendly minion to your hand."
+  },
+  {
+    "id": "PART_003",
+    "name": "Rusty Horn",
+    "text": "Give a minion <b>Taunt</b>."
+  },
+  {
+    "id": "PART_004",
+    "name": "Finicky Cloakfield",
+    "text": "Give a friendly minion <b>Stealth</b> until your next turn."
+  },
+  {
+    "id": "PART_005",
+    "name": "Emergency Coolant",
+    "text": "<b>Freeze</b> a minion."
+  },
+  {
+    "id": "PART_006",
+    "name": "Reversing Switch",
+    "text": "Swap a minion's Attack and Health."
+  },
+  {
+    "id": "PART_007",
+    "name": "Whirling Blades",
+    "text": "Give a minion +1 Attack."
   },
   {
     "id": "REV_956",
@@ -1045,9 +5895,184 @@
     "text": "<b>Battlecry:</b> Give a friendly minion +2 Health and <b>Taunt</b>."
   },
   {
+    "id": "UNG_001",
+    "name": "Pterrordax Hatchling",
+    "text": "<b><b>Battlecry:</b> Adapt</b>."
+  },
+  {
+    "id": "UNG_002",
+    "name": "Volcanosaur",
+    "text": "<b>Battlecry:</b> <b>Adapt</b>, then <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_004",
+    "name": "Dinosize",
+    "text": "Set a minion's stats to 7/14."
+  },
+  {
+    "id": "UNG_009",
+    "name": "Ravasaur Runt",
+    "text": "<b>Battlecry:</b> If you control at least 2 other minions, <b>Adapt.</b>"
+  },
+  {
+    "id": "UNG_010",
+    "name": "Sated Threshadon",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Summon three 1/1 Murlocs."
+  },
+  {
+    "id": "UNG_011",
+    "name": "Hydrologist",
+    "text": "<b>Battlecry:</b> <b>Discover</b> and cast a <b>Secret</b>."
+  },
+  {
+    "id": "UNG_015",
+    "name": "Sunkeeper Tarim",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Set all other minions' Attack and Health to 3."
+  },
+  {
+    "id": "UNG_018",
+    "name": "Flame Geyser",
+    "text": "Deal $2 damage.\nAdd a 1/2 Elemental to your hand."
+  },
+  {
+    "id": "UNG_019",
+    "name": "Air Elemental",
+    "text": "<b>Elusive</b>"
+  },
+  {
+    "id": "UNG_020",
+    "name": "Arcanologist",
+    "text": "<b>Battlecry:</b> Draw a <b>Secret</b>."
+  },
+  {
+    "id": "UNG_021",
+    "name": "Steam Surger",
+    "text": "[x]<b>Battlecry:</b> If you played\nan Elemental last turn,\nadd a 'Flame Geyser'\nto your hand."
+  },
+  {
+    "id": "UNG_022",
+    "name": "Mirage Caller",
+    "text": "<b>Battlecry:</b> Choose a minion. Summon a 1/1 copy of it."
+  },
+  {
+    "id": "UNG_024",
+    "name": "Mana Bind",
+    "text": "<b>Secret:</b> When your opponent casts a spell, add a copy to your hand that costs (0)."
+  },
+  {
+    "id": "UNG_025",
+    "name": "Volcano",
+    "text": "Deal $15 damage randomly split among all minions.\n<b>Overload:</b> (1)"
+  },
+  {
+    "id": "UNG_027",
+    "name": "Pyros",
+    "text": "<b>Deathrattle:</b> Return this to your hand as a 6/6 that costs (4)."
+  },
+  {
+    "id": "UNG_027t2",
+    "name": "Pyros",
+    "text": "<b>Deathrattle:</b> Return this to your hand as a 10/10 that costs (8)."
+  },
+  {
+    "id": "UNG_027t4",
+    "name": "Pyros",
+    "text": ""
+  },
+  {
+    "id": "UNG_028",
+    "name": "Open the Waygate",
+    "text": "[x]<b>Quest:</b> Cast 8 spells that\ndidn't start in your deck.\n<b>Reward:</b> Time Warp."
+  },
+  {
+    "id": "UNG_028t",
+    "name": "Time Warp",
+    "text": "Take an extra turn.\n<i>(Once per game)</i>"
+  },
+  {
+    "id": "UNG_029",
+    "name": "Shadow Visions",
+    "text": "<b>Discover</b> a copy of a spell in your deck."
+  },
+  {
+    "id": "UNG_030",
+    "name": "Binding Heal",
+    "text": "Restore #5 Health to a minion and your hero."
+  },
+  {
+    "id": "UNG_032",
+    "name": "Crystalline Oracle",
+    "text": "[x]<b>Deathrattle:</b> Copy a card\nfrom your opponent's deck\n and add it to your hand."
+  },
+  {
+    "id": "UNG_034",
+    "name": "Radiant Elemental",
+    "text": "Your spells cost (1) less\n<i>(but not less than 1)</i>."
+  },
+  {
+    "id": "UNG_035",
+    "name": "Curious Glimmerroot",
+    "text": "[x]<b>Battlecry:</b> Look at 3 cards.\nGuess which one started\nin your opponent's deck\nto get a copy of it."
+  },
+  {
+    "id": "UNG_037",
+    "name": "Tortollan Shellraiser",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> Give a random\n friendly minion +1/+1."
+  },
+  {
+    "id": "UNG_047",
+    "name": "Ravenous Pterrordax",
+    "text": "<b>Battlecry:</b> Destroy a friendly minion to <b>Adapt</b> twice."
+  },
+  {
+    "id": "UNG_049",
+    "name": "Tar Lurker",
+    "text": "<b>Taunt</b>\nHas +3 Attack during your opponent's turn."
+  },
+  {
+    "id": "UNG_057",
+    "name": "Razorpetal Volley",
+    "text": "Add two Razorpetals to your hand that deal 2 damage."
+  },
+  {
+    "id": "UNG_057t1",
+    "name": "Razorpetal",
+    "text": "Deal $2 damage."
+  },
+  {
+    "id": "UNG_058",
+    "name": "Razorpetal Lasher",
+    "text": "[x]<b>Battlecry:</b> Add a\nRazorpetal to your hand\nthat deals 2 damage."
+  },
+  {
     "id": "UNG_060",
     "name": "Mimic Pod",
     "text": "Draw a card, then add a copy of it to your hand."
+  },
+  {
+    "id": "UNG_061",
+    "name": "Obsidian Shard",
+    "text": "Costs (1) less for each non-Rogue Class card added to your hand this game."
+  },
+  {
+    "id": "UNG_063",
+    "name": "Biteweed",
+    "text": "<b>Combo:</b> Gain +1/+1 for each other card you've played this turn."
+  },
+  {
+    "id": "UNG_064",
+    "name": "Vilespine Slayer",
+    "text": "<b>Combo:</b> Destroy a minion."
+  },
+  {
+    "id": "UNG_065",
+    "name": "Sherazin, Corpse Flower",
+    "text": "<b>Deathrattle:</b> Go <b>Dormant</b>. Play 4 cards in a turn to revive this minion."
+  },
+  {
+    "id": "UNG_065t",
+    "name": "Sherazin, Seed",
+    "text": "<b>Dormant</b>\nWhen you play 4 cards in a turn, revive this minion."
   },
   {
     "id": "UNG_067",
@@ -1060,6 +6085,266 @@
     "text": "For the rest of the game, your minions are 5/5."
   },
   {
+    "id": "UNG_070",
+    "name": "Tol'vir Stoneshaper",
+    "text": "[x]<b>Battlecry:</b> If you played an\nElemental last turn, gain\n <b>Taunt</b> and <b>Divine Shield</b>."
+  },
+  {
+    "id": "UNG_071",
+    "name": "Giant Mastodon",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_072",
+    "name": "Stonehill Defender",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Discover</b> a <b>Taunt</b> minion."
+  },
+  {
+    "id": "UNG_073",
+    "name": "Rockpool Hunter",
+    "text": "<b>Battlecry:</b> Give a friendly Murloc +1/+1."
+  },
+  {
+    "id": "UNG_075",
+    "name": "Vicious Fledgling",
+    "text": "After this minion attacks a hero, <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_076",
+    "name": "Eggnapper",
+    "text": "<b>Deathrattle:</b> Summon two 1/1 Raptors."
+  },
+  {
+    "id": "UNG_076t1",
+    "name": "Raptor",
+    "text": ""
+  },
+  {
+    "id": "UNG_078",
+    "name": "Tortollan Forager",
+    "text": "<b>Battlecry:</b> Add a random minion with 5 or more Attack to your hand."
+  },
+  {
+    "id": "UNG_079",
+    "name": "Frozen Crusher",
+    "text": "After this minion attacks, <b>Freeze</b> it."
+  },
+  {
+    "id": "UNG_082",
+    "name": "Thunder Lizard",
+    "text": "<b>Battlecry</b>: If you played an Elemental last turn, <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_083",
+    "name": "Devilsaur Egg",
+    "text": "<b>Deathrattle:</b> Summon a 5/5 Devilsaur."
+  },
+  {
+    "id": "UNG_083t1",
+    "name": "Devilsaur",
+    "text": ""
+  },
+  {
+    "id": "UNG_084",
+    "name": "Fire Plume Phoenix",
+    "text": "<b>Battlecry:</b> Deal 3 damage."
+  },
+  {
+    "id": "UNG_085",
+    "name": "Emerald Hive Queen",
+    "text": "Your minions cost (2) more."
+  },
+  {
+    "id": "UNG_086",
+    "name": "Giant Anaconda",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Summon\na minion from your hand with 5 or more Attack."
+  },
+  {
+    "id": "UNG_087",
+    "name": "Bittertide Hydra",
+    "text": "Whenever this minion takes damage, deal 3 damage to your hero."
+  },
+  {
+    "id": "UNG_088",
+    "name": "Tortollan Primalist",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a spell and cast it with random targets."
+  },
+  {
+    "id": "UNG_089",
+    "name": "Gentle Megasaur",
+    "text": "<b>Battlecry:</b> <b>Adapt</b> your Murlocs."
+  },
+  {
+    "id": "UNG_099",
+    "name": "Charged Devilsaur",
+    "text": "<b>Charge</b>\n<b>Battlecry:</b> Can't attack heroes this turn."
+  },
+  {
+    "id": "UNG_100",
+    "name": "Verdant Longneck",
+    "text": "<b>Battlecry:</b> <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_101",
+    "name": "Shellshifter",
+    "text": "[x]<b>Choose One - </b>Transform\ninto a 5/3 with <b>Stealth</b>;\nor a 3/5 with <b>Taunt</b>."
+  },
+  {
+    "id": "UNG_101a",
+    "name": "Raptor Form",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "UNG_101b",
+    "name": "Direhorn Form",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_101t",
+    "name": "Shellshifter",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "UNG_101t2",
+    "name": "Shellshifter",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_101t3",
+    "name": "Shellshifter",
+    "text": "<b>Stealth</b>\n<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_103",
+    "name": "Evolving Spores",
+    "text": "<b>Adapt</b> your minions."
+  },
+  {
+    "id": "UNG_108",
+    "name": "Earthen Scales",
+    "text": "Give a friendly minion +1/+1, then gain Armor equal to its Attack."
+  },
+  {
+    "id": "UNG_109",
+    "name": "Elder Longneck",
+    "text": "<b>Battlecry:</b> If you're holding a minion with 5 or more Attack, <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_111",
+    "name": "Living Mana",
+    "text": "Transform your Mana Crystals into 2/2 Treants. Recover the mana when they die."
+  },
+  {
+    "id": "UNG_111t1",
+    "name": "Mana Treant",
+    "text": "<b>Deathrattle:</b> Gain an empty Mana Crystal."
+  },
+  {
+    "id": "UNG_113",
+    "name": "Bright-Eyed Scout",
+    "text": "<b>Battlecry:</b> Draw a card. Change its Cost to (5)."
+  },
+  {
+    "id": "UNG_116",
+    "name": "Jungle Giants",
+    "text": "[x]<b>Quest:</b> Summon\n4 minions with\n5 or more Attack.\n<b>Reward:</b> Barnabus."
+  },
+  {
+    "id": "UNG_116t",
+    "name": "Barnabus the Stomper",
+    "text": "<b>Battlecry:</b> Reduce the\nCost of minions in your deck to (0)."
+  },
+  {
+    "id": "UNG_201",
+    "name": "Primalfin Totem",
+    "text": "At the end of your turn, summon a 1/1 Murloc."
+  },
+  {
+    "id": "UNG_201t",
+    "name": "Primalfin",
+    "text": ""
+  },
+  {
+    "id": "UNG_202",
+    "name": "Fire Plume Harbinger",
+    "text": "<b>Battlecry:</b> Reduce the Cost of Elementals in your hand by (1)."
+  },
+  {
+    "id": "UNG_205",
+    "name": "Glacial Shard",
+    "text": "<b>Battlecry:</b> <b>Freeze</b> an enemy."
+  },
+  {
+    "id": "UNG_208",
+    "name": "Stone Sentinel",
+    "text": "<b>Battlecry:</b> If you played an Elemental last turn, summon two 2/3 Elementals with <b>Taunt</b>."
+  },
+  {
+    "id": "UNG_208t",
+    "name": "Rock Elemental",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_211",
+    "name": "Kalimos, Primal Lord",
+    "text": "[x]<b>Battlecry:</b> If you played an\nElemental last turn, cast an\nElemental Invocation."
+  },
+  {
+    "id": "UNG_211a",
+    "name": "Invocation of Earth",
+    "text": "Fill your board with 1/1 Elementals."
+  },
+  {
+    "id": "UNG_211aa",
+    "name": "Stone Elemental",
+    "text": ""
+  },
+  {
+    "id": "UNG_211b",
+    "name": "Invocation of Water",
+    "text": "Restore 12 Health to your hero."
+  },
+  {
+    "id": "UNG_211c",
+    "name": "Invocation of Fire",
+    "text": "Deal 6 damage to the enemy hero."
+  },
+  {
+    "id": "UNG_211d",
+    "name": "Invocation of Air",
+    "text": "Deal 3 damage to all enemy minions."
+  },
+  {
+    "id": "UNG_800",
+    "name": "Terrorscale Stalker",
+    "text": "<b>Battlecry:</b> Trigger a friendly minion's <b>Deathrattle</b>."
+  },
+  {
+    "id": "UNG_801",
+    "name": "Nesting Roc",
+    "text": "<b>Battlecry:</b> If you control at least 2 other minions, gain <b>Taunt</b>."
+  },
+  {
+    "id": "UNG_803",
+    "name": "Emerald Reaver",
+    "text": "<b>Battlecry:</b> Deal 1 damage to each hero."
+  },
+  {
+    "id": "UNG_806",
+    "name": "Ultrasaur",
+    "text": ""
+  },
+  {
+    "id": "UNG_807",
+    "name": "Golakka Crawler",
+    "text": "<b>Battlecry:</b> Destroy a Pirate and gain +1/+1."
+  },
+  {
+    "id": "UNG_808",
+    "name": "Stubborn Gastropod",
+    "text": "<b>Taunt</b>\n  <b>Poisonous</b>"
+  },
+  {
     "id": "UNG_809",
     "name": "Fire Fly",
     "text": "<b>Battlecry</b>: Add a 1/2 Elemental to your hand."
@@ -1070,9 +6355,414 @@
     "text": ""
   },
   {
+    "id": "UNG_810",
+    "name": "Stegodon",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_812",
+    "name": "Sabretooth Stalker",
+    "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "UNG_813",
+    "name": "Stormwatcher",
+    "text": "<b>Windfury</b>"
+  },
+  {
+    "id": "UNG_814",
+    "name": "Giant Wasp",
+    "text": "<b>Stealth</b>\n <b>Poisonous</b>"
+  },
+  {
+    "id": "UNG_816",
+    "name": "Servant of Kalimos",
+    "text": "[x]<b>Battlecry:</b> If you played\nan Elemental last turn,\n <b>Discover</b> an Elemental."
+  },
+  {
+    "id": "UNG_817",
+    "name": "Tidal Surge",
+    "text": "<b>Lifesteal</b>\nDeal $5 damage to a minion."
+  },
+  {
+    "id": "UNG_818",
+    "name": "Volatile Elemental",
+    "text": "<b>Deathrattle:</b> Deal 3 damage to a random enemy minion."
+  },
+  {
+    "id": "UNG_823",
+    "name": "Envenom Weapon",
+    "text": "Give your weapon <b>Poisonous</b>."
+  },
+  {
+    "id": "UNG_829",
+    "name": "Lakkari Sacrifice",
+    "text": "[x]<b>Quest:</b> Discard 6 cards.\n<b>Reward:</b> Nether Portal."
+  },
+  {
+    "id": "UNG_829t1",
+    "name": "Nether Portal",
+    "text": "Open a permanent portal that summons 3/2 Imps."
+  },
+  {
+    "id": "UNG_829t2",
+    "name": "Nether Portal",
+    "text": "At the end of your turn, summon two 3/2 Imps."
+  },
+  {
+    "id": "UNG_829t3",
+    "name": "Nether Imp",
+    "text": ""
+  },
+  {
+    "id": "UNG_830",
+    "name": "Cruel Dinomancer",
+    "text": "[x]<b>Deathrattle:</b> Summon a\nrandom minion you\ndiscarded this game."
+  },
+  {
+    "id": "UNG_831",
+    "name": "Corrupting Mist",
+    "text": "Curse all minions. Destroy them at the start of your next turn."
+  },
+  {
+    "id": "UNG_832",
+    "name": "Bloodbloom",
+    "text": "The next spell you cast this turn costs Health instead of Mana."
+  },
+  {
+    "id": "UNG_833",
+    "name": "Lakkari Felhound",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Discard your two lowest-Cost cards."
+  },
+  {
+    "id": "UNG_834",
+    "name": "Feeding Time",
+    "text": "Deal $3 damage to a minion. Summon three 1/1 Pterrordaxes and <b>Adapt</b> them."
+  },
+  {
+    "id": "UNG_834t1",
+    "name": "Pterrordax",
+    "text": ""
+  },
+  {
+    "id": "UNG_835",
+    "name": "Chittering Tunneler",
+    "text": "[x]<b>Battlecry:</b> <b>Discover</b> a spell.\nDeal damage to your hero\nequal to its Cost."
+  },
+  {
+    "id": "UNG_836",
+    "name": "Clutchmother Zavas",
+    "text": "Whenever you discard this, give it +2/+2 and return it to your hand."
+  },
+  {
+    "id": "UNG_838",
+    "name": "Tar Lord",
+    "text": "<b>Taunt</b>\nHas +4 Attack during your opponent's turn."
+  },
+  {
+    "id": "UNG_840",
+    "name": "Hemet, Jungle Hunter",
+    "text": "<b>Battlecry:</b> Destroy all cards in your deck that cost (3) or less."
+  },
+  {
+    "id": "UNG_843",
+    "name": "The Voraxx",
+    "text": "[x]After you cast a spell on\nthis minion, summon a\n1/1 Plant and cast\nanother copy on it."
+  },
+  {
+    "id": "UNG_844",
+    "name": "Humongous Razorleaf",
+    "text": "Can't attack."
+  },
+  {
+    "id": "UNG_845",
+    "name": "Igneous Elemental",
+    "text": "<b>Deathrattle:</b> Add two 1/2 Flame Elementals to your hand."
+  },
+  {
+    "id": "UNG_846",
+    "name": "Shimmering Tempest",
+    "text": "<b>Battlecry:</b> Add a random Mage spell to your hand."
+  },
+  {
+    "id": "UNG_847",
+    "name": "Blazecaller",
+    "text": "<b>Battlecry:</b> If you played an Elemental last turn, deal 5 damage."
+  },
+  {
+    "id": "UNG_848",
+    "name": "Primordial Drake",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Deal 2 damage\nto all other minions."
+  },
+  {
+    "id": "UNG_851",
+    "name": "Elise the Trailblazer",
+    "text": "[x]<b>Battlecry:</b> Shuffle a sealed\n<b>Un'Goro</b> pack into your deck.\nIf your deck has no\nduplicates, draw it."
+  },
+  {
+    "id": "UNG_851t1",
+    "name": "Un'Goro Pack",
+    "text": "Add 5 <b>Journey to Un'Goro</b> cards to your hand."
+  },
+  {
+    "id": "UNG_852",
+    "name": "Tyrantus",
+    "text": "<b>Taunt</b>\n<b>Elusive</b>"
+  },
+  {
+    "id": "UNG_854",
+    "name": "Free From Amber",
+    "text": "<b>Discover</b> a minion that costs (8) or more. Summon it."
+  },
+  {
+    "id": "UNG_856",
+    "name": "Spore Hallucination",
+    "text": "<b>Discover</b> a card from your opponent's class."
+  },
+  {
+    "id": "UNG_900",
+    "name": "Spiritsinger Umbra",
+    "text": "After you summon a minion, trigger its <b>Deathrattle</b> effect."
+  },
+  {
+    "id": "UNG_907",
+    "name": "Ozruk",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Gain +5 Health\nfor each Elemental you\nplayed last turn."
+  },
+  {
+    "id": "UNG_910",
+    "name": "Grievous Bite",
+    "text": "Deal $3 damage to a minion and $1 damage to adjacent ones."
+  },
+  {
+    "id": "UNG_912",
+    "name": "Jeweled Macaw",
+    "text": "<b>Battlecry:</b> Add a random Beast to your hand."
+  },
+  {
+    "id": "UNG_913",
+    "name": "Tol'vir Warden",
+    "text": "<b>Battlecry:</b> Draw two 1-Cost minions from your deck."
+  },
+  {
+    "id": "UNG_914",
+    "name": "Raptor Hatchling",
+    "text": "<b>Deathrattle:</b> Shuffle a 4/5 Raptor into your deck."
+  },
+  {
+    "id": "UNG_914t1",
+    "name": "Raptor Patriarch",
+    "text": ""
+  },
+  {
+    "id": "UNG_915",
+    "name": "Crackling Razormaw",
+    "text": "<b>Battlecry:</b> <b>Adapt</b> a friendly Beast."
+  },
+  {
+    "id": "UNG_916",
+    "name": "Stampede",
+    "text": "Each time you play a Beast this turn, add a random Beast to your hand."
+  },
+  {
+    "id": "UNG_917",
+    "name": "Dinomancy",
+    "text": "Replace your Hero Power with 'Give a Beast +3/+3.'"
+  },
+  {
+    "id": "UNG_917t1",
+    "name": "Dinomancy",
+    "text": "Give a Beast +3/+3."
+  },
+  {
+    "id": "UNG_919",
+    "name": "Swamp King Dred",
+    "text": "After your opponent plays a minion, attack it."
+  },
+  {
+    "id": "UNG_920",
+    "name": "The Marsh Queen",
+    "text": "[x]<b>Quest:</b> Play seven\n1-Cost minions.\n<b>Reward:</b> Queen Carnassa."
+  },
+  {
+    "id": "UNG_920t1",
+    "name": "Queen Carnassa",
+    "text": "<b>Rush</b>\n<b>Battlecry:</b> Shuffle 20 Raptors into your deck."
+  },
+  {
+    "id": "UNG_920t2",
+    "name": "Carnassa's Brood",
+    "text": "<b>Battlecry:</b> Draw a card."
+  },
+  {
+    "id": "UNG_922",
+    "name": "Explore Un'Goro",
+    "text": "Replace your deck with copies of \"<b>Discover</b> a card.\""
+  },
+  {
+    "id": "UNG_922t1",
+    "name": "Choose Your Path",
+    "text": "<b>Discover</b> a card."
+  },
+  {
+    "id": "UNG_923",
+    "name": "Iron Hide",
+    "text": "Gain 5 Armor."
+  },
+  {
+    "id": "UNG_925",
+    "name": "Ornery Direhorn",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Adapt</b>."
+  },
+  {
+    "id": "UNG_926",
+    "name": "Cornered Sentry",
+    "text": "<b>Taunt</b>. <b>Battlecry:</b> Summon three 1/1 Raptors for your opponent."
+  },
+  {
+    "id": "UNG_927",
+    "name": "Sudden Genesis",
+    "text": "Summon copies of your damaged minions."
+  },
+  {
+    "id": "UNG_928",
+    "name": "Tar Creeper",
+    "text": "<b>Taunt</b>\nHas +2 Attack during your opponent's turn."
+  },
+  {
+    "id": "UNG_929",
+    "name": "Molten Blade",
+    "text": "Transforms into a new weapon when in hand that changes each turn."
+  },
+  {
+    "id": "UNG_933",
+    "name": "King Mosh",
+    "text": "<b>Battlecry:</b> Destroy all damaged minions."
+  },
+  {
+    "id": "UNG_934",
+    "name": "Fire Plume's Heart",
+    "text": "[x]<b>Quest:</b> Play\n7 <b>Taunt</b> minions.\n<b>Reward:</b> Sulfuras."
+  },
+  {
+    "id": "UNG_934t1",
+    "name": "Sulfuras",
+    "text": "<b>Battlecry:</b> Your Hero Power becomes 'Deal 8 damage to a random enemy.'"
+  },
+  {
+    "id": "UNG_934t2",
+    "name": "DIE, INSECT!",
+    "text": "Deal $8 damage to a random enemy."
+  },
+  {
+    "id": "UNG_937",
+    "name": "Primalfin Lookout",
+    "text": "<b>Battlecry:</b> If you control another Murloc, <b>Discover</b> a Murloc."
+  },
+  {
+    "id": "UNG_938",
+    "name": "Hot Spring Guardian",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Restore #3 Health."
+  },
+  {
+    "id": "UNG_940",
+    "name": "Awaken the Makers",
+    "text": "<b>Quest:</b> Summon\n6 <b>Deathrattle</b> minions.<b>\nReward:</b> Amara, Warden of Hope."
+  },
+  {
+    "id": "UNG_940t8",
+    "name": "Amara, Warden of Hope",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Set your\nhero's Health to 40."
+  },
+  {
+    "id": "UNG_941",
+    "name": "Primordial Glyph",
+    "text": "<b>Discover</b> a spell. Reduce its Cost by (2)."
+  },
+  {
+    "id": "UNG_942",
+    "name": "Unite the Murlocs",
+    "text": "[x]<b>Quest:</b> Summon\n8 Murlocs.\n<b>Reward:</b> Megafin."
+  },
+  {
+    "id": "UNG_942t",
+    "name": "Megafin",
+    "text": "<b>Battlecry:</b> Fill your hand with random Murlocs."
+  },
+  {
+    "id": "UNG_946",
+    "name": "Gluttonous Ooze",
+    "text": "<b>Battlecry:</b> Destroy your opponent's weapon and gain Armor equal to its Attack."
+  },
+  {
+    "id": "UNG_948",
+    "name": "Molten Reflection",
+    "text": "Choose a friendly minion. Summon a copy of it."
+  },
+  {
+    "id": "UNG_950",
+    "name": "Vinecleaver",
+    "text": "[x]After your hero attacks,\nsummon two {0} Silver\nHand Recruits."
+  },
+  {
+    "id": "UNG_952",
+    "name": "Spikeridged Steed",
+    "text": "Give a minion +2/+6 and <b>Taunt</b>. When it dies, summon a Stegodon."
+  },
+  {
+    "id": "UNG_953",
+    "name": "Primalfin Champion",
+    "text": "[x]<b>Deathrattle:</b> Return any\nspells you cast on this\nminion to your hand."
+  },
+  {
+    "id": "UNG_954",
+    "name": "The Last Kaleidosaur",
+    "text": "<b>Quest:</b> Cast 5 spells\non your minions.\n<b>Reward:</b> Galvadon."
+  },
+  {
+    "id": "UNG_954t1",
+    "name": "Galvadon",
+    "text": "<b>Battlecry:</b> <b>Adapt</b> 5 times."
+  },
+  {
+    "id": "UNG_955",
+    "name": "Meteor",
+    "text": "Deal $15 damage to a minion and $4 damage to adjacent ones."
+  },
+  {
+    "id": "UNG_956",
+    "name": "Spirit Echo",
+    "text": "Give your minions \"<b>Deathrattle:</b> Return  this to your hand.\""
+  },
+  {
+    "id": "UNG_957",
+    "name": "Direhorn Hatchling",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Shuffle an 8/12 Direhorn with <b>Taunt</b> into your deck."
+  },
+  {
+    "id": "UNG_957t1",
+    "name": "Direhorn Matriarch",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_960",
+    "name": "Lost in the Jungle",
+    "text": "Summon two {0} Silver Hand Recruits."
+  },
+  {
     "id": "UNG_961",
     "name": "Adaptation",
     "text": "<b>Adapt</b> a friendly minion."
+  },
+  {
+    "id": "UNG_962",
+    "name": "Lightfused Stegodon",
+    "text": "<b>Battlecry:</b> <b>Adapt</b> your Silver Hand Recruits."
+  },
+  {
+    "id": "UNG_963",
+    "name": "Lyra the Sunshard",
+    "text": "Whenever you cast a spell, add a random Priest spell to your hand."
   },
   {
     "id": "UNG_999t10",

@@ -24,7 +24,6 @@ function card.on_imbue(ctx, self)
 end
 
 card.tokens = {
-    { id = "CS2_231", name = "Wisp", text = "", set = "EXPERT1", type = "minion", collectible = true, cost = 0, attack = 1, health = 1, tags = { "undead" } },
     {
         id = "EDR_851p", name = "Blessing of the Wisp",
         text = "[x]Summon <b>@</b> Wisp.\nDeal <b>$@</b> damage\nrandomly split among\nall enemies.",

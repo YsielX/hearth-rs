@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_070",name="Bladed Cultist",text="<b>Combo:</b> Gain +1/+1.",set="OG",type="minion",class="rogue",rarity="common",cost=1,attack=1,health=2,keywords={"combo"},on_combo=function(ctx,self)ctx:buff(self,1,1)end}

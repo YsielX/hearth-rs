@@ -6,6 +6,7 @@ return {
     set = "LOE",
     type = "minion",
     class = "rogue",
+    rarity = "common",
     cost = 4,
     attack = 6,
     health = 4,

@@ -196,14 +196,27 @@ pub(super) fn entity_to_table(lua: &Lua, entity: &hearth_core::Entity) -> mlua::
     table.set("silenced", entity.silenced)?;
     table.set("frozen", entity.frozen)?;
     table.set("location_cooldown", entity.location_cooldown)?;
+    table.set("attacks_this_turn", entity.attacks_this_turn)?;
     table.set("enchantments", entity.enchantments.len())?;
     table.set("cards_played_before", entity.cards_played_before)?;
+    table.set("attack_at_death", entity.attack_at_death)?;
+    table.set("started_in_deck", entity.started_in_deck)?;
     table.set("combo_active", entity.cards_played_before > 0)?;
     let keywords = lua.create_table()?;
     for (index, keyword) in entity.keywords.iter().enumerate() {
         keywords.set(index + 1, keyword.as_str())?;
     }
     table.set("keywords", keywords)?;
+    let attached_cards = lua.create_table()?;
+    for (index, card_id) in entity.attached_cards.iter().enumerate() {
+        attached_cards.set(index + 1, card_id.as_str())?;
+    }
+    table.set("attached_cards", attached_cards)?;
+    let attached_deathrattles = lua.create_table()?;
+    for (index, card_id) in entity.attached_deathrattles.iter().enumerate() {
+        attached_deathrattles.set(index + 1, card_id.as_str())?;
+    }
+    table.set("attached_deathrattles", attached_deathrattles)?;
     table.set("zone", zone_name(entity.zone))?;
     table.set(
         "type",
@@ -228,6 +241,10 @@ pub(super) fn card_definition_to_table(lua: &Lua, card: &CardDefinition) -> mlua
     table.set("type", card_kind_name(card.kind))?;
     table.set("collectible", card.collectible)?;
     table.set("class", card.class.as_str())?;
+    table.set(
+        "classes",
+        lua.create_sequence_from(card.classes.iter().map(String::as_str))?,
+    )?;
     table.set("rarity", card.rarity.as_deref())?;
     table.set("spell_school", card.spell_school.as_deref())?;
     table.set("cost", card.cost)?;
@@ -279,11 +296,26 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             table.set("player", player.0)?;
             table.set("turn", *turn)?;
         }
-        GameEvent::CardDrawn { player, card }
-        | GameEvent::CardBurned { player, card }
-        | GameEvent::CardPlayed { player, card }
-        | GameEvent::CardCountered { player, card }
-        | GameEvent::CardTraded { player, card } => {
+        GameEvent::CardDrawn {
+            player,
+            card,
+            source,
+        }
+        | GameEvent::CardBurned {
+            player,
+            card,
+            source,
+        } => {
+            table.set("player", player.0)?;
+            table.set("entity", card.0)?;
+            table.set("source", source.map(|entity| entity.0))?;
+        }
+        GameEvent::CardPlayed { player, card, cost } => {
+            table.set("player", player.0)?;
+            table.set("entity", card.0)?;
+            table.set("cost", *cost)?;
+        }
+        GameEvent::CardCountered { player, card } | GameEvent::CardTraded { player, card } => {
             table.set("player", player.0)?;
             table.set("entity", card.0)?;
         }
@@ -318,10 +350,27 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             player,
             spell,
             generated_by,
+            target,
+            ..
         } => {
             table.set("player", player.0)?;
             table.set("entity", spell.0)?;
             table.set("generated", generated_by.is_some())?;
+            table.set("player_cast", generated_by.is_none())?;
+            table.set("generated_by", generated_by.map(|entity| entity.0))?;
+            table.set("target", target.map(|entity| entity.0))?;
+        }
+        GameEvent::SpellTargeted {
+            player,
+            spell,
+            target,
+            generated_by,
+        } => {
+            table.set("player", player.0)?;
+            table.set("entity", spell.0)?;
+            table.set("target", target.0)?;
+            table.set("generated", generated_by.is_some())?;
+            table.set("player_cast", generated_by.is_none())?;
             table.set("generated_by", generated_by.map(|entity| entity.0))?;
         }
         GameEvent::MinionPlayed { player, minion } => {
@@ -425,7 +474,9 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             table.set("from_card", from_card.as_str())?;
             table.set("to_card", to_card.as_str())?;
         }
-        GameEvent::Attack { attacker, defender } => {
+        GameEvent::Attack {
+            attacker, defender, ..
+        } => {
             table.set("attacker", attacker.0)?;
             table.set("defender", defender.0)?;
         }
@@ -530,6 +581,20 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             table.set("amount", *amount)?;
             table.set("temporary", *temporary)?;
         }
+        GameEvent::PlayerScriptDataChanged {
+            source,
+            player,
+            key,
+            old,
+            new,
+        } => {
+            table.set("source", source.0)?;
+            table.set("player", player.0)?;
+            table.set("key", key.as_str())?;
+            table.set("old", *old)?;
+            table.set("new", *new)?;
+            table.set("delta", new.saturating_sub(*old))?;
+        }
         GameEvent::KeywordDisabled {
             source,
             target,
@@ -547,10 +612,14 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             entity,
             player,
             position,
+            source,
+            repetitions,
         } => {
             table.set("entity", entity.0)?;
             table.set("player", player.0)?;
             table.set("position", *position)?;
+            table.set("source", source.map(|source| source.0))?;
+            table.set("repetitions", *repetitions)?;
         }
         GameEvent::Conceded { player } => table.set("player", player.0)?,
         GameEvent::GameEnded { outcome } => match outcome {
@@ -680,7 +749,9 @@ pub(super) fn parse_modifier_operation(value: &str) -> mlua::Result<ModifierOper
     match value {
         "set" => Ok(ModifierOperation::Set),
         "add" => Ok(ModifierOperation::Add),
+        "pre_final_add" => Ok(ModifierOperation::PreFinalAdd),
         "multiply" => Ok(ModifierOperation::Multiply),
+        "final_set" => Ok(ModifierOperation::FinalSet),
         _ => Err(mlua::Error::runtime(format!(
             "unknown modifier operation {value}"
         ))),
@@ -700,6 +771,8 @@ pub(super) fn parse_duration(value: &str) -> mlua::Result<EffectDuration> {
 pub(super) fn parse_zone_placement(value: &str) -> mlua::Result<ZonePlacement> {
     match value {
         "hand" => Ok(ZonePlacement::Hand),
+        "board" => Ok(ZonePlacement::Board),
+        "secret" => Ok(ZonePlacement::Secret),
         "deck_top" => Ok(ZonePlacement::DeckTop),
         "deck_bottom" => Ok(ZonePlacement::DeckBottom),
         "deck_random" => Ok(ZonePlacement::DeckRandom),

@@ -16,10 +16,12 @@ local card = {
 
 local function choose_legendary(ctx, self, just_selected)
     local candidates = {}
+    local own_class = ctx:player(ctx:controller(self)).class
     for _, card_id in ipairs(ctx:collectible_cards()) do
         local definition = ctx:card_definition(card_id)
         if definition.type == "minion"
             and definition.rarity == "legendary"
+            and (definition.class == "neutral" or definition.class == own_class)
             and card_id ~= "KAR_096"
             and card_id ~= just_selected
             and ctx:get_data(self, "excluded:" .. card_id) == 0 then
@@ -38,6 +40,10 @@ function card.on_start_of_game(ctx, self)
         end
     end
     ctx:set_data(self, "added", 0)
+    ctx:continue_with("begin_legendary_generation")
+end
+
+function card.begin_legendary_generation(ctx, self)
     choose_legendary(ctx, self)
 end
 

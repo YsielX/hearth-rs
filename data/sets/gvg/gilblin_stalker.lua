@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_081", name = "Gilblin Stalker", text = "<b>Stealth</b>", set = "GVG", type = "minion", rarity = "common", cost = 2, attack = 2, health = 3, keywords = { "stealth" } }

@@ -1,0 +1,1 @@
+return {api_version=1,id="UNG_814",name="Giant Wasp",text="<b>Stealth</b>\n <b>Poisonous</b>",set="UNGORO",type="minion",class="neutral",rarity="common",cost=3,attack=2,health=2,tags={"beast"},keywords={"stealth","poisonous"}}

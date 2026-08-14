@@ -5,6 +5,7 @@ return {
     text = "<b>Taunt</b>\n<b>Divine Shield</b>",
     set = "GVG",
     type = "minion",
+    rarity = "common",
     cost = 2,
     attack = 1,
     health = 2,

@@ -6,6 +6,7 @@ impl<R: CardRuntime> Game<R> {
         attack_id: EventId,
         attacker: EntityId,
         defender: EntityId,
+        collateral: Vec<(EntityId, i32)>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         if self.state.outcome.is_some() {
@@ -30,12 +31,36 @@ impl<R: CardRuntime> Game<R> {
             target: defender,
             amount: attacker_entity.attack.max(0),
         })?];
-        if defender_entity.kind == CardKind::Minion && defender_entity.attack > 0 {
+        let attacker_immune = self.keyword_bool(
+            attacker,
+            "immune_while_attacking",
+            false,
+            Some(defender),
+        )?;
+        if defender_entity.kind == CardKind::Minion
+            && defender_entity.attack > 0
+            && !attacker_immune
+        {
             damage.push(self.begin_event(GameEvent::Damaged {
                 source: defender,
                 target: attacker,
                 amount: defender_entity.attack,
             })?);
+        }
+        for (target, amount) in collateral {
+            if target != defender
+                && self.state.entity(target).is_some_and(|entity| {
+                    entity.zone == Zone::Board
+                        && entity.kind == CardKind::Minion
+                        && entity.health() > 0
+                })
+            {
+                damage.push(self.begin_event(GameEvent::Damaged {
+                    source: attacker,
+                    target,
+                    amount: amount.max(0),
+                })?);
+            }
         }
         let mut before = Vec::new();
         for event in &damage {
@@ -44,7 +69,11 @@ impl<R: CardRuntime> Game<R> {
         queue.push_front(ResolutionItem::CommitCombat {
             attack: PendingEvent {
                 id: attack_id,
-                event: GameEvent::Attack { attacker, defender },
+                event: GameEvent::Attack {
+                    attacker,
+                    defender,
+                    collateral: Vec::new(),
+                },
                 cancelled: false,
             },
             damage,
@@ -62,7 +91,10 @@ impl<R: CardRuntime> Game<R> {
         if attack.cancelled {
             return Ok(());
         }
-        let GameEvent::Attack { attacker, defender } = attack.event else {
+        let GameEvent::Attack {
+            attacker, defender, ..
+        } = attack.event
+        else {
             unreachable!("combat item must contain an attack event")
         };
         let valid = self.state.entity(attacker).is_some_and(|entity| {
@@ -99,9 +131,10 @@ impl<R: CardRuntime> Game<R> {
         if self.state.entities[&attacker].kind == CardKind::Hero
             && let Some(weapon) = self.state.player(player).weapon
         {
+            let durability_loss = self.keyword_i32(weapon, "durability_loss", 1, None)?.max(0);
             let broken = {
                 let weapon_entity = self.state.entities.get_mut(&weapon).unwrap();
-                weapon_entity.damage += 1;
+                weapon_entity.damage = weapon_entity.damage.saturating_add(durability_loss);
                 weapon_entity.health() <= 0
             };
             if broken {
@@ -111,7 +144,14 @@ impl<R: CardRuntime> Game<R> {
             }
         }
         self.refresh_auras()?;
-        notifications.push((attack.id, GameEvent::Attack { attacker, defender }));
+        notifications.push((
+            attack.id,
+            GameEvent::Attack {
+                attacker,
+                defender,
+                collateral: Vec::new(),
+            },
+        ));
         queue.push_front(ResolutionItem::DeathCheck);
         if let Some((destruction, before)) = staged_weapon_destruction {
             queue.push_front(ResolutionItem::CommitWeaponDestruction(destruction));
@@ -155,6 +195,26 @@ impl<R: CardRuntime> Game<R> {
         Ok(())
     }
 
+    pub(super) fn commit_forced_weapon_destruction(
+        &mut self,
+        destruction: PendingEvent,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        let GameEvent::WeaponDestroyed { player, weapon } = destruction.event else {
+            unreachable!("forced weapon destruction item must contain weapon_destroyed")
+        };
+        if destruction.cancelled || self.state.player(player).weapon != Some(weapon) {
+            return Ok(());
+        }
+        self.destroy_weapon(player, weapon);
+        self.refresh_auras()?;
+        queue.push_front(ResolutionItem::PublishAfter {
+            id: destruction.id,
+            event: GameEvent::WeaponDestroyed { player, weapon },
+        });
+        Ok(())
+    }
+
     pub(super) fn commit_damage_group(
         &mut self,
         damage: Vec<PendingEvent>,
@@ -184,10 +244,52 @@ impl<R: CardRuntime> Game<R> {
         Ok(())
     }
 
+    pub(super) fn commit_heal_group(
+        &mut self,
+        healing: Vec<PendingEvent>,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        let mut notifications = Vec::new();
+        for pending in healing {
+            if pending.cancelled {
+                continue;
+            }
+            let GameEvent::Healed {
+                source,
+                target,
+                amount,
+            } = pending.event
+            else {
+                unreachable!("healing group must contain healed events")
+            };
+            let entity = self
+                .state
+                .entities
+                .get_mut(&target)
+                .ok_or(GameError::UnknownEntity(target))?;
+            let actual = amount.max(0).min(entity.damage);
+            entity.damage -= actual;
+            notifications.push((
+                pending.id,
+                GameEvent::Healed {
+                    source,
+                    target,
+                    amount: actual,
+                },
+            ));
+        }
+        self.refresh_auras()?;
+        queue.push_front(ResolutionItem::PublishAfterGroup {
+            events: notifications,
+        });
+        Ok(())
+    }
+
     pub(super) fn commit_zone_change(
         &mut self,
         change: PendingEvent,
         destination: ZonePlacement,
+        destination_player: Option<PlayerId>,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         let GameEvent::ZoneChanged {
@@ -211,8 +313,12 @@ impl<R: CardRuntime> Game<R> {
         }
 
         let source_controller = current.controller;
-        let destination_player = current.owner;
+        let transfers_ownership = destination_player.is_some();
+        let destination_player = destination_player.unwrap_or(current.owner);
         self.remove_from_zone(entity, from, source_controller);
+        if transfers_ownership {
+            self.state.entities.get_mut(&entity).unwrap().owner = destination_player;
+        }
 
         let actual_to = match destination {
             ZonePlacement::Hand
@@ -232,8 +338,20 @@ impl<R: CardRuntime> Game<R> {
                 self.state.player_mut(destination_player).hand.push(entity);
                 Zone::Hand
             }
-            ZonePlacement::DeckTop | ZonePlacement::DeckBottom | ZonePlacement::DeckRandom => {
+            ZonePlacement::Board => {
                 self.reset_after_hidden_zone_change(entity, destination_player);
+                let position = self.state.player(destination_player).board.len();
+                self.move_to_board_at(entity, destination_player, position)?;
+                Zone::Board
+            }
+            ZonePlacement::Secret => {
+                self.move_to_secret(entity, destination_player);
+                Zone::Secret
+            }
+            ZonePlacement::DeckTop | ZonePlacement::DeckBottom | ZonePlacement::DeckRandom => {
+                if from != Zone::Deck {
+                    self.reset_after_hidden_zone_change(entity, destination_player);
+                }
                 self.state.entities.get_mut(&entity).unwrap().zone = Zone::Deck;
                 let deck_len = self.state.player(destination_player).deck.len();
                 let position = match destination {
@@ -293,12 +411,37 @@ impl<R: CardRuntime> Game<R> {
         else {
             unreachable!("controller change item must contain a controller_changed event")
         };
-        let still_valid = self.state.entity(entity).is_some_and(|candidate| {
-            candidate.zone == Zone::Board
-                && candidate.kind == CardKind::Minion
-                && candidate.controller == from
-        });
-        if !still_valid || self.state.player(to).board.len() >= MAX_BOARD_SIZE {
+        let Some(candidate) = self.state.entity(entity) else {
+            return Ok(());
+        };
+        let can_take_minion = candidate.zone == Zone::Board
+            && candidate.kind == CardKind::Minion
+            && candidate.controller == from
+            && self.state.player(to).board.len() < MAX_BOARD_SIZE;
+        let can_take_secret = candidate.zone == Zone::Secret
+            && candidate.controller == from
+            && self.state.player(to).secrets.len() < MAX_SECRET_SIZE;
+        if !can_take_minion && !can_take_secret {
+            return Ok(());
+        }
+
+        if can_take_secret {
+            self.state
+                .player_mut(from)
+                .secrets
+                .retain(|candidate| *candidate != entity);
+            self.state.player_mut(to).secrets.push(entity);
+            self.state.entities.get_mut(&entity).unwrap().controller = to;
+            self.refresh_auras()?;
+            queue.push_front(ResolutionItem::PublishAfter {
+                id: change.id,
+                event: GameEvent::ControllerChanged {
+                    source,
+                    entity,
+                    from,
+                    to,
+                },
+            });
             return Ok(());
         }
 
@@ -330,6 +473,7 @@ impl<R: CardRuntime> Game<R> {
     pub(super) fn commit_transform(
         &mut self,
         transform: PendingEvent,
+        preserve_attached_scripts: bool,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         if transform.cancelled {
@@ -361,7 +505,7 @@ impl<R: CardRuntime> Game<R> {
             .definition(&to_card)
             .cloned()
             .ok_or_else(|| GameError::UnknownCard(to_card.clone()))?;
-        let hand_can_change_kind = current_zone == Zone::Hand
+        let hidden_zone_can_change_kind = matches!(current_zone, Zone::Hand | Zone::Deck)
             && matches!(
                 definition.kind,
                 CardKind::Hero
@@ -370,7 +514,7 @@ impl<R: CardRuntime> Game<R> {
                     | CardKind::Weapon
                     | CardKind::Location
             );
-        if definition.kind != current_kind && !hand_can_change_kind {
+        if definition.kind != current_kind && !hidden_zone_can_change_kind {
             return Err(GameError::CardCannotTransformInto(to_card));
         }
 
@@ -386,6 +530,7 @@ impl<R: CardRuntime> Game<R> {
         entity_state.attack = definition.attack;
         entity_state.max_health = definition.health;
         entity_state.damage = 0;
+        entity_state.death_source = None;
         entity_state.armor = 0;
         entity_state.cost = definition.cost;
         entity_state.spell_damage = 0;
@@ -396,12 +541,17 @@ impl<R: CardRuntime> Game<R> {
         entity_state.aura_attack = 0;
         entity_state.aura_health = 0;
         entity_state.aura_cost = 0;
+        entity_state.aura_cost_set = None;
         entity_state.aura_spell_damage = 0;
         entity_state.aura_keywords.clear();
         entity_state.enchantments.clear();
         entity_state.silenced = false;
-        entity_state.script_data.clear();
-        entity_state.attached_cards.clear();
+        entity_state.temporary_control = None;
+        if !preserve_attached_scripts {
+            entity_state.script_data.clear();
+            entity_state.attached_cards.clear();
+        }
+        entity_state.attached_deathrattles.clear();
         Self::recompute_entity(entity_state);
         self.refresh_auras()?;
         if current_zone == Zone::Board {
@@ -419,17 +569,224 @@ impl<R: CardRuntime> Game<R> {
         Ok(())
     }
 
+    pub(super) fn commit_transform_group(
+        &mut self,
+        transforms: Vec<PendingEvent>,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        let mut after = Vec::new();
+        let mut touched_board = false;
+        for transform in transforms {
+            if transform.cancelled {
+                continue;
+            }
+            let GameEvent::Transformed {
+                source,
+                entity,
+                from_card,
+                to_card,
+            } = transform.event
+            else {
+                unreachable!("transform group must contain transformed events")
+            };
+            let Some(current) = self.state.entity(entity) else {
+                continue;
+            };
+            let zone = current.zone;
+            if matches!(
+                zone,
+                Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
+            ) || current.card_id != from_card
+            {
+                continue;
+            }
+            let definition = self
+                .runtime
+                .definition(&to_card)
+                .cloned()
+                .ok_or_else(|| GameError::UnknownCard(to_card.clone()))?;
+            let hidden_zone_can_change_kind = matches!(zone, Zone::Hand | Zone::Deck)
+                && matches!(
+                    definition.kind,
+                    CardKind::Hero
+                        | CardKind::Minion
+                        | CardKind::Spell
+                        | CardKind::Weapon
+                        | CardKind::Location
+                );
+            if definition.kind != current.kind && !hidden_zone_can_change_kind {
+                return Err(GameError::CardCannotTransformInto(to_card));
+            }
+            let entity_state = self.state.entities.get_mut(&entity).unwrap();
+            entity_state.card_id = definition.id.clone();
+            entity_state.name = definition.name;
+            entity_state.kind = definition.kind;
+            entity_state.base_attack = definition.attack;
+            entity_state.base_health = definition.health;
+            entity_state.base_cost = definition.cost;
+            entity_state.base_spell_damage = 0;
+            entity_state.base_keywords = definition.keywords.clone();
+            entity_state.attack = definition.attack;
+            entity_state.max_health = definition.health;
+            entity_state.damage = 0;
+            entity_state.death_source = None;
+            entity_state.armor = 0;
+            entity_state.cost = definition.cost;
+            entity_state.spell_damage = 0;
+            entity_state.frozen = false;
+            entity_state.frozen_since_turn = None;
+            entity_state.keywords = definition.keywords;
+            entity_state.disabled_keywords.clear();
+            entity_state.aura_attack = 0;
+            entity_state.aura_health = 0;
+            entity_state.aura_cost = 0;
+            entity_state.aura_cost_set = None;
+            entity_state.aura_spell_damage = 0;
+            entity_state.aura_keywords.clear();
+            entity_state.enchantments.clear();
+            entity_state.silenced = false;
+            entity_state.temporary_control = None;
+            entity_state.script_data.clear();
+            entity_state.attached_cards.clear();
+            entity_state.attached_deathrattles.clear();
+            Self::recompute_entity(entity_state);
+            touched_board |= zone == Zone::Board;
+            after.push((
+                transform.id,
+                GameEvent::Transformed {
+                    source,
+                    entity,
+                    from_card,
+                    to_card: definition.id,
+                },
+            ));
+        }
+        self.refresh_auras()?;
+        if touched_board {
+            queue.push_front(ResolutionItem::DeathCheck);
+        }
+        if !after.is_empty() {
+            queue.push_front(ResolutionItem::PublishAfterGroup { events: after });
+        }
+        Ok(())
+    }
+
+    pub(super) fn commit_transform_into_copy(
+        &mut self,
+        transform: PendingEvent,
+        template: Entity,
+        attack: Option<i32>,
+        health: Option<i32>,
+        preserve_attached_scripts: bool,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        if transform.cancelled {
+            return Ok(());
+        }
+        let GameEvent::Transformed {
+            source,
+            entity,
+            from_card,
+            to_card,
+        } = transform.event
+        else {
+            unreachable!("transform item must contain a transformed event")
+        };
+        let Some(current) = self.state.entity(entity) else {
+            return Ok(());
+        };
+        let zone = current.zone;
+        if matches!(
+            zone,
+            Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
+        ) || current.card_id != from_card
+            || current.kind != template.kind
+            || template.card_id != to_card
+        {
+            return Ok(());
+        }
+
+        let preserved_script_data = preserve_attached_scripts
+            .then(|| current.script_data.clone())
+            .unwrap_or_default();
+        let preserved_attached_cards = preserve_attached_scripts
+            .then(|| current.attached_cards.clone())
+            .unwrap_or_default();
+        self.copy_card_state(&template, entity);
+        let target = self.state.entities.get_mut(&entity).unwrap();
+        target.card_id = template.card_id.clone();
+        target.name = template.name.clone();
+        target.kind = template.kind;
+        target.armor = 0;
+        target.temporary_control = None;
+        if preserve_attached_scripts {
+            target.script_data.extend(preserved_script_data);
+            for card_id in preserved_attached_cards {
+                if !target.attached_cards.contains(&card_id) {
+                    target.attached_cards.push(card_id);
+                }
+            }
+        }
+        if attack.is_some() || health.is_some() {
+            let id = EnchantmentId(self.state.next_enchantment_id);
+            self.state.next_enchantment_id += 1;
+            let mut modifiers = Vec::new();
+            if let Some(value) = attack {
+                modifiers.push(StatModifier {
+                    stat: Stat::Attack,
+                    operation: ModifierOperation::FinalSet,
+                    value,
+                });
+            }
+            if let Some(value) = health {
+                modifiers.push(StatModifier {
+                    stat: Stat::Health,
+                    operation: ModifierOperation::FinalSet,
+                    value,
+                });
+                target.damage = 0;
+            }
+            target.enchantments.push(Enchantment {
+                id,
+                source,
+                attack: 0,
+                health: 0,
+                modifiers,
+                keywords: Vec::new(),
+                silenciable: true,
+                expires_at: None,
+            });
+        }
+        Self::recompute_entity(target);
+        self.refresh_auras()?;
+        if zone == Zone::Board {
+            queue.push_front(ResolutionItem::DeathCheck);
+        }
+        queue.push_front(ResolutionItem::PublishAfter {
+            id: transform.id,
+            event: GameEvent::Transformed {
+                source,
+                entity,
+                from_card,
+                to_card,
+            },
+        });
+        Ok(())
+    }
+
     pub(super) fn reset_after_hidden_zone_change(&mut self, entity: EntityId, player: PlayerId) {
         let timestamp = self.state.next_timestamp;
         self.state.next_timestamp += 1;
         let entity = self.state.entities.get_mut(&entity).unwrap();
         entity.controller = player;
         entity.damage = 0;
+        entity.death_source = None;
         entity.armor = 0;
         entity.exhausted = false;
         entity.frozen = false;
         entity.frozen_since_turn = None;
         entity.attacks_this_turn = 0;
+        entity.temporary_control = None;
         entity.location_cooldown = 0;
         entity.timestamp = timestamp;
         entity.enchantments.clear();
@@ -438,6 +795,7 @@ impl<R: CardRuntime> Game<R> {
         entity.cards_played_before = 0;
         entity.script_data.clear();
         entity.attached_cards.clear();
+        entity.attached_deathrattles.clear();
         Self::recompute_entity(entity);
     }
 
@@ -468,7 +826,20 @@ impl<R: CardRuntime> Game<R> {
                         return Some(event);
                     }
                 }
+                ResolutionItem::CommitEffectWeaponEquip { equip, replacement } => {
+                    if equip.id == id {
+                        return Some(equip);
+                    }
+                    if let Some(event) = replacement
+                        && event.id == id
+                    {
+                        return Some(event);
+                    }
+                }
                 ResolutionItem::CommitWeaponDestruction(event) if event.id == id => {
+                    return Some(event);
+                }
+                ResolutionItem::CommitForcedWeaponDestruction(event) if event.id == id => {
                     return Some(event);
                 }
                 ResolutionItem::CommitCombat { attack, damage } => {
@@ -484,6 +855,11 @@ impl<R: CardRuntime> Game<R> {
                         return Some(event);
                     }
                 }
+                ResolutionItem::CommitHealGroup { healing } => {
+                    if let Some(event) = healing.iter_mut().find(|event| event.id == id) {
+                        return Some(event);
+                    }
+                }
                 ResolutionItem::CommitSummon { summon, .. } if summon.id == id => {
                     return Some(summon);
                 }
@@ -493,8 +869,18 @@ impl<R: CardRuntime> Game<R> {
                 ResolutionItem::CommitControllerChange(change) if change.id == id => {
                     return Some(change);
                 }
-                ResolutionItem::CommitTransform(transform) if transform.id == id => {
+                ResolutionItem::CommitTemporaryControllerChange { change, .. }
+                    if change.id == id =>
+                {
+                    return Some(change);
+                }
+                ResolutionItem::CommitTransform { transform, .. } if transform.id == id => {
                     return Some(transform);
+                }
+                ResolutionItem::CommitTransformGroup { transforms } => {
+                    if let Some(event) = transforms.iter_mut().find(|event| event.id == id) {
+                        return Some(event);
+                    }
                 }
                 _ => {}
             }

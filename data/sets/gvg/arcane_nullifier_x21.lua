@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_091", name = "Arcane Nullifier X-21", text = "<b>Taunt</b>\n<b>Elusive</b>", set = "GVG", type = "minion", rarity = "rare", cost = 4, attack = 2, health = 5, tags = { "mech" }, keywords = { "taunt", "elusive" } }

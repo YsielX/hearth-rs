@@ -8,13 +8,9 @@ local function make_five_five(ctx, self, entity)
     if not is_friendly_minion(ctx, self, entity) then
         return
     end
-    ctx:modify(entity, {
-        stat = "attack", operation = "set", value = 5, silenciable = false,
+    ctx:modify_all({ entity }, {
+        attack = 5, health = 5, operation = "final_set", silenciable = false, reset_damage = true,
     })
-    ctx:modify(entity, {
-        stat = "health", operation = "set", value = 5, silenciable = false,
-    })
-    ctx:heal(entity, 1000000)
 end
 
 local card = {
@@ -25,6 +21,7 @@ local card = {
     set = "UNGORO",
     type = "spell",
     class = "rogue",
+    rarity = "legendary",
     cost = 1,
     keywords = { "quest" },
 

@@ -1,0 +1,5 @@
+local card={api_version=1,id="UNG_937",name="Primalfin Lookout",text="<b>Battlecry:</b> If you control another Murloc, <b>Discover</b> a Murloc.",set="UNGORO",type="minion",class="neutral",rarity="common",cost=2,attack=3,health=2,tags={"murloc"},keywords={"battlecry"}}
+local function murloc(ctx,e) for _,t in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags or {}) do if t=="murloc" or t=="all" then return true end end return false end
+function card.on_battlecry(ctx,self) local ok=false for _,e in ipairs(ctx:friendly_minions(self)) do if e~=self and murloc(ctx,e) then ok=true end end if not ok then return end local pool={} for _,id in ipairs(ctx:collectible_cards()) do for _,t in ipairs(ctx:card_definition(id).tags or {}) do if t=="murloc" or t=="all" then pool[#pool+1]=id;break end end end if #pool>0 then ctx:discover_cards(ctx:controller(self),"Discover a Murloc",pool,3,"lookout_chosen") end end
+function card.lookout_chosen(ctx,self,id) ctx:give_card(ctx:controller(self),id) end
+return card

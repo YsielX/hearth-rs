@@ -559,6 +559,13 @@ impl LuaCardRuntime {
             .entity(entity)
             .ok_or_else(|| format!("unknown keyword rule entity {entity}"))?;
         let mut ids = entity.keywords.clone();
+        if state.player(entity.controller).hero == entity.id {
+            for keyword in &state.player(entity.controller).keywords {
+                if !ids.contains(keyword) {
+                    ids.push(keyword.clone());
+                }
+            }
+        }
         // A weapon's combat keywords apply to its hero only while that hero is active.
         // This is generic composition: Rust does not know which keyword modules are present.
         if entity.kind == CardKind::Hero && entity.controller == state.active_player {
@@ -704,6 +711,40 @@ impl LuaCardRuntime {
         other: Option<EntityId>,
     ) -> Result<bool, String> {
         self.instruction_blocks.set(0);
+        let card_id = state
+            .entity(entity)
+            .ok_or_else(|| format!("unknown card rule entity {entity}"))?
+            .card_id
+            .clone();
+        if self.cards.contains_key(&card_id) {
+            let card_module = self.module(&card_id)?;
+            if let Some(rules) = card_module
+                .get::<Option<Table>>("rules")
+                .map_err(|error| error.to_string())?
+                && let Some(function) = rules
+                    .get::<Option<Function>>(rule)
+                    .map_err(|error| error.to_string())?
+            {
+                let emitted = Rc::new(RefCell::new(Vec::new()));
+                let ctx = build_context(
+                    &self.lua,
+                    state,
+                    entity,
+                    emitted.clone(),
+                    self.catalog.clone(),
+                    self.locale,
+                )
+                .map_err(|error| error.to_string())?;
+                value = function
+                    .call((ctx, entity.0, value, other.map(|id| id.0)))
+                    .map_err(|error| format!("card {card_id} rule {rule}: {error}"))?;
+                if !emitted.borrow().is_empty() {
+                    return Err(format!(
+                        "card {card_id} rule {rule} attempted to emit an effect"
+                    ));
+                }
+            }
+        }
         for keyword in self.active_keyword_ids(state, entity)? {
             let module = self.keyword_module(&keyword)?;
             let Some(rules) = module
@@ -1242,11 +1283,10 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(listener)
             .ok_or_else(|| format!("unknown listener entity {listener}"))?;
-        if entity.silenced {
-            return Ok(Vec::new());
-        }
         let mut output = Vec::new();
-        if let Some(script) = self.cards.get(&entity.card_id) {
+        if !entity.silenced
+            && let Some(script) = self.cards.get(&entity.card_id)
+        {
             let module = self
                 .lua
                 .registry_value(&script.module)
@@ -1262,8 +1302,8 @@ impl CardRuntime for LuaCardRuntime {
                 output.extend(self.invoke_triggers(state, listener, event, module)?);
             }
         }
-        for keyword in &entity.keywords {
-            let module = self.keyword_module(keyword)?;
+        for keyword in self.active_keyword_ids(state, listener)? {
+            let module = self.keyword_module(&keyword)?;
             output.extend(self.invoke_triggers(state, listener, event, module)?);
         }
         Ok(output)
@@ -1327,8 +1367,14 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown continuation source {source}"))?;
-        let mut card_ids = vec![entity.card_id.clone()];
+        let mut card_ids = Vec::new();
+        if !entity.silenced {
+            card_ids.push(entity.card_id.clone());
+        }
         card_ids.extend(entity.attached_cards.iter().cloned());
+        if hook == "on_deathrattle" {
+            card_ids.extend(entity.attached_deathrattles.iter().cloned());
+        }
         let mut output = Vec::new();
         let mut found = false;
         for card_id in card_ids {
@@ -1378,17 +1424,23 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown aura source entity {source}"))?;
-        if entity.silenced {
-            return Ok(Vec::new());
-        }
         let mut output = Vec::new();
-        let mut card_ids = vec![entity.card_id.clone()];
+        let mut modules = Vec::new();
+        let mut card_ids = Vec::new();
+        if !entity.silenced {
+            card_ids.push(entity.card_id.clone());
+        }
         card_ids.extend(entity.attached_cards.iter().cloned());
         for card_id in card_ids {
             if !self.cards.contains_key(&card_id) {
                 continue;
             }
-            let module = self.module(&card_id)?;
+            modules.push((card_id.clone(), self.module(&card_id)?));
+        }
+        for keyword in self.active_keyword_ids(state, source)? {
+            modules.push((format!("keyword {keyword}"), self.keyword_module(&keyword)?));
+        }
+        for (owner, module) in modules {
             let Some(auras) = module
                 .get::<Option<Table>>("auras")
                 .map_err(|error| error.to_string())?
@@ -1420,12 +1472,23 @@ impl CardRuntime for LuaCardRuntime {
                     .map_err(|error| error.to_string())?;
                 let cost = aura_stat_value(&aura, "cost", &ctx, source)
                     .map_err(|error| error.to_string())?;
+                let cost_set = match aura.get::<Value>("cost_set").map_err(|e| e.to_string())? {
+                    Value::Nil => None,
+                    Value::Integer(value) => Some(i32::try_from(value).map_err(|_| {
+                        "aura cost_set must fit in a signed 32-bit value".to_owned()
+                    })?),
+                    Value::Function(function) => Some(
+                        function
+                            .call((ctx.clone(), source.0))
+                            .map_err(|error| error.to_string())?,
+                    ),
+                    _ => return Err("aura cost_set must be an integer or function".to_owned()),
+                };
                 let spell_damage = aura_stat_value(&aura, "spell_damage", &ctx, source)
                     .map_err(|error| error.to_string())?;
                 if !emitted.borrow().is_empty() {
                     return Err(format!(
-                        "aura selector on {} attempted to emit an effect",
-                        entity.card_id
+                        "aura selector on {owner} attempted to emit an effect"
                     ));
                 }
                 let keywords = aura
@@ -1445,6 +1508,7 @@ impl CardRuntime for LuaCardRuntime {
                     attack,
                     health,
                     cost,
+                    cost_set,
                     spell_damage,
                     keywords,
                 });

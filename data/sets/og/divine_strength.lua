@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_223",name="Divine Strength",text="Give a minion +1/+2.",set="OG",type="spell",class="paladin",rarity="common",spell_school="holy",cost=1,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:buff(target,1,2)end}

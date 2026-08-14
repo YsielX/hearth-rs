@@ -1,0 +1,4 @@
+local card={api_version=1,id="UNG_832",name="Bloodbloom",text="The next spell you cast this turn costs Health instead of Mana.",set="UNGORO",type="spell",class="warlock",rarity="epic",spell_school="shadow",cost=4}
+function card.on_play(ctx,self) local p=ctx:controller(self);ctx:increment_player_data(p,"next_spell_health_pending",1);ctx:grant_player_keyword(p,"next_spell_costs_health") end
+card.triggers={{event="spell_cast",timing="after",active_zones={"graveyard"},condition=function(ctx,self,event) return event.entity==self and ctx:get_player_data(event.player,"next_spell_health_pending")>0 end,effect=function(ctx,self,event) local p=event.player;local n=ctx:get_player_data(p,"next_spell_health_pending");ctx:set_player_data(p,"next_spell_health_pending",0);ctx:increment_player_data(p,"next_spell_health_cost",n) end}}
+return card

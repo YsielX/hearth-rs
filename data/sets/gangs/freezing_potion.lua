@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "CFM_021",
+    name = "Freezing Potion",
+    text = "<b>Freeze</b> an enemy.",
+    set = "GANGS",
+    type = "spell",
+    class = "mage",
+    rarity = "common",
+    spell_school = "frost",
+    cost = 0,
+    target_mode = "required",
+    targets = function(ctx, self) return ctx:enemy_characters(self) end,
+    on_play = function(ctx, self, target) ctx:freeze(target) end,
+}

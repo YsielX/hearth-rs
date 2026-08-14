@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_392",name="Twig of the World Tree",text="<b>Deathrattle:</b> Refresh your Mana Crystals.",set="LOOTAPALOOZA",type="weapon",class="druid",rarity="legendary",cost=4,attack=1,health=5,keywords={"deathrattle"},on_deathrattle=function(ctx,self)ctx:refresh_mana_crystals(ctx:controller(self))end}

@@ -1,0 +1,3 @@
+local card={api_version=1,id="LOOT_214",name="Evasion",text="<b>Secret:</b> After your hero takes damage, become <b>Immune</b> this turn.",set="LOOTAPALOOZA",type="spell",class="rogue",rarity="epic",cost=2,keywords={"secret"}}
+card.triggers={{event="damaged",timing="after",active_zones={"secret"},condition=function(ctx,self,event)return ctx:get_data(self,"triggered")==0 and event.amount>0 and event.target==ctx:player(ctx:controller(self)).hero end,effect=function(ctx,self)ctx:set_data(self,"triggered",1);ctx:reveal_secret(self);ctx:grant_keyword_until_end_of_turn(ctx:player(ctx:controller(self)).hero,"immune")end}}
+return card

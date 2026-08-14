@@ -6,6 +6,7 @@ return {
     set = "KARA",
     type = "minion",
     class = "hunter",
+    rarity = "common",
     cost = 2,
     attack = 1,
     health = 1,

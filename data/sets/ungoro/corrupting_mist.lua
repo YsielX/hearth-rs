@@ -1,0 +1,4 @@
+local card={api_version=1,id="UNG_831",name="Corrupting Mist",text="Curse all minions. Destroy them at the start of your next turn.",set="UNGORO",type="spell",class="warlock",rarity="rare",spell_school="shadow",cost=2}
+function card.on_play(ctx,self) for _,e in ipairs(ctx:minions()) do ctx:grant_keyword(e,"corrupting_mist_curse") end ctx:set_data(self,"armed",1) end
+card.triggers={{event="turn_started",timing="after",active_zones={"graveyard"},condition=function(ctx,self,event) return ctx:get_data(self,"armed")==1 and event.player==ctx:controller(self) end,effect=function(ctx,self) ctx:set_data(self,"armed",0);local t={} for _,e in ipairs(ctx:minions()) do for _,k in ipairs(ctx:entity(e).keywords) do if k=="corrupting_mist_curse" then t[#t+1]=e;break end end end ctx:destroy_all(t) end}}
+return card

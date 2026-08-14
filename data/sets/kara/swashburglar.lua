@@ -6,6 +6,7 @@ local card = {
     set = "KARA",
     type = "minion",
     class = "rogue",
+    rarity = "common",
     cost = 1,
     attack = 1,
     health = 2,

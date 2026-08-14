@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_084", name = "Flying Machine", text = "<b>Windfury</b>", set = "GVG", type = "minion", rarity = "common", cost = 3, attack = 1, health = 4, tags = { "mech" }, keywords = { "windfury" } }

@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_273",name="Stand Against Darkness",text="Summon five {0} Silver Hand Recruits.",set="OG",type="spell",class="paladin",rarity="common",cost=4,rules={can_play=function(ctx,self,current)return current and #ctx:board(ctx:controller(self))<7 end},on_play=function(ctx,self)local p=ctx:controller(self);for _=1,5 do ctx:summon(p,"CS2_101t")end end}

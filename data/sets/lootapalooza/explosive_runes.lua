@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_101",name="Explosive Runes",text="<b>Secret:</b> After your opponent plays a minion, deal $6 damage to it and any excess to their hero.",set="LOOTAPALOOZA",type="spell",class="mage",rarity="rare",spell_school="fire",cost=3,keywords={"secret"}}

@@ -5,6 +5,7 @@ return {
     text = "<b>Charge</b>\n<b>Divine Shield</b>",
     set = "TGT",
     type = "minion",
+    rarity = "common",
     cost = 3,
     attack = 2,
     health = 1,

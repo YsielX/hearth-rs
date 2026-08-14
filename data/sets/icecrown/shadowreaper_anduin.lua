@@ -6,6 +6,7 @@ local card = {
     set = "ICECROWN",
     type = "hero",
     class = "priest",
+    rarity = "legendary",
     cost = 8,
     health = 30,
     armor = 5,
@@ -14,9 +15,11 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
+    local targets = {}
     for _, minion in ipairs(ctx:minions()) do
-        if ctx:entity(minion).attack >= 5 then ctx:destroy(minion) end
+        if ctx:entity(minion).attack >= 5 then targets[#targets + 1] = minion end
     end
+    if #targets > 0 then ctx:destroy_all(targets) end
 end
 
 return card

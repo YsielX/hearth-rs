@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "CFM_039",
+    name = "Street Trickster",
+    text = "<b>Spell Damage +2</b>",
+    set = "GANGS",
+    type = "minion",
+    rarity = "common",
+    cost = 3,
+    attack = 0,
+    health = 7,
+    tags = { "demon" },
+    keywords = { "spell_damage" },
+    keyword_params = { spell_damage = 2 },
+}

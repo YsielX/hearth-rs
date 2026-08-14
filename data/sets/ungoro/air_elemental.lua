@@ -1,0 +1,1 @@
+return { api_version=1, id="UNG_019", name="Air Elemental", text="<b>Elusive</b>", set="UNGORO", type="minion", class="shaman", rarity="common", cost=1, attack=3, health=1, tags={"elemental"}, keywords={"elusive"} }

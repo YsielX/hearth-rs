@@ -285,8 +285,11 @@ impl<R: CardRuntime> Game<R> {
             );
         }
 
-        if !player_state.hero_power_used {
-            let hero_power = player_state.hero_power;
+        let hero_power = player_state.hero_power;
+        let max_uses = self
+            .keyword_i32(hero_power, "max_uses_per_turn", 1, None)?
+            .clamp(0, i32::from(u8::MAX)) as u8;
+        if player_state.hero_power_uses_this_turn < max_uses {
             let entity = &self.state.entities[&hero_power];
             if entity.cost <= player_state.mana
                 && !self.keyword_bool(hero_power, "hero_power_is_passive", false, None)?
@@ -296,7 +299,13 @@ impl<R: CardRuntime> Game<R> {
                     .definition(&entity.card_id)
                     .ok_or_else(|| GameError::UnknownCard(entity.card_id.clone()))?;
                 let targets = self.valid_targets(hero_power)?;
-                if definition.target_mode.requires_target(targets.len()) {
+                let requires_target = self.keyword_bool(
+                    hero_power,
+                    "requires_target",
+                    definition.target_mode.requires_target(targets.len()),
+                    None,
+                )?;
+                if requires_target {
                     actions.extend(
                         targets
                             .into_iter()
@@ -438,6 +447,7 @@ impl<R: CardRuntime> Game<R> {
     }
 
     pub(super) fn dispatch_inner(&mut self, command: PlayerCommand) -> Result<(), GameError> {
+        let command = self.randomize_command_target(command)?;
         match command {
             PlayerCommand::Mulligan { replace } => self.mulligan(replace),
             PlayerCommand::PlayCard { card, target } => self.play_card(card, target, None),
@@ -465,6 +475,91 @@ impl<R: CardRuntime> Game<R> {
             PlayerCommand::UseHeroPower { target } => self.use_hero_power(target),
             PlayerCommand::UseLocation { location, target } => self.use_location(location, target),
         }
+    }
+
+    fn randomize_command_target(
+        &mut self,
+        command: PlayerCommand,
+    ) -> Result<PlayerCommand, GameError> {
+        let player = self.state.active_player;
+        let hero = self.state.player(player).hero;
+        if !self.keyword_bool(hero, "randomize_targets", false, None)? {
+            return Ok(command);
+        }
+
+        let choose = |game: &mut Self, declared: EntityId, candidates: Vec<EntityId>| -> EntityId {
+            if candidates.is_empty() || !candidates.contains(&declared) {
+                return declared;
+            }
+            let index = game.rng.random_range(0..candidates.len());
+            game.state.random_counter = game.state.random_counter.saturating_add(1);
+            candidates[index]
+        };
+
+        Ok(match command {
+            PlayerCommand::PlayCard {
+                card,
+                target: Some(target),
+            } => PlayerCommand::PlayCard {
+                card,
+                target: Some(choose(self, target, self.valid_targets(card)?)),
+            },
+            PlayerCommand::PlayCardAt {
+                card,
+                target: Some(target),
+                position,
+            } => PlayerCommand::PlayCardAt {
+                card,
+                target: Some(choose(self, target, self.valid_targets(card)?)),
+                position,
+            },
+            PlayerCommand::UseCardAction {
+                card,
+                action,
+                target: Some(target),
+            } => PlayerCommand::UseCardAction {
+                card,
+                target: Some(choose(
+                    self,
+                    target,
+                    self.valid_action_targets(card, &action)?,
+                )),
+                action,
+            },
+            PlayerCommand::Attack { attacker, defender } => {
+                let candidates = self
+                    .legal_actions()?
+                    .into_iter()
+                    .filter_map(|action| match action {
+                        PlayerCommand::Attack {
+                            attacker: candidate,
+                            defender,
+                        } if candidate == attacker => Some(defender),
+                        _ => None,
+                    })
+                    .collect();
+                PlayerCommand::Attack {
+                    attacker,
+                    defender: choose(self, defender, candidates),
+                }
+            }
+            PlayerCommand::UseHeroPower {
+                target: Some(target),
+            } => {
+                let hero_power = self.state.player(player).hero_power;
+                PlayerCommand::UseHeroPower {
+                    target: Some(choose(self, target, self.valid_targets(hero_power)?)),
+                }
+            }
+            PlayerCommand::UseLocation {
+                location,
+                target: Some(target),
+            } => PlayerCommand::UseLocation {
+                location,
+                target: Some(choose(self, target, self.valid_location_targets(location)?)),
+            },
+            command => command,
+        })
     }
 
     pub(super) fn use_card_action(
@@ -703,7 +798,10 @@ impl<R: CardRuntime> Game<R> {
     pub(super) fn use_hero_power(&mut self, target: Option<EntityId>) -> Result<(), GameError> {
         let player = self.state.active_player;
         let player_state = self.state.player(player);
-        if player_state.hero_power_used {
+        let max_uses = self
+            .keyword_i32(player_state.hero_power, "max_uses_per_turn", 1, None)?
+            .clamp(0, i32::from(u8::MAX)) as u8;
+        if player_state.hero_power_uses_this_turn >= max_uses {
             return Err(GameError::HeroPowerAlreadyUsed);
         }
         let hero_power = player_state.hero_power;
@@ -723,7 +821,13 @@ impl<R: CardRuntime> Game<R> {
             .cloned()
             .ok_or_else(|| GameError::UnknownCard(entity.card_id.clone()))?;
         let targets = self.valid_targets(hero_power)?;
-        if definition.target_mode.requires_target(targets.len()) && target.is_none() {
+        let requires_target = self.keyword_bool(
+            hero_power,
+            "requires_target",
+            definition.target_mode.requires_target(targets.len()),
+            None,
+        )?;
+        if requires_target && target.is_none() {
             return Err(GameError::TargetRequired);
         }
         if let Some(target) = target
@@ -733,7 +837,11 @@ impl<R: CardRuntime> Game<R> {
         }
 
         let temporary = self.spend_mana(player, entity.cost);
-        self.state.player_mut(player).hero_power_used = true;
+        let player_state = self.state.player_mut(player);
+        player_state.hero_power_used = true;
+        player_state.hero_power_uses = player_state.hero_power_uses.saturating_add(1);
+        player_state.hero_power_uses_this_turn =
+            player_state.hero_power_uses_this_turn.saturating_add(1);
         let mut resolution = if entity.cost > 0 {
             self.publish(GameEvent::ManaSpent {
                 player,
@@ -827,12 +935,28 @@ impl<R: CardRuntime> Game<R> {
             .definition(&entity.card_id)
             .cloned()
             .ok_or_else(|| GameError::UnknownCard(entity.card_id.clone()))?;
-        let mana = self.state.player(player).mana;
-        if mana < entity.cost {
-            return Err(GameError::NotEnoughMana {
-                needed: entity.cost,
-                available: mana,
-            });
+        let costs_health = self.keyword_bool(card, "costs_health_instead_of_mana", false, None)?;
+        if costs_health {
+            let available = self
+                .state
+                .hero(player)
+                .health()
+                .saturating_sub(1)
+                .clamp(0, i32::from(u8::MAX)) as u8;
+            if available < entity.cost {
+                return Err(GameError::NotEnoughHealth {
+                    needed: entity.cost,
+                    available,
+                });
+            }
+        } else {
+            let mana = self.state.player(player).mana;
+            if mana < entity.cost {
+                return Err(GameError::NotEnoughMana {
+                    needed: entity.cost,
+                    available: mana,
+                });
+            }
         }
         if matches!(definition.kind, CardKind::Minion | CardKind::Location)
             && self.state.player(player).board.len() >= MAX_BOARD_SIZE
@@ -868,7 +992,15 @@ impl<R: CardRuntime> Game<R> {
             }
         }
 
-        let temporary = self.spend_mana(player, entity.cost);
+        let temporary = if costs_health {
+            let hero = self.state.player(player).hero;
+            self.state.entities.get_mut(&hero).unwrap().damage = self.state.entities[&hero]
+                .damage
+                .saturating_add(i32::from(entity.cost));
+            0
+        } else {
+            self.spend_mana(player, entity.cost)
+        };
         let hand_position = self
             .state
             .player(player)
@@ -886,7 +1018,7 @@ impl<R: CardRuntime> Game<R> {
         state.cards_played_history.push(entity.card_id.clone());
         state.cards_played_current_turn.push(entity.card_id.clone());
         self.refresh_auras()?;
-        let mut resolution = if entity.cost > 0 {
+        let mut resolution = if entity.cost > 0 && !costs_health {
             self.publish(GameEvent::ManaSpent {
                 player,
                 source: card,
@@ -899,7 +1031,11 @@ impl<R: CardRuntime> Game<R> {
         } else {
             Vec::new()
         };
-        let pending = self.begin_event(GameEvent::CardPlayed { player, card })?;
+        let pending = self.begin_event(GameEvent::CardPlayed {
+            player,
+            card,
+            cost: entity.cost,
+        })?;
         let before = self.trigger_event(&pending, EventTiming::Before)?;
         resolution.extend(before.into_iter().map(ResolutionItem::Effect));
         resolution.push(ResolutionItem::CommitCardPlay {
@@ -977,7 +1113,11 @@ impl<R: CardRuntime> Game<R> {
             .get_mut(&attacker)
             .unwrap()
             .attacks_this_turn += 1;
-        let event = GameEvent::Attack { attacker, defender };
+        let event = GameEvent::Attack {
+            attacker,
+            defender,
+            collateral: Vec::new(),
+        };
         let pending = self.begin_event(event)?;
         let before = self.trigger_event(&pending, EventTiming::Before)?;
         let mut resolution = before
@@ -1018,12 +1158,19 @@ impl<R: CardRuntime> Game<R> {
             })?;
             self.resolve_effects(effects)?;
         }
-        self.start_turn(player.opponent())
+        let next = if self.state.player(player).extra_turns > 0 {
+            self.state.player_mut(player).extra_turns -= 1;
+            player
+        } else {
+            player.opponent()
+        };
+        self.start_turn(next)
     }
 
     pub(super) fn start_turn(&mut self, player: PlayerId) -> Result<(), GameError> {
         self.state.turn += 1;
         self.state.active_player = player;
+        self.expire_start_of_turn(player, self.state.turn);
         let (board, locked) = {
             let player_state = self.state.player_mut(player);
             player_state.max_mana = (player_state.max_mana + 1).min(10);
@@ -1032,6 +1179,7 @@ impl<R: CardRuntime> Game<R> {
             player_state.overload_pending = 0;
             player_state.mana = player_state.max_mana - player_state.overloaded_mana;
             player_state.hero_power_used = false;
+            player_state.hero_power_uses_this_turn = 0;
             player_state.cards_played_this_turn = 0;
             player_state.cards_played_last_turn =
                 std::mem::take(&mut player_state.cards_played_current_turn);
@@ -1073,6 +1221,10 @@ impl<R: CardRuntime> Game<R> {
             turn: self.state.turn,
         })?);
         self.resolve_effects(effects)?;
-        self.resolve_effects(vec![EffectSpec::Draw { player, count: 1 }])
+        self.resolve_effects(vec![EffectSpec::Draw {
+            source: None,
+            player,
+            count: 1,
+        }])
     }
 }

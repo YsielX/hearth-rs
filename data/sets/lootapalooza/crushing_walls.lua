@@ -1,0 +1,1 @@
+return {api_version=1,id="LOOT_522",name="Crushing Walls",text="Destroy your opponent's left and right-most minions.",set="LOOTAPALOOZA",type="spell",class="hunter",rarity="epic",cost=7,on_play=function(ctx,self)local b=ctx:board(ctx:opponent(ctx:controller(self)));if #b==1 then ctx:destroy(b[1])elseif #b>1 then ctx:destroy_all({b[1],b[#b]})end end}

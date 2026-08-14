@@ -89,6 +89,16 @@ pub(super) fn build_context(
             table.set("board_size", player.board.len())?;
             table.set("secret_count", player.secrets.len())?;
             table.set("hero_power_used", player.hero_power_used)?;
+            table.set("hero_power_uses", player.hero_power_uses)?;
+            table.set(
+                "hero_power_uses_this_turn",
+                player.hero_power_uses_this_turn,
+            )?;
+            let keywords = lua.create_table()?;
+            for (index, keyword) in player.keywords.iter().enumerate() {
+                keywords.set(index + 1, keyword.as_str())?;
+            }
+            table.set("keywords", keywords)?;
             table.set("cards_played_this_turn", player.cards_played_this_turn)?;
             table.set("cards_played_this_game", player.cards_played_history.len())?;
             table.set("spells_cast_this_game", player.spells_cast_history.len())?;
@@ -97,8 +107,16 @@ pub(super) fn build_context(
                 player.minions_played_history.len(),
             )?;
             table.set(
+                "minions_summoned_this_game",
+                player.minions_summoned_history.len(),
+            )?;
+            table.set(
                 "weapons_played_this_game",
                 player.weapons_played_history.len(),
+            )?;
+            table.set(
+                "weapons_destroyed_this_game",
+                player.weapons_destroyed_history.len(),
             )?;
             table.set(
                 "locations_played_this_game",
@@ -118,12 +136,35 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "hero_power_uses",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot.player(parse_player(player)?).hero_power_uses)
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "combo_active",
         lua.create_function(move |_, (_ctx, entity): (Table, u64)| {
             let entity = snapshot
                 .entity(EntityId(entity))
                 .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {entity}")))?;
             Ok(entity.cards_played_before > 0)
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "board_position",
+        lua.create_function(move |_, (_ctx, entity): (Table, u64)| {
+            let entity = EntityId(entity);
+            let controller = snapshot
+                .entity(entity)
+                .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {entity}")))?
+                .controller;
+            Ok(snapshot
+                .player(controller)
+                .board
+                .iter()
+                .position(|candidate| *candidate == entity))
         })?,
     )?;
     let snapshot = state.clone();
@@ -161,6 +202,37 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "starting_deck",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot.player(parse_player(player)?).starting_deck.clone())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "cards_added_to_hand",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .cards_added_to_hand_history
+                .clone())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "overload_queued_total",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot.player(parse_player(player)?).overload_queued_total)
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "hero_was_healed_this_turn",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot.player(parse_player(player)?).hero_last_healed_turn == Some(snapshot.turn))
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "cards_played",
         lua.create_function(move |_, (_ctx, player): (Table, u8)| {
             Ok(snapshot
@@ -191,11 +263,99 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "minions_summoned",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .minions_summoned_history
+                .clone())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "minions_died",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .minions_died_history
+                .iter()
+                .map(|record| record.card_id.clone())
+                .collect::<Vec<_>>())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "minions_died_this_turn",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .minions_died_history
+                .iter()
+                .filter(|record| record.turn == snapshot.turn)
+                .map(|record| record.card_id.clone())
+                .collect::<Vec<_>>())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "minion_death_records",
+        lua.create_function(move |lua, (_ctx, player): (Table, u8)| {
+            let records = lua.create_table()?;
+            for (index, record) in snapshot
+                .player(parse_player(player)?)
+                .minions_died_history
+                .iter()
+                .enumerate()
+            {
+                let entry = lua.create_table()?;
+                entry.set("card_id", record.card_id.as_str())?;
+                entry.set("turn", record.turn)?;
+                entry.set("had_deathrattle", record.had_deathrattle)?;
+                entry.set("keywords", record.keywords.clone())?;
+                records.set(index + 1, entry)?;
+            }
+            Ok(records)
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "discarded_cards",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .discarded_cards_history
+                .iter()
+                .map(|entity| entity.0)
+                .collect::<Vec<_>>())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "discarded_card_ids",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .discarded_card_ids_history
+                .clone())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "weapons_played",
         lua.create_function(move |_, (_ctx, player): (Table, u8)| {
             Ok(snapshot
                 .player(parse_player(player)?)
                 .weapons_played_history
+                .clone())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "weapons_destroyed",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .weapons_destroyed_history
                 .clone())
         })?,
     )?;
@@ -218,6 +378,29 @@ pub(super) fn build_context(
                 .spells_cast_history
                 .last()
                 .cloned())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "spell_cast_records",
+        lua.create_function(move |lua, (_ctx, player): (Table, u8)| {
+            let records = lua.create_table()?;
+            for (index, record) in snapshot
+                .player(parse_player(player)?)
+                .spell_cast_records
+                .iter()
+                .enumerate()
+            {
+                let entry = lua.create_table()?;
+                entry.set("card_id", record.card_id.as_str())?;
+                entry.set("cost", record.cost)?;
+                entry.set(
+                    "target_was_friendly_minion",
+                    record.target_was_friendly_minion,
+                )?;
+                records.set(index + 1, entry)?;
+            }
+            Ok(records)
         })?,
     )?;
 
@@ -465,9 +648,38 @@ pub(super) fn build_context(
                 source,
                 target: EntityId(target),
                 amount,
+                apply_spell_damage: true,
             });
             Ok(())
         })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "damage_ignoring_spell_damage",
+        lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
+            output.borrow_mut().push(EffectSpec::Damage {
+                source,
+                target: EntityId(target),
+                amount,
+                apply_spell_damage: false,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "damage_from",
+        lua.create_function(
+            move |_, (_ctx, damage_source, target, amount): (Table, u64, u64, i32)| {
+                output.borrow_mut().push(EffectSpec::Damage {
+                    source: EntityId(damage_source),
+                    target: EntityId(target),
+                    amount,
+                    apply_spell_damage: false,
+                });
+                Ok(())
+            },
+        )?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -487,6 +699,44 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "damage_batch",
+        lua.create_function(move |_, (_ctx, hits): (Table, Table)| {
+            let hits = hits
+                .sequence_values::<Table>()
+                .map(|hit| {
+                    let hit = hit?;
+                    Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
+                })
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output.borrow_mut().push(EffectSpec::DamageBatch {
+                source,
+                hits,
+                apply_spell_damage: true,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "damage_batch_ignoring_spell_damage",
+        lua.create_function(move |_, (_ctx, hits): (Table, Table)| {
+            let hits = hits
+                .sequence_values::<Table>()
+                .map(|hit| {
+                    let hit = hit?;
+                    Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
+                })
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output.borrow_mut().push(EffectSpec::DamageBatch {
+                source,
+                hits,
+                apply_spell_damage: false,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "heal",
         lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
             output.borrow_mut().push(EffectSpec::Heal {
@@ -499,9 +749,37 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "heal_all",
+        lua.create_function(move |_, (_ctx, targets, amount): (Table, Table, i32)| {
+            let targets = targets
+                .sequence_values::<u64>()
+                .map(|target| target.map(EntityId))
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output.borrow_mut().push(EffectSpec::HealGroup {
+                source,
+                targets,
+                amount,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "gain_armor",
         lua.create_function(move |_, (_ctx, player, amount): (Table, u8, i32)| {
             output.borrow_mut().push(EffectSpec::GainArmor {
+                source,
+                player: parse_player(player)?,
+                amount,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "lose_armor",
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, i32)| {
+            output.borrow_mut().push(EffectSpec::LoseArmor {
                 source,
                 player: parse_player(player)?,
                 amount,
@@ -573,6 +851,29 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "fill_mana_crystals",
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u8)| {
+            output.borrow_mut().push(EffectSpec::FillManaCrystals {
+                source,
+                player: parse_player(player)?,
+                amount,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "refresh_mana_crystals",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            output.borrow_mut().push(EffectSpec::RefreshManaCrystals {
+                source,
+                player: parse_player(player)?,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "destroy_mana_crystals",
         lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u8)| {
             output.borrow_mut().push(EffectSpec::DestroyManaCrystals {
@@ -585,11 +886,36 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "spend_mana",
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u8)| {
+            output.borrow_mut().push(EffectSpec::SpendMana {
+                source,
+                player: parse_player(player)?,
+                amount,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "draw",
         lua.create_function(move |_, (_ctx, player, count): (Table, u8, u8)| {
             output.borrow_mut().push(EffectSpec::Draw {
+                source: Some(source),
                 player: parse_player(player)?,
                 count,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "draw_entity",
+        lua.create_function(move |_, (_ctx, player, card): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::DrawEntity {
+                source,
+                player: parse_player(player)?,
+                card: EntityId(card),
             });
             Ok(())
         })?,
@@ -623,6 +949,90 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "give_copy",
+        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::GiveCopy {
+                source,
+                player: parse_player(player)?,
+                target: EntityId(target),
+                preserve_state: true,
+                attack: None,
+                health: None,
+                cost: None,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "give_copy_with_stats",
+        lua.create_function(
+            move |_,
+                  (_ctx, player, target, attack, health, cost): (
+                Table,
+                u8,
+                u64,
+                i32,
+                i32,
+                Option<i32>,
+            )| {
+                output.borrow_mut().push(EffectSpec::GiveCopy {
+                    source,
+                    player: parse_player(player)?,
+                    target: EntityId(target),
+                    preserve_state: true,
+                    attack: Some(attack),
+                    health: Some(health),
+                    cost,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "give_base_copy",
+        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::GiveCopy {
+                source,
+                player: parse_player(player)?,
+                target: EntityId(target),
+                preserve_state: false,
+                attack: None,
+                health: None,
+                cost: None,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "give_base_copy_with_stats",
+        lua.create_function(
+            move |_,
+                  (_ctx, player, target, attack, health, cost): (
+                Table,
+                u8,
+                u64,
+                i32,
+                i32,
+                Option<i32>,
+            )| {
+                output.borrow_mut().push(EffectSpec::GiveCopy {
+                    source,
+                    player: parse_player(player)?,
+                    target: EntityId(target),
+                    preserve_state: false,
+                    attack: Some(attack),
+                    health: Some(health),
+                    cost,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "shuffle_card_into_deck",
         lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
             output.borrow_mut().push(EffectSpec::ShuffleCardIntoDeck {
@@ -635,12 +1045,72 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "shuffle_copy_into_deck",
+        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::ShuffleCopyIntoDeck {
+                source,
+                player: parse_player(player)?,
+                target: EntityId(target),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "replace_hero_power",
         lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
             output.borrow_mut().push(EffectSpec::ReplaceHeroPower {
                 source,
                 player: parse_player(player)?,
                 card_id,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "replace_hero",
+        lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
+            output.borrow_mut().push(EffectSpec::ReplaceHero {
+                source,
+                player: parse_player(player)?,
+                card_id,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "grant_player_keyword",
+        lua.create_function(move |_, (_ctx, player, keyword): (Table, u8, String)| {
+            output.borrow_mut().push(EffectSpec::GrantPlayerKeyword {
+                source,
+                player: parse_player(player)?,
+                keyword,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "disable_player_keyword",
+        lua.create_function(move |_, (_ctx, player, keyword): (Table, u8, String)| {
+            output.borrow_mut().push(EffectSpec::DisablePlayerKeyword {
+                source,
+                player: parse_player(player)?,
+                keyword,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "set_player_class",
+        lua.create_function(move |_, (_ctx, player, class): (Table, u8, String)| {
+            output.borrow_mut().push(EffectSpec::SetPlayerClass {
+                source,
+                player: parse_player(player)?,
+                class,
             });
             Ok(())
         })?,
@@ -667,6 +1137,61 @@ pub(super) fn build_context(
                     player: parse_player(player)?,
                     card_id,
                     target: target.map(EntityId),
+                    skip_if_invalid: false,
+                    random_target: false,
+                    auto_random_choices: false,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "cast_spell_if_valid",
+        lua.create_function(
+            move |_, (_ctx, player, card_id, target): (Table, u8, String, Option<u64>)| {
+                output.borrow_mut().push(EffectSpec::CastSpell {
+                    source,
+                    player: parse_player(player)?,
+                    card_id,
+                    target: target.map(EntityId),
+                    skip_if_invalid: true,
+                    random_target: false,
+                    auto_random_choices: false,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "cast_spell_random_target",
+        lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
+            output.borrow_mut().push(EffectSpec::CastSpell {
+                source,
+                player: parse_player(player)?,
+                card_id,
+                target: None,
+                skip_if_invalid: true,
+                random_target: true,
+                auto_random_choices: false,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "cast_random_spells",
+        lua.create_function(
+            move |_, (_ctx, player, candidates, count): (Table, u8, Table, u16)| {
+                let candidates = candidates
+                    .sequence_values::<String>()
+                    .collect::<mlua::Result<Vec<_>>>()?;
+                output.borrow_mut().push(EffectSpec::CastRandomSpells {
+                    source,
+                    player: parse_player(player)?,
+                    candidates,
+                    count,
                 });
                 Ok(())
             },
@@ -718,12 +1243,29 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "cast_deck_spell_random_target",
+        lua.create_function(move |_, (_ctx, card): (Table, u64)| {
+            output
+                .borrow_mut()
+                .push(EffectSpec::CastDeckSpellRandomTarget {
+                    source,
+                    card: EntityId(card),
+                });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "summon",
         lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
             output.borrow_mut().push(EffectSpec::Summon {
                 player: parse_player(player)?,
                 card_id,
                 position: None,
+                attack: None,
+                health: None,
+                keywords: Vec::new(),
+                base_stats: false,
             });
             Ok(())
         })?,
@@ -740,6 +1282,34 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "summon_existing",
+        lua.create_function(move |_, (_ctx, player, card): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::SummonExisting {
+                source,
+                player: parse_player(player)?,
+                card: EntityId(card),
+                position: None,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "summon_existing_at",
+        lua.create_function(
+            move |_, (_ctx, player, card, position): (Table, u8, u64, usize)| {
+                output.borrow_mut().push(EffectSpec::SummonExisting {
+                    source,
+                    player: parse_player(player)?,
+                    card: EntityId(card),
+                    position: Some(position),
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "summon_at",
         lua.create_function(
             move |_, (_ctx, player, card_id, position): (Table, u8, String, usize)| {
@@ -747,6 +1317,78 @@ pub(super) fn build_context(
                     player: parse_player(player)?,
                     card_id,
                     position: Some(position),
+                    attack: None,
+                    health: None,
+                    keywords: Vec::new(),
+                    base_stats: false,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "summon_with_stats",
+        lua.create_function(
+            move |_,
+                  (_ctx, player, card_id, attack, health, keywords): (
+                Table,
+                u8,
+                String,
+                i32,
+                i32,
+                Option<Table>,
+            )| {
+                let keywords = keywords
+                    .map(|keywords| {
+                        keywords
+                            .sequence_values::<String>()
+                            .collect::<mlua::Result<Vec<_>>>()
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
+                output.borrow_mut().push(EffectSpec::Summon {
+                    player: parse_player(player)?,
+                    card_id,
+                    position: None,
+                    attack: Some(attack),
+                    health: Some(health),
+                    keywords,
+                    base_stats: false,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "summon_with_base_stats",
+        lua.create_function(
+            move |_,
+                  (_ctx, player, card_id, attack, health, keywords): (
+                Table,
+                u8,
+                String,
+                i32,
+                i32,
+                Option<Table>,
+            )| {
+                let keywords = keywords
+                    .map(|keywords| {
+                        keywords
+                            .sequence_values::<String>()
+                            .collect::<mlua::Result<Vec<_>>>()
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
+                output.borrow_mut().push(EffectSpec::Summon {
+                    player: parse_player(player)?,
+                    card_id,
+                    position: None,
+                    attack: Some(attack),
+                    health: Some(health),
+                    keywords,
+                    base_stats: true,
                 });
                 Ok(())
             },
@@ -757,9 +1399,12 @@ pub(super) fn build_context(
         "summon_copy",
         lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
             output.borrow_mut().push(EffectSpec::SummonCopy {
+                source,
                 player: parse_player(player)?,
                 target: EntityId(target),
                 position: None,
+                attack: None,
+                health: None,
             });
             Ok(())
         })?,
@@ -770,9 +1415,29 @@ pub(super) fn build_context(
         lua.create_function(
             move |_, (_ctx, player, target, position): (Table, u8, u64, usize)| {
                 output.borrow_mut().push(EffectSpec::SummonCopy {
+                    source,
                     player: parse_player(player)?,
                     target: EntityId(target),
                     position: Some(position),
+                    attack: None,
+                    health: None,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "summon_copy_with_stats",
+        lua.create_function(
+            move |_, (_ctx, player, target, attack, health): (Table, u8, u64, i32, i32)| {
+                output.borrow_mut().push(EffectSpec::SummonCopy {
+                    source,
+                    player: parse_player(player)?,
+                    target: EntityId(target),
+                    position: None,
+                    attack: Some(attack),
+                    health: Some(health),
                 });
                 Ok(())
             },
@@ -815,10 +1480,37 @@ pub(super) fn build_context(
                     source,
                     target: EntityId(target),
                     destination: parse_zone_placement(&destination)?,
+                    destination_player: None,
                 });
                 Ok(())
             },
         )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "shuffle_entity_into_deck",
+        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::MoveEntity {
+                source,
+                target: EntityId(target),
+                destination: ZonePlacement::DeckRandom,
+                destination_player: Some(parse_player(player)?),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "move_to_hand",
+        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
+            output.borrow_mut().push(EffectSpec::MoveEntity {
+                source,
+                target: EntityId(target),
+                destination: ZonePlacement::Hand,
+                destination_player: Some(parse_player(player)?),
+            });
+            Ok(())
+        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -834,9 +1526,183 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "change_controller_until_end_of_turn",
+        lua.create_function(move |_, (_ctx, target, player): (Table, u64, u8)| {
+            output
+                .borrow_mut()
+                .push(EffectSpec::ChangeControllerUntilEndOfTurn {
+                    source,
+                    target: EntityId(target),
+                    player: parse_player(player)?,
+                });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "force_attack",
+        lua.create_function(move |_, (_ctx, attacker, defender): (Table, u64, u64)| {
+            output.borrow_mut().push(EffectSpec::ForceAttack {
+                source,
+                attacker: EntityId(attacker),
+                defender: EntityId(defender),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "transform",
         lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
             output.borrow_mut().push(EffectSpec::Transform {
+                source,
+                target: EntityId(target),
+                card_id,
+                preserve_attached_scripts: false,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "transform_all",
+        lua.create_function(
+            move |_, (_ctx, targets, card_id): (Table, Vec<u64>, String)| {
+                output.borrow_mut().push(EffectSpec::TransformGroup {
+                    source,
+                    targets: targets.into_iter().map(EntityId).collect(),
+                    card_id,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "transform_batch",
+        lua.create_function(move |_, (_ctx, transforms): (Table, Table)| {
+            let mut parsed = Vec::new();
+            for transform in transforms.sequence_values::<Table>() {
+                let transform = transform?;
+                parsed.push((
+                    EntityId(transform.get::<u64>(1)?),
+                    transform.get::<String>(2)?,
+                ));
+            }
+            output.borrow_mut().push(EffectSpec::TransformBatch {
+                source,
+                transforms: parsed,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "swap_stats_all",
+        lua.create_function(move |_, (_ctx, targets): (Table, Vec<u64>)| {
+            output.borrow_mut().push(EffectSpec::SwapStatsGroup {
+                source,
+                targets: targets.into_iter().map(EntityId).collect(),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "swap_decks",
+        lua.create_function(move |_, (_ctx, first, second): (Table, u8, u8)| {
+            output.borrow_mut().push(EffectSpec::SwapDecks {
+                source,
+                first: parse_player(first)?,
+                second: parse_player(second)?,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "transform_preserving_scripts",
+        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
+            output.borrow_mut().push(EffectSpec::Transform {
+                source,
+                target: EntityId(target),
+                card_id,
+                preserve_attached_scripts: true,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "transform_into_copy",
+        lua.create_function(
+            move |_,
+                  (_ctx, target, template, attack, health): (
+                Table,
+                u64,
+                u64,
+                Option<i32>,
+                Option<i32>,
+            )| {
+                output.borrow_mut().push(EffectSpec::TransformIntoCopy {
+                    source,
+                    target: EntityId(target),
+                    template: EntityId(template),
+                    attack,
+                    health,
+                    preserve_attached_scripts: false,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "destroy",
+        lua.create_function(move |_, (_ctx, target): (Table, u64)| {
+            output.borrow_mut().push(EffectSpec::Destroy {
+                source,
+                target: EntityId(target),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "set_health",
+        lua.create_function(move |_, (_ctx, target, health): (Table, u64, i32)| {
+            output.borrow_mut().push(EffectSpec::SetHealth {
+                source,
+                target: EntityId(target),
+                health,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "trigger_hook",
+        lua.create_function(
+            move |_, (_ctx, target, hook, payload): (Table, u64, String, Option<Value>)| {
+                let payload = payload
+                    .map(lua_to_choice_value)
+                    .transpose()?
+                    .filter(|value| !matches!(value, ChoiceValue::Nil));
+                output.borrow_mut().push(EffectSpec::TriggerHook {
+                    source,
+                    target: EntityId(target),
+                    hook,
+                    payload,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "attach_deathrattle",
+        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
+            output.borrow_mut().push(EffectSpec::AttachDeathrattle {
                 source,
                 target: EntityId(target),
                 card_id,
@@ -846,11 +1712,12 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "destroy",
-        lua.create_function(move |_, (_ctx, target): (Table, u64)| {
-            output.borrow_mut().push(EffectSpec::Destroy {
+        "attach_script",
+        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
+            output.borrow_mut().push(EffectSpec::AttachScript {
                 source,
                 target: EntityId(target),
+                card_id,
             });
             Ok(())
         })?,
@@ -874,6 +1741,20 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "destroy_all",
+        lua.create_function(move |_, (_ctx, targets): (Table, Table)| {
+            let targets = targets
+                .sequence_values::<u64>()
+                .map(|target| target.map(EntityId))
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output
+                .borrow_mut()
+                .push(EffectSpec::DestroyGroup { source, targets });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "grant_keyword",
         lua.create_function(move |_, (_ctx, target, keyword): (Table, u64, String)| {
             output.borrow_mut().push(EffectSpec::Buff {
@@ -883,6 +1764,21 @@ pub(super) fn build_context(
                 health: 0,
                 keywords: vec![keyword],
                 duration: EffectDuration::Permanent,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "grant_keyword_until_end_of_turn",
+        lua.create_function(move |_, (_ctx, target, keyword): (Table, u64, String)| {
+            output.borrow_mut().push(EffectSpec::Buff {
+                source,
+                target: EntityId(target),
+                attack: 0,
+                health: 0,
+                keywords: vec![keyword],
+                duration: EffectDuration::UntilEndOfTurn,
             });
             Ok(())
         })?,
@@ -925,7 +1821,45 @@ pub(super) fn build_context(
                     player,
                     target,
                     position,
+                    attack: None,
                     health,
+                    final_stats: false,
+                    without_keywords,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    let snapshot = state.clone();
+    ctx.set(
+        "summon_fresh_copy_with_stats",
+        lua.create_function(
+            move |_,
+                  (_ctx, target, position, attack, health, without): (
+                Table,
+                u64,
+                Option<usize>,
+                i32,
+                i32,
+                Table,
+            )| {
+                let target = EntityId(target);
+                let player = snapshot
+                    .entity(target)
+                    .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {target}")))?
+                    .controller;
+                let without_keywords = without
+                    .sequence_values::<String>()
+                    .collect::<mlua::Result<Vec<_>>>()?;
+                output.borrow_mut().push(EffectSpec::SummonFreshCopy {
+                    source,
+                    player,
+                    target,
+                    position,
+                    attack: Some(attack),
+                    health,
+                    final_stats: true,
                     without_keywords,
                 });
                 Ok(())
@@ -1031,6 +1965,45 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "set_attack_defender",
+        lua.create_function(move |_, (_ctx, event, defender): (Table, u64, u64)| {
+            output.borrow_mut().push(EffectSpec::SetAttackDefender {
+                source,
+                event: EventId(event),
+                defender: EntityId(defender),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "add_attack_collateral",
+        lua.create_function(
+            move |_, (_ctx, event, targets, amount): (Table, u64, Vec<u64>, i32)| {
+                output.borrow_mut().push(EffectSpec::AddAttackCollateral {
+                    source,
+                    event: EventId(event),
+                    targets: targets.into_iter().map(EntityId).collect(),
+                    amount,
+                });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "set_damage_target",
+        lua.create_function(move |_, (_ctx, event, target): (Table, u64, u64)| {
+            output.borrow_mut().push(EffectSpec::SetDamageTarget {
+                source,
+                event: EventId(event),
+                target: EntityId(target),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "continue_with",
         lua.create_function(move |_, (_ctx, hook): (Table, String)| {
             output.borrow_mut().push(EffectSpec::Continue {
@@ -1049,6 +2022,18 @@ pub(super) fn build_context(
                 source,
                 player: parse_player(player)?,
                 card_id,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "lose_weapon_durability",
+        lua.create_function(move |_, (_ctx, weapon, amount): (Table, u64, i32)| {
+            output.borrow_mut().push(EffectSpec::LoseWeaponDurability {
+                source,
+                weapon: EntityId(weapon),
+                amount,
             });
             Ok(())
         })?,
@@ -1116,6 +2101,80 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "modify_all",
+        lua.create_function(move |_, (_ctx, targets, spec): (Table, Table, Table)| {
+            let targets = targets
+                .sequence_values::<u64>()
+                .map(|target| target.map(EntityId))
+                .collect::<mlua::Result<Vec<_>>>()?;
+            let duration = parse_duration(
+                spec.get::<Option<String>>("duration")?
+                    .as_deref()
+                    .unwrap_or("permanent"),
+            )?;
+            let mut modifiers = Vec::new();
+            for stat in ["attack", "health", "cost", "spell_damage"] {
+                if let Some(value) = spec.get::<Option<i32>>(stat)? {
+                    modifiers.push(StatModifier {
+                        stat: parse_stat(stat)?,
+                        operation: parse_modifier_operation(
+                            spec.get::<Option<String>>("operation")?
+                                .as_deref()
+                                .unwrap_or("final_set"),
+                        )?,
+                        value,
+                    });
+                }
+            }
+            output.borrow_mut().push(EffectSpec::ModifyStatGroup {
+                source,
+                targets,
+                modifiers,
+                duration,
+                silenciable: spec.get::<Option<bool>>("silenciable")?.unwrap_or(true),
+                reset_damage: spec.get::<Option<bool>>("reset_damage")?.unwrap_or(false),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "grant_keyword_until_next_turn",
+        lua.create_function(move |_, (_ctx, target, keyword): (Table, u64, String)| {
+            output
+                .borrow_mut()
+                .push(EffectSpec::GrantKeywordUntilNextTurn {
+                    source,
+                    target: EntityId(target),
+                    keyword,
+                });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "take_extra_turn",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            output.borrow_mut().push(EffectSpec::TakeExtraTurn {
+                source,
+                player: parse_player(player)?,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "win_game",
+        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+            output.borrow_mut().push(EffectSpec::WinGame {
+                source,
+                player: parse_player(player)?,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "set_data",
         lua.create_function(
             move |_, (_ctx, target, key, value): (Table, u64, String, i64)| {
@@ -1140,6 +2199,23 @@ pub(super) fn build_context(
                     key,
                     value,
                 });
+                Ok(())
+            },
+        )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "increment_player_data",
+        lua.create_function(
+            move |_, (_ctx, player, key, delta): (Table, u8, String, i64)| {
+                output
+                    .borrow_mut()
+                    .push(EffectSpec::IncrementPlayerScriptData {
+                        source,
+                        player: parse_player(player)?,
+                        key,
+                        delta,
+                    });
                 Ok(())
             },
         )?,

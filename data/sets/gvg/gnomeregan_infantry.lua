@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_098", name = "Gnomeregan Infantry", text = "<b>Charge</b>\n<b>Taunt</b>", set = "GVG", type = "minion", rarity = "common", cost = 3, attack = 1, health = 4, keywords = { "charge", "taunt" } }

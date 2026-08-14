@@ -55,6 +55,34 @@ fn every_public_keyword_has_one_unique_implemented_official_example() {
 
     let mut public_keywords = runtime.keyword_ids().collect::<Vec<_>>();
     public_keywords.retain(|keyword| *keyword != "conditional_charge");
+    public_keywords.retain(|keyword| *keyword != "deathrattle_repeater");
+    public_keywords.retain(|keyword| *keyword != "hero_power_can_target_minions");
+    public_keywords.retain(|keyword| *keyword != "dragon_consort_discount");
+    public_keywords.retain(|keyword| *keyword != "hero_power_twice_per_turn");
+    public_keywords.retain(|keyword| *keyword != "hero_power_unlimited");
+    public_keywords.retain(|keyword| *keyword != "cannot_be_attacked_by_icehowl");
+    public_keywords.retain(|keyword| *keyword != "hero_power_next_turn_surcharge");
+    public_keywords.retain(|keyword| *keyword != "next_hero_power_discount");
+    public_keywords.retain(|keyword| *keyword != "power_word_glory");
+    public_keywords.retain(|keyword| *keyword != "battlecry_repeater");
+    public_keywords.retain(|keyword| *keyword != "costs_health_instead_of_mana");
+    public_keywords.retain(|keyword| *keyword != "cthun_buffs");
+    public_keywords.retain(|keyword| *keyword != "cthun_taunt");
+    public_keywords.retain(|keyword| *keyword != "healing_becomes_damage");
+    public_keywords.retain(|keyword| *keyword != "fools_bane_unlimited_attacks");
+    public_keywords.retain(|keyword| *keyword != "randomize_targets");
+    public_keywords.retain(|keyword| *keyword != "cannot_be_attacked_by_fools_bane");
+    public_keywords.retain(|keyword| *keyword != "raza_hero_power_zero");
+    public_keywords.retain(|keyword| *keyword != "next_secret_cost_one_this_turn");
+    public_keywords.retain(|keyword| *keyword != "next_spell_cost_zero_this_turn");
+    public_keywords.retain(|keyword| *keyword != "next_murloc_costs_health");
+    public_keywords.retain(|keyword| *keyword != "radiant_elemental_minimum_cost");
+    public_keywords.retain(|keyword| *keyword != "cannot_be_attacked_by_charged_devilsaur");
+    public_keywords.retain(|keyword| *keyword != "corrupting_mist_curse");
+    public_keywords.retain(|keyword| *keyword != "next_spell_costs_health");
+    public_keywords.retain(|keyword| *keyword != "weapon_durability_immune");
+    public_keywords.retain(|keyword| *keyword != "hero_power_disabled");
+    public_keywords.retain(|keyword| *keyword != "end_of_turn_repeater");
     public_keywords.sort_unstable();
     assert_eq!(public_keywords.len(), 68);
     assert_eq!(

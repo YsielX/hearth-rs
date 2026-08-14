@@ -102,7 +102,14 @@ pub enum Stat {
 pub enum ModifierOperation {
     Set,
     Add,
+    /// Add on the permanent layer before any `FinalSet`. This is used when a
+    /// persistent historical bonus must survive Silence without changing a
+    /// subsequently-created fixed-stat copy until that setter is removed.
+    PreFinalAdd,
     Multiply,
+    /// Override the accumulated permanent stat after ordinary Set/Add/
+    /// Multiply layers but before live aura layers.
+    FinalSet,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -115,6 +122,7 @@ pub struct StatModifier {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EnchantmentExpiry {
     EndOfTurn { turn: u32 },
+    StartOfTurn { player: PlayerId, after_turn: u32 },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -131,6 +139,8 @@ pub struct AuraSpec {
     pub attack: i32,
     pub health: i32,
     pub cost: i32,
+    #[serde(default)]
+    pub cost_set: Option<i32>,
     pub spell_damage: i32,
     pub keywords: Vec<String>,
 }
@@ -218,6 +228,8 @@ pub enum Zone {
 #[serde(rename_all = "snake_case")]
 pub enum ZonePlacement {
     Hand,
+    Board,
+    Secret,
     DeckTop,
     DeckBottom,
     DeckRandom,
@@ -229,11 +241,33 @@ impl ZonePlacement {
     pub fn zone(self) -> Zone {
         match self {
             Self::Hand => Zone::Hand,
+            Self::Board => Zone::Board,
+            Self::Secret => Zone::Secret,
             Self::DeckTop | Self::DeckBottom | Self::DeckRandom => Zone::Deck,
             Self::Graveyard => Zone::Graveyard,
             Self::Removed => Zone::Removed,
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MinionDeathRecord {
+    pub card_id: CardId,
+    pub turn: u32,
+    /// Whether the minion's base card definition has Deathrattle. This stays
+    /// true through Silence and excludes Deathrattles attached by enchantments.
+    #[serde(default)]
+    pub had_deathrattle: bool,
+    /// Effective keywords frozen immediately before the minion left play.
+    #[serde(default)]
+    pub keywords: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SpellCastRecord {
+    pub card_id: CardId,
+    pub cost: u8,
+    pub target_was_friendly_minion: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -250,6 +284,10 @@ pub struct CardDefinition {
     pub collectible: bool,
     #[serde(default = "default_card_class")]
     pub class: String,
+    /// Optional multi-class deck eligibility. When non-empty, these classes
+    /// replace Neutral's usual all-class eligibility.
+    #[serde(default)]
+    pub classes: Vec<String>,
     /// Printed rarity, normalized to lowercase for generation pool filters.
     #[serde(default)]
     pub rarity: Option<String>,
@@ -298,6 +336,12 @@ fn default_card_class() -> String {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TemporaryControl {
+    pub original_controller: PlayerId,
+    pub expires_at_turn: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Entity {
     pub id: EntityId,
     pub card_id: CardId,
@@ -338,6 +382,8 @@ pub struct Entity {
     #[serde(default)]
     pub aura_cost: i32,
     #[serde(default)]
+    pub aura_cost_set: Option<i32>,
+    #[serde(default)]
     pub aura_spell_damage: i32,
     pub aura_keywords: Vec<String>,
     pub enchantments: Vec<Enchantment>,
@@ -347,6 +393,22 @@ pub struct Entity {
     /// suspended choice and snapshot round-trip.
     #[serde(default)]
     pub cards_played_before: u32,
+    /// Attack frozen immediately before this entity's most recent death.
+    /// Cleared when the same entity returns to the board.
+    #[serde(default)]
+    pub attack_at_death: Option<i32>,
+    /// Effect source that most recently made this minion mortal. This is
+    /// frozen into EntityDied so scripts can preserve causal kill semantics.
+    #[serde(default)]
+    pub death_source: Option<EntityId>,
+    /// A reversible control change such as Potion of Madness. Transforming the
+    /// entity clears this marker and makes its current controller permanent.
+    #[serde(default)]
+    pub temporary_control: Option<TemporaryControl>,
+    /// True only for entities instantiated as part of the submitted deck.
+    /// Copies or generated cards with the same definition remain false.
+    #[serde(default)]
+    pub started_in_deck: bool,
     /// Zero-based position occupied immediately before this card left the hand
     /// to be played. Used by the Lua Outcast module after the card is set aside.
     #[serde(default)]
@@ -359,6 +421,11 @@ pub struct Entity {
     /// Magnetic. Duplicates preserve attachment order.
     #[serde(default)]
     pub attached_cards: Vec<CardId>,
+    /// Card definitions whose `on_deathrattle` hook was attached by an
+    /// enchantment. Entries are ordered and may repeat so stacked granted
+    /// Deathrattles resolve independently.
+    #[serde(default)]
+    pub attached_deathrattles: Vec<CardId>,
 }
 
 impl Entity {
@@ -387,8 +454,31 @@ pub struct PlayerState {
     pub weapon: Option<EntityId>,
     pub hero_power: EntityId,
     pub hero_power_used: bool,
+    #[serde(default)]
+    pub hero_power_uses: u32,
+    #[serde(default)]
+    pub hero_power_uses_this_turn: u8,
     pub secrets: Vec<EntityId>,
     pub graveyard: Vec<EntityId>,
+    /// Immutable minion identities captured when they die under this player's
+    /// control. Unlike the physical graveyard zone, this history survives
+    /// resurrection and later zone changes.
+    #[serde(default)]
+    pub minions_died_history: Vec<MinionDeathRecord>,
+    /// Original entity identities recorded for successful discard events.
+    /// Entries remain in event order even if a discarded card later moves.
+    #[serde(default)]
+    pub discarded_cards_history: Vec<EntityId>,
+    /// Frozen definition IDs captured alongside successful discard events.
+    #[serde(default)]
+    pub discarded_card_ids_history: Vec<CardId>,
+    /// Frozen submitted deck list, preserving duplicates and surviving draws,
+    /// destruction, transformation, and other zone changes.
+    #[serde(default)]
+    pub starting_deck: Vec<CardId>,
+    /// Definition IDs that entered this player's hand after the game began.
+    #[serde(default)]
+    pub cards_added_to_hand_history: Vec<CardId>,
     pub mana: u8,
     pub max_mana: u8,
     #[serde(default)]
@@ -397,6 +487,11 @@ pub struct PlayerState {
     pub overload_pending: u8,
     #[serde(default)]
     pub overloaded_mana: u8,
+    /// Lifetime count of Mana Crystals successfully queued for Overload.
+    #[serde(default)]
+    pub overload_queued_total: u32,
+    #[serde(default)]
+    pub hero_last_healed_turn: Option<u32>,
     #[serde(default)]
     pub cards_played_this_turn: u32,
     /// Card definition IDs frozen at play/cast time. Card play history also
@@ -413,14 +508,26 @@ pub struct PlayerState {
     #[serde(default)]
     pub spells_cast_history: Vec<CardId>,
     #[serde(default)]
+    pub spell_cast_records: Vec<SpellCastRecord>,
+    #[serde(default)]
     pub minions_played_history: Vec<CardId>,
+    #[serde(default)]
+    pub minions_summoned_history: Vec<CardId>,
     #[serde(default)]
     pub weapons_played_history: Vec<CardId>,
     #[serde(default)]
+    pub weapons_destroyed_history: Vec<CardId>,
+    #[serde(default)]
     pub locations_played_history: Vec<CardId>,
     pub fatigue: u32,
+    /// Script-defined player-scoped mechanics. Unlike entity keywords these
+    /// survive minion silence, transformation, death, and hero replacement.
+    #[serde(default)]
+    pub keywords: Vec<String>,
     #[serde(default)]
     pub script_data: BTreeMap<String, i64>,
+    #[serde(default)]
+    pub extra_turns: u8,
 }
 
 fn default_player_class() -> String {
@@ -790,18 +897,36 @@ pub enum EffectSpec {
         source: EntityId,
         target: EntityId,
         amount: i32,
+        #[serde(default = "default_true")]
+        apply_spell_damage: bool,
     },
     DamageGroup {
         source: EntityId,
         targets: Vec<EntityId>,
         amount: i32,
     },
+    DamageBatch {
+        source: EntityId,
+        hits: Vec<(EntityId, i32)>,
+        #[serde(default = "default_true")]
+        apply_spell_damage: bool,
+    },
     Heal {
         source: EntityId,
         target: EntityId,
         amount: i32,
     },
+    HealGroup {
+        source: EntityId,
+        targets: Vec<EntityId>,
+        amount: i32,
+    },
     GainArmor {
+        source: EntityId,
+        player: PlayerId,
+        amount: i32,
+    },
+    LoseArmor {
         source: EntityId,
         player: PlayerId,
         amount: i32,
@@ -831,14 +956,39 @@ pub enum EffectSpec {
         amount: u8,
         filled: bool,
     },
+    /// Raise the player's permanent crystal total to `amount`, fill it, and
+    /// replace temporary/Overloaded crystal state.
+    FillManaCrystals {
+        source: EntityId,
+        player: PlayerId,
+        amount: u8,
+    },
+    /// Refresh only existing, unlocked permanent Mana Crystals while
+    /// preserving temporary Mana and Overload state.
+    RefreshManaCrystals {
+        source: EntityId,
+        player: PlayerId,
+    },
     DestroyManaCrystals {
         source: EntityId,
         player: PlayerId,
         amount: u8,
     },
+    SpendMana {
+        source: EntityId,
+        player: PlayerId,
+        amount: u8,
+    },
     Draw {
+        #[serde(default)]
+        source: Option<EntityId>,
         player: PlayerId,
         count: u8,
+    },
+    DrawEntity {
+        source: EntityId,
+        player: PlayerId,
+        card: EntityId,
     },
     GiveCard {
         source: EntityId,
@@ -851,15 +1001,53 @@ pub enum EffectSpec {
         card_id: CardId,
         position: usize,
     },
+    GiveCopy {
+        source: EntityId,
+        player: PlayerId,
+        target: EntityId,
+        #[serde(default = "default_true")]
+        preserve_state: bool,
+        #[serde(default)]
+        attack: Option<i32>,
+        #[serde(default)]
+        health: Option<i32>,
+        #[serde(default)]
+        cost: Option<i32>,
+    },
     ShuffleCardIntoDeck {
         source: EntityId,
         player: PlayerId,
         card_id: CardId,
     },
+    ShuffleCopyIntoDeck {
+        source: EntityId,
+        player: PlayerId,
+        target: EntityId,
+    },
     ReplaceHeroPower {
         source: EntityId,
         player: PlayerId,
         card_id: CardId,
+    },
+    ReplaceHero {
+        source: EntityId,
+        player: PlayerId,
+        card_id: CardId,
+    },
+    GrantPlayerKeyword {
+        source: EntityId,
+        player: PlayerId,
+        keyword: String,
+    },
+    DisablePlayerKeyword {
+        source: EntityId,
+        player: PlayerId,
+        keyword: String,
+    },
+    SetPlayerClass {
+        source: EntityId,
+        player: PlayerId,
+        class: String,
     },
     RefreshHeroPower {
         source: EntityId,
@@ -888,8 +1076,29 @@ pub enum EffectSpec {
         card_id: CardId,
         #[serde(default)]
         target: Option<EntityId>,
+        #[serde(default)]
+        skip_if_invalid: bool,
+        /// Select a legal target with the authoritative game RNG. Untargeted
+        /// spells remain untargeted, while required-target spells with no
+        /// legal target are skipped when `skip_if_invalid` is set.
+        #[serde(default)]
+        random_target: bool,
+        #[serde(default)]
+        auto_random_choices: bool,
+    },
+    /// Cast `count` independently sampled spells with replacement, resolving
+    /// each spell (including its random legal target) before sampling the next.
+    CastRandomSpells {
+        source: EntityId,
+        player: PlayerId,
+        candidates: Vec<CardId>,
+        count: u16,
     },
     CastDrawn {
+        card: EntityId,
+    },
+    CastDeckSpellRandomTarget {
+        source: EntityId,
         card: EntityId,
     },
     Summon {
@@ -897,15 +1106,37 @@ pub enum EffectSpec {
         card_id: CardId,
         #[serde(default)]
         position: Option<usize>,
+        #[serde(default)]
+        attack: Option<i32>,
+        #[serde(default)]
+        health: Option<i32>,
+        #[serde(default)]
+        keywords: Vec<String>,
+        /// Replace the fresh entity's base Attack/Health instead of attaching
+        /// a silenciable FinalSet enchantment.
+        #[serde(default)]
+        base_stats: bool,
     },
     SummonFromHand {
         card: EntityId,
     },
+    SummonExisting {
+        source: EntityId,
+        player: PlayerId,
+        card: EntityId,
+        #[serde(default)]
+        position: Option<usize>,
+    },
     SummonCopy {
+        source: EntityId,
         player: PlayerId,
         target: EntityId,
         #[serde(default)]
         position: Option<usize>,
+        #[serde(default)]
+        attack: Option<i32>,
+        #[serde(default)]
+        health: Option<i32>,
     },
     Recruit {
         source: EntityId,
@@ -918,20 +1149,95 @@ pub enum EffectSpec {
         source: EntityId,
         target: EntityId,
         destination: ZonePlacement,
+        #[serde(default)]
+        destination_player: Option<PlayerId>,
     },
     ChangeController {
         source: EntityId,
         target: EntityId,
         player: PlayerId,
     },
+    ChangeControllerUntilEndOfTurn {
+        source: EntityId,
+        target: EntityId,
+        player: PlayerId,
+    },
+    ForceAttack {
+        source: EntityId,
+        attacker: EntityId,
+        defender: EntityId,
+    },
     Transform {
         source: EntityId,
         target: EntityId,
         card_id: CardId,
+        #[serde(default)]
+        preserve_attached_scripts: bool,
+    },
+    /// Transform an entity into a stateful copy of another entity, optionally
+    /// applying final Attack/Health values after the copy is established.
+    TransformIntoCopy {
+        source: EntityId,
+        target: EntityId,
+        template: EntityId,
+        #[serde(default)]
+        attack: Option<i32>,
+        #[serde(default)]
+        health: Option<i32>,
+        #[serde(default)]
+        preserve_attached_scripts: bool,
+    },
+    TransformGroup {
+        source: EntityId,
+        targets: Vec<EntityId>,
+        card_id: CardId,
+    },
+    TransformBatch {
+        source: EntityId,
+        transforms: Vec<(EntityId, CardId)>,
+    },
+    SwapStatsGroup {
+        source: EntityId,
+        targets: Vec<EntityId>,
+    },
+    SwapDecks {
+        source: EntityId,
+        first: PlayerId,
+        second: PlayerId,
     },
     Destroy {
         source: EntityId,
         target: EntityId,
+    },
+    /// Set current and maximum Health without publishing a heal event.
+    SetHealth {
+        source: EntityId,
+        target: EntityId,
+        health: i32,
+    },
+    /// Invoke a named lifecycle hook on another entity through the runtime.
+    TriggerHook {
+        source: EntityId,
+        target: EntityId,
+        hook: String,
+        #[serde(default)]
+        payload: Option<ChoiceValue>,
+    },
+    AttachDeathrattle {
+        source: EntityId,
+        target: EntityId,
+        card_id: CardId,
+    },
+    /// Attach another card's Lua hooks to an entity. Unlike a Deathrattle
+    /// attachment, this is intended for generic persistent script behavior.
+    AttachScript {
+        source: EntityId,
+        target: EntityId,
+        card_id: CardId,
+    },
+    DestroyGroup {
+        source: EntityId,
+        targets: Vec<EntityId>,
     },
     Buff {
         source: EntityId,
@@ -952,9 +1258,18 @@ pub enum EffectSpec {
         target: EntityId,
         #[serde(default)]
         position: Option<usize>,
+        #[serde(default)]
+        attack: Option<i32>,
         health: i32,
         #[serde(default)]
+        final_stats: bool,
+        #[serde(default)]
         without_keywords: Vec<String>,
+    },
+    LoseWeaponDurability {
+        source: EntityId,
+        weapon: EntityId,
+        amount: i32,
     },
     ModifyStat {
         source: EntityId,
@@ -963,6 +1278,28 @@ pub enum EffectSpec {
         duration: EffectDuration,
         #[serde(default = "default_true")]
         silenciable: bool,
+    },
+    ModifyStatGroup {
+        source: EntityId,
+        targets: Vec<EntityId>,
+        modifiers: Vec<StatModifier>,
+        duration: EffectDuration,
+        silenciable: bool,
+        #[serde(default)]
+        reset_damage: bool,
+    },
+    GrantKeywordUntilNextTurn {
+        source: EntityId,
+        target: EntityId,
+        keyword: String,
+    },
+    TakeExtraTurn {
+        source: EntityId,
+        player: PlayerId,
+    },
+    WinGame {
+        source: EntityId,
+        player: PlayerId,
     },
     RemoveEnchantmentsFromSource {
         source: EntityId,
@@ -980,6 +1317,12 @@ pub enum EffectSpec {
         player: PlayerId,
         key: String,
         value: i64,
+    },
+    IncrementPlayerScriptData {
+        source: EntityId,
+        player: PlayerId,
+        key: String,
+        delta: i64,
     },
     Silence {
         source: EntityId,
@@ -1001,6 +1344,22 @@ pub enum EffectSpec {
         source: EntityId,
         event: EventId,
         amount: i32,
+    },
+    SetAttackDefender {
+        source: EntityId,
+        event: EventId,
+        defender: EntityId,
+    },
+    AddAttackCollateral {
+        source: EntityId,
+        event: EventId,
+        targets: Vec<EntityId>,
+        amount: i32,
+    },
+    SetDamageTarget {
+        source: EntityId,
+        event: EventId,
+        target: EntityId,
     },
     SetTradeDraw {
         source: EntityId,
@@ -1046,6 +1405,10 @@ fn default_true() -> bool {
     true
 }
 
+fn default_deathrattle_repetitions() -> u8 {
+    1
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PendingEvent {
     pub id: EventId,
@@ -1063,6 +1426,13 @@ pub enum ReservedSummonOrigin {
         previous: Option<EntityId>,
         next: Option<EntityId>,
     },
+    Graveyard {
+        player: PlayerId,
+        position: usize,
+    },
+    Removed {
+        player: PlayerId,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -1070,6 +1440,8 @@ pub enum ResolutionItem {
     Effect(EffectSpec),
     DrawOne {
         player: PlayerId,
+        #[serde(default)]
+        source: Option<EntityId>,
     },
     CommitFatigue(PendingEvent),
     CommitEvent(PendingEvent),
@@ -1097,16 +1469,26 @@ pub enum ResolutionItem {
     CommitWeaponEquip {
         equip: PendingEvent,
         card_play_id: EventId,
+        #[serde(default)]
+        card_cost: u8,
         target: Option<EntityId>,
         replacement: Option<PendingEvent>,
     },
+    CommitEffectWeaponEquip {
+        equip: PendingEvent,
+        replacement: Option<PendingEvent>,
+    },
     CommitWeaponDestruction(PendingEvent),
+    CommitForcedWeaponDestruction(PendingEvent),
     CommitCombat {
         attack: PendingEvent,
         damage: Vec<PendingEvent>,
     },
     CommitDamageGroup {
         damage: Vec<PendingEvent>,
+    },
+    CommitHealGroup {
+        healing: Vec<PendingEvent>,
     },
     CommitSummon {
         summon: PendingEvent,
@@ -1118,15 +1500,42 @@ pub enum ResolutionItem {
     CommitZoneChange {
         change: PendingEvent,
         destination: ZonePlacement,
+        #[serde(default)]
+        destination_player: Option<PlayerId>,
     },
     CommitControllerChange(PendingEvent),
-    CommitTransform(PendingEvent),
+    CommitTemporaryControllerChange {
+        change: PendingEvent,
+        expires_at_turn: u32,
+    },
+    CommitTransform {
+        transform: PendingEvent,
+        #[serde(default)]
+        preserve_attached_scripts: bool,
+    },
+    CommitTransformIntoCopy {
+        transform: PendingEvent,
+        template: Entity,
+        #[serde(default)]
+        attack: Option<i32>,
+        #[serde(default)]
+        health: Option<i32>,
+        #[serde(default)]
+        preserve_attached_scripts: bool,
+    },
+    CommitTransformGroup {
+        transforms: Vec<PendingEvent>,
+    },
     SummonFreshCopy {
         player: PlayerId,
         card_id: CardId,
         #[serde(default)]
         position: usize,
+        #[serde(default)]
+        attack: Option<i32>,
         health: i32,
+        #[serde(default)]
+        final_stats: bool,
         #[serde(default)]
         without_keywords: Vec<String>,
     },
@@ -1157,10 +1566,14 @@ pub enum GameEvent {
     CardDrawn {
         player: PlayerId,
         card: EntityId,
+        #[serde(default)]
+        source: Option<EntityId>,
     },
     CardBurned {
         player: PlayerId,
         card: EntityId,
+        #[serde(default)]
+        source: Option<EntityId>,
     },
     CardCreated {
         source: EntityId,
@@ -1174,10 +1587,28 @@ pub enum GameEvent {
     CardPlayed {
         player: PlayerId,
         card: EntityId,
+        /// Effective card cost captured when the play command was committed.
+        #[serde(default)]
+        cost: u8,
     },
     SpellCast {
         player: PlayerId,
         spell: EntityId,
+        #[serde(default)]
+        generated_by: Option<EntityId>,
+        /// Target declared for this cast. It remains the declared entity even
+        /// if later effects move or transform that entity.
+        #[serde(default)]
+        target: Option<EntityId>,
+        #[serde(default)]
+        cost: u8,
+        #[serde(default)]
+        target_was_friendly_minion: bool,
+    },
+    SpellTargeted {
+        player: PlayerId,
+        spell: EntityId,
+        target: EntityId,
         #[serde(default)]
         generated_by: Option<EntityId>,
     },
@@ -1282,6 +1713,8 @@ pub enum GameEvent {
     Attack {
         attacker: EntityId,
         defender: EntityId,
+        #[serde(default)]
+        collateral: Vec<(EntityId, i32)>,
     },
     Damaged {
         source: EntityId,
@@ -1349,6 +1782,13 @@ pub enum GameEvent {
         amount: u8,
         temporary: u8,
     },
+    PlayerScriptDataChanged {
+        source: EntityId,
+        player: PlayerId,
+        key: String,
+        old: i64,
+        new: i64,
+    },
     KeywordDisabled {
         source: EntityId,
         target: EntityId,
@@ -1362,6 +1802,12 @@ pub enum GameEvent {
         entity: EntityId,
         player: PlayerId,
         position: usize,
+        #[serde(default)]
+        source: Option<EntityId>,
+        /// Number of times the entity's Deathrattle should resolve, captured
+        /// before the simultaneous death batch removes aura sources.
+        #[serde(default = "default_deathrattle_repetitions")]
+        repetitions: u8,
     },
     TurnEnded {
         player: PlayerId,
@@ -1411,6 +1857,7 @@ impl GameEvent {
             Self::Fatigue { .. } => "fatigue",
             Self::CardPlayed { .. } => "card_played",
             Self::SpellCast { .. } => "spell_cast",
+            Self::SpellTargeted { .. } => "spell_targeted",
             Self::MinionPlayed { .. } => "minion_played",
             Self::WeaponPlayed { .. } => "weapon_played",
             Self::LocationPlayed { .. } => "location_played",
@@ -1446,6 +1893,7 @@ impl GameEvent {
             Self::ManaCrystalsGained { .. } => "mana_crystals_gained",
             Self::ManaCrystalsDestroyed { .. } => "mana_crystals_destroyed",
             Self::ManaSpent { .. } => "mana_spent",
+            Self::PlayerScriptDataChanged { .. } => "player_script_data_changed",
             Self::KeywordDisabled { .. } => "keyword_disabled",
             Self::Frozen { .. } => "frozen",
             Self::EntityDied { .. } => "entity_died",

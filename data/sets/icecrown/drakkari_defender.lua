@@ -1,0 +1,1 @@
+return {api_version=1,id="ICC_081",name="Drakkari Defender",text="<b>Taunt</b>\n<b>Overload:</b> (3)",set="ICECROWN",type="minion",class="shaman",rarity="common",cost=3,attack=2,health=8,keywords={"taunt","overload"},keyword_params={overload=3}}

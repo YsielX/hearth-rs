@@ -375,6 +375,11 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
         class: module
             .get::<Option<String>>("class")?
             .unwrap_or_else(|| "neutral".to_owned()),
+        classes: module
+            .get::<Option<Table>>("classes")?
+            .map(|values| values.sequence_values::<String>().collect())
+            .transpose()?
+            .unwrap_or_default(),
         rarity: module.get::<Option<String>>("rarity")?,
         tags: module
             .get::<Option<Table>>("tags")?
@@ -401,6 +406,16 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
     if definition.class.trim().is_empty() {
         return Err(mlua::Error::runtime(format!(
             "card {} has an empty class",
+            definition.id
+        )));
+    }
+    if definition
+        .classes
+        .iter()
+        .any(|class| class.trim().is_empty())
+    {
+        return Err(mlua::Error::runtime(format!(
+            "card {} has an empty multi-class entry",
             definition.id
         )));
     }
@@ -524,7 +539,7 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
         for (index, aura) in auras.sequence_values::<Table>().enumerate() {
             let aura = aura?;
             let _: Function = aura.get("targets")?;
-            for field in ["attack", "health", "cost", "spell_damage"] {
+            for field in ["attack", "health", "cost", "cost_set", "spell_damage"] {
                 match aura.get::<Value>(field)? {
                     Value::Nil | Value::Function(_) => {}
                     Value::Integer(value) if i32::try_from(value).is_ok() => {}
@@ -586,6 +601,7 @@ pub(super) fn validate_triggers(module: &Table, owner: &str) -> mlua::Result<()>
                 | "fatigue"
                 | "card_played"
                 | "spell_cast"
+                | "spell_targeted"
                 | "minion_played"
                 | "weapon_played"
                 | "location_played"
@@ -621,6 +637,7 @@ pub(super) fn validate_triggers(module: &Table, owner: &str) -> mlua::Result<()>
                 | "mana_crystals_gained"
                 | "mana_crystals_destroyed"
                 | "mana_spent"
+                | "player_script_data_changed"
                 | "keyword_disabled"
                 | "frozen"
                 | "entity_died"

@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_100",name="Shadow Word: Horror",text="Destroy all minions with 2 or less Attack.",set="OG",type="spell",class="priest",rarity="rare",spell_school="shadow",cost=4,on_play=function(ctx)local pool={};for _,m in ipairs(ctx:minions())do if ctx:entity(m).attack<=2 then pool[#pool+1]=m end end;ctx:destroy_all(pool)end}

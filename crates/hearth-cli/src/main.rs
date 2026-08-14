@@ -543,8 +543,15 @@ fn validate_deck(
     if !deck.unrestricted {
         for card in &deck.cards {
             let definition = runtime.definition(card).unwrap();
-            let own_class = definition.class.eq_ignore_ascii_case("neutral")
-                || definition.class.eq_ignore_ascii_case(&deck.class);
+            let own_class = if definition.classes.is_empty() {
+                definition.class.eq_ignore_ascii_case("neutral")
+                    || definition.class.eq_ignore_ascii_case(&deck.class)
+            } else {
+                definition
+                    .classes
+                    .iter()
+                    .any(|class| class.eq_ignore_ascii_case(&deck.class))
+            };
             let allowed_by_tourist = allowances.iter().any(|allowance| {
                 definition.class.eq_ignore_ascii_case(&allowance.class)
                     && definition.set.eq_ignore_ascii_case(&allowance.set)
@@ -870,14 +877,14 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
             "{player} 结束回合",
             "{player} 結束回合"
         ),
-        GameEvent::CardDrawn { player, card } => lf!(
+        GameEvent::CardDrawn { player, card, .. } => lf!(
             locale,
             "{player} drew {}",
             "{player} 抽到 {}",
             "{player} 抽到 {}",
             name(card)
         ),
-        GameEvent::CardBurned { player, card } => lf!(
+        GameEvent::CardBurned { player, card, .. } => lf!(
             locale,
             "{player} burned {}",
             "{player} 爆掉 {}",
@@ -899,7 +906,19 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
             "{player} 受到 {amount} 点疲劳伤害",
             "{player} 受到 {amount} 點疲勞傷害"
         ),
-        GameEvent::CardPlayed { player, card } => lf!(
+        GameEvent::PlayerScriptDataChanged {
+            player,
+            key,
+            old,
+            new,
+            ..
+        } => lf!(
+            locale,
+            "{player} changed {key}: {old} -> {new}",
+            "{player} 更改 {key}：{old} -> {new}",
+            "{player} 更改 {key}：{old} -> {new}"
+        ),
+        GameEvent::CardPlayed { player, card, .. } => lf!(
             locale,
             "{player} played {}",
             "{player} 打出 {}",
@@ -910,6 +929,8 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
             player,
             spell,
             generated_by,
+            target: _,
+            ..
         } => match generated_by {
             Some(source) => lf!(
                 locale,
@@ -927,6 +948,19 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
                 name(spell)
             ),
         },
+        GameEvent::SpellTargeted {
+            player,
+            spell,
+            target,
+            ..
+        } => lf!(
+            locale,
+            "{player} targeted {1} with {0}",
+            "{player} 用 {0} 选中了 {1}",
+            "{player} 用 {0} 選中了 {1}",
+            name(spell),
+            name(target)
+        ),
         GameEvent::MinionPlayed { player, minion } => {
             lf!(
                 locale,
@@ -1135,7 +1169,9 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
             "{} 從 {from_card} 變形為 {to_card}",
             name(entity)
         ),
-        GameEvent::Attack { attacker, defender } => {
+        GameEvent::Attack {
+            attacker, defender, ..
+        } => {
             lf!(
                 locale,
                 "{} attacked {}",

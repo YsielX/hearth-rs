@@ -6,6 +6,7 @@ impl<R: CardRuntime> Game<R> {
         player: PlayerId,
         cards: Vec<String>,
     ) -> Result<(), GameError> {
+        self.state.player_mut(player).starting_deck = cards.clone();
         let mut entities = Vec::new();
         for card in cards {
             let definition = self
@@ -24,7 +25,13 @@ impl<R: CardRuntime> Game<R> {
             {
                 return Err(GameError::InvalidDeckCard { player, card });
             }
-            entities.push(self.instantiate(&card, player, Zone::Deck)?);
+            let entity = self.instantiate(&card, player, Zone::Deck)?;
+            self.state
+                .entities
+                .get_mut(&entity)
+                .unwrap()
+                .started_in_deck = true;
+            entities.push(entity);
         }
         entities.shuffle(&mut self.rng);
         self.state.player_mut(player).deck = entities.into();
@@ -58,6 +65,7 @@ impl<R: CardRuntime> Game<R> {
             let effects = self.publish(GameEvent::CardDrawn {
                 player,
                 card: *card,
+                source: None,
             })?;
             self.resolve_effects(effects)?;
         }
@@ -97,8 +105,7 @@ impl<R: CardRuntime> Game<R> {
         Ok(id)
     }
 
-    pub(super) fn copy_minion_state(&mut self, template: &Entity, copy_id: EntityId) {
-        debug_assert_eq!(template.kind, CardKind::Minion);
+    pub(super) fn copy_card_state(&mut self, template: &Entity, copy_id: EntityId) {
         let enchantments = template
             .enchantments
             .iter()
@@ -125,6 +132,7 @@ impl<R: CardRuntime> Game<R> {
         copy.silenced = template.silenced;
         copy.script_data = template.script_data.clone();
         copy.attached_cards = template.attached_cards.clone();
+        copy.attached_deathrattles = template.attached_deathrattles.clone();
         Self::recompute_entity(copy);
     }
 
@@ -142,7 +150,11 @@ impl<R: CardRuntime> Game<R> {
             self.state.entities.get_mut(&card).unwrap().zone = Zone::Graveyard;
             self.state.player_mut(player).graveyard.push(card);
             self.refresh_auras()?;
-            Ok(vec![GameEvent::CardBurned { player, card }])
+            Ok(vec![GameEvent::CardBurned {
+                player,
+                card,
+                source: None,
+            }])
         } else {
             self.state.entities.get_mut(&card).unwrap().zone = Zone::Hand;
             self.state
@@ -152,7 +164,11 @@ impl<R: CardRuntime> Game<R> {
                 .entered_hand_turn = Some(self.state.turn);
             self.state.player_mut(player).hand.push(card);
             self.refresh_auras()?;
-            Ok(vec![GameEvent::CardDrawn { player, card }])
+            Ok(vec![GameEvent::CardDrawn {
+                player,
+                card,
+                source: None,
+            }])
         }
     }
 
@@ -199,6 +215,8 @@ impl<R: CardRuntime> Game<R> {
         card.zone = Zone::Board;
         card.controller = player;
         card.exhausted = true;
+        card.attack_at_death = None;
+        card.death_source = None;
         card.timestamp = timestamp;
         self.state.player_mut(player).board.insert(position, entity);
         let ready = self.keyword_bool(entity, "ready_on_summon", false, None)?;
@@ -219,6 +237,11 @@ impl<R: CardRuntime> Game<R> {
     }
 
     pub(super) fn destroy_weapon(&mut self, player: PlayerId, weapon: EntityId) {
+        let card_id = self.state.entities[&weapon].card_id.clone();
+        self.state
+            .player_mut(player)
+            .weapons_destroyed_history
+            .push(card_id);
         if self.state.player(player).weapon == Some(weapon) {
             self.state.player_mut(player).weapon = None;
         }
@@ -280,15 +303,21 @@ impl<R: CardRuntime> Game<R> {
             aura_attack: 0,
             aura_health: 0,
             aura_cost: 0,
+            aura_cost_set: None,
             aura_spell_damage: 0,
             aura_keywords: Vec::new(),
             enchantments: Vec::new(),
             silenced: false,
             cards_played_before: 0,
+            attack_at_death: None,
+            death_source: None,
+            temporary_control: None,
+            started_in_deck: false,
             hand_position_before_play: None,
             entered_hand_turn: (zone == Zone::Hand).then_some(0),
             script_data: Default::default(),
             attached_cards: Vec::new(),
+            attached_deathrattles: Vec::new(),
         }
     }
 
@@ -323,15 +352,21 @@ impl<R: CardRuntime> Game<R> {
             aura_attack: 0,
             aura_health: 0,
             aura_cost: 0,
+            aura_cost_set: None,
             aura_spell_damage: 0,
             aura_keywords: Vec::new(),
             enchantments: Vec::new(),
             silenced: false,
             cards_played_before: 0,
+            attack_at_death: None,
+            death_source: None,
+            temporary_control: None,
+            started_in_deck: false,
             hand_position_before_play: None,
             entered_hand_turn: None,
             script_data: Default::default(),
             attached_cards: Vec::new(),
+            attached_deathrattles: Vec::new(),
         }
     }
 
@@ -358,6 +393,7 @@ impl<R: CardRuntime> Game<R> {
         entity.aura_attack = 0;
         entity.aura_health = 0;
         entity.aura_cost = 0;
+        entity.aura_cost_set = None;
         entity.aura_spell_damage = 0;
         entity.aura_keywords.clear();
         for enchantment in &entity.enchantments {
@@ -402,6 +438,39 @@ impl<R: CardRuntime> Game<R> {
     }
 
     pub(super) fn layered_stat(entity: &Entity, stat: Stat, base: i32) -> i32 {
+        let mut last_final_set = None;
+        for (index, enchantment) in entity.enchantments.iter().enumerate() {
+            for modifier in &enchantment.modifiers {
+                if modifier.stat == stat && modifier.operation == ModifierOperation::FinalSet {
+                    last_final_set = Some((index, modifier.value));
+                }
+            }
+        }
+        if let Some((final_index, mut value)) = last_final_set {
+            for enchantment in entity.enchantments.iter().skip(final_index + 1) {
+                for modifier in &enchantment.modifiers {
+                    if modifier.stat == stat && modifier.operation == ModifierOperation::Set {
+                        value = modifier.value;
+                    }
+                }
+                value = value.saturating_add(match stat {
+                    Stat::Attack => enchantment.attack,
+                    Stat::Health => enchantment.health,
+                    Stat::Cost | Stat::SpellDamage => 0,
+                });
+                for modifier in &enchantment.modifiers {
+                    if modifier.stat == stat && modifier.operation == ModifierOperation::Add {
+                        value = value.saturating_add(modifier.value);
+                    }
+                }
+                for modifier in &enchantment.modifiers {
+                    if modifier.stat == stat && modifier.operation == ModifierOperation::Multiply {
+                        value = value.saturating_mul(modifier.value);
+                    }
+                }
+            }
+            return value;
+        }
         let mut value = base;
         for enchantment in &entity.enchantments {
             for modifier in &enchantment.modifiers {
@@ -418,7 +487,12 @@ impl<R: CardRuntime> Game<R> {
                 Stat::SpellDamage => 0,
             });
             for modifier in &enchantment.modifiers {
-                if modifier.stat == stat && modifier.operation == ModifierOperation::Add {
+                if modifier.stat == stat
+                    && matches!(
+                        modifier.operation,
+                        ModifierOperation::Add | ModifierOperation::PreFinalAdd
+                    )
+                {
                     value = value.saturating_add(modifier.value);
                 }
             }
@@ -443,6 +517,54 @@ impl<R: CardRuntime> Game<R> {
     }
 
     pub(super) fn expire_end_of_turn(&mut self, turn: u32) -> Result<(), GameError> {
+        let expiring: Vec<_> = self
+            .state
+            .entities
+            .values()
+            .filter_map(|entity| {
+                entity
+                    .temporary_control
+                    .as_ref()
+                    .filter(|control| control.expires_at_turn <= turn)
+                    .map(|control| (entity.id, control.original_controller))
+            })
+            .collect();
+        for (entity, original_controller) in expiring {
+            let Some(current) = self.state.entity(entity) else {
+                continue;
+            };
+            let current_zone = current.zone;
+            let current_controller = current.controller;
+            if current_zone != Zone::Board {
+                self.state
+                    .entities
+                    .get_mut(&entity)
+                    .unwrap()
+                    .temporary_control = None;
+                continue;
+            }
+            self.state
+                .entities
+                .get_mut(&entity)
+                .unwrap()
+                .temporary_control = None;
+            if current_controller == original_controller {
+                continue;
+            }
+            let effect = if self.state.player(original_controller).board.len() < MAX_BOARD_SIZE {
+                EffectSpec::ChangeController {
+                    source: entity,
+                    target: entity,
+                    player: original_controller,
+                }
+            } else {
+                EffectSpec::Destroy {
+                    source: entity,
+                    target: entity,
+                }
+            };
+            self.resolve_effects(vec![effect])?;
+        }
         for entity in self.state.entities.values_mut() {
             entity.enchantments.retain(|enchantment| {
                 !matches!(
@@ -453,6 +575,20 @@ impl<R: CardRuntime> Game<R> {
         }
         self.refresh_auras()?;
         self.resolve_effects(Vec::new())
+    }
+
+    pub(super) fn expire_start_of_turn(&mut self, player: PlayerId, turn: u32) {
+        for entity in self.state.entities.values_mut() {
+            entity.enchantments.retain(|enchantment| {
+                !matches!(
+                    enchantment.expires_at,
+                    Some(EnchantmentExpiry::StartOfTurn {
+                        player: expiry_player,
+                        after_turn,
+                    }) if expiry_player == player && after_turn < turn
+                )
+            });
+        }
     }
 
     pub(super) fn refresh_auras(&mut self) -> Result<(), GameError> {
@@ -484,6 +620,9 @@ impl<R: CardRuntime> Game<R> {
                     continue;
                 };
                 entity.aura_cost = entity.aura_cost.saturating_add(aura.cost);
+                if let Some(cost) = aura.cost_set {
+                    entity.aura_cost_set = Some(cost);
+                }
                 if entity.kind != CardKind::Location {
                     entity.aura_attack = entity.aura_attack.saturating_add(aura.attack);
                     entity.aura_health = entity.aura_health.saturating_add(aura.health);
@@ -503,7 +642,9 @@ impl<R: CardRuntime> Game<R> {
         for entity in self.state.entities.values_mut() {
             entity.attack = entity.attack.saturating_add(entity.aura_attack).max(0);
             entity.max_health = entity.max_health.saturating_add(entity.aura_health).max(1);
-            entity.cost = i32::from(entity.cost)
+            entity.cost = entity
+                .aura_cost_set
+                .unwrap_or(i32::from(entity.cost))
                 .saturating_add(entity.aura_cost)
                 .clamp(0, i32::from(u8::MAX)) as u8;
             for keyword in &entity.aura_keywords {

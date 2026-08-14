@@ -6,6 +6,7 @@ local card = {
     set = "ICECROWN",
     type = "hero",
     class = "paladin",
+    rarity = "legendary",
     cost = 9,
     health = 30,
     armor = 5,

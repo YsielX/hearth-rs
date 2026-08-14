@@ -49,6 +49,31 @@ impl<R: CardRuntime> Game<R> {
                     queue.push_front(ResolutionItem::DeathCheck);
                     return Ok(false);
                 }
+                let auto_random = self.state.entity(source).is_some_and(|entity| {
+                    entity
+                        .script_data
+                        .get("auto_random_choices")
+                        .copied()
+                        .unwrap_or(0)
+                        != 0
+                });
+                if auto_random {
+                    let index = self.rng.random_range(0..options.len());
+                    self.state.random_counter = self.state.random_counter.saturating_add(1);
+                    let choice = options[index].value.clone();
+                    let mut generated = self.publish(GameEvent::RandomChoiceMade {
+                        source,
+                        index,
+                        options: options.len(),
+                    })?;
+                    generated.extend(
+                        self.runtime
+                            .on_resume(&self.state, source, &resume_hook, &choice)
+                            .map_err(GameError::Script)?,
+                    );
+                    Self::prepend_effects(queue, generated);
+                    return Ok(false);
+                }
                 let option_count = options.len();
                 self.state.pending_input = Some(crate::PendingInput {
                     player,
@@ -67,14 +92,14 @@ impl<R: CardRuntime> Game<R> {
             }
             EffectSpec::RandomChoice {
                 source,
-                options,
+                mut options,
                 resume_hook,
             } => {
                 if options.is_empty() {
                     return Err(GameError::EmptyRandomChoice);
                 }
-                if options.len() > MAX_CHOICE_OPTIONS {
-                    return Err(GameError::TooManyChoiceOptions {
+                if options.len() > MAX_RANDOM_CHOICE_OPTIONS {
+                    return Err(GameError::TooManyRandomChoiceOptions {
                         options: options.len(),
                     });
                 }
@@ -83,6 +108,24 @@ impl<R: CardRuntime> Game<R> {
                 }
                 for option in &options {
                     option.validate().map_err(GameError::InvalidChoiceValue)?;
+                }
+                let mut selectable = Vec::with_capacity(options.len());
+                for option in options.drain(..) {
+                    if let ChoiceValue::Entity(entity) = &option
+                        && !self.keyword_bool(
+                            *entity,
+                            "can_be_randomly_selected",
+                            true,
+                            Some(source),
+                        )?
+                    {
+                        continue;
+                    }
+                    selectable.push(option);
+                }
+                options = selectable;
+                if options.is_empty() {
+                    return Ok(false);
                 }
                 let index = self.rng.random_range(0..options.len());
                 self.state.random_counter += 1;
@@ -250,6 +293,7 @@ impl<R: CardRuntime> Game<R> {
                 source,
                 target,
                 amount,
+                apply_spell_damage,
             } => {
                 let target_kind = self
                     .state
@@ -259,7 +303,11 @@ impl<R: CardRuntime> Game<R> {
                 if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
                     return Ok(false);
                 }
-                let amount = self.apply_spell_damage_bonus(source, amount);
+                let amount = if apply_spell_damage {
+                    self.apply_spell_damage_bonus(source, amount)
+                } else {
+                    amount
+                };
                 let pending = self.begin_event(GameEvent::Damaged {
                     source,
                     target,
@@ -270,11 +318,70 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
+            EffectSpec::CastRandomSpells {
+                source,
+                player,
+                candidates,
+                count,
+            } => {
+                if count == 0 || candidates.is_empty() {
+                    return Ok(false);
+                }
+                let player = self
+                    .state
+                    .entity(source)
+                    .map(|entity| entity.controller)
+                    .unwrap_or(player);
+                if candidates.len() > MAX_RANDOM_CHOICE_OPTIONS {
+                    return Err(GameError::TooManyRandomChoiceOptions {
+                        options: candidates.len(),
+                    });
+                }
+                for card_id in &candidates {
+                    let definition = self
+                        .runtime
+                        .definition(card_id)
+                        .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
+                    if definition.kind != CardKind::Spell {
+                        return Err(GameError::CardCannotBeCast(card_id.clone()));
+                    }
+                }
+                let index = self.rng.random_range(0..candidates.len());
+                self.state.random_counter = self.state.random_counter.saturating_add(1);
+                let card_id = candidates[index].clone();
+                let triggered = self.publish(GameEvent::RandomCardsSampled {
+                    source,
+                    cards: vec![card_id.clone()],
+                    population: candidates.len(),
+                })?;
+                if count > 1 {
+                    queue.push_front(ResolutionItem::Effect(EffectSpec::CastRandomSpells {
+                        source,
+                        player,
+                        candidates,
+                        count: count - 1,
+                    }));
+                }
+                queue.push_front(ResolutionItem::Effect(EffectSpec::CastSpell {
+                    source,
+                    player,
+                    card_id,
+                    target: None,
+                    skip_if_invalid: true,
+                    random_target: true,
+                    auto_random_choices: true,
+                }));
+                Self::prepend_effects(queue, triggered);
+                Ok(false)
+            }
             EffectSpec::CastSpell {
                 source,
                 player,
                 card_id,
-                target,
+                mut target,
+                skip_if_invalid,
+                random_target,
+                auto_random_choices,
             } => {
                 let definition = self
                     .runtime
@@ -285,6 +392,14 @@ impl<R: CardRuntime> Game<R> {
                     return Err(GameError::CardCannotBeCast(card_id));
                 }
                 let spell = self.instantiate(&definition.id, player, Zone::SetAside)?;
+                if auto_random_choices {
+                    self.state
+                        .entities
+                        .get_mut(&spell)
+                        .unwrap()
+                        .script_data
+                        .insert("auto_random_choices".to_owned(), 1);
+                }
                 let is_secret = definition.secret
                     || self.keyword_bool(spell, "enters_secret_zone", false, None)?;
                 if is_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
@@ -293,12 +408,34 @@ impl<R: CardRuntime> Game<R> {
                 }
 
                 let valid_targets = self.valid_targets(spell)?;
+                let mut random_effects = Vec::new();
+                let hero = self.state.player(player).hero;
+                let random_target = random_target
+                    || self.keyword_bool(hero, "randomize_targets", false, Some(spell))?;
+                if random_target && !valid_targets.is_empty() {
+                    let index = self.rng.random_range(0..valid_targets.len());
+                    self.state.random_counter = self.state.random_counter.saturating_add(1);
+                    target = Some(valid_targets[index]);
+                    random_effects = self.publish(GameEvent::RandomChoiceMade {
+                        source,
+                        index,
+                        options: valid_targets.len(),
+                    })?;
+                }
                 if definition.target_mode.requires_target(valid_targets.len()) && target.is_none() {
+                    if skip_if_invalid {
+                        self.state.entities.get_mut(&spell).unwrap().zone = Zone::Removed;
+                        return Ok(false);
+                    }
                     return Err(GameError::TargetRequired);
                 }
                 if let Some(target) = target
                     && !valid_targets.contains(&target)
                 {
+                    if skip_if_invalid {
+                        self.state.entities.get_mut(&spell).unwrap().zone = Zone::Removed;
+                        return Ok(false);
+                    }
                     return Err(GameError::InvalidTarget(target));
                 }
 
@@ -309,13 +446,29 @@ impl<R: CardRuntime> Game<R> {
                 }
                 self.refresh_auras()?;
 
-                let mut items = self
-                    .runtime
-                    .on_play(&self.state, spell, target)
-                    .map_err(GameError::Script)?
+                let mut items = random_effects
                     .into_iter()
                     .map(ResolutionItem::Effect)
                     .collect::<Vec<_>>();
+                if let Some(target) = target {
+                    items.extend(
+                        self.publish(GameEvent::SpellTargeted {
+                            player,
+                            spell,
+                            target,
+                            generated_by: Some(source),
+                        })?
+                        .into_iter()
+                        .map(ResolutionItem::Effect),
+                    );
+                }
+                items.extend(
+                    self.runtime
+                        .on_play(&self.state, spell, target)
+                        .map_err(GameError::Script)?
+                        .into_iter()
+                        .map(ResolutionItem::Effect),
+                );
                 if is_secret {
                     let secret = self.begin_event(GameEvent::SecretPlayed {
                         player,
@@ -330,6 +483,9 @@ impl<R: CardRuntime> Game<R> {
                     player,
                     spell,
                     generated_by: Some(source),
+                    target,
+                    cost: 0,
+                    target_was_friendly_minion: false,
                 })?;
                 items.push(ResolutionItem::PublishAfter {
                     id: cast.id,
@@ -364,6 +520,123 @@ impl<R: CardRuntime> Game<R> {
                     player,
                     spell: card,
                     generated_by: Some(card),
+                    target: None,
+                    cost: 0,
+                    target_was_friendly_minion: false,
+                })?;
+                items.push(ResolutionItem::PublishAfter {
+                    id: cast.id,
+                    event: cast.event,
+                });
+                for item in items.into_iter().rev() {
+                    queue.push_front(item);
+                }
+                Ok(false)
+            }
+            EffectSpec::CastDeckSpellRandomTarget { source, card } => {
+                let entity = self
+                    .state
+                    .entity(card)
+                    .cloned()
+                    .ok_or(GameError::UnknownEntity(card))?;
+                let player = entity.controller;
+                if entity.zone != Zone::Deck || entity.kind != CardKind::Spell {
+                    return Ok(false);
+                }
+                let Some(position) = self
+                    .state
+                    .player(player)
+                    .deck
+                    .iter()
+                    .position(|candidate| *candidate == card)
+                else {
+                    return Ok(false);
+                };
+                let is_secret = self
+                    .runtime
+                    .definition(&entity.card_id)
+                    .is_some_and(|definition| definition.secret)
+                    || self.keyword_bool(card, "enters_secret_zone", false, None)?;
+                if is_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
+                    return Ok(false);
+                }
+                self.state.player_mut(player).deck.remove(position);
+                self.state.entities.get_mut(&card).unwrap().zone = Zone::SetAside;
+                self.state
+                    .entities
+                    .get_mut(&card)
+                    .unwrap()
+                    .script_data
+                    .insert("auto_random_choices".to_owned(), 1);
+                self.refresh_auras()?;
+
+                let valid_targets = self.valid_targets(card)?;
+                let definition = self.runtime.definition(&entity.card_id).unwrap();
+                let target = if valid_targets.is_empty() {
+                    None
+                } else {
+                    let index = self.rng.random_range(0..valid_targets.len());
+                    self.state.random_counter = self.state.random_counter.saturating_add(1);
+                    Some((index, valid_targets[index]))
+                };
+                if definition.target_mode.requires_target(valid_targets.len()) && target.is_none() {
+                    self.state.entities.get_mut(&card).unwrap().zone = Zone::Removed;
+                    return Ok(false);
+                }
+                if is_secret {
+                    self.move_to_secret(card, player);
+                } else {
+                    self.move_to_graveyard(card, player);
+                }
+                self.refresh_auras()?;
+
+                let mut items = Vec::new();
+                if let Some((index, selected)) = target {
+                    items.extend(
+                        self.publish(GameEvent::RandomChoiceMade {
+                            source,
+                            index,
+                            options: valid_targets.len(),
+                        })?
+                        .into_iter()
+                        .map(ResolutionItem::Effect),
+                    );
+                    items.extend(
+                        self.publish(GameEvent::SpellTargeted {
+                            player,
+                            spell: card,
+                            target: selected,
+                            generated_by: Some(source),
+                        })?
+                        .into_iter()
+                        .map(ResolutionItem::Effect),
+                    );
+                }
+                let selected = target.map(|(_, selected)| selected);
+                items.extend(
+                    self.runtime
+                        .on_play(&self.state, card, selected)
+                        .map_err(GameError::Script)?
+                        .into_iter()
+                        .map(ResolutionItem::Effect),
+                );
+                if is_secret {
+                    let secret = self.begin_event(GameEvent::SecretPlayed {
+                        player,
+                        secret: card,
+                    })?;
+                    items.push(ResolutionItem::PublishAfter {
+                        id: secret.id,
+                        event: secret.event,
+                    });
+                }
+                let cast = self.begin_event(GameEvent::SpellCast {
+                    player,
+                    spell: card,
+                    generated_by: Some(source),
+                    target: selected,
+                    cost: 0,
+                    target_was_friendly_minion: false,
                 })?;
                 items.push(ResolutionItem::PublishAfter {
                     id: cast.id,
@@ -414,6 +687,50 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
+            EffectSpec::DamageBatch {
+                source,
+                hits,
+                apply_spell_damage,
+            } => {
+                if hits.is_empty() {
+                    return Ok(false);
+                }
+                let mut seen = std::collections::BTreeSet::new();
+                let mut damage = Vec::new();
+                for (target, amount) in hits {
+                    if !seen.insert(target) {
+                        continue;
+                    }
+                    let target_kind = self
+                        .state
+                        .entity(target)
+                        .map(|entity| entity.kind)
+                        .ok_or(GameError::UnknownEntity(target))?;
+                    if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
+                        continue;
+                    }
+                    let amount = if apply_spell_damage {
+                        self.apply_spell_damage_bonus(source, amount)
+                    } else {
+                        amount
+                    };
+                    damage.push(self.begin_event(GameEvent::Damaged {
+                        source,
+                        target,
+                        amount,
+                    })?);
+                }
+                if damage.is_empty() {
+                    return Ok(false);
+                }
+                let mut before = Vec::new();
+                for pending in &damage {
+                    before.extend(self.trigger_event(pending, EventTiming::Before)?);
+                }
+                queue.push_front(ResolutionItem::CommitDamageGroup { damage });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
             EffectSpec::Heal {
                 source,
                 target,
@@ -427,19 +744,187 @@ impl<R: CardRuntime> Game<R> {
                 if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
                     return Ok(false);
                 }
-                let pending = self.begin_event(GameEvent::Healed {
-                    source,
-                    target,
-                    amount: amount.max(0),
-                })?;
+                let source_player = self
+                    .state
+                    .entity(source)
+                    .map(|entity| entity.controller)
+                    .ok_or(GameError::UnknownEntity(source))?;
+                let converts_healing = self.keyword_bool(
+                    self.state.player(source_player).hero,
+                    "healing_becomes_damage",
+                    false,
+                    Some(source),
+                )?;
+                let event = if converts_healing {
+                    GameEvent::Damaged {
+                        source,
+                        target,
+                        amount: amount.max(0),
+                    }
+                } else {
+                    GameEvent::Healed {
+                        source,
+                        target,
+                        amount: amount.max(0),
+                    }
+                };
+                let pending = self.begin_event(event)?;
                 let before = self.trigger_event(&pending, EventTiming::Before)?;
                 queue.push_front(ResolutionItem::CommitEvent(pending));
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
-            EffectSpec::Draw { player, count } => {
+            EffectSpec::HealGroup {
+                source,
+                targets,
+                amount,
+            } => {
+                if targets.is_empty() {
+                    return Ok(false);
+                }
+                let source_player = self
+                    .state
+                    .entity(source)
+                    .map(|entity| entity.controller)
+                    .ok_or(GameError::UnknownEntity(source))?;
+                let converts_healing = self.keyword_bool(
+                    self.state.player(source_player).hero,
+                    "healing_becomes_damage",
+                    false,
+                    Some(source),
+                )?;
+                let mut seen = std::collections::BTreeSet::new();
+                let mut healing = Vec::new();
+                for target in targets {
+                    if !seen.insert(target) {
+                        continue;
+                    }
+                    let target_kind = self
+                        .state
+                        .entity(target)
+                        .map(|entity| entity.kind)
+                        .ok_or(GameError::UnknownEntity(target))?;
+                    if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
+                        continue;
+                    }
+                    let event = if converts_healing {
+                        GameEvent::Damaged {
+                            source,
+                            target,
+                            amount: amount.max(0),
+                        }
+                    } else {
+                        GameEvent::Healed {
+                            source,
+                            target,
+                            amount: amount.max(0),
+                        }
+                    };
+                    healing.push(self.begin_event(event)?);
+                }
+                if healing.is_empty() {
+                    return Ok(false);
+                }
+                let mut before = Vec::new();
+                for pending in &healing {
+                    before.extend(self.trigger_event(pending, EventTiming::Before)?);
+                }
+                if converts_healing {
+                    queue.push_front(ResolutionItem::CommitDamageGroup { damage: healing });
+                } else {
+                    queue.push_front(ResolutionItem::CommitHealGroup { healing });
+                }
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::Draw {
+                source,
+                player,
+                count,
+            } => {
                 for _ in 0..count {
-                    queue.push_front(ResolutionItem::DrawOne { player });
+                    queue.push_front(ResolutionItem::DrawOne { player, source });
+                }
+                Ok(false)
+            }
+            EffectSpec::DrawEntity {
+                source,
+                player,
+                card,
+            } => {
+                let Some(position) = self
+                    .state
+                    .player(player)
+                    .deck
+                    .iter()
+                    .position(|candidate| *candidate == card)
+                else {
+                    return Ok(false);
+                };
+                let entity = self
+                    .state
+                    .entity(card)
+                    .ok_or(GameError::UnknownEntity(card))?;
+                if entity.zone != Zone::Deck || entity.controller != player {
+                    return Ok(false);
+                }
+                self.state.player_mut(player).deck.remove(position);
+                self.stage_reserved_draw(player, card, Some(source), queue)?;
+                Ok(false)
+            }
+            EffectSpec::EquipWeapon {
+                source: _,
+                player,
+                card_id,
+            } => {
+                let definition_kind = self
+                    .runtime
+                    .definition(&card_id)
+                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?
+                    .kind;
+                if definition_kind != CardKind::Weapon {
+                    return Err(GameError::CardCannotBeEquipped(card_id));
+                }
+                let weapon = self.instantiate(&card_id, player, Zone::SetAside)?;
+                let equip = self.begin_event(GameEvent::WeaponEquipped { player, weapon })?;
+                let before = self.trigger_event(&equip, EventTiming::Before)?;
+                queue.push_front(ResolutionItem::CommitEffectWeaponEquip {
+                    equip,
+                    replacement: None,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::LoseWeaponDurability {
+                source: _,
+                weapon,
+                amount,
+            } => {
+                if amount <= 0 {
+                    return Ok(false);
+                }
+                let Some(entity) = self.state.entity(weapon).cloned() else {
+                    return Err(GameError::UnknownEntity(weapon));
+                };
+                let player = entity.controller;
+                if entity.kind != CardKind::Weapon
+                    || entity.zone != Zone::Weapon
+                    || self.state.player(player).weapon != Some(weapon)
+                {
+                    return Ok(false);
+                }
+                let broken = {
+                    let entity = self.state.entities.get_mut(&weapon).unwrap();
+                    entity.damage = entity.damage.saturating_add(amount);
+                    entity.health() <= 0
+                };
+                self.refresh_auras()?;
+                if broken {
+                    let pending =
+                        self.begin_event(GameEvent::WeaponDestroyed { player, weapon })?;
+                    let before = self.trigger_event(&pending, EventTiming::Before)?;
+                    queue.push_front(ResolutionItem::CommitWeaponDestruction(pending));
+                    Self::prepend_effects(queue, before);
                 }
                 Ok(false)
             }
@@ -468,6 +953,10 @@ impl<R: CardRuntime> Game<R> {
                 player,
                 card_id,
                 position,
+                attack,
+                health,
+                keywords,
+                base_stats,
             } => {
                 if self.state.player(player).board.len() >= MAX_BOARD_SIZE {
                     return Ok(false);
@@ -479,14 +968,56 @@ impl<R: CardRuntime> Game<R> {
                         max,
                     });
                 }
-                let definition = self
+                let definition_kind = self
                     .runtime
                     .definition(&card_id)
-                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
-                if definition.kind != CardKind::Minion {
+                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?
+                    .kind;
+                if definition_kind != CardKind::Minion {
                     return Err(GameError::CardCannotBeSummoned(card_id));
                 }
                 let entity = self.instantiate(&card_id, player, Zone::SetAside)?;
+                if base_stats {
+                    let summoned = self.state.entities.get_mut(&entity).unwrap();
+                    if let Some(attack) = attack {
+                        summoned.base_attack = attack;
+                    }
+                    if let Some(health) = health {
+                        summoned.base_health = health.max(1);
+                    }
+                    Self::recompute_entity(summoned);
+                }
+                if (!base_stats && (attack.is_some() || health.is_some())) || !keywords.is_empty() {
+                    let id = EnchantmentId(self.state.next_enchantment_id);
+                    self.state.next_enchantment_id += 1;
+                    let mut modifiers = Vec::new();
+                    if !base_stats && let Some(attack) = attack {
+                        modifiers.push(StatModifier {
+                            stat: Stat::Attack,
+                            operation: ModifierOperation::FinalSet,
+                            value: attack,
+                        });
+                    }
+                    if !base_stats && let Some(health) = health {
+                        modifiers.push(StatModifier {
+                            stat: Stat::Health,
+                            operation: ModifierOperation::FinalSet,
+                            value: health,
+                        });
+                    }
+                    let summoned = self.state.entities.get_mut(&entity).unwrap();
+                    summoned.enchantments.push(Enchantment {
+                        id,
+                        source: entity,
+                        attack: 0,
+                        health: 0,
+                        modifiers,
+                        keywords,
+                        silenciable: true,
+                        expires_at: None,
+                    });
+                    Self::recompute_entity(summoned);
+                }
                 let pending = self.begin_event(GameEvent::MinionSummoned { player, entity })?;
                 let before = self.trigger_event(&pending, EventTiming::Before)?;
                 queue.push_front(ResolutionItem::CommitSummon {
@@ -526,10 +1057,70 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
+            EffectSpec::SummonExisting {
+                source: _,
+                player,
+                card,
+                position,
+            } => {
+                if self.state.player(player).board.len() >= MAX_BOARD_SIZE {
+                    return Ok(false);
+                }
+                let entity = self
+                    .state
+                    .entity(card)
+                    .ok_or(GameError::UnknownEntity(card))?;
+                if !matches!(entity.zone, Zone::Graveyard | Zone::Removed)
+                    || entity.kind != CardKind::Minion
+                {
+                    return Ok(false);
+                }
+                let origin = if entity.zone == Zone::Graveyard {
+                    let Some(graveyard_position) = self
+                        .state
+                        .player(entity.controller)
+                        .graveyard
+                        .iter()
+                        .position(|candidate| *candidate == card)
+                    else {
+                        return Ok(false);
+                    };
+                    let origin_player = entity.controller;
+                    self.state
+                        .player_mut(origin_player)
+                        .graveyard
+                        .remove(graveyard_position);
+                    ReservedSummonOrigin::Graveyard {
+                        player: origin_player,
+                        position: graveyard_position,
+                    }
+                } else {
+                    ReservedSummonOrigin::Removed {
+                        player: entity.controller,
+                    }
+                };
+                self.state.entities.get_mut(&card).unwrap().zone = Zone::SetAside;
+                self.refresh_auras()?;
+                let pending = self.begin_event(GameEvent::MinionSummoned {
+                    player,
+                    entity: card,
+                })?;
+                let before = self.trigger_event(&pending, EventTiming::Before)?;
+                queue.push_front(ResolutionItem::CommitSummon {
+                    summon: pending,
+                    position,
+                    origin,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
             EffectSpec::SummonCopy {
+                source,
                 player,
                 target,
                 position,
+                attack,
+                health,
             } => {
                 if self.state.player(player).board.len() >= MAX_BOARD_SIZE {
                     return Ok(false);
@@ -550,7 +1141,39 @@ impl<R: CardRuntime> Game<R> {
                     return Ok(false);
                 }
                 let entity = self.instantiate(&template.card_id, player, Zone::SetAside)?;
-                self.copy_minion_state(&template, entity);
+                self.copy_card_state(&template, entity);
+                if attack.is_some() || health.is_some() {
+                    let id = EnchantmentId(self.state.next_enchantment_id);
+                    self.state.next_enchantment_id += 1;
+                    let mut modifiers = Vec::new();
+                    if let Some(attack) = attack {
+                        modifiers.push(StatModifier {
+                            stat: Stat::Attack,
+                            operation: ModifierOperation::FinalSet,
+                            value: attack,
+                        });
+                    }
+                    if let Some(health) = health {
+                        modifiers.push(StatModifier {
+                            stat: Stat::Health,
+                            operation: ModifierOperation::FinalSet,
+                            value: health,
+                        });
+                    }
+                    let copy = self.state.entities.get_mut(&entity).unwrap();
+                    copy.damage = 0;
+                    copy.enchantments.push(Enchantment {
+                        id,
+                        source,
+                        attack: 0,
+                        health: 0,
+                        modifiers,
+                        keywords: Vec::new(),
+                        silenciable: true,
+                        expires_at: None,
+                    });
+                    Self::recompute_entity(copy);
+                }
                 let pending = self.begin_event(GameEvent::MinionSummoned { player, entity })?;
                 let before = self.trigger_event(&pending, EventTiming::Before)?;
                 queue.push_front(ResolutionItem::CommitSummon {
@@ -566,7 +1189,9 @@ impl<R: CardRuntime> Game<R> {
                 player,
                 target,
                 position,
+                attack,
                 health,
+                final_stats,
                 without_keywords,
             } => {
                 let entity = self
@@ -580,7 +1205,9 @@ impl<R: CardRuntime> Game<R> {
                     player,
                     card_id: entity.card_id.clone(),
                     position: position.unwrap_or(self.state.player(player).board.len()),
+                    attack,
                     health,
+                    final_stats,
                     without_keywords,
                 });
                 Ok(false)
@@ -647,14 +1274,111 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
+            EffectSpec::DestroyGroup { source, targets } => {
+                let mut seen = std::collections::BTreeSet::new();
+                let mut events = Vec::new();
+                for target in targets {
+                    if seen.insert(target) {
+                        let Some(entity) = self.state.entity(target).cloned() else {
+                            return Err(GameError::UnknownEntity(target));
+                        };
+                        if entity.zone != Zone::Board {
+                            continue;
+                        }
+                        if !self.keyword_bool(target, "can_be_destroyed", true, Some(source))? {
+                            continue;
+                        }
+                        match entity.kind {
+                            CardKind::Minion => {
+                                self.state.entities.get_mut(&target).unwrap().damage =
+                                    entity.max_health.max(1);
+                            }
+                            CardKind::Location => {
+                                self.remove_from_zone(target, Zone::Board, entity.controller);
+                                self.move_to_graveyard(target, entity.controller);
+                                events.push(GameEvent::LocationDestroyed {
+                                    player: entity.controller,
+                                    location: target,
+                                });
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+                self.refresh_auras()?;
+                queue.push_front(ResolutionItem::DeathCheck);
+                for event in events.into_iter().rev() {
+                    let triggered = self.publish(event)?;
+                    Self::prepend_effects(queue, triggered);
+                }
+                Ok(false)
+            }
+            EffectSpec::Destroy { source, target } => {
+                let Some(entity) = self.state.entity(target).cloned() else {
+                    return Err(GameError::UnknownEntity(target));
+                };
+                if entity.kind == CardKind::Weapon && entity.zone == Zone::Weapon {
+                    let pending = self.begin_event(GameEvent::WeaponDestroyed {
+                        player: entity.controller,
+                        weapon: target,
+                    })?;
+                    let before = self.trigger_event(&pending, EventTiming::Before)?;
+                    queue.push_front(ResolutionItem::CommitForcedWeaponDestruction(pending));
+                    Self::prepend_effects(queue, before);
+                } else if entity.zone == Zone::Board
+                    && self.keyword_bool(target, "can_be_destroyed", true, Some(source))?
+                {
+                    match entity.kind {
+                        CardKind::Minion => {
+                            let target = self.state.entities.get_mut(&target).unwrap();
+                            target.damage = entity.max_health.max(1);
+                            target.death_source = Some(source);
+                        }
+                        CardKind::Location => {
+                            self.remove_from_zone(target, Zone::Board, entity.controller);
+                            self.move_to_graveyard(target, entity.controller);
+                            let triggered = self.publish(GameEvent::LocationDestroyed {
+                                player: entity.controller,
+                                location: target,
+                            })?;
+                            Self::prepend_effects(queue, triggered);
+                        }
+                        _ => {}
+                    }
+                    self.refresh_auras()?;
+                    queue.push_front(ResolutionItem::DeathCheck);
+                }
+                Ok(false)
+            }
+            EffectSpec::TriggerHook {
+                source: _,
+                target,
+                hook,
+                payload,
+            } => {
+                if hook.is_empty() || hook.len() > 64 {
+                    return Err(GameError::InvalidContinuationHook);
+                }
+                if let Some(payload) = &payload {
+                    payload.validate().map_err(GameError::InvalidChoiceValue)?;
+                }
+                let generated = self
+                    .runtime
+                    .on_continue(&self.state, target, &hook, payload.as_ref())
+                    .map_err(GameError::Script)?;
+                Self::prepend_effects(queue, generated);
+                Ok(false)
+            }
             EffectSpec::MoveEntity {
                 source: _,
                 target,
                 destination,
+                destination_player,
             } => {
                 let entity = self
                     .state
                     .entity(target)
+                    .cloned()
                     .ok_or(GameError::UnknownEntity(target))?;
                 if matches!(
                     entity.zone,
@@ -664,6 +1388,22 @@ impl<R: CardRuntime> Game<R> {
                         entity: target,
                         zone: entity.zone,
                     });
+                }
+                if destination == ZonePlacement::Secret {
+                    let is_secret = entity.kind == CardKind::Spell
+                        && self.keyword_bool(target, "enters_secret_zone", false, None)?;
+                    if !is_secret
+                        || self.state.player(entity.owner).secrets.len() >= MAX_SECRET_SIZE
+                    {
+                        return Ok(false);
+                    }
+                }
+                if destination == ZonePlacement::Board
+                    && (entity.zone != Zone::Graveyard
+                        || entity.kind != CardKind::Minion
+                        || self.state.player(entity.owner).board.len() >= MAX_BOARD_SIZE)
+                {
+                    return Ok(false);
                 }
                 let to = destination.zone();
                 if entity.zone == to
@@ -685,6 +1425,7 @@ impl<R: CardRuntime> Game<R> {
                 queue.push_front(ResolutionItem::CommitZoneChange {
                     change: pending,
                     destination,
+                    destination_player,
                 });
                 Self::prepend_effects(queue, before);
                 Ok(false)
@@ -698,11 +1439,12 @@ impl<R: CardRuntime> Game<R> {
                     .state
                     .entity(target)
                     .ok_or(GameError::UnknownEntity(target))?;
-                if entity.zone != Zone::Board
-                    || entity.kind != CardKind::Minion
-                    || entity.controller == player
-                    || self.state.player(player).board.len() >= MAX_BOARD_SIZE
-                {
+                let can_take_minion = entity.zone == Zone::Board
+                    && entity.kind == CardKind::Minion
+                    && self.state.player(player).board.len() < MAX_BOARD_SIZE;
+                let can_take_secret = entity.zone == Zone::Secret
+                    && self.state.player(player).secrets.len() < MAX_SECRET_SIZE;
+                if entity.controller == player || (!can_take_minion && !can_take_secret) {
                     return Ok(false);
                 }
                 let pending = self.begin_event(GameEvent::ControllerChanged {
@@ -716,10 +1458,68 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
+            EffectSpec::ChangeControllerUntilEndOfTurn {
+                source,
+                target,
+                player,
+            } => {
+                let entity = self
+                    .state
+                    .entity(target)
+                    .ok_or(GameError::UnknownEntity(target))?;
+                let can_take = entity.zone == Zone::Board
+                    && entity.kind == CardKind::Minion
+                    && self.state.player(player).board.len() < MAX_BOARD_SIZE;
+                if entity.controller == player || !can_take {
+                    return Ok(false);
+                }
+                let pending = self.begin_event(GameEvent::ControllerChanged {
+                    source,
+                    entity: target,
+                    from: entity.controller,
+                    to: player,
+                })?;
+                let before = self.trigger_event(&pending, EventTiming::Before)?;
+                queue.push_front(ResolutionItem::CommitTemporaryControllerChange {
+                    change: pending,
+                    expires_at_turn: self.state.turn,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::ForceAttack {
+                source: _,
+                attacker,
+                defender,
+            } => {
+                let valid = self.state.entity(attacker).is_some_and(|entity| {
+                    entity.zone == Zone::Board
+                        && entity.kind == CardKind::Minion
+                        && entity.health() > 0
+                }) && self.state.entity(defender).is_some_and(|entity| {
+                    matches!(entity.zone, Zone::Board | Zone::Hero)
+                        && matches!(entity.kind, CardKind::Minion | CardKind::Hero)
+                        && entity.health() > 0
+                }) && self.state.entities[&attacker].controller
+                    != self.state.entities[&defender].controller;
+                if !valid {
+                    return Ok(false);
+                }
+                let pending = self.begin_event(GameEvent::Attack {
+                    attacker,
+                    defender,
+                    collateral: Vec::new(),
+                })?;
+                let before = self.trigger_event(&pending, EventTiming::Before)?;
+                queue.push_front(ResolutionItem::CommitEvent(pending));
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
             EffectSpec::Transform {
                 source,
                 target,
                 card_id,
+                preserve_attached_scripts,
             } => {
                 let entity = self
                     .state
@@ -735,7 +1535,7 @@ impl<R: CardRuntime> Game<R> {
                     .runtime
                     .definition(&card_id)
                     .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
-                let hand_can_change_kind = entity.zone == Zone::Hand
+                let hand_can_change_kind = matches!(entity.zone, Zone::Hand | Zone::Deck)
                     && matches!(
                         definition.kind,
                         CardKind::Hero
@@ -757,7 +1557,233 @@ impl<R: CardRuntime> Game<R> {
                     to_card: card_id,
                 })?;
                 let before = self.trigger_event(&pending, EventTiming::Before)?;
-                queue.push_front(ResolutionItem::CommitTransform(pending));
+                queue.push_front(ResolutionItem::CommitTransform {
+                    transform: pending,
+                    preserve_attached_scripts,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::TransformGroup {
+                source,
+                targets,
+                card_id,
+            } => {
+                let definition_kind = self
+                    .runtime
+                    .definition(&card_id)
+                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?
+                    .kind;
+                let mut seen = std::collections::BTreeSet::new();
+                let mut pending_events = Vec::new();
+                let mut before = Vec::new();
+                for target in targets {
+                    if !seen.insert(target) {
+                        continue;
+                    }
+                    let Some(entity) = self.state.entity(target) else {
+                        continue;
+                    };
+                    if matches!(
+                        entity.zone,
+                        Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
+                    ) || entity.card_id == card_id
+                    {
+                        continue;
+                    }
+                    let hidden_zone_can_change_kind =
+                        matches!(entity.zone, Zone::Hand | Zone::Deck)
+                            && matches!(
+                                definition_kind,
+                                CardKind::Hero
+                                    | CardKind::Minion
+                                    | CardKind::Spell
+                                    | CardKind::Weapon
+                                    | CardKind::Location
+                            );
+                    if definition_kind != entity.kind && !hidden_zone_can_change_kind {
+                        return Err(GameError::CardCannotTransformInto(card_id));
+                    }
+                    let pending = self.begin_event(GameEvent::Transformed {
+                        source,
+                        entity: target,
+                        from_card: entity.card_id.clone(),
+                        to_card: card_id.clone(),
+                    })?;
+                    before.extend(self.trigger_event(&pending, EventTiming::Before)?);
+                    pending_events.push(pending);
+                }
+                if pending_events.is_empty() {
+                    return Ok(false);
+                }
+                queue.push_front(ResolutionItem::CommitTransformGroup {
+                    transforms: pending_events,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::TransformBatch { source, transforms } => {
+                let mut seen = std::collections::BTreeSet::new();
+                let mut pending_events = Vec::new();
+                let mut before = Vec::new();
+                for (target, card_id) in transforms {
+                    if !seen.insert(target) {
+                        continue;
+                    }
+                    let Some(entity) = self.state.entity(target) else {
+                        continue;
+                    };
+                    if matches!(
+                        entity.zone,
+                        Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
+                    ) || entity.card_id == card_id
+                    {
+                        continue;
+                    }
+                    let definition_kind = self
+                        .runtime
+                        .definition(&card_id)
+                        .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?
+                        .kind;
+                    let hidden_zone_can_change_kind =
+                        matches!(entity.zone, Zone::Hand | Zone::Deck)
+                            && matches!(
+                                definition_kind,
+                                CardKind::Hero
+                                    | CardKind::Minion
+                                    | CardKind::Spell
+                                    | CardKind::Weapon
+                                    | CardKind::Location
+                            );
+                    if definition_kind != entity.kind && !hidden_zone_can_change_kind {
+                        return Err(GameError::CardCannotTransformInto(card_id));
+                    }
+                    let pending = self.begin_event(GameEvent::Transformed {
+                        source,
+                        entity: target,
+                        from_card: entity.card_id.clone(),
+                        to_card: card_id,
+                    })?;
+                    before.extend(self.trigger_event(&pending, EventTiming::Before)?);
+                    pending_events.push(pending);
+                }
+                if pending_events.is_empty() {
+                    return Ok(false);
+                }
+                queue.push_front(ResolutionItem::CommitTransformGroup {
+                    transforms: pending_events,
+                });
+                Self::prepend_effects(queue, before);
+                Ok(false)
+            }
+            EffectSpec::SwapStatsGroup { source, targets } => {
+                let mut seen = std::collections::BTreeSet::new();
+                let snapshots: Vec<_> = targets
+                    .into_iter()
+                    .filter(|target| seen.insert(*target))
+                    .filter_map(|target| {
+                        self.state.entity(target).and_then(|entity| {
+                            (entity.zone == Zone::Board && entity.kind == CardKind::Minion)
+                                .then_some((target, entity.attack, entity.health()))
+                        })
+                    })
+                    .collect();
+                for (target, attack, health) in snapshots {
+                    let id = EnchantmentId(self.state.next_enchantment_id);
+                    self.state.next_enchantment_id += 1;
+                    let entity = self.state.entities.get_mut(&target).unwrap();
+                    entity.damage = 0;
+                    entity.enchantments.push(Enchantment {
+                        id,
+                        source,
+                        attack: 0,
+                        health: 0,
+                        modifiers: vec![
+                            StatModifier {
+                                stat: Stat::Attack,
+                                operation: ModifierOperation::FinalSet,
+                                value: health,
+                            },
+                            StatModifier {
+                                stat: Stat::Health,
+                                operation: ModifierOperation::FinalSet,
+                                value: attack,
+                            },
+                        ],
+                        keywords: Vec::new(),
+                        silenciable: true,
+                        expires_at: None,
+                    });
+                    Self::recompute_entity(entity);
+                }
+                self.refresh_auras()?;
+                queue.push_front(ResolutionItem::DeathCheck);
+                Ok(false)
+            }
+            EffectSpec::SwapDecks {
+                source: _,
+                first,
+                second,
+            } => {
+                if first == second {
+                    return Ok(false);
+                }
+                let first_deck = std::mem::take(&mut self.state.player_mut(first).deck);
+                let second_deck =
+                    std::mem::replace(&mut self.state.player_mut(second).deck, first_deck);
+                self.state.player_mut(first).deck = second_deck;
+                let first_entities = self.state.player(first).deck.clone();
+                let second_entities = self.state.player(second).deck.clone();
+                for entity in first_entities {
+                    let card = self.state.entities.get_mut(&entity).unwrap();
+                    card.owner = first;
+                    card.controller = first;
+                }
+                for entity in second_entities {
+                    let card = self.state.entities.get_mut(&entity).unwrap();
+                    card.owner = second;
+                    card.controller = second;
+                }
+                self.refresh_auras()?;
+                Ok(false)
+            }
+            EffectSpec::TransformIntoCopy {
+                source,
+                target,
+                template,
+                attack,
+                health,
+                preserve_attached_scripts,
+            } => {
+                let Some(entity) = self.state.entity(target) else {
+                    return Ok(false);
+                };
+                let template = self
+                    .state
+                    .entity(template)
+                    .cloned()
+                    .ok_or(GameError::UnknownEntity(template))?;
+                if matches!(
+                    entity.zone,
+                    Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
+                ) || entity.kind != template.kind
+                {
+                    return Ok(false);
+                }
+                let pending = self.begin_event(GameEvent::Transformed {
+                    source,
+                    entity: target,
+                    from_card: entity.card_id.clone(),
+                    to_card: template.card_id.clone(),
+                })?;
+                let before = self.trigger_event(&pending, EventTiming::Before)?;
+                queue.push_front(ResolutionItem::CommitTransformIntoCopy {
+                    transform: pending,
+                    template,
+                    attack,
+                    health,
+                    preserve_attached_scripts,
+                });
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
@@ -799,6 +1825,63 @@ impl<R: CardRuntime> Game<R> {
                         *value = u32::try_from(amount.max(0)).unwrap_or(u32::MAX)
                     }
                     _ => return Err(GameError::EventAmountNotReplaceable(event)),
+                }
+                Ok(false)
+            }
+            EffectSpec::SetAttackDefender {
+                source: _,
+                event,
+                defender,
+            } => {
+                let pending = Self::find_pending_event_mut(queue, event)
+                    .ok_or(GameError::EventNotPending(event))?;
+                match &mut pending.event {
+                    GameEvent::Attack {
+                        defender: selected, ..
+                    } => *selected = defender,
+                    _ => return Err(GameError::EventAttackNotReplaceable(event)),
+                }
+                Ok(false)
+            }
+            EffectSpec::AddAttackCollateral {
+                source: _,
+                event,
+                targets,
+                amount,
+            } => {
+                let pending = Self::find_pending_event_mut(queue, event)
+                    .ok_or(GameError::EventNotPending(event))?;
+                match &mut pending.event {
+                    GameEvent::Attack { collateral, .. } => {
+                        for target in targets {
+                            if !collateral.iter().any(|(existing, _)| *existing == target) {
+                                collateral.push((target, amount.max(0)));
+                            }
+                        }
+                    }
+                    _ => return Err(GameError::EventAttackNotReplaceable(event)),
+                }
+                Ok(false)
+            }
+            EffectSpec::SetDamageTarget {
+                source: _,
+                event,
+                target,
+            } => {
+                let entity = self
+                    .state
+                    .entity(target)
+                    .ok_or(GameError::UnknownEntity(target))?;
+                if !matches!(entity.kind, CardKind::Hero | CardKind::Minion) {
+                    return Err(GameError::InvalidTarget(target));
+                }
+                let pending = Self::find_pending_event_mut(queue, event)
+                    .ok_or(GameError::EventNotPending(event))?;
+                match &mut pending.event {
+                    GameEvent::Damaged {
+                        target: selected, ..
+                    } => *selected = target,
+                    _ => return Err(GameError::EventDamageNotReplaceable(event)),
                 }
                 Ok(false)
             }

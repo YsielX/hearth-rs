@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_234",name="Darkshire Alchemist",text="<b>Battlecry:</b> Restore\n#5 Health.",set="OG",type="minion",class="priest",rarity="common",cost=5,attack=5,health=5,keywords={"battlecry"},target_mode="required_if_available",targets=function(ctx)return ctx:characters()end,on_battlecry=function(ctx,self,target)if target then ctx:heal(target,5)end end}

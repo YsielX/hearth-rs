@@ -1,0 +1,1 @@
+return { api_version = 1, id = "GVG_093", name = "Target Dummy", text = "<b>Taunt</b>", set = "GVG", type = "minion", rarity = "rare", cost = 0, attack = 0, health = 2, tags = { "mech" }, keywords = { "taunt" } }

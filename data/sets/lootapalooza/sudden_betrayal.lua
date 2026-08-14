@@ -1,0 +1,4 @@
+local card={api_version=1,id="LOOT_210",name="Sudden Betrayal",text="<b>Secret:</b> When a minion attacks your hero, instead it attacks one of its neighbors.",set="LOOTAPALOOZA",type="spell",class="rogue",rarity="common",cost=2,keywords={"secret"}}
+card.triggers={{event="attack",timing="before",active_zones={"secret"},condition=function(ctx,self,event)local p=ctx:controller(self);return ctx:get_data(self,"triggered")==0 and event.defender==ctx:player(p).hero and ctx:entity(event.attacker).type=="minion"and #ctx:adjacent_minions(event.attacker)>0 end,effect=function(ctx,self,event)ctx:set_data(self,"betrayal_event",event.event_id);ctx:random_entity(ctx:adjacent_minions(event.attacker),"betray_neighbor")end}}
+function card.betray_neighbor(ctx,self,target)if ctx:get_data(self,"triggered")==0 then ctx:set_data(self,"triggered",1);ctx:reveal_secret(self);ctx:set_attack_defender(ctx:get_data(self,"betrayal_event"),target)end end
+return card

@@ -1,0 +1,1 @@
+return {api_version=1,id="OG_094",name="Power Word: Tentacles",text="Give a minion +2/+6.",set="OG",type="spell",class="priest",rarity="common",spell_school="shadow",cost=5,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:buff(target,2,6)end}

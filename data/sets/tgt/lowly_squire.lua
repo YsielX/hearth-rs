@@ -5,6 +5,7 @@ return {
     text = "<b>Inspire:</b> Gain +1 Attack.",
     set = "TGT",
     type = "minion",
+    rarity = "common",
     cost = 1,
     attack = 1,
     health = 2,

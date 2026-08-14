@@ -17,6 +17,33 @@ def quoted(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
+def sync_definition_segments(source: str, localized: dict[str, dict]) -> str:
+    """Update the first name/text fields following every Lua definition id.
+
+    Cards and embedded tokens can share one file, so replacements must be
+    scoped by definition ID instead of relying on a translated old literal.
+    """
+    matches = list(re.finditer(r'\bid\s*=\s*"([^"]+)"', source))
+    for index in range(len(matches) - 1, -1, -1):
+        match = matches[index]
+        card_id = match.group(1)
+        record = localized.get(card_id)
+        if record is None:
+            continue
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(source)
+        segment = source[match.start():end]
+        for field in ("name", "text"):
+            value = quoted(record.get(field, ""))
+            segment = re.sub(
+                rf'(\b{field}\s*=\s*)"(?:\\.|[^"\\])*"',
+                lambda found, value=value: found.group(1) + value,
+                segment,
+                count=1,
+            )
+        source = source[:match.start()] + segment + source[end:]
+    return source
+
+
 def main() -> None:
     en = {item["id"]: item for item in json.loads((ROOT / "data/locales/enUS.json").read_text())}
     zh = {item["id"]: item for item in json.loads((ROOT / "data/locales/zhCN.json").read_text())}
@@ -42,7 +69,7 @@ def main() -> None:
     card_paths.extend((ROOT / "data/hero_powers").rglob("*.lua"))
     for path in sorted(card_paths):
         source = path.read_text()
-        updated = source
+        updated = sync_definition_segments(source, en)
         for old, new in replacements.items():
             updated = updated.replace(old, new)
         if updated != source:

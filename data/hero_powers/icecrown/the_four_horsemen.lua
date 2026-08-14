@@ -44,8 +44,7 @@ function power.check_victory(ctx, self)
     for _, card_id in ipairs(horsemen) do
         if not present[card_id] then return end
     end
-    local enemy = ctx:opponent(player)
-    ctx:damage(ctx:player(enemy).hero, 9999)
+    ctx:win_game(player)
 end
 
 power.tokens = {

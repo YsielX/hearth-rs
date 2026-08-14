@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "LOE_022",
+    name = "Fierce Monkey",
+    text = "<b>Taunt</b>",
+    set = "LOE",
+    type = "minion",
+    class = "warrior",
+    rarity = "common",
+    cost = 3,
+    attack = 3,
+    health = 4,
+    tags = { "beast" },
+    keywords = { "taunt" },
+}
