@@ -1,0 +1,240 @@
+use super::*;
+
+impl<R: CardRuntime> Game<R> {
+    pub fn new(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+    ) -> Result<Self, GameError> {
+        Self::new_with_hero_powers(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()],
+        )
+    }
+
+    pub fn new_with_hero_powers(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+    ) -> Result<Self, GameError> {
+        Self::new_with_hero_powers_and_classes(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            hero_powers,
+            ["mage".to_owned(), "mage".to_owned()],
+        )
+    }
+
+    pub fn new_with_hero_powers_and_classes(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+    ) -> Result<Self, GameError> {
+        for (player, deck) in [
+            (PlayerId::ONE, deck_one.as_slice()),
+            (PlayerId::TWO, deck_two.as_slice()),
+        ] {
+            if deck.is_empty() {
+                return Err(GameError::EmptyDeck(player));
+            }
+            if deck.len() > 30 {
+                return Err(GameError::DeckTooLarge {
+                    player,
+                    cards: deck.len(),
+                });
+            }
+        }
+        for player in [PlayerId::ONE, PlayerId::TWO] {
+            let class = &classes[player.index()];
+            if class.trim().is_empty() || class.len() > 64 {
+                return Err(GameError::InvalidPlayerClass {
+                    player,
+                    class: class.clone(),
+                });
+            }
+        }
+        let mut entities = std::collections::BTreeMap::new();
+        let hero_one = EntityId(1);
+        let hero_two = EntityId(2);
+        entities.insert(hero_one, Self::hero(hero_one, PlayerId::ONE, 1));
+        entities.insert(hero_two, Self::hero(hero_two, PlayerId::TWO, 2));
+
+        let empty_player = |id, hero, class| PlayerState {
+            id,
+            class,
+            hero,
+            deck: VecDeque::new(),
+            hand: Vec::new(),
+            board: Vec::new(),
+            weapon: None,
+            hero_power: EntityId(0),
+            hero_power_used: false,
+            secrets: Vec::new(),
+            graveyard: Vec::new(),
+            mana: 0,
+            max_mana: 0,
+            temporary_mana: 0,
+            overload_pending: 0,
+            overloaded_mana: 0,
+            cards_played_this_turn: 0,
+            cards_played_history: Vec::new(),
+            cards_played_last_turn: Vec::new(),
+            cards_played_current_turn: Vec::new(),
+            spells_cast_history: Vec::new(),
+            minions_played_history: Vec::new(),
+            weapons_played_history: Vec::new(),
+            locations_played_history: Vec::new(),
+            fatigue: 0,
+            script_data: Default::default(),
+        };
+
+        let state = GameState {
+            rng_seed: seed,
+            random_counter: 0,
+            turn: 0,
+            active_player: PlayerId::ONE,
+            players: [
+                empty_player(PlayerId::ONE, hero_one, classes[0].clone()),
+                empty_player(PlayerId::TWO, hero_two, classes[1].clone()),
+            ],
+            entities,
+            next_entity_id: 3,
+            next_timestamp: 3,
+            next_enchantment_id: 1,
+            next_event_id: 1,
+            outcome: None,
+            mulligan: None,
+            pending_input: None,
+            log: Vec::new(),
+        };
+
+        let initial_decks = [deck_one.clone(), deck_two.clone()];
+        let initial_hero_powers = hero_powers.clone();
+        let initial_classes = classes;
+        let mut game = Self {
+            runtime,
+            state,
+            rng: ChaCha8Rng::seed_from_u64(seed),
+            initial_decks,
+            initial_hero_powers,
+            initial_classes,
+            command_history: Vec::new(),
+        };
+        for player in [PlayerId::ONE, PlayerId::TWO] {
+            let definition = game
+                .runtime
+                .definition(&hero_powers[player.index()])
+                .ok_or_else(|| GameError::UnknownCard(hero_powers[player.index()].clone()))?;
+            if definition.kind != CardKind::HeroPower {
+                return Err(GameError::InvalidHeroPower(
+                    hero_powers[player.index()].clone(),
+                ));
+            }
+            let hero_power =
+                game.instantiate(&hero_powers[player.index()], player, Zone::HeroPower)?;
+            game.state.player_mut(player).hero_power = hero_power;
+        }
+        game.install_deck(PlayerId::ONE, deck_one)?;
+        game.install_deck(PlayerId::TWO, deck_two)?;
+
+        // Start-of-game cards listen from the deck. Resolve them before the
+        // opening hand is drawn, matching Hearthstone's setup ordering.
+        let effects = game.publish(GameEvent::GameStarted)?;
+        game.resolve_effects(effects)?;
+
+        game.draw_starting_hand(PlayerId::ONE, 3)?;
+        game.draw_starting_hand(PlayerId::TWO, 4)?;
+        game.state.mulligan = Some(crate::MulliganState {
+            current_player: PlayerId::ONE,
+            eligible: [
+                game.state.player(PlayerId::ONE).hand.clone(),
+                game.state.player(PlayerId::TWO).hand.clone(),
+            ],
+        });
+        game.state.validate().map_err(GameError::Invariant)?;
+        Ok(game)
+    }
+
+    pub fn from_replay(runtime: R, replay: &Replay) -> Result<Self, GameError> {
+        if replay.format_version != 3 {
+            return Err(GameError::ReplayCommandFailed {
+                index: 0,
+                message: format!("unsupported replay format {}", replay.format_version),
+            });
+        }
+        if runtime.pack_hash() != replay.card_pack_hash {
+            return Err(GameError::ReplayPackMismatch {
+                replay: replay.card_pack_hash.clone(),
+                loaded: runtime.pack_hash().to_owned(),
+            });
+        }
+        let mut game = Self::new_with_hero_powers_and_classes(
+            runtime,
+            replay.decks[0].clone(),
+            replay.decks[1].clone(),
+            replay.seed,
+            replay.hero_powers.clone(),
+            replay.classes.clone(),
+        )?;
+        for (index, command) in replay.commands.iter().cloned().enumerate() {
+            game.dispatch(command)
+                .map_err(|error| GameError::ReplayCommandFailed {
+                    index,
+                    message: error.to_string(),
+                })?;
+        }
+        Ok(game)
+    }
+
+    pub fn state(&self) -> &GameState {
+        &self.state
+    }
+
+    pub fn runtime(&self) -> &R {
+        &self.runtime
+    }
+
+    pub fn replay(&self) -> Replay {
+        Replay {
+            format_version: 3,
+            card_pack_hash: self.runtime.pack_hash().to_owned(),
+            seed: self.state.rng_seed,
+            decks: self.initial_decks.clone(),
+            hero_powers: self.initial_hero_powers.clone(),
+            classes: self.initial_classes.clone(),
+            commands: self.command_history.clone(),
+        }
+    }
+
+    /// Creates a portable checkpoint. The embedded replay is used as a proof when restoring,
+    /// so corrupted or hand-edited authoritative state is rejected rather than trusted.
+    pub fn snapshot(&self) -> GameSnapshot {
+        GameSnapshot {
+            format_version: 3,
+            replay: self.replay(),
+            state: self.state.clone(),
+        }
+    }
+
+    pub fn from_snapshot(runtime: R, snapshot: &GameSnapshot) -> Result<Self, GameError> {
+        if snapshot.format_version != 3 {
+            return Err(GameError::UnsupportedSnapshot(snapshot.format_version));
+        }
+        let game = Self::from_replay(runtime, &snapshot.replay)?;
+        if game.state != snapshot.state {
+            return Err(GameError::SnapshotStateMismatch);
+        }
+        Ok(game)
+    }
+}

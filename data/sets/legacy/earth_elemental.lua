@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "EX1_250",
+    name = "Earth Elemental",
+    text = "<b>Taunt</b>\n<b><b>Overload</b>:</b> (2)",
+    set = "EXPERT1",
+    type = "minion",
+    class = "shaman",
+    tags = { "elemental" },
+    cost = 5,
+    attack = 7,
+    health = 9,
+    keywords = { "taunt", "overload" },
+    keyword_params = { overload = 2 },
+}

@@ -1,0 +1,11 @@
+[package]
+name = "hearth-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+hearth-core = { path = "../hearth-core" }
+hearth-script = { path = "../hearth-script" }
+serde.workspace = true
+serde_json.workspace = true

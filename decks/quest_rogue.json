@@ -1,0 +1,25 @@
+{
+  "name": "Classic Caverns Quest Rogue (Dog, 2017)",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "source": "https://blizzardwatch.com/2017/04/17/playing-hearthstones-cavern-rogue/",
+  "cards": [
+    "EX1_613",
+    "EX1_145", "EX1_145",
+    "EX1_129", "EX1_129",
+    "EX1_124", "EX1_124",
+    "CS2_072", "CS2_072",
+    "EX1_144", "EX1_144",
+    "KAR_069", "KAR_069",
+    "CFM_693", "CFM_693",
+    "UNG_067",
+    "UNG_060", "UNG_060",
+    "CFM_637",
+    "EX1_015", "EX1_015",
+    "CS2_171", "CS2_171",
+    "CS2_146", "CS2_146",
+    "EX1_049", "EX1_049",
+    "KAR_044",
+    "NEW1_026", "NEW1_026"
+  ]
+}

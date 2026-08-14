@@ -1,0 +1,23 @@
+{
+  "name": "Official Representative Card Demo",
+  "class": "mage",
+  "unrestricted": true,
+  "hero_power": "HERO_08bp",
+  "cards": [
+    "EX1_008", "EX1_008",
+    "EX1_250", "EX1_250",
+    "EX1_015", "EX1_015",
+    "EX1_096", "EX1_096",
+    "NEW1_019", "NEW1_019",
+    "CS2_125", "CS2_125",
+    "CS2_029", "CS2_029",
+    "EX1_238", "EX1_238",
+    "CS2_106", "CS2_106",
+    "FP1_002", "FP1_002",
+    "GVG_085", "GVG_085",
+    "AT_087", "SW_045",
+    "GIL_143", "EX1_162",
+    "SCH_231", "EX1_005",
+    "EX1_134", "EX1_613"
+  ]
+}

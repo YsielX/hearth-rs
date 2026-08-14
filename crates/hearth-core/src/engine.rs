@@ -1,0 +1,392 @@
+use std::collections::VecDeque;
+
+use rand::seq::SliceRandom;
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
+use thiserror::Error;
+
+use crate::{
+    CardDefinition, CardKind, CardRuntime, ChoiceOption, EffectDuration, EffectSpec, Enchantment,
+    EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId, EventTiming, GameEvent,
+    GameOutcome, GameSnapshot, GameState, ModifierOperation, PendingEvent, PlayerCommand, PlayerId,
+    PlayerState, Replay, ReservedSummonOrigin, ResolutionItem, ScriptEvent, Stat, StatModifier,
+    Zone, ZonePlacement,
+};
+
+mod commands;
+mod effect_queue;
+mod effects;
+mod entities;
+mod events;
+mod resolution;
+mod setup;
+mod transitions;
+
+const MAX_HAND_SIZE: usize = 10;
+const MAX_BOARD_SIZE: usize = 7;
+const MAX_SECRET_SIZE: usize = 5;
+const MAX_RESOLUTION_STEPS: usize = 10_000;
+const MAX_CHOICE_OPTIONS: usize = 256;
+const MAX_CHOICE_PROMPT_BYTES: usize = 4 * 1024;
+const MAX_CHOICE_LABEL_BYTES: usize = 1024;
+pub const DEFAULT_HERO_POWER: &str = "HERO_08bp";
+pub const DEFAULT_COIN: &str = "GAME_005";
+
+#[derive(Debug, Error, PartialEq, Eq)]
+pub enum GameError {
+    #[error("game is already over")]
+    GameOver,
+    #[error("unknown card definition: {0}")]
+    UnknownCard(String),
+    #[error("{0} deck is empty")]
+    EmptyDeck(PlayerId),
+    #[error("{player} deck has {cards} cards; the maximum is 30")]
+    DeckTooLarge { player: PlayerId, cards: usize },
+    #[error("{player} deck contains non-collectible or non-deck card {card}")]
+    InvalidDeckCard { player: PlayerId, card: String },
+    #[error("card {0} is not a hero power")]
+    InvalidHeroPower(String),
+    #[error("{player} has invalid class {class:?}")]
+    InvalidPlayerClass { player: PlayerId, class: String },
+    #[error("unknown entity: {0}")]
+    UnknownEntity(EntityId),
+    #[error("entity {0} is not in the active player's hand")]
+    CardNotInHand(EntityId),
+    #[error("card {0} cannot be played right now")]
+    CardCannotBePlayed(EntityId),
+    #[error("card {0} cannot be traded")]
+    CardNotTradeable(EntityId),
+    #[error("action {action:?} is not available on card {card}")]
+    CardActionUnavailable { card: EntityId, action: String },
+    #[error("traded card reservation {0} is invalid")]
+    InvalidTradedCard(EntityId),
+    #[error("not enough mana: need {needed}, have {available}")]
+    NotEnoughMana { needed: u8, available: u8 },
+    #[error("a target is required")]
+    TargetRequired,
+    #[error("target {0} is not valid")]
+    InvalidTarget(EntityId),
+    #[error("the board is full")]
+    BoardFull,
+    #[error("board position {position} is invalid; expected 0..={max}")]
+    InvalidBoardPosition { position: usize, max: usize },
+    #[error("the secret zone is full")]
+    SecretZoneFull,
+    #[error("entity {0} cannot attack")]
+    CannotAttack(EntityId),
+    #[error("script error: {0}")]
+    Script(String),
+    #[error("effect resolution exceeded {MAX_RESOLUTION_STEPS} steps")]
+    ResolutionLimit,
+    #[error("a player choice is pending")]
+    ChoicePending,
+    #[error("there is no pending player choice")]
+    NoChoicePending,
+    #[error("the opening mulligan is still pending")]
+    MulliganPending,
+    #[error("there is no opening mulligan pending")]
+    NoMulliganPending,
+    #[error("card {0} is not eligible for the current mulligan")]
+    InvalidMulliganCard(EntityId),
+    #[error("choice {index} is invalid; expected 0..{options}")]
+    InvalidChoice { index: usize, options: usize },
+    #[error("a card requested a choice without options")]
+    EmptyChoice,
+    #[error("a card requested {options} choice options; the maximum is {MAX_CHOICE_OPTIONS}")]
+    TooManyChoiceOptions { options: usize },
+    #[error("invalid serialized choice value: {0}")]
+    InvalidChoiceValue(String),
+    #[error("choice prompt must contain between 1 and {MAX_CHOICE_PROMPT_BYTES} bytes")]
+    InvalidChoicePrompt,
+    #[error("choice option label must contain between 1 and {MAX_CHOICE_LABEL_BYTES} bytes")]
+    InvalidChoiceLabel,
+    #[error("a card requested a random choice without options")]
+    EmptyRandomChoice,
+    #[error("a card requested discovery from an empty card pool")]
+    EmptyDiscoverPool,
+    #[error("discover count must be at least one")]
+    InvalidDiscoverCount,
+    #[error("replay card pack hash is {replay}, but the loaded pack is {loaded}")]
+    ReplayPackMismatch { replay: String, loaded: String },
+    #[error("replay command {index} failed: {message}")]
+    ReplayCommandFailed { index: usize, message: String },
+    #[error("unsupported snapshot format {0}")]
+    UnsupportedSnapshot(u32),
+    #[error("snapshot state does not match its replay proof")]
+    SnapshotStateMismatch,
+    #[error("script data key must contain between 1 and 64 bytes")]
+    InvalidScriptDataKey,
+    #[error("hero power has already been used this turn")]
+    HeroPowerAlreadyUsed,
+    #[error("passive hero powers cannot be activated")]
+    PassiveHeroPower,
+    #[error("location {0} cannot be used now")]
+    CannotUseLocation(EntityId),
+    #[error("event {0} is no longer pending and cannot be replaced")]
+    EventNotPending(EventId),
+    #[error("event {0} does not have a replaceable amount")]
+    EventAmountNotReplaceable(EventId),
+    #[error("event {0} is not a trade draw and cannot select a replacement")]
+    EventTradeDrawNotReplaceable(EventId),
+    #[error("event {0} cannot be committed because its reserved entity is invalid")]
+    InvalidReservedEntity(EventId),
+    #[error("card {0} is not a minion and cannot be summoned")]
+    CardCannotBeSummoned(String),
+    #[error("entity {0} is not a minion in the requested player's deck and cannot be recruited")]
+    EntityCannotBeRecruited(EntityId),
+    #[error("card {0} is not a spell and cannot be cast")]
+    CardCannotBeCast(String),
+    #[error("card {0} is not a weapon and cannot be equipped")]
+    CardCannotBeEquipped(String),
+    #[error("card {0} is not a minion and cannot be used as a transformation")]
+    CardCannotTransformInto(String),
+    #[error("entity {entity} cannot move from {zone:?}")]
+    EntityCannotMove { entity: EntityId, zone: Zone },
+    #[error("game state invariant failed: {0}")]
+    Invariant(String),
+    #[error("continuation hook must contain between 1 and 64 bytes")]
+    InvalidContinuationHook,
+}
+
+pub struct Game<R> {
+    runtime: R,
+    state: GameState,
+    rng: ChaCha8Rng,
+    initial_decks: [Vec<String>; 2],
+    initial_hero_powers: [String; 2],
+    initial_classes: [String; 2],
+    command_history: Vec<PlayerCommand>,
+}
+
+impl<R: CardRuntime> Game<R> {
+    fn apply_damage(
+        &mut self,
+        source: EntityId,
+        target: EntityId,
+        amount: i32,
+    ) -> Result<GameEvent, GameError> {
+        let entity = self
+            .state
+            .entities
+            .get_mut(&target)
+            .ok_or(GameError::UnknownEntity(target))?;
+        let actual = amount.max(0);
+        if entity.kind == CardKind::Location {
+            return Ok(GameEvent::DamagePrevented {
+                source,
+                target,
+                reason: "location".to_owned(),
+            });
+        }
+        let absorbed = actual.min(entity.armor);
+        entity.armor -= absorbed;
+        entity.damage += actual - absorbed;
+        Ok(GameEvent::Damaged {
+            source,
+            target,
+            amount: actual,
+        })
+    }
+
+    fn apply_spell_damage_bonus(&self, source: EntityId, amount: i32) -> i32 {
+        let amount = amount.max(0);
+        if amount == 0 {
+            return 0;
+        }
+        let Some(source) = self.state.entity(source) else {
+            return amount;
+        };
+        if source.kind != CardKind::Spell {
+            return amount;
+        }
+        self.state
+            .player(source.controller)
+            .board
+            .iter()
+            .filter_map(|entity| self.state.entity(*entity))
+            .filter(|entity| entity.kind == CardKind::Minion)
+            .fold(amount, |total, entity| {
+                total.saturating_add(entity.spell_damage.max(0))
+            })
+    }
+
+    fn publish(&mut self, event: GameEvent) -> Result<Vec<EffectSpec>, GameError> {
+        let pending = self.begin_event(event)?;
+        self.publish_after(pending.id, pending.event)
+    }
+
+    fn publish_after(
+        &mut self,
+        id: EventId,
+        event: GameEvent,
+    ) -> Result<Vec<EffectSpec>, GameError> {
+        self.record_typed_play_history(&event);
+        self.state.log.push(event.clone());
+        self.collect_triggers(&ScriptEvent {
+            id,
+            timing: EventTiming::After,
+            event,
+        })
+    }
+
+    fn publish_after_group(
+        &mut self,
+        events: Vec<(EventId, GameEvent)>,
+    ) -> Result<Vec<EffectSpec>, GameError> {
+        for (_, event) in &events {
+            self.record_typed_play_history(event);
+            self.state.log.push(event.clone());
+        }
+        let mut effects = Vec::new();
+        for (id, event) in events {
+            effects.extend(self.collect_triggers(&ScriptEvent {
+                id,
+                timing: EventTiming::After,
+                event,
+            })?);
+        }
+        Ok(effects)
+    }
+
+    fn record_typed_play_history(&mut self, event: &GameEvent) {
+        let (player, entity, kind) = match event {
+            GameEvent::SpellCast { player, spell, .. } => (*player, *spell, CardKind::Spell),
+            GameEvent::MinionPlayed { player, minion } => (*player, *minion, CardKind::Minion),
+            GameEvent::WeaponPlayed { player, weapon } => (*player, *weapon, CardKind::Weapon),
+            GameEvent::LocationPlayed { player, location } => {
+                (*player, *location, CardKind::Location)
+            }
+            _ => return,
+        };
+        let Some(card_id) = self
+            .state
+            .entity(entity)
+            .map(|entity| entity.card_id.clone())
+        else {
+            return;
+        };
+        let player = self.state.player_mut(player);
+        match kind {
+            CardKind::Spell => player.spells_cast_history.push(card_id),
+            CardKind::Minion => player.minions_played_history.push(card_id),
+            CardKind::Weapon => player.weapons_played_history.push(card_id),
+            CardKind::Location => player.locations_played_history.push(card_id),
+            CardKind::Hero | CardKind::HeroPower => unreachable!(),
+        }
+    }
+
+    fn collect_triggers(&mut self, event: &ScriptEvent) -> Result<Vec<EffectSpec>, GameError> {
+        let active_player = self.state.active_player;
+        let mut listeners: Vec<_> = self
+            .state
+            .entities
+            .values()
+            .map(|entity| {
+                (
+                    u8::from(entity.controller != active_player),
+                    entity.timestamp,
+                    entity.id,
+                )
+            })
+            .collect();
+        listeners.sort_unstable();
+
+        let mut effects = Vec::new();
+        for (_, _, listener) in listeners {
+            effects.extend(
+                self.runtime
+                    .on_event(&self.state, listener, &event)
+                    .map_err(GameError::Script)?,
+            );
+        }
+        Ok(effects)
+    }
+
+    fn collect_deaths(&self) -> Vec<EntityId> {
+        let mut deaths: Vec<_> = self
+            .state
+            .entities
+            .values()
+            .filter(|entity| entity.is_mortally_wounded())
+            .map(|entity| (entity.timestamp, entity.id))
+            .collect();
+        deaths.sort_unstable();
+        deaths.into_iter().map(|(_, id)| id).collect()
+    }
+
+    fn run_death_check(&mut self, queue: &mut VecDeque<ResolutionItem>) -> Result<(), GameError> {
+        let deaths = self.collect_deaths();
+        if deaths.is_empty() {
+            self.check_winner();
+            return Ok(());
+        }
+        let mut death_info = Vec::with_capacity(deaths.len());
+        // Hearthstone remembers each death position when that minion is removed, in play
+        // order. Earlier deaths therefore no longer occupy a slot when later positions are
+        // measured. Lua deathrattles receive this stable position on entity_died.
+        for entity in deaths.iter().copied() {
+            let controller = self.state.entities[&entity].controller;
+            let position = self
+                .state
+                .player(controller)
+                .board
+                .iter()
+                .position(|candidate| *candidate == entity)
+                .expect("mortal minion must be present on its controller's board");
+            death_info.push((entity, controller, position));
+            self.kill(entity);
+        }
+        self.refresh_auras()?;
+
+        let mut events = Vec::with_capacity(deaths.len());
+        for (entity, player, position) in death_info {
+            let event = self.begin_event(GameEvent::EntityDied {
+                entity,
+                player,
+                position,
+            })?;
+            events.push((event.id, event.event));
+        }
+        let mut items = Vec::with_capacity(2);
+        items.push(ResolutionItem::PublishAfterGroup { events });
+        items.push(ResolutionItem::DeathCheck);
+        for item in items.into_iter().rev() {
+            queue.push_front(item);
+        }
+        Ok(())
+    }
+
+    fn any_hero_dead(&self) -> bool {
+        self.state.hero(PlayerId::ONE).health() <= 0 || self.state.hero(PlayerId::TWO).health() <= 0
+    }
+
+    fn kill(&mut self, entity: EntityId) {
+        let controller = self.state.entities[&entity].controller;
+        self.remove_from_zone(entity, Zone::Board, controller);
+        self.move_to_graveyard(entity, controller);
+    }
+
+    fn check_winner(&mut self) {
+        if self.state.outcome.is_some() {
+            return;
+        }
+        let dead_one = self.state.hero(PlayerId::ONE).health() <= 0;
+        let dead_two = self.state.hero(PlayerId::TWO).health() <= 0;
+        let outcome = match (dead_one, dead_two) {
+            (true, true) => Some(GameOutcome::Draw),
+            (true, false) => Some(GameOutcome::Winner(PlayerId::TWO)),
+            (false, true) => Some(GameOutcome::Winner(PlayerId::ONE)),
+            (false, false) => None,
+        };
+        if let Some(outcome) = outcome {
+            self.finish_game(outcome);
+        }
+    }
+
+    fn finish_game(&mut self, outcome: GameOutcome) {
+        self.state.outcome = Some(outcome);
+        self.state.mulligan = None;
+        self.state.pending_input = None;
+        self.state.log.push(GameEvent::GameEnded { outcome });
+    }
+}
