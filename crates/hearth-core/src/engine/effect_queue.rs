@@ -14,6 +14,7 @@ impl<R: CardRuntime> Game<R> {
                 prompt,
                 options,
                 resume_hook,
+                continuation_owner,
             } => {
                 if options.is_empty() {
                     return Err(GameError::EmptyChoice);
@@ -45,6 +46,7 @@ impl<R: CardRuntime> Game<R> {
                         prompt,
                         options,
                         resume_hook,
+                        continuation_owner,
                     }));
                     queue.push_front(ResolutionItem::DeathCheck);
                     return Ok(false);
@@ -64,7 +66,13 @@ impl<R: CardRuntime> Game<R> {
                     })?;
                     generated.extend(
                         self.runtime
-                            .on_resume(&self.state, source, &resume_hook, &choice)
+                            .on_resume(
+                                &self.state,
+                                source,
+                                continuation_owner.as_deref(),
+                                &resume_hook,
+                                &choice,
+                            )
                             .map_err(GameError::Script)?,
                     );
                     Self::prepend_effects(queue, generated);
@@ -77,6 +85,7 @@ impl<R: CardRuntime> Game<R> {
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner,
                     remaining_resolution: queue.drain(..).collect(),
                 });
                 self.state.log.push(GameEvent::ChoiceRequested {
@@ -90,6 +99,7 @@ impl<R: CardRuntime> Game<R> {
                 source,
                 mut options,
                 resume_hook,
+                continuation_owner,
             } => {
                 if options.is_empty() {
                     return Err(GameError::EmptyRandomChoice);
@@ -133,7 +143,13 @@ impl<R: CardRuntime> Game<R> {
                 })?;
                 generated.extend(
                     self.runtime
-                        .on_resume(&self.state, source, &resume_hook, &choice)
+                        .on_resume(
+                            &self.state,
+                            source,
+                            continuation_owner.as_deref(),
+                            &resume_hook,
+                            &choice,
+                        )
                         .map_err(GameError::Script)?,
                 );
                 Self::prepend_effects(queue, generated);
@@ -146,6 +162,7 @@ impl<R: CardRuntime> Game<R> {
                 candidates,
                 count,
                 resume_hook,
+                continuation_owner,
             } => {
                 if count == 0 {
                     return Err(GameError::InvalidDiscoverCount);
@@ -158,6 +175,7 @@ impl<R: CardRuntime> Game<R> {
                         candidates,
                         count,
                         resume_hook,
+                        continuation_owner,
                     }));
                     queue.push_front(ResolutionItem::DeathCheck);
                     return Ok(false);
@@ -204,6 +222,7 @@ impl<R: CardRuntime> Game<R> {
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner,
                 }));
                 Self::prepend_effects(queue, triggered);
                 Ok(false)
@@ -215,6 +234,7 @@ impl<R: CardRuntime> Game<R> {
                 candidates,
                 count,
                 resume_hook,
+                continuation_owner,
             } => {
                 if count == 0 {
                     return Err(GameError::InvalidDiscoverCount);
@@ -227,6 +247,7 @@ impl<R: CardRuntime> Game<R> {
                         candidates,
                         count,
                         resume_hook,
+                        continuation_owner,
                     }));
                     queue.push_front(ResolutionItem::DeathCheck);
                     return Ok(false);
@@ -281,6 +302,7 @@ impl<R: CardRuntime> Game<R> {
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner,
                 }));
                 Self::prepend_effects(queue, triggered);
                 Ok(false)
@@ -1079,7 +1101,7 @@ impl<R: CardRuntime> Game<R> {
                 }
                 let generated = self
                     .runtime
-                    .on_continue(&self.state, target, &hook, payload.as_ref())
+                    .on_continue(&self.state, target, None, &hook, payload.as_ref())
                     .map_err(GameError::Script)?;
                 Self::prepend_effects(queue, generated);
                 Ok(false)
@@ -1435,6 +1457,7 @@ impl<R: CardRuntime> Game<R> {
                 source,
                 hook,
                 payload,
+                continuation_owner,
             } => {
                 if hook.is_empty() || hook.len() > 64 {
                     return Err(GameError::InvalidContinuationHook);
@@ -1444,7 +1467,13 @@ impl<R: CardRuntime> Game<R> {
                 }
                 let generated = self
                     .runtime
-                    .on_continue(&self.state, source, &hook, payload.as_ref())
+                    .on_continue(
+                        &self.state,
+                        source,
+                        continuation_owner.as_deref(),
+                        &hook,
+                        payload.as_ref(),
+                    )
                     .map_err(GameError::Script)?;
                 Self::prepend_effects(queue, generated);
                 Ok(false)

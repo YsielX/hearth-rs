@@ -6,7 +6,7 @@ local card = {
     triggers = {{
         event = "attack", timing = "after", active_zones = { "weapon" },
         condition = function(ctx, self, event)
-            return event.attacker == ctx:hero(ctx:controller(self))
+            return event.attacker == ctx:player(ctx:controller(self)).hero
         end,
         effect = function(ctx, self)
             local candidates = {}

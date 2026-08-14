@@ -14,6 +14,8 @@ Every Lua definition under `data/sets/` and `data/hero_powers/` must resolve to 
 
 `data/locales/enUS.json`, `zhCN.json`, and `zhTW.json` come from the same client-data version and retain `id`, `name`, and `text`. Tests require every implemented ID to have a non-empty name in all three catalogs.
 
+`dynamic_ids.json` lists definitions created through Lua factory functions whose IDs cannot be discovered from a literal `id = "..."` field. The runtime/source equality test keeps this small manifest exact.
+
 The canonical Lua fallback is English. After refreshing locale catalogs and the selected zhCN records, run:
 
 ```bash

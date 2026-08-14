@@ -11,7 +11,7 @@ return {
     tags = { "beast" }, keywords = { "battlecry" }, target_mode = "required_if_available",
     targets = function(ctx, self)
         local result = {}
-        for _, entity in ipairs(ctx:all_characters()) do
+        for _, entity in ipairs(ctx:characters()) do
             if entity ~= self and ctx:entity(entity).type == "minion" and pirate(ctx, entity) then result[#result + 1] = entity end
         end
         return result

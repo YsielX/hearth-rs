@@ -9,7 +9,7 @@ local function deathrattle_pool(ctx, player)
 end
 local card = {
     api_version = 1, id = "LOOT_187", name = "Twilight's Call",
-    text = "Summon 1/1 copies of 2 friendly <b>Deathrattle</b> minions that died this game.",
+    text = "Summon 1/1 copies of 2 friendly <b>Deathrattle</b> minions\nthat died this game.",
     set = "LOOTAPALOOZA", type = "spell", class = "priest", rarity = "rare",
     spell_school = "shadow", cost = 3,
 }

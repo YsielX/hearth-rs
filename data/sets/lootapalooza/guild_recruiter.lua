@@ -10,7 +10,7 @@ local card = {
     attack = 2,
     health = 4,
     tags = { "draenei" },
-    keywords = { "battlecry", "recruit" },
+    keywords = { "battlecry" },
 }
 
 function card.on_battlecry(ctx, self)

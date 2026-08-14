@@ -1,7 +1,7 @@
 local ransom = {
     id = "LOOT_541t",
     name = "King's Ransom",
-    text = "Swap decks with your opponent.",
+    text = "Swap decks with your opponent.",
     set = "LOOTAPALOOZA",
     type = "spell",
     collectible = false,

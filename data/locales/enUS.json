@@ -4800,14 +4800,769 @@
     "text": "Your hero can only take 1 damage at a time."
   },
   {
+    "id": "LOOT_008",
+    "name": "Psychic Scream",
+    "text": "Shuffle all minions into your opponent's deck."
+  },
+  {
     "id": "LOOT_014",
     "name": "Kobold Librarian",
     "text": "<b>Battlecry:</b> Draw a card. Deal 2 damage to your hero."
   },
   {
+    "id": "LOOT_026",
+    "name": "Fal'dorei Strider",
+    "text": "[x]<b>Battlecry:</b> Shuffle 3\nAmbushes into your deck.\nWhen drawn, summon\na 4/4 Spider."
+  },
+  {
+    "id": "LOOT_026e",
+    "name": "Spider Ambush!",
+    "text": "<b>Casts When Drawn</b>\nSummon a 4/4 Spider."
+  },
+  {
+    "id": "LOOT_026t",
+    "name": "Leyline Spider",
+    "text": ""
+  },
+  {
+    "id": "LOOT_033",
+    "name": "Cavern Shinyfinder",
+    "text": "<b>Battlecry:</b> Draw a weapon from your deck."
+  },
+  {
+    "id": "LOOT_041",
+    "name": "Kobold Barbarian",
+    "text": "At the start of your turn, attack a random enemy."
+  },
+  {
+    "id": "LOOT_044",
+    "name": "Bladed Gauntlet",
+    "text": "Has Attack equal to your Armor. Can't attack heroes."
+  },
+  {
+    "id": "LOOT_047",
+    "name": "Barkskin",
+    "text": "Give a minion +3 Health. Gain 3 Armor."
+  },
+  {
+    "id": "LOOT_048",
+    "name": "Ironwood Golem",
+    "text": "<b>Taunt</b>\nCan only attack if you have 3 or more Armor."
+  },
+  {
+    "id": "LOOT_051",
+    "name": "Lesser Jasper Spellstone",
+    "text": "Deal $2 damage to a minion. <i>(Gain 3 Armor to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_051t1",
+    "name": "Jasper Spellstone",
+    "text": "Deal $4 damage to a minion."
+  },
+  {
+    "id": "LOOT_051t2",
+    "name": "Greater Jasper Spellstone",
+    "text": "Deal $6 damage to a minion."
+  },
+  {
+    "id": "LOOT_054",
+    "name": "Branching Paths",
+    "text": "[x]<b>Choose Twice -</b> Draw a\ncard; Give your minions \n+1 Attack; Gain 6 Armor."
+  },
+  {
+    "id": "LOOT_054b",
+    "name": "Explore the Darkness",
+    "text": "Give your minions +1 Attack."
+  },
+  {
+    "id": "LOOT_054c",
+    "name": "Loot the Chest",
+    "text": "Gain 6 Armor."
+  },
+  {
+    "id": "LOOT_054d",
+    "name": "Eat the Mushroom",
+    "text": "Draw a card."
+  },
+  {
+    "id": "LOOT_056",
+    "name": "Astral Tiger",
+    "text": "<b>Deathrattle:</b> Shuffle a\n copy of this minion into your deck."
+  },
+  {
+    "id": "LOOT_077",
+    "name": "Flanking Strike",
+    "text": "Deal $3 damage to a minion. Summon a 3/3 Wolf."
+  },
+  {
+    "id": "LOOT_077t",
+    "name": "Wolf",
+    "text": ""
+  },
+  {
+    "id": "LOOT_078",
+    "name": "Cave Hydra",
+    "text": "Also damages the minions next to whomever\nthis attacks."
+  },
+  {
+    "id": "LOOT_079",
+    "name": "Wandering Monster",
+    "text": "<b>Secret:</b> When an enemy attacks your hero, summon a 3-Cost minion as the new target."
+  },
+  {
+    "id": "LOOT_080",
+    "name": "Lesser Emerald Spellstone",
+    "text": "Summon two 3/3 Wolves. <i>(Play a <b>Secret</b> to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_080t2",
+    "name": "Emerald Spellstone",
+    "text": "Summon three 3/3 Wolves. <i>(Play a <b>Secret</b> to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_080t3",
+    "name": "Greater Emerald Spellstone",
+    "text": "Summon four 3/3 Wolves."
+  },
+  {
+    "id": "LOOT_085",
+    "name": "Rhok'delar",
+    "text": "<b>Battlecry:</b> If your deck has no minions, fill your hand with Hunter spells."
+  },
+  {
+    "id": "LOOT_088",
+    "name": "Potion of Heroism",
+    "text": "Give a minion <b>Divine Shield</b>.\nDraw a card."
+  },
+  {
+    "id": "LOOT_091",
+    "name": "Lesser Pearl Spellstone",
+    "text": "Summon a 2/2 Spirit with <b>Taunt</b>. <i>(Restore 3 Health to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_091t",
+    "name": "Guardian Spirit",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "LOOT_091t1",
+    "name": "Pearl Spellstone",
+    "text": "Summon a 4/4 Spirit with <b>Taunt</b>."
+  },
+  {
+    "id": "LOOT_091t1t",
+    "name": "Guardian Spirit",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "LOOT_091t2",
+    "name": "Greater Pearl Spellstone",
+    "text": "Summon a 6/6 Spirit with <b>Taunt</b>."
+  },
+  {
+    "id": "LOOT_091t2t",
+    "name": "Guardian Spirit",
+    "text": "<b>Taunt</b>"
+  },
+  {
     "id": "LOOT_093",
     "name": "Call to Arms",
     "text": "[x]<b>Recruit</b> 3 minions that\n cost (2) or less."
+  },
+  {
+    "id": "LOOT_101",
+    "name": "Explosive Runes",
+    "text": "<b>Secret:</b> After your opponent plays a minion, deal $6 damage to it and any excess to their hero."
+  },
+  {
+    "id": "LOOT_103",
+    "name": "Lesser Ruby Spellstone",
+    "text": "Add 1 random Mage spell to your hand. <i>(Play 2 Elementals to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_103t1",
+    "name": "Ruby Spellstone",
+    "text": "Add 2 random Mage spells to your hand."
+  },
+  {
+    "id": "LOOT_103t2",
+    "name": "Greater Ruby Spellstone",
+    "text": "Add 3 random Mage spells to your hand."
+  },
+  {
+    "id": "LOOT_104",
+    "name": "Shifting Scroll",
+    "text": "Each turn this is in your hand, transform it into a random Mage spell."
+  },
+  {
+    "id": "LOOT_106",
+    "name": "Deck of Wonders",
+    "text": "Shuffle 5 Scrolls into your deck. When drawn, cast a random spell."
+  },
+  {
+    "id": "LOOT_106t",
+    "name": "Scroll of Wonder",
+    "text": "<b>Casts When Drawn</b>\nCast a random spell."
+  },
+  {
+    "id": "LOOT_108",
+    "name": "Aluneth",
+    "text": "At the end of your turn, draw 3 cards."
+  },
+  {
+    "id": "LOOT_150",
+    "name": "Furbolg Mossbinder",
+    "text": "<b>Battlecry:</b> Transform a friendly minion into a 6/6 Elemental."
+  },
+  {
+    "id": "LOOT_150t1",
+    "name": "Moss Elemental",
+    "text": ""
+  },
+  {
+    "id": "LOOT_152",
+    "name": "Boisterous Bard",
+    "text": "<b>Battlecry:</b> Give your other minions +1 Health."
+  },
+  {
+    "id": "LOOT_153",
+    "name": "Violet Wurm",
+    "text": "<b>Deathrattle:</b> Summon seven 1/1 Grubs."
+  },
+  {
+    "id": "LOOT_153t1",
+    "name": "Grub",
+    "text": ""
+  },
+  {
+    "id": "LOOT_154",
+    "name": "Gravelsnout Knight",
+    "text": "<b>Battlecry:</b> Summon a random 1-Cost minion for your opponent."
+  },
+  {
+    "id": "LOOT_161",
+    "name": "Carnivorous Cube",
+    "text": "<b>Battlecry:</b> Destroy\na friendly minion.\n<b>Deathrattle:</b> Summon 2 copies of it."
+  },
+  {
+    "id": "LOOT_165",
+    "name": "Sonya Shadowdancer",
+    "text": "After a friendly minion dies, add a 1/1 copy of it to your hand. It costs (1)."
+  },
+  {
+    "id": "LOOT_167",
+    "name": "Fungalmancer",
+    "text": "<b>Battlecry:</b> Give adjacent minions +2/+2."
+  },
+  {
+    "id": "LOOT_170",
+    "name": "Raven Familiar",
+    "text": "<b>Battlecry:</b> Reveal a spell in each deck. If yours costs more, draw it."
+  },
+  {
+    "id": "LOOT_172",
+    "name": "Dragon's Fury",
+    "text": "Reveal a spell from your deck. Deal damage equal to its Cost to all minions."
+  },
+  {
+    "id": "LOOT_184",
+    "name": "Silver Vanguard",
+    "text": "<b>Deathrattle:</b> <b>Recruit</b> an\n8-Cost minion."
+  },
+  {
+    "id": "LOOT_187",
+    "name": "Twilight's Call",
+    "text": "Summon 1/1 copies of 2 friendly <b>Deathrattle</b> minions\nthat died this game."
+  },
+  {
+    "id": "LOOT_193",
+    "name": "Shimmering Courser",
+    "text": "<b>Elusive</b> on your \nopponent's turn."
+  },
+  {
+    "id": "LOOT_203",
+    "name": "Lesser Mithril Spellstone",
+    "text": "Summon one 5/5 Mithril Golem. <i>(Equip a weapon to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_203t2",
+    "name": "Mithril Spellstone",
+    "text": "Summon two 5/5 Mithril Golems. <i>(Equip a weapon to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_203t3",
+    "name": "Greater Mithril Spellstone",
+    "text": "Summon three 5/5 Mithril Golems."
+  },
+  {
+    "id": "LOOT_203t4",
+    "name": "Mithril Golem",
+    "text": ""
+  },
+  {
+    "id": "LOOT_204",
+    "name": "Cheat Death",
+    "text": "<b>Secret:</b> When a friendly minion dies, return it to your hand.\nIt costs (2) less."
+  },
+  {
+    "id": "LOOT_209",
+    "name": "Dragon Soul",
+    "text": "After you cast 3 spells in a turn, summon a 5/5 Dragon."
+  },
+  {
+    "id": "LOOT_209t",
+    "name": "Dragon Spirit",
+    "text": ""
+  },
+  {
+    "id": "LOOT_210",
+    "name": "Sudden Betrayal",
+    "text": "<b>Secret:</b> When a minion attacks your hero, instead it attacks one of its neighbors."
+  },
+  {
+    "id": "LOOT_211",
+    "name": "Elven Minstrel",
+    "text": "<b>Combo:</b> Draw 2 minions from your deck."
+  },
+  {
+    "id": "LOOT_214",
+    "name": "Evasion",
+    "text": "<b>Secret:</b> After your hero takes damage, become <b>Immune</b> this turn."
+  },
+  {
+    "id": "LOOT_216",
+    "name": "Lynessa Sunsorrow",
+    "text": "[x]<b>Battlecry:</b> Cast each spell\nyou cast on your minions\n this game on this one."
+  },
+  {
+    "id": "LOOT_217",
+    "name": "To My Side!",
+    "text": "[x]Summon an Animal\nCompanion, or 2 if your\ndeck has no minions."
+  },
+  {
+    "id": "LOOT_218",
+    "name": "Feral Gibberer",
+    "text": "After this minion attacks a hero, add a copy of it to your hand."
+  },
+  {
+    "id": "LOOT_222",
+    "name": "Candleshot",
+    "text": "Your hero is <b>Immune</b> while attacking."
+  },
+  {
+    "id": "LOOT_231",
+    "name": "Arcane Artificer",
+    "text": "Whenever you cast a spell, gain Armor equal to its Cost."
+  },
+  {
+    "id": "LOOT_233",
+    "name": "Cursed Disciple",
+    "text": "<b>Deathrattle:</b> Summon a 5/1 Revenant."
+  },
+  {
+    "id": "LOOT_233t",
+    "name": "Cursed Revenant",
+    "text": ""
+  },
+  {
+    "id": "LOOT_258",
+    "name": "Dire Mole",
+    "text": ""
+  },
+  {
+    "id": "LOOT_278",
+    "name": "Unidentified Elixir",
+    "text": "Give a minion +2/+2. Gains a bonus effect in your hand."
+  },
+  {
+    "id": "LOOT_278t1",
+    "name": "Elixir of Life",
+    "text": "Give a minion +2/+2 and <b>Lifesteal</b>."
+  },
+  {
+    "id": "LOOT_278t2",
+    "name": "Elixir of Purity",
+    "text": "Give a minion +2/+2 and <b>Divine Shield</b>."
+  },
+  {
+    "id": "LOOT_278t3",
+    "name": "Elixir of Shadows",
+    "text": "Give a minion +2/+2. Summon a 1/1 copy of it."
+  },
+  {
+    "id": "LOOT_278t4",
+    "name": "Elixir of Hope",
+    "text": "[x]Give a minion +2/+2\nand \"<b>Deathrattle:</b> Return\nthis minion to your hand.\""
+  },
+  {
+    "id": "LOOT_285",
+    "name": "Unidentified Shield",
+    "text": "Gain 5 Armor.\nGains a bonus effect in your hand."
+  },
+  {
+    "id": "LOOT_285t",
+    "name": "Tower Shield +10",
+    "text": "Gain 5 Armor.\nGain 10 more Armor."
+  },
+  {
+    "id": "LOOT_285t2",
+    "name": "Serrated Shield",
+    "text": "Gain 5 Armor.\nDeal $5 damage."
+  },
+  {
+    "id": "LOOT_285t3",
+    "name": "Runed Shield",
+    "text": "Gain 5 Armor.\nSummon a 5/5 Golem."
+  },
+  {
+    "id": "LOOT_285t3t",
+    "name": "Iron Golem",
+    "text": ""
+  },
+  {
+    "id": "LOOT_285t4",
+    "name": "Spiked Shield",
+    "text": "Gain 5 Armor.\nEquip a 5/2 weapon."
+  },
+  {
+    "id": "LOOT_285t4t",
+    "name": "Spiked Shield",
+    "text": ""
+  },
+  {
+    "id": "LOOT_286",
+    "name": "Unidentified Maul",
+    "text": "Gains a bonus effect in your hand."
+  },
+  {
+    "id": "LOOT_286t1",
+    "name": "Champion's Maul",
+    "text": "<b>Battlecry:</b> Summon two 1/1 Silver Hand Recruits."
+  },
+  {
+    "id": "LOOT_286t2",
+    "name": "Sacred Maul",
+    "text": "<b>Battlecry:</b> Give your minions <b>Taunt</b>."
+  },
+  {
+    "id": "LOOT_286t3",
+    "name": "Blessed Maul",
+    "text": "<b>Battlecry:</b> Give your minions +1 Attack."
+  },
+  {
+    "id": "LOOT_286t4",
+    "name": "Purifier's Maul",
+    "text": "<b>Battlecry:</b> Give your minions <b>Divine Shield</b>."
+  },
+  {
+    "id": "LOOT_291",
+    "name": "Shroom Brewer",
+    "text": "<b>Battlecry:</b> Restore #4 Health."
+  },
+  {
+    "id": "LOOT_309",
+    "name": "Oaken Summons",
+    "text": "Gain 6 Armor.\nSummon a minion\nfrom your deck that\ncosts (4) or less."
+  },
+  {
+    "id": "LOOT_313",
+    "name": "Crystal Lion",
+    "text": "[x]<b>Divine Shield</b>\nCosts (1) less for each Silver\nHand Recruit you control."
+  },
+  {
+    "id": "LOOT_314",
+    "name": "Grizzled Guardian",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> <b>Recruit</b> 2 minions that cost (4) or less."
+  },
+  {
+    "id": "LOOT_315",
+    "name": "Trogg Gloomeater",
+    "text": "<b>Taunt</b>\n<b>Poisonous</b>"
+  },
+  {
+    "id": "LOOT_329",
+    "name": "Ixlid, Fungal Lord",
+    "text": "After you play a minion, summon a copy of it."
+  },
+  {
+    "id": "LOOT_333",
+    "name": "Level Up!",
+    "text": "Give your Silver Hand Recruits +2/+2 and <b>Taunt</b>."
+  },
+  {
+    "id": "LOOT_347",
+    "name": "Kobold Apprentice",
+    "text": "<b>Battlecry:</b> Deal 3 damage randomly split among all enemies."
+  },
+  {
+    "id": "LOOT_351",
+    "name": "Greedy Sprite",
+    "text": "<b>Deathrattle:</b> Gain an empty Mana Crystal."
+  },
+  {
+    "id": "LOOT_353",
+    "name": "Psionic Probe",
+    "text": "Copy a spell in your opponent's deck and add it to your hand."
+  },
+  {
+    "id": "LOOT_357",
+    "name": "Marin the Fox",
+    "text": "<b>Battlecry:</b> Summon a 0/8 Treasure Chest for your opponent. <i>(Break it for awesome loot!)</i>"
+  },
+  {
+    "id": "LOOT_357l",
+    "name": "Master Chest",
+    "text": "<b>Deathrattle:</b> Give your opponent a fantastic treasure!"
+  },
+  {
+    "id": "LOOT_363",
+    "name": "Drygulch Jailor",
+    "text": "<b>Deathrattle:</b> Add 3 Silver Hand Recruits to your hand."
+  },
+  {
+    "id": "LOOT_364",
+    "name": "Reckless Flurry",
+    "text": "Spend all your Armor. Deal that much damage to all minions."
+  },
+  {
+    "id": "LOOT_365",
+    "name": "Gemstudded Golem",
+    "text": "<b>Taunt</b>\nCan only attack if you have 5 or more Armor."
+  },
+  {
+    "id": "LOOT_367",
+    "name": "Drywhisker Armorer",
+    "text": "<b>Battlecry:</b> For each enemy minion, gain 2 Armor."
+  },
+  {
+    "id": "LOOT_370",
+    "name": "Gather Your Party",
+    "text": "<b>Recruit</b> a minion."
+  },
+  {
+    "id": "LOOT_375",
+    "name": "Guild Recruiter",
+    "text": "<b>Battlecry:</b> <b>Recruit</b> a minion that costs (4) or less."
+  },
+  {
+    "id": "LOOT_380",
+    "name": "Woecleaver",
+    "text": "After your hero attacks, <b>Recruit</b> a minion."
+  },
+  {
+    "id": "LOOT_382",
+    "name": "Kobold Monk",
+    "text": "Your hero is <b>Elusive</b>."
+  },
+  {
+    "id": "LOOT_383",
+    "name": "Hungry Ettin",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Summon a random 2-Cost minion for your opponent."
+  },
+  {
+    "id": "LOOT_388",
+    "name": "Fungal Enchanter",
+    "text": "<b>Battlecry:</b> Restore #2 Health to all friendly characters."
+  },
+  {
+    "id": "LOOT_389",
+    "name": "Rummaging Kobold",
+    "text": "<b>Battlecry:</b> Return one of your destroyed weapons to your hand."
+  },
+  {
+    "id": "LOOT_392",
+    "name": "Twig of the World Tree",
+    "text": "<b>Deathrattle:</b> Refresh your Mana Crystals."
+  },
+  {
+    "id": "LOOT_394",
+    "name": "Shrieking Shroom",
+    "text": "At the end of your turn, summon a random\n1-Cost minion."
+  },
+  {
+    "id": "LOOT_398",
+    "name": "Benevolent Djinn",
+    "text": "At the end of your turn, restore #3 Health to your hero."
+  },
+  {
+    "id": "LOOT_410",
+    "name": "Duskbreaker",
+    "text": "<b>Battlecry:</b> If you're holding\na Dragon, deal 3 damage to all other minions."
+  },
+  {
+    "id": "LOOT_412",
+    "name": "Kobold Illusionist",
+    "text": "<b>Deathrattle:</b> Summon a 1/1 copy of a minion from your hand."
+  },
+  {
+    "id": "LOOT_413",
+    "name": "Plated Beetle",
+    "text": "<b>Deathrattle:</b> Gain 3 Armor."
+  },
+  {
+    "id": "LOOT_414",
+    "name": "Grand Archivist",
+    "text": "At the end of your turn, cast a spell from your deck <i>(targets chosen randomly)</i>."
+  },
+  {
+    "id": "LOOT_500",
+    "name": "Val'anyr",
+    "text": "<b>Deathrattle:</b> Give a minion in your hand +4/+2. When it dies, reequip this."
+  },
+  {
+    "id": "LOOT_503",
+    "name": "Lesser Onyx Spellstone",
+    "text": "Destroy 1 random enemy minion.\n<i>(Play 3 <b>Deathrattle</b> cards to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_503t",
+    "name": "Onyx Spellstone",
+    "text": "Destroy up to 2 random enemy minions."
+  },
+  {
+    "id": "LOOT_503t2",
+    "name": "Greater Onyx Spellstone",
+    "text": "Destroy up to 3 random enemy minions."
+  },
+  {
+    "id": "LOOT_507",
+    "name": "Lesser Diamond Spellstone",
+    "text": "Resurrect 2 different friendly minions. <i>(Cast 4 spells to upgrade.)</i>"
+  },
+  {
+    "id": "LOOT_507t",
+    "name": "Diamond Spellstone",
+    "text": "Resurrect 3 different friendly minions."
+  },
+  {
+    "id": "LOOT_507t2",
+    "name": "Greater Diamond Spellstone",
+    "text": "Resurrect 4 different friendly minions."
+  },
+  {
+    "id": "LOOT_511",
+    "name": "Kathrena Winterwisp",
+    "text": "<b>Battlecry and Deathrattle:</b> <b>Recruit</b> a Beast."
+  },
+  {
+    "id": "LOOT_516",
+    "name": "Zola the Gorgon",
+    "text": "<b>Battlecry:</b> Choose a friendly minion. Add a Golden copy of it to your hand."
+  },
+  {
+    "id": "LOOT_519",
+    "name": "Geosculptor Yip",
+    "text": "At the end of your turn, summon a random minion with Cost equal to your Armor <i>(up to 10)</i>."
+  },
+  {
+    "id": "LOOT_520",
+    "name": "Seeping Oozeling",
+    "text": "<b>Battlecry:</b> Gain the <b>Deathrattle</b> of a random minion in your deck."
+  },
+  {
+    "id": "LOOT_521",
+    "name": "Master Oakheart",
+    "text": "<b>Battlecry:</b> <b>Recruit</b> a 1, 2, and 3-Attack minion."
+  },
+  {
+    "id": "LOOT_522",
+    "name": "Crushing Walls",
+    "text": "Destroy your opponent's left and right-most minions."
+  },
+  {
+    "id": "LOOT_526",
+    "name": "The Darkness",
+    "text": "[x]Starts <b>Dormant</b>.\n<b>Battlecry:</b> Shuffle 3 Candles\ninto the enemy deck. When\ndrawn, this awakens."
+  },
+  {
+    "id": "LOOT_526d",
+    "name": "The Darkness",
+    "text": ""
+  },
+  {
+    "id": "LOOT_526t",
+    "name": "Darkness Candle",
+    "text": "<b>Casts When Drawn</b>\nSnuff out a candle."
+  },
+  {
+    "id": "LOOT_528",
+    "name": "Twilight Acolyte",
+    "text": "<b>Battlecry:</b> If you're holding\na Dragon, swap this minion's Attack with another minion's."
+  },
+  {
+    "id": "LOOT_529",
+    "name": "Void Ripper",
+    "text": "<b>Battlecry:</b> Swap the\nAttack and Health of all other minions."
+  },
+  {
+    "id": "LOOT_534",
+    "name": "Gilded Gargoyle",
+    "text": "<b>Deathrattle:</b> Add a Coin to your hand."
+  },
+  {
+    "id": "LOOT_535",
+    "name": "Dragoncaller Alanna",
+    "text": "<b>Battlecry:</b> Summon a 5/5 Dragon for each spell you cast this game that costs (5) or more."
+  },
+  {
+    "id": "LOOT_535t",
+    "name": "Fire Dragon",
+    "text": ""
+  },
+  {
+    "id": "LOOT_537",
+    "name": "Leyline Manipulator",
+    "text": "<b>Battlecry:</b> If you're holding any cards that didn't start in your deck, reduce their Cost by (2)."
+  },
+  {
+    "id": "LOOT_538",
+    "name": "Temporus",
+    "text": "<b>Battlecry:</b> Your opponent takes two turns. Then you take two turns."
+  },
+  {
+    "id": "LOOT_539",
+    "name": "Spiteful Summoner",
+    "text": "[x]<b>Battlecry:</b> Reveal a spell\nfrom your deck. Summon\n a random minion with\nthe same Cost."
+  },
+  {
+    "id": "LOOT_540",
+    "name": "Dragonhatcher",
+    "text": "At the end of your turn, <b>Recruit</b> a Dragon."
+  },
+  {
+    "id": "LOOT_541",
+    "name": "King Togwaggle",
+    "text": "[x]<b>Battlecry:</b> Swap decks\nwith your opponent.\nGive them a Ransom\nspell to swap back."
+  },
+  {
+    "id": "LOOT_541t",
+    "name": "King's Ransom",
+    "text": "Swap decks with your opponent."
+  },
+  {
+    "id": "LOOT_542",
+    "name": "Kingsbane",
+    "text": "[x]Always keeps\nenchantments.\n<b>Deathrattle:</b> Shuffle this\ninto your deck."
+  },
+  {
+    "id": "LOOT_998h",
+    "name": "Tolin's Goblet",
+    "text": "Draw a card. Fill your hand with copies of it."
+  },
+  {
+    "id": "LOOT_998j",
+    "name": "Zarog's Crown",
+    "text": "<b>Discover</b> a <b>Legendary</b> minion. Summon two copies of it."
+  },
+  {
+    "id": "LOOT_998k",
+    "name": "Golden Kobold",
+    "text": "[x]<b>Taunt</b>\n<b> Battlecry:</b> Replace your hand\nwith <b>Legendary</b> minions.\nThey cost (1) less."
+  },
+  {
+    "id": "LOOT_998l",
+    "name": "Wondrous Wand",
+    "text": "Draw 3 cards.\nSet their Cost to (1)."
   },
   {
     "id": "MAW_028",

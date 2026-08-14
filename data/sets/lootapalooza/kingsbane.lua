@@ -1,1 +1,1 @@
-return {api_version=1,id="LOOT_542",name="Kingsbane",text="Always keeps enchantments.\n<b>Deathrattle:</b> Shuffle this into your deck.",set="LOOTAPALOOZA",type="weapon",class="rogue",rarity="legendary",cost=1,attack=1,health=3}
+return {api_version=1,id="LOOT_542",name="Kingsbane",text="[x]Always keeps\nenchantments.\n<b>Deathrattle:</b> Shuffle this\ninto your deck.",set="LOOTAPALOOZA",type="weapon",class="rogue",rarity="legendary",cost=1,attack=1,health=3}

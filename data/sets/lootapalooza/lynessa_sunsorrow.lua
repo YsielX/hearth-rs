@@ -1,6 +1,6 @@
 local card = {
     api_version = 1, id = "LOOT_216", name = "Lynessa Sunsorrow",
-    text = "<b>Battlecry:</b> Cast each spell you cast on your minions this game on this one.",
+    text = "[x]<b>Battlecry:</b> Cast each spell\nyou cast on your minions\n this game on this one.",
     set = "LOOTAPALOOZA", type = "minion", class = "paladin", rarity = "legendary",
     cost = 7, attack = 1, health = 1, keywords = { "battlecry" },
 }

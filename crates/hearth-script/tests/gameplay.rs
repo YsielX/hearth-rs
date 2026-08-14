@@ -212,7 +212,14 @@ fn catalog_contains_only_traceable_official_cards() {
             );
         }
     }
-    assert_eq!(source_ids.len(), definitions.len());
+    let definition_ids = definitions
+        .iter()
+        .map(|definition| definition.id.as_str())
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(
+        source_ids, definition_ids,
+        "official source IDs must exactly match runtime definitions"
+    );
     assert!(
         definitions
             .iter()
@@ -1191,7 +1198,10 @@ fn magnetic_merges_stats_scripts_and_keywords_without_summoning_a_second_minion(
 fn every_card_has_all_three_official_locales() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     for definition in runtime.definitions() {
-        let english = definition.localizations.get(&Locale::EnUs).unwrap();
+        let english = definition
+            .localizations
+            .get(&Locale::EnUs)
+            .unwrap_or_else(|| panic!("{} is missing enUS", definition.id));
         assert_eq!(
             definition.name, english.name,
             "{} fallback name",
@@ -3012,4 +3022,28 @@ fn counterspell_secret_and_counter_rules_come_from_lua_keywords() {
     play(&mut game, PlayerId::TWO, "CS2_029", Some(hero));
     assert_eq!(game.state().entity(hero).unwrap().health(), health);
     assert_eq!(game.state().entity(secret).unwrap().zone, Zone::Graveyard);
+}
+
+#[test]
+fn duplicate_persistent_cards_cannot_enter_the_secret_zone_from_hand() {
+    let mut game = game("EX1_287", "CS2_120");
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let first = play(&mut game, PlayerId::ONE, "EX1_287", None);
+    assert_eq!(game.state().entity(first).unwrap().zone, Zone::Secret);
+    let duplicate = hand_card(&game, PlayerId::ONE, "EX1_287");
+    assert!(!game.legal_actions().unwrap().iter().any(|action| matches!(
+        action,
+        PlayerCommand::PlayCard { card, .. } | PlayerCommand::PlayCardAt { card, .. }
+            if *card == duplicate
+    )));
+
+    let before = game.state().clone();
+    assert_eq!(
+        game.dispatch(PlayerCommand::PlayCard {
+            card: duplicate,
+            target: None,
+        }),
+        Err(GameError::CardCannotBePlayed(duplicate))
+    );
+    assert_eq!(game.state(), &before);
 }

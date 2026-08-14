@@ -254,6 +254,25 @@ fn choose_multiple_fandral_combines_both_malfurion_options() {
 }
 
 #[test]
+fn choose_multiple_fandral_combines_both_plague_lord_power_options() {
+    let mut game = game_with_decks(mixed("OG_044", "ICC_832"), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "OG_044", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    play(&mut game, PlayerId::ONE, "ICC_832", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 8);
+
+    let hero = game.state().player(PlayerId::ONE).hero;
+    let armor_before = game.state().hero(PlayerId::ONE).armor;
+    game.dispatch(PlayerCommand::UseHeroPower { target: None })
+        .unwrap();
+
+    assert!(game.state().pending_input.is_none());
+    assert_eq!(game.state().entity(hero).unwrap().attack, 3);
+    assert_eq!(game.state().hero(PlayerId::ONE).armor, armor_before + 3);
+}
+
+#[test]
 fn colossal_summons_colaques_appendage_and_activates_its_aura() {
     let mut game = game_with_decks(repeated("TSC_026"), mixed("CS2_072", "CS2_029"));
     advance_to_mana(&mut game, PlayerId::ONE, 7);

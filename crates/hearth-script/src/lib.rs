@@ -917,6 +917,32 @@ impl LuaCardRuntime {
     }
 }
 
+fn bind_continuation_owner(effects: &mut [EffectSpec], owner: &str) {
+    for effect in effects {
+        let continuation_owner = match effect {
+            EffectSpec::Continue {
+                continuation_owner, ..
+            }
+            | EffectSpec::RequestChoice {
+                continuation_owner, ..
+            }
+            | EffectSpec::DiscoverCards {
+                continuation_owner, ..
+            }
+            | EffectSpec::DiscoverEntities {
+                continuation_owner, ..
+            }
+            | EffectSpec::RandomChoice {
+                continuation_owner, ..
+            } => continuation_owner,
+            _ => continue,
+        };
+        if continuation_owner.is_none() {
+            *continuation_owner = Some(owner.to_owned());
+        }
+    }
+}
+
 impl CardRuntime for LuaCardRuntime {
     fn pack_hash(&self) -> &str {
         &self.pack_hash
@@ -1280,6 +1306,7 @@ impl CardRuntime for LuaCardRuntime {
                 .map_err(|error| format!("card action {action}: {error}"))?;
             output.extend(emitted.borrow_mut().drain(..));
         }
+        bind_continuation_owner(&mut output, &entity.card_id);
         Ok(output)
     }
 
@@ -1301,6 +1328,7 @@ impl CardRuntime for LuaCardRuntime {
             output.extend(self.invoke_effect_hook(state, source, function, target)?);
         }
         output.extend(self.invoke_keyword_effect_hooks(state, source, "on_play", target)?);
+        bind_continuation_owner(&mut output, &entity.card_id);
         Ok(output)
     }
 
@@ -1327,6 +1355,7 @@ impl CardRuntime for LuaCardRuntime {
             "on_location_use",
             target,
         )?);
+        bind_continuation_owner(&mut output, &entity.card_id);
         Ok(output)
     }
 
@@ -1348,7 +1377,9 @@ impl CardRuntime for LuaCardRuntime {
                 .lua
                 .registry_value(&script.module)
                 .map_err(|error| error.to_string())?;
-            output.extend(self.invoke_triggers(state, listener, event, module)?);
+            let mut generated = self.invoke_triggers(state, listener, event, module)?;
+            bind_continuation_owner(&mut generated, &entity.card_id);
+            output.extend(generated);
         }
         for attached in &entity.attached_cards {
             if let Some(script) = self.cards.get(attached) {
@@ -1356,11 +1387,16 @@ impl CardRuntime for LuaCardRuntime {
                     .lua
                     .registry_value(&script.module)
                     .map_err(|error| error.to_string())?;
-                output.extend(self.invoke_triggers(state, listener, event, module)?);
+                let mut generated = self.invoke_triggers(state, listener, event, module)?;
+                bind_continuation_owner(&mut generated, attached);
+                output.extend(generated);
             }
         }
         for keyword in self.active_keyword_ids(state, listener)? {
             let module = self.keyword_module(&keyword)?;
+            // Keyword modules dispatch lifecycle hooks to the card and every
+            // hook attachment on the host. Do not freeze these generic
+            // dispatches to the host's current card module.
             output.extend(self.invoke_triggers(state, listener, event, module)?);
         }
         Ok(output)
@@ -1370,6 +1406,7 @@ impl CardRuntime for LuaCardRuntime {
         &self,
         state: &GameState,
         source: EntityId,
+        continuation_owner: Option<&str>,
         hook: &str,
         choice: &ChoiceValue,
     ) -> Result<Vec<EffectSpec>, String> {
@@ -1377,9 +1414,28 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown source entity {source}"))?;
-        let mut card_ids = vec![entity.card_id.clone()];
-        card_ids.extend(entity.attached_cards.iter().cloned());
+        let mut card_ids = continuation_owner
+            .map(|owner| vec![owner.to_owned()])
+            .unwrap_or_else(|| {
+                let mut ids = vec![entity.card_id.clone()];
+                ids.extend(entity.attached_cards.iter().cloned());
+                ids
+            });
+        // A hook attachment executes with the host entity as `self`, so a
+        // choice or random-value continuation emitted by that script also
+        // resumes against the host. Include those script modules when looking
+        // up the named resume hook (for example, Infest's attached
+        // Deathrattle choosing a random Beast).
+        if continuation_owner.is_none() {
+            card_ids.extend(
+                entity
+                    .hook_attachments
+                    .values()
+                    .flat_map(|attachments| attachments.iter().cloned()),
+            );
+        }
         let mut function = None;
+        let mut function_owner = None;
         for card_id in &card_ids {
             let module = self.module(card_id)?;
             if let Some(candidate) = module
@@ -1387,6 +1443,7 @@ impl CardRuntime for LuaCardRuntime {
                 .map_err(|error| error.to_string())?
             {
                 function = Some(candidate);
+                function_owner = Some(card_id.clone());
                 break;
             }
         }
@@ -1410,13 +1467,21 @@ impl CardRuntime for LuaCardRuntime {
         function
             .call::<()>((ctx, source.0, choice))
             .map_err(|error| error.to_string())?;
-        Ok(effects.borrow_mut().drain(..).collect())
+        let mut generated = effects.borrow_mut().drain(..).collect::<Vec<_>>();
+        bind_continuation_owner(
+            &mut generated,
+            function_owner
+                .as_deref()
+                .expect("resume function has an owner"),
+        );
+        Ok(generated)
     }
 
     fn on_continue(
         &self,
         state: &GameState,
         source: EntityId,
+        continuation_owner: Option<&str>,
         hook: &str,
         payload: Option<&ChoiceValue>,
     ) -> Result<Vec<EffectSpec>, String> {
@@ -1424,13 +1489,17 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown continuation source {source}"))?;
-        let mut card_ids = Vec::new();
-        if !entity.silenced {
-            card_ids.push(entity.card_id.clone());
-        }
-        card_ids.extend(entity.attached_cards.iter().cloned());
-        if let Some(attachments) = entity.hook_attachments.get(hook) {
-            card_ids.extend(attachments.iter().cloned());
+        let mut card_ids = continuation_owner
+            .map(|owner| vec![owner.to_owned()])
+            .unwrap_or_default();
+        if continuation_owner.is_none() {
+            if !entity.silenced {
+                card_ids.push(entity.card_id.clone());
+            }
+            card_ids.extend(entity.attached_cards.iter().cloned());
+            if let Some(attachments) = entity.hook_attachments.get(hook) {
+                card_ids.extend(attachments.iter().cloned());
+            }
         }
         let mut output = Vec::new();
         let mut found = false;
@@ -1465,7 +1534,9 @@ impl CardRuntime for LuaCardRuntime {
                         .map_err(|error| error.to_string())?;
                 }
             }
-            output.extend(effects.borrow_mut().drain(..));
+            let mut generated = effects.borrow_mut().drain(..).collect::<Vec<_>>();
+            bind_continuation_owner(&mut generated, &card_id);
+            output.extend(generated);
         }
         if !found {
             return Err(format!(

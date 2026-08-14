@@ -9,7 +9,7 @@ local card = {
     cost = 9,
     attack = 5,
     health = 5,
-    keywords = { "battlecry", "recruit" },
+    keywords = { "battlecry" },
 }
 
 local function candidates_with_attack(ctx, self, attack)

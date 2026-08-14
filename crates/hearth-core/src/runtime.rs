@@ -84,6 +84,7 @@ pub trait CardRuntime {
         &self,
         state: &GameState,
         source: EntityId,
+        continuation_owner: Option<&str>,
         hook: &str,
         choice: &ChoiceValue,
     ) -> Result<Vec<EffectSpec>, String>;
@@ -92,6 +93,7 @@ pub trait CardRuntime {
         &self,
         state: &GameState,
         source: EntityId,
+        continuation_owner: Option<&str>,
         hook: &str,
         payload: Option<&ChoiceValue>,
     ) -> Result<Vec<EffectSpec>, String>;

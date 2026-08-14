@@ -1,6 +1,6 @@
 local card = {
     api_version = 1, id = "LOOT_333", name = "Level Up!",
-    text = "Give your Silver Hand Recruits +2/+2 and <b>Taunt</b>.", set = "LOOTAPALOOZA",
+    text = "Give your Silver Hand Recruits +2/+2 and <b>Taunt</b>.", set = "LOOTAPALOOZA",
     type = "spell", class = "paladin", rarity = "epic", cost = 5,
 }
 function card.on_play(ctx, self)

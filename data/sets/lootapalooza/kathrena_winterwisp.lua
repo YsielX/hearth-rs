@@ -1,4 +1,4 @@
 local function beast(def)for _,t in ipairs(def.tags or{})do if t=="beast"or t=="all"then return true end end return false end
 local function recruit(ctx,self)local p=ctx:controller(self);if #ctx:board(p)>=7 then return end;local pool={};for _,e in ipairs(ctx:deck(p))do if ctx:entity(e).type=="minion"and beast(ctx:card_definition(ctx:entity(e).card_id))then pool[#pool+1]=e end end;if #pool>0 then ctx:random_entity(pool,"kathrena_recruit")end end
-local card={api_version=1,id="LOOT_511",name="Kathrena Winterwisp",text="<b>Battlecry and Deathrattle:</b> <b>Recruit</b> a Beast.",set="LOOTAPALOOZA",type="minion",class="hunter",rarity="legendary",cost=8,attack=6,health=6,keywords={"battlecry","deathrattle","recruit"},on_battlecry=recruit,on_deathrattle=recruit}
+local card={api_version=1,id="LOOT_511",name="Kathrena Winterwisp",text="<b>Battlecry and Deathrattle:</b> <b>Recruit</b> a Beast.",set="LOOTAPALOOZA",type="minion",class="hunter",rarity="legendary",cost=8,attack=6,health=6,keywords={"battlecry","deathrattle"},on_battlecry=recruit,on_deathrattle=recruit}
 function card.kathrena_recruit(ctx,self,e)ctx:recruit(ctx:controller(self),e)end;return card

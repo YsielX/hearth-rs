@@ -26,4 +26,10 @@ function power.chosen(ctx, self, choice)
     end
 end
 
+function power.on_choose_multiple(ctx, self)
+    local player = ctx:controller(self)
+    ctx:buff_until_end_of_turn(ctx:player(player).hero, 3, 0)
+    ctx:gain_armor(player, 3)
+end
+
 return power

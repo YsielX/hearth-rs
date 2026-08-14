@@ -206,6 +206,7 @@ ctx:graveyard(player)           -- 进入墓地顺序
 ctx:characters()                -- 双方英雄及战场随从
 ctx:minions()                   -- 双方战场随从
 ctx:enemy_characters(entity)
+ctx:enemy_minions(entity)
 ctx:friendly_minions(entity)
 ctx:adjacent_minions(entity)    -- 按左、右顺序返回最多两个实体
 ctx:board_position(entity)      -- 零基位置；不在战场时返回 nil

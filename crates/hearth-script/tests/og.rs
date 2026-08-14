@@ -2,7 +2,9 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use hearth_core::{DEFAULT_HERO_POWER, EntityId, Game, GameEvent, PlayerCommand, PlayerId, Zone};
+use hearth_core::{
+    CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, PlayerCommand, PlayerId, Zone,
+};
 use hearth_script::LuaCardRuntime;
 
 fn data_path() -> PathBuf {
@@ -145,6 +147,10 @@ return {
         { id = "TEST_OG_SILENCE", name = "Silence", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           target_mode = "required", targets = function(ctx) return ctx:minions() end,
           on_play = function(ctx, self, target) ctx:silence(target) end },
+        { id = "TEST_OG_CHARGER", name = "Charger", text = "", set = "TEST", type = "minion", cost = 0,
+          attack = 1, health = 1, collectible = true, keywords = { "charge" } },
+        { id = "TEST_OG_LOCATION", name = "Location", text = "", set = "TEST", type = "location", cost = 0,
+          health = 3, collectible = true, on_location_use = function() end },
         { id = "TEST_OG_HURT_FRIENDS", name = "Hurt Friends", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local targets = { ctx:player(ctx:controller(self)).hero }
@@ -378,16 +384,16 @@ fn chogall_returns_the_original_discarded_entity_and_it_costs_health() {
     let (_dir, runtime) = fixture_runtime(&[("test_og_effects.lua", TEST_EFFECTS)]);
     let mut game = game_with_runtime(
         runtime,
-        mixed(&["TEST_OG_DISCARD", "CS2_120", "OG_121"]),
+        mixed(&["TEST_OG_DISCARD", "CS2_029", "OG_121"]),
         repeated("CS2_120"),
         59,
         [DEFAULT_HERO_POWER, DEFAULT_HERO_POWER],
     );
-    for card_id in ["TEST_OG_DISCARD", "CS2_120", "OG_121"] {
+    for card_id in ["TEST_OG_DISCARD", "CS2_029", "OG_121"] {
         wait_for_hand(&mut game, PlayerId::ONE, card_id);
     }
     advance_to_mana(&mut game, PlayerId::ONE, 1);
-    let discarded = hand_card(&game, PlayerId::ONE, "CS2_120");
+    let discarded = hand_card(&game, PlayerId::ONE, "CS2_029");
     play(&mut game, PlayerId::ONE, "TEST_OG_DISCARD", Some(discarded));
     assert_eq!(
         game.state().entity(discarded).unwrap().zone,
@@ -406,13 +412,95 @@ fn chogall_returns_the_original_discarded_entity_and_it_costs_health() {
     let mana = game.state().player(PlayerId::ONE).mana;
     let hero = game.state().player(PlayerId::ONE).hero;
     let health = game.state().entity(hero).unwrap().health();
+    assert!(
+        mana < game.state().entity(discarded).unwrap().cost,
+        "the regression requires Health, not Mana, to make the card affordable"
+    );
+    assert!(game.legal_actions().unwrap().iter().any(|action| matches!(
+        action,
+        PlayerCommand::PlayCard { card, target: Some(_) } if *card == discarded
+    )));
     game.dispatch(PlayerCommand::PlayCard {
         card: discarded,
-        target: None,
+        target: Some(game.state().player(PlayerId::TWO).hero),
     })
     .unwrap();
     assert_eq!(game.state().player(PlayerId::ONE).mana, mana);
-    assert_eq!(game.state().entity(hero).unwrap().health(), health - 2);
+    assert_eq!(game.state().entity(hero).unwrap().health(), health - 4);
+}
+
+#[test]
+fn infest_attached_deathrattle_can_resume_its_random_beast_choice() {
+    let (_dir, runtime) = fixture_runtime(&[("test_og_effects.lua", TEST_EFFECTS)]);
+    let mut game = game_with_runtime(
+        runtime,
+        mixed(&["OG_045", "CS2_120", "TEST_OG_KILL"]),
+        repeated("CS2_120"),
+        60,
+        [DEFAULT_HERO_POWER, DEFAULT_HERO_POWER],
+    );
+    for card_id in ["OG_045", "CS2_120", "TEST_OG_KILL"] {
+        wait_for_hand(&mut game, PlayerId::ONE, card_id);
+    }
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    let minion = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    play(&mut game, PlayerId::ONE, "OG_045", None);
+    assert_eq!(
+        game.state()
+            .entity(minion)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle"),
+        &["OG_045".to_owned()]
+    );
+
+    let highest_entity_before_deathrattle = game.state().entities.keys().next_back().unwrap().0;
+    play(&mut game, PlayerId::ONE, "TEST_OG_KILL", Some(minion));
+    let generated = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .copied()
+        .find(|entity| entity.0 > highest_entity_before_deathrattle)
+        .expect("Infest's attached Deathrattle should add a Beast");
+    let generated = game.state().entity(generated).unwrap();
+    let definition = game.runtime().definition(&generated.card_id).unwrap();
+    assert!(
+        definition
+            .tags
+            .iter()
+            .any(|tag| tag == "beast" || tag == "all")
+    );
+}
+
+#[test]
+fn locations_are_never_enumerated_as_attack_defenders() {
+    let (_dir, runtime) = fixture_runtime(&[("test_og_effects.lua", TEST_EFFECTS)]);
+    let mut game = game_with_runtime(
+        runtime,
+        repeated("TEST_OG_CHARGER"),
+        repeated("TEST_OG_LOCATION"),
+        61,
+        [DEFAULT_HERO_POWER, DEFAULT_HERO_POWER],
+    );
+    end_turn(&mut game);
+    let location = play(&mut game, PlayerId::TWO, "TEST_OG_LOCATION", None);
+    end_turn(&mut game);
+    let attacker = play(&mut game, PlayerId::ONE, "TEST_OG_CHARGER", None);
+    let attacks = game
+        .legal_actions()
+        .unwrap()
+        .into_iter()
+        .filter_map(|action| match action {
+            PlayerCommand::Attack {
+                attacker: candidate,
+                defender,
+            } if candidate == attacker => Some(defender),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(attacks, vec![game.state().player(PlayerId::TWO).hero]);
+    assert!(!attacks.contains(&location));
 }
 
 #[test]
@@ -629,6 +717,73 @@ fn yogg_finishes_its_frozen_batch_after_the_first_spell_removes_it() {
         .filter(|event| matches!(event, GameEvent::SpellCast { generated_by: Some(source), .. } if *source == yogg))
         .count();
     assert_eq!(game.state().entity(yogg).unwrap().zone, Zone::Graveyard);
+    assert_eq!(generated, 2);
+}
+
+#[test]
+fn yogg_continuation_keeps_its_lua_owner_after_yogg_is_transformed() {
+    let suffix = TEMP_RUNTIME_COUNTER.fetch_add(1, Ordering::Relaxed);
+    let root = std::env::temp_dir().join(format!(
+        "hearth-rs-og-yogg-transform-{}-{suffix}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&root).unwrap();
+    std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
+    std::os::unix::fs::symlink(
+        data_path().join("sets/core/the_coin.lua"),
+        root.join("the_coin.lua"),
+    )
+    .unwrap();
+    for source in [
+        data_path().join("sets/og/yogg_saron_hopes_end.lua"),
+        data_path().join("sets/gangs/kun_the_forgotten_king.lua"),
+    ] {
+        std::os::unix::fs::symlink(&source, root.join(source.file_name().unwrap())).unwrap();
+    }
+    std::fs::write(
+        root.join("fixture.lua"),
+        r#"
+local card = {
+    api_version = 1, id = "TEST_OG_TRANSFORM", name = "Transform", text = "",
+    set = "TEST", type = "spell", cost = 0,
+    on_play = function(ctx, self)
+        local minions = ctx:minions()
+        if #minions > 0 then ctx:random_entity(minions, "transform_chosen") end
+    end,
+}
+function card.transform_chosen(ctx, self, target) ctx:transform(target, "CFM_308") end
+card.tokens = {{ api_version = 1, id = "TEST_OG_HP", name = "Test Hero Power", text = "",
+    set = "TEST", type = "hero_power", cost = 2, collectible = false }}
+return card
+"#,
+    )
+    .unwrap();
+    let runtime = LuaCardRuntime::load_dir(Path::new(&root)).unwrap();
+    let _dir = TempRuntimeDir(root);
+    let mut game = game_with_runtime(
+        runtime,
+        mixed(&["TEST_OG_TRANSFORM", "OG_134"]),
+        repeated("TEST_OG_TRANSFORM"),
+        72,
+        ["TEST_OG_HP", "TEST_OG_HP"],
+    );
+    for _ in 0..2 {
+        wait_for_hand(&mut game, PlayerId::ONE, "TEST_OG_TRANSFORM");
+        play(&mut game, PlayerId::ONE, "TEST_OG_TRANSFORM", None);
+        end_turn(&mut game);
+        end_turn(&mut game);
+    }
+    wait_for_hand(&mut game, PlayerId::ONE, "OG_134");
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    let log_start = game.state().log.len();
+    let yogg = play(&mut game, PlayerId::ONE, "OG_134", None);
+
+    assert_eq!(game.state().entity(yogg).unwrap().card_id, "CFM_308");
+    let generated = game.state().log[log_start..]
+        .iter()
+        .filter(|event| matches!(event, GameEvent::SpellCast { generated_by: Some(source), .. } if *source == yogg))
+        .count();
     assert_eq!(generated, 2);
 }
 

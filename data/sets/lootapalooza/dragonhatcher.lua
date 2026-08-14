@@ -16,7 +16,6 @@ local card = {
     cost = 9,
     attack = 2,
     health = 4,
-    keywords = { "recruit" },
     triggers = {
         {
             event = "turn_ended",

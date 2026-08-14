@@ -541,6 +541,23 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "enemy_minions",
+        lua.create_function(move |_, (_ctx, entity): (Table, u64)| {
+            let controller = snapshot
+                .entity(EntityId(entity))
+                .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {entity}")))?
+                .controller;
+            Ok(snapshot
+                .player(controller.opponent())
+                .board
+                .iter()
+                .filter(|entity| snapshot.entities[entity].kind == CardKind::Minion)
+                .map(|entity| entity.0)
+                .collect::<Vec<_>>())
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "friendly_minions",
         lua.create_function(move |_, (_ctx, entity): (Table, u64)| {
             let controller = snapshot
@@ -2007,6 +2024,7 @@ pub(super) fn build_context(
                 source,
                 hook,
                 payload: None,
+                continuation_owner: None,
             });
             Ok(())
         })?,
@@ -2043,6 +2061,7 @@ pub(super) fn build_context(
                 source,
                 hook,
                 payload: Some(ChoiceValue::Entity(EntityId(entity))),
+                continuation_owner: None,
             });
             Ok(())
         })?,
@@ -2055,6 +2074,7 @@ pub(super) fn build_context(
                 source,
                 hook,
                 payload: Some(ChoiceValue::Card(card)),
+                continuation_owner: None,
             });
             Ok(())
         })?,
@@ -2067,6 +2087,7 @@ pub(super) fn build_context(
                 source,
                 hook,
                 payload: Some(ChoiceValue::Number(number)),
+                continuation_owner: None,
             });
             Ok(())
         })?,
@@ -2270,6 +2291,7 @@ pub(super) fn build_context(
                 source,
                 hook,
                 payload: Some(lua_to_choice_value(value)?),
+                continuation_owner: None,
             });
             Ok(())
         })?,
@@ -2305,6 +2327,7 @@ pub(super) fn build_context(
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2337,6 +2360,7 @@ pub(super) fn build_context(
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2368,6 +2392,7 @@ pub(super) fn build_context(
                     prompt,
                     options,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2396,6 +2421,7 @@ pub(super) fn build_context(
                     candidates,
                     count,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2425,6 +2451,7 @@ pub(super) fn build_context(
                     candidates,
                     count,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2443,6 +2470,7 @@ pub(super) fn build_context(
                     source,
                     options,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },
@@ -2460,6 +2488,7 @@ pub(super) fn build_context(
                     source,
                     options,
                     resume_hook,
+                    continuation_owner: None,
                 });
                 Ok(())
             },

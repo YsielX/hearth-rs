@@ -4,7 +4,7 @@ local function reveal(ctx, self) ctx:random_value(outcomes, "reveal_maul") end
 
 local card = {
     api_version = 1, id = "LOOT_286", name = "Unidentified Maul",
-    text = "Gains a bonus effect in your hand.", set = "LOOTAPALOOZA", type = "weapon",
+    text = "Gains a bonus effect in your hand.", set = "LOOTAPALOOZA", type = "weapon",
     class = "paladin", rarity = "rare", cost = 3, attack = 2, health = 2,
     triggers = {
         { event = "game_started", timing = "after", active_zones = { "hand" }, effect = reveal },

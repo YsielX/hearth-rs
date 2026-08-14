@@ -18,6 +18,9 @@ def implemented_ids() -> list[str]:
     for card_root in CARD_ROOTS:
         for path in card_root.rglob("*.lua"):
             ids.update(pattern.findall(path.read_text()))
+    dynamic_path = ROOT / "data" / "hearthstonejson" / "dynamic_ids.json"
+    if dynamic_path.exists():
+        ids.update(json.loads(dynamic_path.read_text()))
     return sorted(ids)
 
 

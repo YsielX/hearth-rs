@@ -906,6 +906,8 @@ pub struct PendingInput {
     pub prompt: String,
     pub options: Vec<ChoiceOption>,
     pub resume_hook: String,
+    #[serde(default)]
+    pub continuation_owner: Option<CardId>,
     pub remaining_resolution: Vec<ResolutionItem>,
 }
 
@@ -1397,6 +1399,8 @@ pub enum EffectSpec {
         source: EntityId,
         hook: String,
         payload: Option<ChoiceValue>,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
     RequestChoice {
         player: PlayerId,
@@ -1404,6 +1408,8 @@ pub enum EffectSpec {
         prompt: String,
         options: Vec<ChoiceOption>,
         resume_hook: String,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
     DiscoverCards {
         player: PlayerId,
@@ -1412,6 +1418,8 @@ pub enum EffectSpec {
         candidates: Vec<CardId>,
         count: usize,
         resume_hook: String,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
     DiscoverEntities {
         player: PlayerId,
@@ -1420,11 +1428,15 @@ pub enum EffectSpec {
         candidates: Vec<EntityId>,
         count: usize,
         resume_hook: String,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
     RandomChoice {
         source: EntityId,
         options: Vec<ChoiceValue>,
         resume_hook: String,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
 }
 

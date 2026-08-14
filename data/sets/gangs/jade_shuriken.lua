@@ -3,7 +3,7 @@ local card = {
     text = "Deal $3 damage.\n<b>Combo:</b> Summon a{1} {0} <b>Jade Golem</b>.",
     set = "GANGS", type = "spell", class = "rogue", rarity = "common",
     cost = 2, target_mode = "required", keywords = { "combo" },
-    targets = function(ctx, self) return ctx:all_characters() end,
+    targets = function(ctx, self) return ctx:characters() end,
 }
 function card.on_play(ctx, self, target)
     if not ctx:combo_active(self) then ctx:damage(target, 3) end

@@ -161,6 +161,7 @@ impl<R: CardRuntime> Game<R> {
                 .runtime
                 .definition(&entity.card_id)
                 .ok_or_else(|| GameError::UnknownCard(entity.card_id.clone()))?;
+            let (_, available_for_card) = self.card_cost_resource(card, player)?;
             if player_state.mana >= 1
                 && !player_state.deck.is_empty()
                 && self.keyword_bool(card, "can_trade", false, None)?
@@ -169,6 +170,13 @@ impl<R: CardRuntime> Game<R> {
             }
             let board_full = matches!(definition.kind, CardKind::Minion | CardKind::Location)
                 && player_state.board.len() >= MAX_BOARD_SIZE;
+            let enters_secret =
+                definition.secret || self.keyword_bool(card, "enters_secret_zone", false, None)?;
+            let duplicate_persistent = enters_secret
+                && player_state
+                    .secrets
+                    .iter()
+                    .any(|secret| self.state.entities[secret].card_id == entity.card_id);
             let magnetic_positions = if definition.kind == CardKind::Minion {
                 (0..player_state.board.len())
                     .filter(|position| {
@@ -182,11 +190,10 @@ impl<R: CardRuntime> Game<R> {
                 Vec::new()
             };
             if !self.keyword_bool(card, "can_play", true, None)?
-                || entity.cost > player_state.mana
+                || entity.cost > available_for_card
                 || (board_full && magnetic_positions.is_empty())
-                || ((definition.secret
-                    || self.keyword_bool(card, "enters_secret_zone", false, None)?)
-                    && player_state.secrets.len() >= MAX_SECRET_SIZE)
+                || (enters_secret && player_state.secrets.len() >= MAX_SECRET_SIZE)
+                || duplicate_persistent
             {
                 continue;
             }
@@ -234,7 +241,14 @@ impl<R: CardRuntime> Game<R> {
         }
 
         let opponent = player.opponent();
-        let mut all_defenders = self.state.player(opponent).board.clone();
+        let mut all_defenders = self
+            .state
+            .player(opponent)
+            .board
+            .iter()
+            .copied()
+            .filter(|entity| self.state.entities[entity].kind == CardKind::Minion)
+            .collect::<Vec<_>>();
         all_defenders.push(self.state.player(opponent).hero);
         let mut attackers = player_state
             .board
@@ -891,7 +905,13 @@ impl<R: CardRuntime> Game<R> {
         })?;
         effects.extend(
             self.runtime
-                .on_resume(&self.state, pending.source, &pending.resume_hook, &choice)
+                .on_resume(
+                    &self.state,
+                    pending.source,
+                    pending.continuation_owner.as_deref(),
+                    &pending.resume_hook,
+                    &choice,
+                )
                 .map_err(GameError::Script)?,
         );
         let mut resolution = effects
@@ -909,6 +929,26 @@ impl<R: CardRuntime> Game<R> {
         player.temporary_mana -= temporary;
         player.mana -= amount;
         temporary
+    }
+
+    /// Returns whether a card pays with Health and the amount of that resource
+    /// that can legally be spent. Health payments must leave the hero alive.
+    fn card_cost_resource(
+        &self,
+        card: EntityId,
+        player: PlayerId,
+    ) -> Result<(bool, u8), GameError> {
+        let costs_health = self.keyword_bool(card, "costs_health_instead_of_mana", false, None)?;
+        let available = if costs_health {
+            self.state
+                .hero(player)
+                .health()
+                .saturating_sub(1)
+                .clamp(0, i32::from(u8::MAX)) as u8
+        } else {
+            self.state.player(player).mana
+        };
+        Ok((costs_health, available))
     }
 
     pub(super) fn play_card(
@@ -935,14 +975,8 @@ impl<R: CardRuntime> Game<R> {
             .definition(&entity.card_id)
             .cloned()
             .ok_or_else(|| GameError::UnknownCard(entity.card_id.clone()))?;
-        let costs_health = self.keyword_bool(card, "costs_health_instead_of_mana", false, None)?;
+        let (costs_health, available) = self.card_cost_resource(card, player)?;
         if costs_health {
-            let available = self
-                .state
-                .hero(player)
-                .health()
-                .saturating_sub(1)
-                .clamp(0, i32::from(u8::MAX)) as u8;
             if available < entity.cost {
                 return Err(GameError::NotEnoughHealth {
                     needed: entity.cost,
@@ -950,11 +984,10 @@ impl<R: CardRuntime> Game<R> {
                 });
             }
         } else {
-            let mana = self.state.player(player).mana;
-            if mana < entity.cost {
+            if available < entity.cost {
                 return Err(GameError::NotEnoughMana {
                     needed: entity.cost,
-                    available: mana,
+                    available,
                 });
             }
         }
@@ -974,6 +1007,16 @@ impl<R: CardRuntime> Game<R> {
             definition.secret || self.keyword_bool(card, "enters_secret_zone", false, None)?;
         if enters_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
             return Err(GameError::SecretZoneFull);
+        }
+        if enters_secret
+            && self
+                .state
+                .player(player)
+                .secrets
+                .iter()
+                .any(|secret| self.state.entities[secret].card_id == entity.card_id)
+        {
+            return Err(GameError::CardCannotBePlayed(card));
         }
 
         if definition.kind == CardKind::Location {
@@ -1095,7 +1138,9 @@ impl<R: CardRuntime> Game<R> {
         let defender_priority = self.keyword_i32(defender, "attack_priority", 0, Some(attacker))?;
         let mut max_priority = defender_priority;
         for candidate in self.state.player(player.opponent()).board.iter().copied() {
-            if self.keyword_bool(candidate, "can_be_attacked", true, Some(attacker))? {
+            if self.state.entities[&candidate].kind == CardKind::Minion
+                && self.keyword_bool(candidate, "can_be_attacked", true, Some(attacker))?
+            {
                 max_priority = max_priority.max(self.keyword_i32(
                     candidate,
                     "attack_priority",

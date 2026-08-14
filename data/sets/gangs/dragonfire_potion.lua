@@ -10,7 +10,7 @@ return {
     set = "GANGS", type = "spell", class = "priest", rarity = "epic", spell_school = "fire", cost = 5,
     on_play = function(ctx, self)
         local targets = {}
-        for _, entity in ipairs(ctx:all_characters()) do
+        for _, entity in ipairs(ctx:characters()) do
             if ctx:entity(entity).type == "minion" and not dragon(ctx, entity) then targets[#targets + 1] = entity end
         end
         ctx:damage_all(targets, 5)
