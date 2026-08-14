@@ -31,7 +31,7 @@ LuaCardRuntime
   └─ ctx read APIs + EffectSpec output buffer + locale selection
         │
         ▼
-data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua + data/locales/*.json
+data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua + data/libraries/*.lua + data/locales/*.json
 ```
 
 ## Lua module types
@@ -39,6 +39,8 @@ data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua + data/loca
 A card module returns a table whose default `module_type` is `card`. It contains immutable official metadata and card-specific hooks.
 
 A Hero Power module declares `module_type = "hero_power"`. The loader supplies the non-collectible `hero_power` type, while the module owns its cost, targets, `on_play`, triggers, tokens, and keyword references. Hero cards remain card modules with `type = "hero"`, `armor`, and a validated `hero_power` ID.
+
+A shared Lua library declares `module_type = "library"`, `api_version = 1`, and an `id`. It is exposed as `cardlib[id]`, participates in the pack hash, and is not registered as a card. Libraries compose generic context operations; they do not add card-specific Rust effects.
 
 A keyword module declares `module_type = "keyword"`:
 

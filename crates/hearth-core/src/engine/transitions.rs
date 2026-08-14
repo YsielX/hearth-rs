@@ -31,16 +31,7 @@ impl<R: CardRuntime> Game<R> {
             target: defender,
             amount: attacker_entity.attack.max(0),
         })?];
-        let attacker_immune = self.keyword_bool(
-            attacker,
-            "immune_while_attacking",
-            false,
-            Some(defender),
-        )?;
-        if defender_entity.kind == CardKind::Minion
-            && defender_entity.attack > 0
-            && !attacker_immune
-        {
+        if defender_entity.kind == CardKind::Minion && defender_entity.attack > 0 {
             damage.push(self.begin_event(GameEvent::Damaged {
                 source: defender,
                 target: attacker,
@@ -549,9 +540,10 @@ impl<R: CardRuntime> Game<R> {
         entity_state.temporary_control = None;
         if !preserve_attached_scripts {
             entity_state.script_data.clear();
+            entity_state.choice_policy = ChoicePolicy::Player;
             entity_state.attached_cards.clear();
         }
-        entity_state.attached_deathrattles.clear();
+        entity_state.hook_attachments.clear();
         Self::recompute_entity(entity_state);
         self.refresh_auras()?;
         if current_zone == Zone::Board {
@@ -647,8 +639,9 @@ impl<R: CardRuntime> Game<R> {
             entity_state.silenced = false;
             entity_state.temporary_control = None;
             entity_state.script_data.clear();
+            entity_state.choice_policy = ChoicePolicy::Player;
             entity_state.attached_cards.clear();
-            entity_state.attached_deathrattles.clear();
+            entity_state.hook_attachments.clear();
             Self::recompute_entity(entity_state);
             touched_board |= zone == Zone::Board;
             after.push((
@@ -794,8 +787,9 @@ impl<R: CardRuntime> Game<R> {
         entity.disabled_keywords.clear();
         entity.cards_played_before = 0;
         entity.script_data.clear();
+        entity.choice_policy = ChoicePolicy::Player;
         entity.attached_cards.clear();
-        entity.attached_deathrattles.clear();
+        entity.hook_attachments.clear();
         Self::recompute_entity(entity);
     }
 

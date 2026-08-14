@@ -19,6 +19,6 @@ function card.on_battlecry(ctx, self)
     if #pool > 0 then ctx:discover_cards(ctx:controller(self), "Choose a Secret to cast", pool, 3, "cast_hydrologist_secret") end
 end
 function card.cast_hydrologist_secret(ctx, self, id)
-    ctx:cast_spell_if_valid(ctx:controller(self), id, nil)
+    ctx:cast_spell(ctx:controller(self), id, { skip_if_invalid = true })
 end
 return card

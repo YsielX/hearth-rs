@@ -277,16 +277,15 @@ ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
 ctx:give_card_at(player, card_id, position)
+ctx:create_card(player, card_id, spec_or_nil)
 ctx:give_copy(player, entity)
 ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:give_base_copy(player, entity)
 ctx:give_base_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:shuffle_card_into_deck(player, card_id)
 ctx:discard(player, entity)
-ctx:cast_spell(player, card_id, target_or_nil)
-ctx:cast_spell_random_target(player, card_id)
-ctx:cast_random_spells(player, candidate_card_ids, count)
-ctx:cast_drawn(card)
+ctx:cast_spell(player, card_id, options_or_nil)
+ctx:cast_existing_spell(card, options_or_nil)
 
 ctx:summon(player, card_id)
 ctx:summon_at(player, card_id, position)
@@ -305,11 +304,10 @@ ctx:recruit_at(player, deck_entity, position)
 
 ctx:equip_weapon(player, card_id)
 ctx:lose_weapon_durability(weapon, amount)
-ctx:cast_spell_if_valid(player, card_id, target_or_nil)
 ctx:replace_hero(player, hero_card_id)
 ctx:replace_hero_power(player, card_id)
 ctx:refresh_hero_power(player)
-ctx:give_merged_minion(player, template_card_id, first_card_id, second_card_id)
+ctx:exchange_zone_contents(first_player, second_player, "deck" | "hand" | "graveyard")
 ctx:move(entity, destination)
 ctx:move_to_hand(player, entity)
 ctx:shuffle_entity_into_deck(player, entity)
@@ -333,7 +331,7 @@ ctx:win_game(player)
 ctx:set_health(entity, amount)
 ctx:heal_all(entities, amount)
 ctx:trigger_hook(entity, hook)
-ctx:attach_deathrattle(entity, card_id)
+ctx:attach_hook(entity, hook, card_id)
 ctx:attach_script(entity, card_id)
 ctx:board_position(entity)
 
@@ -375,7 +373,11 @@ The current hook entity is automatically recorded as the effect source.
 
 `move` destinations are `hand`, `secret`, `deck_top`, `deck_bottom`, `deck_random`, `graveyard`, and `removed`. Moving to `secret` validates that the entity is a Secret and that the destination zone has room. `shuffle_entity_into_deck` transfers the original entity to the specified player's deck with deterministic Rust RNG, including ownership/controller transfer and hidden-zone reset. Hidden-zone resets clear board-only state. A full hand sends generated/returned cards to the appropriate burn or graveyard path.
 
-`transform` may replace card kinds while an entity is in the hidden Hand or Deck zones and preserves its identity and zone position. `transform_all` applies one definition atomically; `transform_batch` applies per-entity definitions in one atomic group. `transform_into_copy` copies an entity's complete state before optional silenciable final Attack/Health values. `transform_preserving_scripts` additionally retains `attached_cards` and script data for effects whose behavior must survive their own transformation; attach a reusable module first with `attach_script`. `attach_deathrattle` adds one ordered, stackable `on_deathrattle` script to a board minion; Silence removes existing attachments, while attachments granted after Silence remain active. `cast_spell_if_valid` behaves like `cast_spell`, but safely skips the generated cast when its declared target is not legal. `cast_spell_random_target` chooses from the generated spell's authoritative legal-target set. `cast_random_spells` samples with replacement and fully resolves each spell before sampling the next, so the batch survives transformation or removal of its source.
+`transform` may replace card kinds while an entity is in the hidden Hand or Deck zones and preserves its identity and zone position. `transform_all` applies one definition atomically; `transform_batch` applies per-entity definitions in one atomic group. `transform_into_copy` copies an entity's complete state before optional silenciable final Attack/Health values. `transform_preserving_scripts` additionally retains `attached_cards` and script data for effects whose behavior must survive their own transformation; attach a reusable module first with `attach_script`. `attach_hook` adds an ordered, stackable card script to any named Lua hook; Silence removes existing hook attachments from minions.
+
+`cast_spell` creates a spell from its definition; `cast_existing_spell` casts an existing entity from a hidden or terminal zone. Both accept `{ target = entity, skip_if_invalid = true, random_target = true, choice_policy = "random" }`. Target randomization and automatic choices are explicit policies instead of hidden script-data flags. Repeated random casting belongs in Lua; `cardlib.random_spell` composes authoritative `random_value` and `cast_spell` operations.
+
+`create_card` accepts `destination`, optional hand `position`, `attack`, `health`, `cost`, `spell_damage`, `keywords`, and `attached_scripts`. Composition formulas belong in Lua; `cardlib.fusion.create_minion` is the reusable fusion implementation. Files with `module_type = "library"` are exposed under `cardlib[id]`, validated and included in the deterministic pack hash, but are not registered as cards.
 
 `damage_ignoring_spell_damage` follows the normal damage/event pipeline but does not add the source controller's Spell Damage. `spend_mana` atomically spends up to the player's current Mana (temporary Mana first) and publishes `mana_spent` for the actual positive amount. `increment_player_data` atomically adds a signed delta to a player script-data key, publishes `player_script_data_changed` with `old/new/delta`, and avoids lost updates from one snapshot. Death records store whether the minion's base definition has Deathrattle: Silence does not clear this flag, and attached Deathrattles do not set it.
 
@@ -383,7 +385,7 @@ The current hook entity is automatically recorded as the effect source.
 
 `draw_entity` removes the specified original entity from that player's deck and uses the normal cancellable CardDrawn/CardBurned pipeline. `summon_existing` moves an original Graveyard or Removed minion through the full cancellable summon pipeline and restores it if the summon is cancelled or the board fills; `summon_existing_at` additionally preserves a remembered board position. `move_to_hand` transfers an original entity to another player's hand; `shuffle_copy_into_deck` preserves the copied entity state. `summon_with_stats` applies silenciable final-set stats; `summon_with_base_stats` replaces printed base stats, so Silence does not revert scaling tokens such as Jade Golems. `summon_fresh_copy_with_stats` creates an unenchanted template copy with final Attack/Health. `lose_weapon_durability` reduces an equipped weapon and uses the normal cancellable `weapon_destroyed` lifecycle at zero. `add_attack_collateral` adds simultaneous combat damage to a pending attack.
 
-`damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage. `modify_all` likewise applies one stat modifier to a frozen group and supports `reset_damage = true` for simultaneous final Health setters. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
+`damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage. `modify_all` applies one stat specification to a frozen group; `modify_batch` accepts per-entity specifications, including a `modifiers` array when each stat needs a different operation. Both support `reset_damage = true`. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
 
 `refresh_mana_crystals` fills only the player's existing unlocked permanent crystals. It preserves temporary Mana and both current and pending Overload. `change_controller_until_end_of_turn` records a reversible board-minion control change: Silence immediately returns the minion, transformation makes the current controller permanent, and end of turn returns it or destroys it when the original board is full.
 

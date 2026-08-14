@@ -16,7 +16,7 @@ local function expensive_spells(ctx)
     return result
 end
 
-return {
+local card = {
     api_version = 1,
     id = "OG_087",
     name = "Servant of Yogg-Saron",
@@ -30,6 +30,18 @@ return {
     health = 4,
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        ctx:cast_random_spells(ctx:controller(self), expensive_spells(ctx), 1)
+        cardlib.random_spell.choose(
+            ctx,
+            ctx:controller(self),
+            expensive_spells(ctx),
+            1,
+            "servant_spell_chosen"
+        )
     end,
 }
+
+function card.servant_spell_chosen(ctx, self, choice)
+    cardlib.random_spell.cast(ctx, choice)
+end
+
+return card

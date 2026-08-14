@@ -14,7 +14,7 @@ local candle = {
             condition = function(_, self, event) return event.entity == self end,
             effect = function(ctx, self)
                 local darkness = ctx:get_data(self, "darkness_source")
-                ctx:cast_drawn(self)
+                ctx:cast_existing_spell(self, { skip_if_invalid = true })
                 if darkness == 0 or ctx:entity(darkness).card_id ~= "LOOT_526d" then return end
                 local count = ctx:get_data(darkness, "candles_drawn") + 1
                 ctx:set_data(darkness, "candles_drawn", count)

@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::collections::{BTreeMap, VecDeque};
 
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
@@ -6,21 +6,26 @@ use rand_chacha::ChaCha8Rng;
 use thiserror::Error;
 
 use crate::{
-    CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoiceValue, EffectDuration, EffectSpec,
-    Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId, EventTiming,
-    GameEvent, GameOutcome, GameSnapshot, GameState, MinionDeathRecord, ModifierOperation,
-    PendingEvent, PlayerCommand, PlayerId, PlayerState, Replay, ReservedSummonOrigin,
-    ResolutionItem, ScriptEvent, SpellCastRecord, Stat, StatModifier, Zone, ZonePlacement,
+    CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy, ChoiceValue, EffectDuration,
+    EffectSpec, Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId,
+    EventTiming, GameEvent, GameOutcome, GameSnapshot, GameState, MinionDeathRecord,
+    ModifierOperation, PendingEvent, PlayerCommand, PlayerId, PlayerState, Replay,
+    ReservedSummonOrigin, ResolutionItem, ScriptEvent, SpellCastRecord, Stat, StatModifier, Zone,
+    ZonePlacement,
 };
 
+mod casting;
 mod commands;
+mod creation;
 mod effect_queue;
 mod effects;
 mod entities;
 mod events;
+mod modification;
 mod resolution;
 mod setup;
 mod transitions;
+mod zones;
 
 const MAX_HAND_SIZE: usize = 10;
 const MAX_BOARD_SIZE: usize = 7;

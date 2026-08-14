@@ -19,7 +19,10 @@ end
 
 function card.lynessa_cast_spell(ctx, self, choice)
     ctx:set_data(self, "lynessa_used:" .. choice.index, 1)
-    ctx:cast_spell_if_valid(ctx:controller(self), choice.card_id, self)
+    ctx:cast_spell(ctx:controller(self), choice.card_id, {
+        target = self,
+        skip_if_invalid = true,
+    })
     ctx:continue_with("lynessa_cast_next")
 end
 

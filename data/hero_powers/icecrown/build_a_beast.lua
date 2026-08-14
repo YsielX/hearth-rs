@@ -60,7 +60,12 @@ function power.first_beast(ctx, self, first)
 end
 
 function power.second_beast(ctx, self, choice)
-    ctx:give_merged_minion(ctx:controller(self), "ICC_828t", choice.first, choice.second)
+    cardlib.fusion.create_minion(
+        ctx,
+        ctx:controller(self),
+        "ICC_828t",
+        { choice.first, choice.second }
+    )
 end
 
 power.tokens = {

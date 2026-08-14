@@ -23,7 +23,7 @@ end
 function card.spreading_plague_continue(ctx, self)
     local player = ctx:controller(self)
     if #ctx:board(player) < 7 and minion_count(ctx, ctx:opponent(player)) > minion_count(ctx, player) then
-        ctx:cast_spell(player, "ICC_054", nil)
+        ctx:cast_spell(player, "ICC_054")
     end
 end
 

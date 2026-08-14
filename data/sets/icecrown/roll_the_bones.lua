@@ -22,7 +22,7 @@ end
 
 function card.roll_again_if_deathrattle(ctx, self, entity)
     if ctx:entity(entity).zone == "hand" and has_deathrattle(ctx, entity) then
-        ctx:cast_spell(ctx:controller(self), "ICC_201", nil)
+        ctx:cast_spell(ctx:controller(self), "ICC_201")
     end
 end
 

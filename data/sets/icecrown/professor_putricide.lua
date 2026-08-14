@@ -34,7 +34,7 @@ card.triggers = {{
 }}
 
 function card.putricide_secret_chosen(ctx, self, card_id)
-    ctx:cast_spell_if_valid(ctx:controller(self), card_id, nil)
+    ctx:cast_spell(ctx:controller(self), card_id, { skip_if_invalid = true })
 end
 
 return card

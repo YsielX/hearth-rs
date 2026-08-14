@@ -212,11 +212,14 @@ pub(super) fn entity_to_table(lua: &Lua, entity: &hearth_core::Entity) -> mlua::
         attached_cards.set(index + 1, card_id.as_str())?;
     }
     table.set("attached_cards", attached_cards)?;
-    let attached_deathrattles = lua.create_table()?;
-    for (index, card_id) in entity.attached_deathrattles.iter().enumerate() {
-        attached_deathrattles.set(index + 1, card_id.as_str())?;
+    let hook_attachments = lua.create_table()?;
+    for (hook, card_ids) in &entity.hook_attachments {
+        hook_attachments.set(
+            hook.as_str(),
+            lua.create_sequence_from(card_ids.iter().map(String::as_str))?,
+        )?;
     }
-    table.set("attached_deathrattles", attached_deathrattles)?;
+    table.set("hook_attachments", hook_attachments)?;
     table.set("zone", zone_name(entity.zone))?;
     table.set(
         "type",
@@ -764,6 +767,64 @@ pub(super) fn parse_duration(value: &str) -> mlua::Result<EffectDuration> {
         "end_of_turn" => Ok(EffectDuration::UntilEndOfTurn),
         _ => Err(mlua::Error::runtime(format!(
             "unknown modifier duration {value}"
+        ))),
+    }
+}
+
+pub(super) fn parse_stat_modifiers(spec: &Table) -> mlua::Result<Vec<StatModifier>> {
+    if let Some(entries) = spec.get::<Option<Table>>("modifiers")? {
+        return entries
+            .sequence_values::<Table>()
+            .map(|entry| {
+                let entry = entry?;
+                Ok(StatModifier {
+                    stat: parse_stat(&entry.get::<String>("stat")?)?,
+                    operation: parse_modifier_operation(
+                        entry
+                            .get::<Option<String>>("operation")?
+                            .as_deref()
+                            .unwrap_or("final_set"),
+                    )?,
+                    value: entry.get("value")?,
+                })
+            })
+            .collect();
+    }
+    let operation = parse_modifier_operation(
+        spec.get::<Option<String>>("operation")?
+            .as_deref()
+            .unwrap_or("final_set"),
+    )?;
+    let mut modifiers = Vec::new();
+    for stat in ["attack", "health", "cost", "spell_damage"] {
+        if let Some(value) = spec.get::<Option<i32>>(stat)? {
+            modifiers.push(StatModifier {
+                stat: parse_stat(stat)?,
+                operation,
+                value,
+            });
+        }
+    }
+    Ok(modifiers)
+}
+
+pub(super) fn parse_exchangeable_zone(value: &str) -> mlua::Result<Zone> {
+    match value {
+        "deck" => Ok(Zone::Deck),
+        "hand" => Ok(Zone::Hand),
+        "graveyard" => Ok(Zone::Graveyard),
+        _ => Err(mlua::Error::runtime(format!(
+            "zone contents cannot be exchanged: {value}"
+        ))),
+    }
+}
+
+pub(super) fn parse_choice_policy(value: Option<String>) -> mlua::Result<ChoicePolicy> {
+    match value.as_deref().unwrap_or("player") {
+        "player" => Ok(ChoicePolicy::Player),
+        "random" => Ok(ChoicePolicy::Random),
+        value => Err(mlua::Error::runtime(format!(
+            "unknown choice policy {value}"
         ))),
     }
 }

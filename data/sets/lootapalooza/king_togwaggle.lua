@@ -10,7 +10,7 @@ local ransom = {
 
 function ransom.on_play(ctx, self)
     local player = ctx:controller(self)
-    ctx:swap_decks(player, ctx:opponent(player))
+    ctx:exchange_zone_contents(player, ctx:opponent(player), "deck")
 end
 
 local card = {
@@ -31,7 +31,7 @@ local card = {
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     local opponent = ctx:opponent(player)
-    ctx:swap_decks(player, opponent)
+    ctx:exchange_zone_contents(player, opponent, "deck")
     ctx:give_card(opponent, "LOOT_541t")
 end
 

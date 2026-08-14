@@ -35,7 +35,7 @@ function card.adapted(ctx, self, adaptation)
     local entity = ctx:entity(target)
     if entity.zone ~= "board" or entity.controller ~= ctx:controller(self) then return end
     if adaptation == "UNG_999t2" then
-        ctx:attach_deathrattle(target, "UNG_999t2")
+        ctx:attach_hook(target, "on_deathrattle", "UNG_999t2")
         ctx:grant_keyword(target, "deathrattle")
     elseif adaptation == "UNG_999t3" then
         ctx:buff(target, 3, 0)

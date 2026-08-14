@@ -3,7 +3,7 @@ local card = { api_version = 1, id = "UNG_925", name = "Ornery Direhorn", text =
 function card.on_battlecry(ctx, self) ctx:discover_cards(ctx:controller(self), "Adapt", options, 3, "adapted") end
 function card.adapted(ctx, self, choice)
     if ctx:entity(self).zone ~= "board" then return end
-    if choice == "UNG_999t2" then ctx:attach_deathrattle(self, "UNG_999t2"); ctx:grant_keyword(self, "deathrattle")
+    if choice == "UNG_999t2" then ctx:attach_hook(self, "on_deathrattle", "UNG_999t2"); ctx:grant_keyword(self, "deathrattle")
     elseif choice == "UNG_999t3" then ctx:buff(self, 3, 0)
     elseif choice == "UNG_999t4" then ctx:buff(self, 0, 3)
     elseif choice == "UNG_999t5" then ctx:grant_keyword(self, "elusive")

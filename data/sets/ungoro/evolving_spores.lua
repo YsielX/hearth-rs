@@ -4,7 +4,7 @@ local function dormant(ctx, target)
     return false
 end
 local function apply(ctx, target, choice)
-    if choice == "UNG_999t2" then ctx:attach_deathrattle(target, "UNG_999t2"); ctx:grant_keyword(target, "deathrattle")
+    if choice == "UNG_999t2" then ctx:attach_hook(target, "on_deathrattle", "UNG_999t2"); ctx:grant_keyword(target, "deathrattle")
     elseif choice == "UNG_999t3" then ctx:buff(target, 3, 0) elseif choice == "UNG_999t4" then ctx:buff(target, 0, 3)
     elseif choice == "UNG_999t5" then ctx:grant_keyword(target, "elusive") elseif choice == "UNG_999t6" then ctx:grant_keyword(target, "taunt")
     elseif choice == "UNG_999t7" then ctx:grant_keyword(target, "windfury") elseif choice == "UNG_999t8" then ctx:grant_keyword(target, "divine_shield")

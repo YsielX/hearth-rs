@@ -20,7 +20,7 @@ end
 local life = elixir("LOOT_278t1", "Elixir of Life", "Give a minion +2/+2 and <b>Lifesteal</b>.", "holy", function(ctx,self,target) ctx:buff(target,2,2);ctx:grant_keyword(target,"lifesteal") end)
 local purity = elixir("LOOT_278t2", "Elixir of Purity", "Give a minion +2/+2 and <b>Divine Shield</b>.", "holy", function(ctx,self,target) ctx:buff(target,2,2);ctx:grant_keyword(target,"divine_shield") end)
 local shadows = elixir("LOOT_278t3", "Elixir of Shadows", "Give a minion +2/+2. Summon a 1/1 copy of it.", "shadow", function(ctx,self,target) ctx:buff(target,2,2);ctx:summon_copy_with_stats(ctx:controller(self),target,1,1) end)
-local hope = elixir("LOOT_278t4", "Elixir of Hope", "Give a minion +2/+2 and \"<b>Deathrattle:</b> Return this minion to your hand.\"", "holy", function(ctx,self,target) ctx:buff(target,2,2);ctx:attach_deathrattle(target,"LOOT_278t4");ctx:grant_keyword(target,"deathrattle") end)
+local hope = elixir("LOOT_278t4", "Elixir of Hope", "Give a minion +2/+2 and \"<b>Deathrattle:</b> Return this minion to your hand.\"", "holy", function(ctx,self,target) ctx:buff(target,2,2);ctx:attach_hook(target, "on_deathrattle","LOOT_278t4");ctx:grant_keyword(target,"deathrattle") end)
 function hope.on_deathrattle(ctx, self) ctx:move(self, "hand") end
 card.tokens = { life, purity, shadows, hope }
 return card

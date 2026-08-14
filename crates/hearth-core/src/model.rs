@@ -191,6 +191,16 @@ pub enum TargetMode {
     RequiredIfAvailable,
 }
 
+/// Controls how choices requested while resolving an effect are completed.
+/// This is authoritative resolution metadata, not card-owned script data.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum ChoicePolicy {
+    #[default]
+    Player,
+    Random,
+}
+
 impl TargetMode {
     pub fn requires_target(self, available_targets: usize) -> bool {
         match self {
@@ -417,18 +427,26 @@ pub struct Entity {
     #[serde(default)]
     pub entered_hand_turn: Option<u32>,
     pub script_data: BTreeMap<String, i64>,
+    /// Resolution policy inherited by choices emitted from this entity.
+    #[serde(default)]
+    pub choice_policy: ChoicePolicy,
     /// Card scripts merged into this minion by attachment mechanics such as
     /// Magnetic. Duplicates preserve attachment order.
     #[serde(default)]
     pub attached_cards: Vec<CardId>,
-    /// Card definitions whose `on_deathrattle` hook was attached by an
-    /// enchantment. Entries are ordered and may repeat so stacked granted
-    /// Deathrattles resolve independently.
+    /// Ordered, stackable card scripts attached to one specific Lua hook.
     #[serde(default)]
-    pub attached_deathrattles: Vec<CardId>,
+    pub hook_attachments: BTreeMap<String, Vec<CardId>>,
 }
 
 impl Entity {
+    pub fn scripts_for_hook(&self, hook: &str) -> &[CardId] {
+        self.hook_attachments
+            .get(hook)
+            .map(Vec::as_slice)
+            .unwrap_or_default()
+    }
+
     pub fn health(&self) -> i32 {
         self.max_health - self.damage
     }
@@ -892,6 +910,16 @@ pub struct PendingInput {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EntityStatModification {
+    pub target: EntityId,
+    pub modifiers: Vec<StatModifier>,
+    pub duration: EffectDuration,
+    pub silenciable: bool,
+    #[serde(default)]
+    pub reset_damage: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EffectSpec {
     Damage {
         source: EntityId,
@@ -990,16 +1018,28 @@ pub enum EffectSpec {
         player: PlayerId,
         card: EntityId,
     },
-    GiveCard {
+    /// Create a card from an immutable catalog definition with optional base
+    /// state overrides. Lua owns all composition formulas; Rust only validates
+    /// and atomically installs the resulting entity.
+    CreateCard {
         source: EntityId,
         player: PlayerId,
         card_id: CardId,
-    },
-    GiveCardAt {
-        source: EntityId,
-        player: PlayerId,
-        card_id: CardId,
-        position: usize,
+        destination: ZonePlacement,
+        #[serde(default)]
+        position: Option<usize>,
+        #[serde(default)]
+        base_attack: Option<i32>,
+        #[serde(default)]
+        base_health: Option<i32>,
+        #[serde(default)]
+        base_cost: Option<u8>,
+        #[serde(default)]
+        base_spell_damage: Option<i32>,
+        #[serde(default)]
+        keywords: Option<Vec<String>>,
+        #[serde(default)]
+        attached_scripts: Vec<CardId>,
     },
     GiveCopy {
         source: EntityId,
@@ -1013,11 +1053,6 @@ pub enum EffectSpec {
         health: Option<i32>,
         #[serde(default)]
         cost: Option<i32>,
-    },
-    ShuffleCardIntoDeck {
-        source: EntityId,
-        player: PlayerId,
-        card_id: CardId,
     },
     ShuffleCopyIntoDeck {
         source: EntityId,
@@ -1053,13 +1088,6 @@ pub enum EffectSpec {
         source: EntityId,
         player: PlayerId,
     },
-    GiveMergedMinion {
-        source: EntityId,
-        player: PlayerId,
-        template: CardId,
-        first: CardId,
-        second: CardId,
-    },
     EquipWeapon {
         source: EntityId,
         player: PlayerId,
@@ -1084,22 +1112,19 @@ pub enum EffectSpec {
         #[serde(default)]
         random_target: bool,
         #[serde(default)]
-        auto_random_choices: bool,
+        choice_policy: ChoicePolicy,
     },
-    /// Cast `count` independently sampled spells with replacement, resolving
-    /// each spell (including its random legal target) before sampling the next.
-    CastRandomSpells {
-        source: EntityId,
-        player: PlayerId,
-        candidates: Vec<CardId>,
-        count: u16,
-    },
-    CastDrawn {
-        card: EntityId,
-    },
-    CastDeckSpellRandomTarget {
+    CastExistingSpell {
         source: EntityId,
         card: EntityId,
+        #[serde(default)]
+        target: Option<EntityId>,
+        #[serde(default)]
+        skip_if_invalid: bool,
+        #[serde(default)]
+        random_target: bool,
+        #[serde(default)]
+        choice_policy: ChoicePolicy,
     },
     Summon {
         player: PlayerId,
@@ -1196,14 +1221,11 @@ pub enum EffectSpec {
         source: EntityId,
         transforms: Vec<(EntityId, CardId)>,
     },
-    SwapStatsGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
-    },
-    SwapDecks {
+    ExchangeZoneContents {
         source: EntityId,
         first: PlayerId,
         second: PlayerId,
+        zone: Zone,
     },
     Destroy {
         source: EntityId,
@@ -1223,9 +1245,10 @@ pub enum EffectSpec {
         #[serde(default)]
         payload: Option<ChoiceValue>,
     },
-    AttachDeathrattle {
+    AttachHook {
         source: EntityId,
         target: EntityId,
+        hook: String,
         card_id: CardId,
     },
     /// Attach another card's Lua hooks to an entity. Unlike a Deathrattle
@@ -1287,6 +1310,10 @@ pub enum EffectSpec {
         silenciable: bool,
         #[serde(default)]
         reset_damage: bool,
+    },
+    ModifyStatBatch {
+        source: EntityId,
+        modifications: Vec<EntityStatModification>,
     },
     GrantKeywordUntilNextTurn {
         source: EntityId,

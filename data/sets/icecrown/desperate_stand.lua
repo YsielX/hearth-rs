@@ -7,7 +7,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:attach_deathrattle(target, "ICC_244")
+    ctx:attach_hook(target, "on_deathrattle", "ICC_244")
     ctx:grant_keyword(target, "deathrattle")
 end
 

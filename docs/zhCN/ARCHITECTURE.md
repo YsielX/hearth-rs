@@ -31,7 +31,7 @@ LuaCardRuntime
   └─ 通用 ctx 查询与 EffectSpec 输出
         │
         ▼
-data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua
+data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua + data/libraries/*.lua
 ```
 
 ## 三类 Lua 模块
@@ -39,6 +39,8 @@ data/sets/**/*.lua + data/hero_powers/**/*.lua + data/keywords/*.lua
 卡牌模块默认 `module_type = "card"`，也可以省略该字段。它包含官方元数据和卡牌钩子。
 
 英雄技能模块声明 `module_type = "hero_power"`。加载器自动赋予不可收集的 `hero_power` 类型，模块负责费用、目标、`on_play`、触发器、衍生物和关键词引用。英雄牌仍是 `type = "hero"` 的卡牌模块，并声明 `armor` 和经过校验的 `hero_power` ID。
+
+共享 Lua 库声明 `module_type = "library"`、`api_version = 1` 和 `id`，并暴露为 `cardlib[id]`。它参与卡包哈希但不会注册成卡牌，用来组合通用 ctx 操作，而不是增加卡牌专属 Rust effect。
 
 关键词模块显式声明：
 

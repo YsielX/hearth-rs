@@ -24,6 +24,11 @@ function card.copy_spell_to_plant(ctx, self)
         if entity > floor and ctx:entity(entity).card_id == "UNG_999t2t1" and (plant == nil or entity > plant) then plant = entity end
     end
     local spell = ctx:get_data(self, "voraxx_spell")
-    if plant and spell and spell ~= 0 then ctx:cast_spell_if_valid(ctx:controller(self), ctx:entity(spell).card_id, plant) end
+    if plant and spell and spell ~= 0 then
+        ctx:cast_spell(ctx:controller(self), ctx:entity(spell).card_id, {
+            target = plant,
+            skip_if_invalid = true,
+        })
+    end
 end
 return card

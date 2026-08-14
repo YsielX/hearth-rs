@@ -222,7 +222,7 @@ local cards = {
                   ctx:damage_ignoring_spell_damage(minion, 2)
                   ctx:freeze(minion)
                   ctx:set_data(minion, "copied_marker", 42)
-                  ctx:attach_deathrattle(minion, "TEST_ICC_ATTACHED_DEATHRATTLE")
+                  ctx:attach_hook(minion, "on_deathrattle", "TEST_ICC_ATTACHED_DEATHRATTLE")
                   ctx:attach_script(minion, "TEST_ICC_ATTACHED_SCRIPT")
                   break
               end
@@ -383,7 +383,7 @@ fn prince_taldaram_copies_full_state_then_silence_reveals_the_copied_base_body()
     assert!(copied.frozen);
     assert_eq!(copied.script_data["copied_marker"], 42);
     assert_eq!(
-        copied.attached_deathrattles,
+        copied.scripts_for_hook("on_deathrattle"),
         ["TEST_ICC_ATTACHED_DEATHRATTLE"]
     );
     assert_eq!(copied.attached_cards, ["TEST_ICC_ATTACHED_SCRIPT"]);
@@ -393,7 +393,7 @@ fn prince_taldaram_copies_full_state_then_silence_reveals_the_copied_base_body()
     assert_eq!(silenced.card_id, "TEST_ICC_COPY_TARGET");
     assert_eq!((silenced.attack, silenced.max_health), (4, 6));
     assert!(silenced.silenced);
-    assert!(silenced.attached_deathrattles.is_empty());
+    assert!(silenced.scripts_for_hook("on_deathrattle").is_empty());
     assert!(silenced.attached_cards.is_empty());
 }
 

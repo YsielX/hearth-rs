@@ -28,7 +28,11 @@ local card = {
 }
 
 function card.archivist_spell_chosen(ctx, self, spell)
-    ctx:cast_deck_spell_random_target(spell)
+    ctx:cast_existing_spell(spell, {
+        skip_if_invalid = true,
+        random_target = true,
+        choice_policy = "random",
+    })
 end
 
 return card

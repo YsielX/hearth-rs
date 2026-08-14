@@ -23,9 +23,10 @@ card.triggers = {{
         return target.type == "minion" and target.controller == ctx:controller(self)
     end,
     effect = function(ctx, self, event)
-        ctx:cast_spell_if_valid(
-            ctx:controller(self), ctx:entity(event.entity).card_id, self
-        )
+        ctx:cast_spell(ctx:controller(self), ctx:entity(event.entity).card_id, {
+            target = self,
+            skip_if_invalid = true,
+        })
     end,
 }}
 

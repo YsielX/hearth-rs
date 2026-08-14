@@ -49,14 +49,10 @@ impl<R: CardRuntime> Game<R> {
                     queue.push_front(ResolutionItem::DeathCheck);
                     return Ok(false);
                 }
-                let auto_random = self.state.entity(source).is_some_and(|entity| {
-                    entity
-                        .script_data
-                        .get("auto_random_choices")
-                        .copied()
-                        .unwrap_or(0)
-                        != 0
-                });
+                let auto_random = self
+                    .state
+                    .entity(source)
+                    .is_some_and(|entity| entity.choice_policy == ChoicePolicy::Random);
                 if auto_random {
                     let index = self.rng.random_range(0..options.len());
                     self.state.random_counter = self.state.random_counter.saturating_add(1);
@@ -318,70 +314,14 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
-            EffectSpec::CastRandomSpells {
-                source,
-                player,
-                candidates,
-                count,
-            } => {
-                if count == 0 || candidates.is_empty() {
-                    return Ok(false);
-                }
-                let player = self
-                    .state
-                    .entity(source)
-                    .map(|entity| entity.controller)
-                    .unwrap_or(player);
-                if candidates.len() > MAX_RANDOM_CHOICE_OPTIONS {
-                    return Err(GameError::TooManyRandomChoiceOptions {
-                        options: candidates.len(),
-                    });
-                }
-                for card_id in &candidates {
-                    let definition = self
-                        .runtime
-                        .definition(card_id)
-                        .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
-                    if definition.kind != CardKind::Spell {
-                        return Err(GameError::CardCannotBeCast(card_id.clone()));
-                    }
-                }
-                let index = self.rng.random_range(0..candidates.len());
-                self.state.random_counter = self.state.random_counter.saturating_add(1);
-                let card_id = candidates[index].clone();
-                let triggered = self.publish(GameEvent::RandomCardsSampled {
-                    source,
-                    cards: vec![card_id.clone()],
-                    population: candidates.len(),
-                })?;
-                if count > 1 {
-                    queue.push_front(ResolutionItem::Effect(EffectSpec::CastRandomSpells {
-                        source,
-                        player,
-                        candidates,
-                        count: count - 1,
-                    }));
-                }
-                queue.push_front(ResolutionItem::Effect(EffectSpec::CastSpell {
-                    source,
-                    player,
-                    card_id,
-                    target: None,
-                    skip_if_invalid: true,
-                    random_target: true,
-                    auto_random_choices: true,
-                }));
-                Self::prepend_effects(queue, triggered);
-                Ok(false)
-            }
             EffectSpec::CastSpell {
                 source,
                 player,
                 card_id,
-                mut target,
+                target,
                 skip_if_invalid,
                 random_target,
-                auto_random_choices,
+                choice_policy,
             } => {
                 let definition = self
                     .runtime
@@ -392,259 +332,34 @@ impl<R: CardRuntime> Game<R> {
                     return Err(GameError::CardCannotBeCast(card_id));
                 }
                 let spell = self.instantiate(&definition.id, player, Zone::SetAside)?;
-                if auto_random_choices {
-                    self.state
-                        .entities
-                        .get_mut(&spell)
-                        .unwrap()
-                        .script_data
-                        .insert("auto_random_choices".to_owned(), 1);
-                }
-                let is_secret = definition.secret
-                    || self.keyword_bool(spell, "enters_secret_zone", false, None)?;
-                if is_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
-                    self.state.entities.get_mut(&spell).unwrap().zone = Zone::Removed;
-                    return Ok(false);
-                }
-
-                let valid_targets = self.valid_targets(spell)?;
-                let mut random_effects = Vec::new();
-                let hero = self.state.player(player).hero;
-                let random_target = random_target
-                    || self.keyword_bool(hero, "randomize_targets", false, Some(spell))?;
-                if random_target && !valid_targets.is_empty() {
-                    let index = self.rng.random_range(0..valid_targets.len());
-                    self.state.random_counter = self.state.random_counter.saturating_add(1);
-                    target = Some(valid_targets[index]);
-                    random_effects = self.publish(GameEvent::RandomChoiceMade {
-                        source,
-                        index,
-                        options: valid_targets.len(),
-                    })?;
-                }
-                if definition.target_mode.requires_target(valid_targets.len()) && target.is_none() {
-                    if skip_if_invalid {
-                        self.state.entities.get_mut(&spell).unwrap().zone = Zone::Removed;
-                        return Ok(false);
-                    }
-                    return Err(GameError::TargetRequired);
-                }
-                if let Some(target) = target
-                    && !valid_targets.contains(&target)
-                {
-                    if skip_if_invalid {
-                        self.state.entities.get_mut(&spell).unwrap().zone = Zone::Removed;
-                        return Ok(false);
-                    }
-                    return Err(GameError::InvalidTarget(target));
-                }
-
-                if is_secret {
-                    self.move_to_secret(spell, player);
-                } else {
-                    self.move_to_graveyard(spell, player);
-                }
-                self.refresh_auras()?;
-
-                let mut items = random_effects
-                    .into_iter()
-                    .map(ResolutionItem::Effect)
-                    .collect::<Vec<_>>();
-                if let Some(target) = target {
-                    items.extend(
-                        self.publish(GameEvent::SpellTargeted {
-                            player,
-                            spell,
-                            target,
-                            generated_by: Some(source),
-                        })?
-                        .into_iter()
-                        .map(ResolutionItem::Effect),
-                    );
-                }
-                items.extend(
-                    self.runtime
-                        .on_play(&self.state, spell, target)
-                        .map_err(GameError::Script)?
-                        .into_iter()
-                        .map(ResolutionItem::Effect),
-                );
-                if is_secret {
-                    let secret = self.begin_event(GameEvent::SecretPlayed {
-                        player,
-                        secret: spell,
-                    })?;
-                    items.push(ResolutionItem::PublishAfter {
-                        id: secret.id,
-                        event: secret.event,
-                    });
-                }
-                let cast = self.begin_event(GameEvent::SpellCast {
-                    player,
+                self.stage_existing_spell_cast(
+                    source,
                     spell,
-                    generated_by: Some(source),
                     target,
-                    cost: 0,
-                    target_was_friendly_minion: false,
-                })?;
-                items.push(ResolutionItem::PublishAfter {
-                    id: cast.id,
-                    event: cast.event,
-                });
-                for item in items.into_iter().rev() {
-                    queue.push_front(item);
-                }
+                    skip_if_invalid,
+                    random_target,
+                    choice_policy,
+                    queue,
+                )?;
                 Ok(false)
             }
-            EffectSpec::CastDrawn { card } => {
-                let entity = self
-                    .state
-                    .entity(card)
-                    .cloned()
-                    .ok_or(GameError::UnknownEntity(card))?;
-                let player = entity.controller;
-                if entity.zone != Zone::Hand || entity.kind != CardKind::Spell {
-                    return Ok(false);
-                }
-                self.remove_from_zone(card, Zone::Hand, player);
-                self.move_to_graveyard(card, player);
-                self.refresh_auras()?;
-                let mut items = self
-                    .runtime
-                    .on_play(&self.state, card, None)
-                    .map_err(GameError::Script)?
-                    .into_iter()
-                    .map(ResolutionItem::Effect)
-                    .collect::<Vec<_>>();
-                let cast = self.begin_event(GameEvent::SpellCast {
-                    player,
-                    spell: card,
-                    generated_by: Some(card),
-                    target: None,
-                    cost: 0,
-                    target_was_friendly_minion: false,
-                })?;
-                items.push(ResolutionItem::PublishAfter {
-                    id: cast.id,
-                    event: cast.event,
-                });
-                for item in items.into_iter().rev() {
-                    queue.push_front(item);
-                }
-                Ok(false)
-            }
-            EffectSpec::CastDeckSpellRandomTarget { source, card } => {
-                let entity = self
-                    .state
-                    .entity(card)
-                    .cloned()
-                    .ok_or(GameError::UnknownEntity(card))?;
-                let player = entity.controller;
-                if entity.zone != Zone::Deck || entity.kind != CardKind::Spell {
-                    return Ok(false);
-                }
-                let Some(position) = self
-                    .state
-                    .player(player)
-                    .deck
-                    .iter()
-                    .position(|candidate| *candidate == card)
-                else {
-                    return Ok(false);
-                };
-                let is_secret = self
-                    .runtime
-                    .definition(&entity.card_id)
-                    .is_some_and(|definition| definition.secret)
-                    || self.keyword_bool(card, "enters_secret_zone", false, None)?;
-                if is_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
-                    return Ok(false);
-                }
-                self.state.player_mut(player).deck.remove(position);
-                self.state.entities.get_mut(&card).unwrap().zone = Zone::SetAside;
-                self.state
-                    .entities
-                    .get_mut(&card)
-                    .unwrap()
-                    .script_data
-                    .insert("auto_random_choices".to_owned(), 1);
-                self.refresh_auras()?;
-
-                let valid_targets = self.valid_targets(card)?;
-                let definition = self.runtime.definition(&entity.card_id).unwrap();
-                let target = if valid_targets.is_empty() {
-                    None
-                } else {
-                    let index = self.rng.random_range(0..valid_targets.len());
-                    self.state.random_counter = self.state.random_counter.saturating_add(1);
-                    Some((index, valid_targets[index]))
-                };
-                if definition.target_mode.requires_target(valid_targets.len()) && target.is_none() {
-                    self.state.entities.get_mut(&card).unwrap().zone = Zone::Removed;
-                    return Ok(false);
-                }
-                if is_secret {
-                    self.move_to_secret(card, player);
-                } else {
-                    self.move_to_graveyard(card, player);
-                }
-                self.refresh_auras()?;
-
-                let mut items = Vec::new();
-                if let Some((index, selected)) = target {
-                    items.extend(
-                        self.publish(GameEvent::RandomChoiceMade {
-                            source,
-                            index,
-                            options: valid_targets.len(),
-                        })?
-                        .into_iter()
-                        .map(ResolutionItem::Effect),
-                    );
-                    items.extend(
-                        self.publish(GameEvent::SpellTargeted {
-                            player,
-                            spell: card,
-                            target: selected,
-                            generated_by: Some(source),
-                        })?
-                        .into_iter()
-                        .map(ResolutionItem::Effect),
-                    );
-                }
-                let selected = target.map(|(_, selected)| selected);
-                items.extend(
-                    self.runtime
-                        .on_play(&self.state, card, selected)
-                        .map_err(GameError::Script)?
-                        .into_iter()
-                        .map(ResolutionItem::Effect),
-                );
-                if is_secret {
-                    let secret = self.begin_event(GameEvent::SecretPlayed {
-                        player,
-                        secret: card,
-                    })?;
-                    items.push(ResolutionItem::PublishAfter {
-                        id: secret.id,
-                        event: secret.event,
-                    });
-                }
-                let cast = self.begin_event(GameEvent::SpellCast {
-                    player,
-                    spell: card,
-                    generated_by: Some(source),
-                    target: selected,
-                    cost: 0,
-                    target_was_friendly_minion: false,
-                })?;
-                items.push(ResolutionItem::PublishAfter {
-                    id: cast.id,
-                    event: cast.event,
-                });
-                for item in items.into_iter().rev() {
-                    queue.push_front(item);
-                }
+            EffectSpec::CastExistingSpell {
+                source,
+                card,
+                target,
+                skip_if_invalid,
+                random_target,
+                choice_policy,
+            } => {
+                self.stage_existing_spell_cast(
+                    source,
+                    card,
+                    target,
+                    skip_if_invalid,
+                    random_target,
+                    choice_policy,
+                    queue,
+                )?;
                 Ok(false)
             }
             EffectSpec::DamageGroup {
@@ -1674,77 +1389,6 @@ impl<R: CardRuntime> Game<R> {
                     transforms: pending_events,
                 });
                 Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::SwapStatsGroup { source, targets } => {
-                let mut seen = std::collections::BTreeSet::new();
-                let snapshots: Vec<_> = targets
-                    .into_iter()
-                    .filter(|target| seen.insert(*target))
-                    .filter_map(|target| {
-                        self.state.entity(target).and_then(|entity| {
-                            (entity.zone == Zone::Board && entity.kind == CardKind::Minion)
-                                .then_some((target, entity.attack, entity.health()))
-                        })
-                    })
-                    .collect();
-                for (target, attack, health) in snapshots {
-                    let id = EnchantmentId(self.state.next_enchantment_id);
-                    self.state.next_enchantment_id += 1;
-                    let entity = self.state.entities.get_mut(&target).unwrap();
-                    entity.damage = 0;
-                    entity.enchantments.push(Enchantment {
-                        id,
-                        source,
-                        attack: 0,
-                        health: 0,
-                        modifiers: vec![
-                            StatModifier {
-                                stat: Stat::Attack,
-                                operation: ModifierOperation::FinalSet,
-                                value: health,
-                            },
-                            StatModifier {
-                                stat: Stat::Health,
-                                operation: ModifierOperation::FinalSet,
-                                value: attack,
-                            },
-                        ],
-                        keywords: Vec::new(),
-                        silenciable: true,
-                        expires_at: None,
-                    });
-                    Self::recompute_entity(entity);
-                }
-                self.refresh_auras()?;
-                queue.push_front(ResolutionItem::DeathCheck);
-                Ok(false)
-            }
-            EffectSpec::SwapDecks {
-                source: _,
-                first,
-                second,
-            } => {
-                if first == second {
-                    return Ok(false);
-                }
-                let first_deck = std::mem::take(&mut self.state.player_mut(first).deck);
-                let second_deck =
-                    std::mem::replace(&mut self.state.player_mut(second).deck, first_deck);
-                self.state.player_mut(first).deck = second_deck;
-                let first_entities = self.state.player(first).deck.clone();
-                let second_entities = self.state.player(second).deck.clone();
-                for entity in first_entities {
-                    let card = self.state.entities.get_mut(&entity).unwrap();
-                    card.owner = first;
-                    card.controller = first;
-                }
-                for entity in second_entities {
-                    let card = self.state.entities.get_mut(&entity).unwrap();
-                    card.owner = second;
-                    card.controller = second;
-                }
-                self.refresh_auras()?;
                 Ok(false)
             }
             EffectSpec::TransformIntoCopy {

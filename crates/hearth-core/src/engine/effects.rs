@@ -1,3 +1,4 @@
+use super::creation::CardCreation;
 use super::*;
 
 impl<R: CardRuntime> Game<R> {
@@ -12,9 +13,7 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::DrawEntity { .. }
             | EffectSpec::Discard { .. }
             | EffectSpec::CastSpell { .. }
-            | EffectSpec::CastRandomSpells { .. }
-            | EffectSpec::CastDrawn { .. }
-            | EffectSpec::CastDeckSpellRandomTarget { .. }
+            | EffectSpec::CastExistingSpell { .. }
             | EffectSpec::Summon { .. }
             | EffectSpec::SummonFromHand { .. }
             | EffectSpec::SummonExisting { .. }
@@ -32,8 +31,6 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::TransformIntoCopy { .. }
             | EffectSpec::TransformGroup { .. }
             | EffectSpec::TransformBatch { .. }
-            | EffectSpec::SwapStatsGroup { .. }
-            | EffectSpec::SwapDecks { .. }
             | EffectSpec::Continue { .. }
             | EffectSpec::CancelEvent { .. }
             | EffectSpec::SetEventAmount { .. }
@@ -45,72 +42,31 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::DiscoverEntities { .. } => {
                 unreachable!("staged effects are handled by resolve_effect_item")
             }
-            EffectSpec::GiveCard {
+            EffectSpec::CreateCard {
                 source,
                 player,
                 card_id,
-            } => {
-                let zone = if self.state.player(player).hand.len() < MAX_HAND_SIZE {
-                    Zone::Hand
-                } else {
-                    Zone::Graveyard
-                };
-                let card = self.instantiate(&card_id, player, zone)?;
-                if zone == Zone::Hand {
-                    self.state
-                        .entities
-                        .get_mut(&card)
-                        .unwrap()
-                        .entered_hand_turn = Some(self.state.turn);
-                    self.state.player_mut(player).hand.push(card);
-                    Ok(vec![GameEvent::CardCreated {
-                        source,
-                        player,
-                        card,
-                    }])
-                } else {
-                    self.state.player_mut(player).graveyard.push(card);
-                    Ok(vec![GameEvent::CardBurned {
-                        player,
-                        card,
-                        source: Some(source),
-                    }])
-                }
-            }
-            EffectSpec::GiveCardAt {
-                source,
-                player,
-                card_id,
+                destination,
                 position,
-            } => {
-                let zone = if self.state.player(player).hand.len() < MAX_HAND_SIZE {
-                    Zone::Hand
-                } else {
-                    Zone::Graveyard
-                };
-                let card = self.instantiate(&card_id, player, zone)?;
-                if zone == Zone::Hand {
-                    self.state
-                        .entities
-                        .get_mut(&card)
-                        .unwrap()
-                        .entered_hand_turn = Some(self.state.turn);
-                    let position = position.min(self.state.player(player).hand.len());
-                    self.state.player_mut(player).hand.insert(position, card);
-                    Ok(vec![GameEvent::CardCreated {
-                        source,
-                        player,
-                        card,
-                    }])
-                } else {
-                    self.state.player_mut(player).graveyard.push(card);
-                    Ok(vec![GameEvent::CardBurned {
-                        player,
-                        card,
-                        source: Some(source),
-                    }])
-                }
-            }
+                base_attack,
+                base_health,
+                base_cost,
+                base_spell_damage,
+                keywords,
+                attached_scripts,
+            } => self.create_card_from_spec(CardCreation {
+                source,
+                player,
+                card_id,
+                destination,
+                position,
+                base_attack,
+                base_health,
+                base_cost,
+                base_spell_damage,
+                keywords,
+                attached_scripts,
+            }),
             EffectSpec::GiveCopy {
                 source,
                 player,
@@ -194,107 +150,6 @@ impl<R: CardRuntime> Game<R> {
                         source: Some(source),
                     }])
                 }
-            }
-            EffectSpec::GiveMergedMinion {
-                source,
-                player,
-                template,
-                first,
-                second,
-            } => {
-                let template_definition = self
-                    .runtime
-                    .definition(&template)
-                    .cloned()
-                    .ok_or_else(|| GameError::UnknownCard(template.clone()))?;
-                let first_definition = self
-                    .runtime
-                    .definition(&first)
-                    .cloned()
-                    .ok_or_else(|| GameError::UnknownCard(first.clone()))?;
-                let second_definition = self
-                    .runtime
-                    .definition(&second)
-                    .cloned()
-                    .ok_or_else(|| GameError::UnknownCard(second.clone()))?;
-                if template_definition.kind != CardKind::Minion {
-                    return Err(GameError::CardCannotTransformInto(template));
-                }
-                if first_definition.kind != CardKind::Minion {
-                    return Err(GameError::CardCannotTransformInto(first));
-                }
-                if second_definition.kind != CardKind::Minion {
-                    return Err(GameError::CardCannotTransformInto(second));
-                }
-                let zone = if self.state.player(player).hand.len() < MAX_HAND_SIZE {
-                    Zone::Hand
-                } else {
-                    Zone::Graveyard
-                };
-                let card = self.instantiate(&template_definition.id, player, zone)?;
-                {
-                    let merged = self.state.entities.get_mut(&card).unwrap();
-                    merged.base_attack = first_definition
-                        .attack
-                        .saturating_add(second_definition.attack);
-                    merged.base_health = first_definition
-                        .health
-                        .saturating_add(second_definition.health)
-                        .max(1);
-                    merged.base_cost = first_definition
-                        .cost
-                        .saturating_add(second_definition.cost)
-                        .min(10);
-                    merged.base_keywords.clear();
-                    for keyword in first_definition
-                        .keywords
-                        .into_iter()
-                        .chain(second_definition.keywords)
-                    {
-                        if !merged.base_keywords.contains(&keyword) {
-                            merged.base_keywords.push(keyword);
-                        }
-                    }
-                    merged.attached_cards = vec![first_definition.id, second_definition.id];
-                    Self::recompute_entity(merged);
-                }
-                if zone == Zone::Hand {
-                    self.state
-                        .entities
-                        .get_mut(&card)
-                        .unwrap()
-                        .entered_hand_turn = Some(self.state.turn);
-                    self.state.player_mut(player).hand.push(card);
-                    Ok(vec![GameEvent::CardCreated {
-                        source,
-                        player,
-                        card,
-                    }])
-                } else {
-                    self.state.player_mut(player).graveyard.push(card);
-                    Ok(vec![GameEvent::CardBurned {
-                        player,
-                        card,
-                        source: Some(source),
-                    }])
-                }
-            }
-            EffectSpec::ShuffleCardIntoDeck {
-                source,
-                player,
-                card_id,
-            } => {
-                let card = self.instantiate(&card_id, player, Zone::Deck)?;
-                let position = self
-                    .rng
-                    .random_range(0..=self.state.player(player).deck.len());
-                self.state.random_counter = self.state.random_counter.saturating_add(1);
-                self.state.player_mut(player).deck.insert(position, card);
-                Ok(vec![GameEvent::CardCreated {
-                    source,
-                    player,
-                    card,
-                }])
             }
             EffectSpec::ShuffleCopyIntoDeck {
                 source,
@@ -803,11 +658,15 @@ impl<R: CardRuntime> Game<R> {
                     keyword,
                 }])
             }
-            EffectSpec::AttachDeathrattle {
+            EffectSpec::AttachHook {
                 source: _,
                 target,
+                hook,
                 card_id,
             } => {
+                if hook.is_empty() || hook.len() > 64 {
+                    return Err(GameError::InvalidContinuationHook);
+                }
                 if self.runtime.definition(&card_id).is_none() {
                     return Err(GameError::UnknownCard(card_id));
                 }
@@ -816,9 +675,11 @@ impl<R: CardRuntime> Game<R> {
                     .entities
                     .get_mut(&target)
                     .ok_or(GameError::UnknownEntity(target))?;
-                if entity.kind == CardKind::Minion && entity.zone == Zone::Board {
-                    entity.attached_deathrattles.push(card_id);
-                }
+                entity
+                    .hook_attachments
+                    .entry(hook)
+                    .or_default()
+                    .push(card_id);
                 Ok(Vec::new())
             }
             EffectSpec::AttachScript {
@@ -913,6 +774,16 @@ impl<R: CardRuntime> Game<R> {
                 }
                 Ok(Vec::new())
             }
+            EffectSpec::ModifyStatBatch {
+                source,
+                modifications,
+            } => self.apply_stat_batch(source, modifications),
+            EffectSpec::ExchangeZoneContents {
+                source: _,
+                first,
+                second,
+                zone,
+            } => self.exchange_zone_contents(first, second, zone),
             EffectSpec::GrantKeywordUntilNextTurn {
                 source,
                 target,
@@ -1084,7 +955,7 @@ impl<R: CardRuntime> Game<R> {
                         .enchantments
                         .retain(|enchantment| !enchantment.silenciable);
                     entity.attached_cards.clear();
-                    entity.attached_deathrattles.clear();
+                    entity.hook_attachments.clear();
                     Self::recompute_entity(entity);
                 }
                 Ok(events)

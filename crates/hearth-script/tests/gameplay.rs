@@ -14,6 +14,15 @@ fn repeated(card: &str) -> Vec<String> {
     std::iter::repeat_n(card.to_owned(), 20).collect()
 }
 
+fn mixed(cards: &[&str]) -> Vec<String> {
+    cards
+        .iter()
+        .cycle()
+        .take(20)
+        .map(|card| (*card).to_owned())
+        .collect()
+}
+
 fn game(deck_one: &str, deck_two: &str) -> Game<LuaCardRuntime> {
     game_with_decks(repeated(deck_one), repeated(deck_two))
 }
@@ -126,6 +135,48 @@ fn play(
     game.dispatch(PlayerCommand::PlayCard { card, target })
         .unwrap();
     card
+}
+
+fn deck_ids(game: &Game<LuaCardRuntime>, player: PlayerId) -> Vec<String> {
+    game.state()
+        .player(player)
+        .deck
+        .iter()
+        .map(|entity| game.state().entity(*entity).unwrap().card_id.clone())
+        .collect()
+}
+
+#[test]
+fn lootapalooza_special_cards_use_generic_lua_primitives() {
+    let mut ripper = game_with_decks(mixed(&["LOOT_529", "CS2_120"]), repeated("CS2_120"));
+    while !ripper
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .any(|entity| ripper.state().entity(*entity).unwrap().card_id == "LOOT_529")
+        || !ripper
+            .state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| ripper.state().entity(*entity).unwrap().card_id == "CS2_120")
+    {
+        end_turn(&mut ripper);
+    }
+    advance_to_mana(&mut ripper, PlayerId::ONE, 5);
+    let crocolisk = play(&mut ripper, PlayerId::ONE, "CS2_120", None);
+    play(&mut ripper, PlayerId::ONE, "LOOT_529", None);
+    let crocolisk = ripper.state().entity(crocolisk).unwrap();
+    assert_eq!((crocolisk.attack, crocolisk.health()), (3, 2));
+
+    let mut togwaggle = game_with_decks(mixed(&["LOOT_541", "CS2_120"]), repeated("CS2_171"));
+    advance_to_mana(&mut togwaggle, PlayerId::ONE, 8);
+    let first_deck = deck_ids(&togwaggle, PlayerId::ONE);
+    let second_deck = deck_ids(&togwaggle, PlayerId::TWO);
+    play(&mut togwaggle, PlayerId::ONE, "LOOT_541", None);
+    assert_eq!(deck_ids(&togwaggle, PlayerId::ONE), second_deck);
+    assert_eq!(deck_ids(&togwaggle, PlayerId::TWO), first_deck);
 }
 
 #[test]

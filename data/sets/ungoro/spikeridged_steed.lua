@@ -7,7 +7,7 @@ local card = {
 function card.on_play(ctx, self, target)
     ctx:buff(target, 2, 6)
     ctx:grant_keyword(target, "taunt")
-    ctx:attach_deathrattle(target, "UNG_952")
+    ctx:attach_hook(target, "on_deathrattle", "UNG_952")
     ctx:grant_keyword(target, "deathrattle")
 end
 function card.on_deathrattle(ctx, self, position)

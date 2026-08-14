@@ -131,8 +131,9 @@ impl<R: CardRuntime> Game<R> {
         copy.enchantments = enchantments;
         copy.silenced = template.silenced;
         copy.script_data = template.script_data.clone();
+        copy.choice_policy = ChoicePolicy::Player;
         copy.attached_cards = template.attached_cards.clone();
-        copy.attached_deathrattles = template.attached_deathrattles.clone();
+        copy.hook_attachments = template.hook_attachments.clone();
         Self::recompute_entity(copy);
     }
 
@@ -316,8 +317,9 @@ impl<R: CardRuntime> Game<R> {
             hand_position_before_play: None,
             entered_hand_turn: (zone == Zone::Hand).then_some(0),
             script_data: Default::default(),
+            choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
-            attached_deathrattles: Vec::new(),
+            hook_attachments: BTreeMap::new(),
         }
     }
 
@@ -365,8 +367,9 @@ impl<R: CardRuntime> Game<R> {
             hand_position_before_play: None,
             entered_hand_turn: None,
             script_data: Default::default(),
+            choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
-            attached_deathrattles: Vec::new(),
+            hook_attachments: BTreeMap::new(),
         }
     }
 

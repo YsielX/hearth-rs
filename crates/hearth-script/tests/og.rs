@@ -490,7 +490,10 @@ fn shadowcaster_creates_an_unenchanted_one_one_one_hand_copy() {
     let original = play(&mut game, PlayerId::ONE, "OG_221", None);
     play(&mut game, PlayerId::ONE, "LOE_105", Some(original));
     assert_eq!(
-        game.state().entity(original).unwrap().attached_deathrattles,
+        game.state()
+            .entity(original)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle"),
         ["LOE_105"]
     );
     let log_start = game.state().log.len();
@@ -508,7 +511,7 @@ fn shadowcaster_creates_an_unenchanted_one_one_one_hand_copy() {
     assert_eq!(copy_state.attack, 1);
     assert_eq!(copy_state.max_health, 1);
     assert_eq!(copy_state.cost, 1);
-    assert!(copy_state.attached_deathrattles.is_empty());
+    assert!(copy_state.scripts_for_hook("on_deathrattle").is_empty());
     assert_eq!(copy_state.enchantments.len(), 1);
 }
 
@@ -570,6 +573,7 @@ fn isolated_yogg_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
         std::env::temp_dir().join(format!("hearth-rs-og-yogg-{}-{suffix}", std::process::id()));
     std::fs::create_dir_all(&root).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::os::unix::fs::symlink(
         data_path().join("sets/core/the_coin.lua"),
         root.join("the_coin.lua"),
@@ -671,7 +675,9 @@ local card = {
     api_version = 1, id = "TEST_OG_RANDOM_CASTER", name = "Random Caster", text = "",
     set = "TEST", type = "spell", cost = 0, collectible = true,
     on_play = function(ctx, self)
-        ctx:cast_random_spells(ctx:controller(self), { "TEST_OG_RANDOM_CHOICE" }, 1)
+        ctx:cast_spell(ctx:controller(self), "TEST_OG_RANDOM_CHOICE", {
+            choice_policy = "random",
+        })
     end,
 }
 card.tokens = {

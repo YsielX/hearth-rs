@@ -23,7 +23,7 @@ end
 
 function card.on_battlecry(ctx, self, target)
     if target then
-        ctx:attach_deathrattle(target, "ICC_257")
+        ctx:attach_hook(target, "on_deathrattle", "ICC_257")
         ctx:grant_keyword(target, "deathrattle")
     end
 end

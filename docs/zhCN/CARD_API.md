@@ -222,7 +222,7 @@ ctx:get_player_data(player, key)
 ```text
 id, card_id, name, owner, controller, attack, health, max_health, damage, armor, spell_damage, zone, type,
 keywords（字符串数组）, silenced, frozen, attacks_this_turn, attack_at_death, started_in_deck, location_cooldown, enchantments,
-attached_cards, attached_deathrattles,
+attached_cards, hook_attachments,
 cards_played_before, combo_active
 ```
 
@@ -239,7 +239,7 @@ fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
 
 `starting_deck` 在开局后保持冻结，牌被抽取、变形或摧毁都不会改变它；`cards_added_to_hand` 记录成功抽牌、生成牌和区域移动进入手牌，适合整局费用或进度规则。
 
-五个历史查询返回按发生顺序冻结的卡牌定义 ID 数组，而不是动态反查实体：随从即使后来变形，历史中仍保留它打出时的原定义。`cards_played` 在费用支付并离手时记录，因此反制牌也存在；四个类型历史在相应 `spell_cast/minion_played/weapon_played/location_played` 成功时记录。法术自己的 `on_play` 结算期间尚未进入 `spells_cast`，完成正文后才成为 `last_spell_cast`。只有玩家实际施放的法术进入成功施法历史；由 `cast_spell`/`cast_random_spells` 产生的法术带有 `generated_by`，既不进入该历史，也不触发“每当你施放法术”。这些数组属于 Rust 权威状态并进入 snapshot/replay，不应由 Lua 全局变量代替。
+五个历史查询返回按发生顺序冻结的卡牌定义 ID 数组，而不是动态反查实体：随从即使后来变形，历史中仍保留它打出时的原定义。`cards_played` 在费用支付并离手时记录，因此反制牌也存在；四个类型历史在相应 `spell_cast/minion_played/weapon_played/location_played` 成功时记录。法术自己的 `on_play` 结算期间尚未进入 `spells_cast`，完成正文后才成为 `last_spell_cast`。只有玩家实际施放的法术进入成功施法历史；由 `cast_spell` 或 `cast_existing_spell` 效果施放的法术带有 `generated_by`，既不进入该历史，也不触发“每当你施放法术”。这些数组属于 Rust 权威状态并进入 snapshot/replay，不应由 Lua 全局变量代替。
 
 卡牌定义快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用于三职业等多职业牌。其中 `requires_target` 只作为旧脚本兼容字段；新逻辑应读取 `target_mode`。例如可以完全在 Lua 中构造动态发现池：
 
@@ -277,6 +277,7 @@ ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
 ctx:give_card_at(player, card_id, position)
+ctx:create_card(player, card_id, spec_or_nil)
 ctx:give_copy(player, entity)
 ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:give_base_copy(player, entity)
@@ -285,15 +286,12 @@ ctx:shuffle_card_into_deck(player, card_id)
 ctx:replace_hero(player, hero_card_id)
 ctx:replace_hero_power(player, card_id)
 ctx:refresh_hero_power(player)
-ctx:give_merged_minion(player, template_card_id, first_card_id, second_card_id)
+ctx:exchange_zone_contents(first_player, second_player, "deck" | "hand" | "graveyard")
 ctx:equip_weapon(player, card_id)
 ctx:lose_weapon_durability(weapon, amount)
 ctx:discard(player, entity)
-ctx:cast_spell(player, card_id, target_or_nil)
-ctx:cast_spell_if_valid(player, card_id, target_or_nil)
-ctx:cast_spell_random_target(player, card_id)
-ctx:cast_random_spells(player, candidate_card_ids, count)
-ctx:cast_drawn(card)
+ctx:cast_spell(player, card_id, options_or_nil)
+ctx:cast_existing_spell(card, options_or_nil)
 ctx:summon(player, card_id)
 ctx:summon_at(player, card_id, position)
 ctx:summon_with_stats(player, card_id, attack, health, keywords_or_nil)
@@ -329,7 +327,7 @@ ctx:win_game(player)
 ctx:set_health(target, amount)
 ctx:heal_all(targets, amount)
 ctx:trigger_hook(target, hook)
-ctx:attach_deathrattle(target, card_id)
+ctx:attach_hook(target, hook, card_id)
 ctx:attach_script(target, card_id)
 ctx:board_position(target)
 ctx:buff(target, attack_delta, health_delta)
@@ -371,7 +369,11 @@ ctx:increment_player_data(player, key, delta)
 
 `destroy_all` 在同一个死亡检查点摧毁所有目标，适用于“摧毁所有随从”一类同时结算；`move` 的目标区域包括 `hand`、`secret`、`deck_top`、`deck_bottom`、`deck_random`、`graveyard` 和 `removed`。移动到 `secret` 时会校验该实体确实具有奥秘规则且奥秘区未满。`shuffle_entity_into_deck` 使用 Rust 确定性随机把原实体洗入指定玩家牌库，同时转移 owner/controller 并执行隐藏区重置。
 
-`transform` 允许手牌和牌库隐藏区中的实体跨卡牌类型原位替换，并保留实体身份与区域顺序。`transform_preserving_scripts` 还会保留 `attached_cards` 与脚本数据；需要跨自身变形持续的规则应先用 `attach_script` 附加可复用模块。`attach_deathrattle` 为场上随从附加一层有序、可叠加的 `on_deathrattle` 脚本；沉默会移除已有附加亡语，而沉默后新附加的亡语仍生效。`cast_spell_if_valid` 与 `cast_spell` 相同，但声明目标不合法时会安全跳过生成施放。`cast_spell_random_target` 从生成法术自身的权威合法目标集合中随机选择；`cast_random_spells` 采用有放回抽样，并在抽取下一张前完整结算当前法术，因此来源变形或离场也不会中断初始批次。
+`transform` 允许手牌和牌库隐藏区中的实体跨卡牌类型原位替换，并保留实体身份与区域顺序。`transform_preserving_scripts` 还会保留 `attached_cards` 与脚本数据；需要跨自身变形持续的规则应先用 `attach_script` 附加可复用模块。`attach_hook` 可向任意命名 Lua 钩子附加有序、可叠加的卡牌脚本；沉默会移除随从已有的钩子附件。
+
+`cast_spell` 从定义创建法术，`cast_existing_spell` 施放隐藏区或终止区中的已有实体；两者都接受 `{ target = entity, skip_if_invalid = true, random_target = true, choice_policy = "random" }`。随机目标和自动抉择现在是显式策略，不再借用隐藏脚本数据。连续随机施法由 Lua 组合，公共库 `cardlib.random_spell` 复用权威 `random_value` 与 `cast_spell`。
+
+`create_card` 支持 `destination`、可选手牌 `position`、`attack`、`health`、`cost`、`spell_damage`、`keywords` 和 `attached_scripts`。属性合成公式留在 Lua；`cardlib.fusion.create_minion` 是可复用的合成随从实现。声明 `module_type = "library"` 的文件会暴露为 `cardlib[id]`，参与校验和确定性卡包哈希，但不会注册成卡牌。
 
 `damage_ignoring_spell_damage` 仍走普通顺序伤害与事件流程，但不叠加来源控制者的法术伤害。`spend_mana` 原子地花费玩家当前可用法力（优先临时法力），并按实际正数花费发布 `mana_spent`。`increment_player_data` 对玩家脚本数据执行原子有符号累加，发布带 `old/new/delta` 的 `player_script_data_changed`，避免同一快照收集出的多个触发器互相覆盖。死亡记录保存卡牌定义是否原生具有亡语：沉默不清除该标记，附加亡语也不会设置它。
 
@@ -379,13 +381,13 @@ ctx:increment_player_data(player, key, delta)
 
 `draw_entity` 从指定玩家牌库抽取该原实体，并走可取消的普通 CardDrawn/CardBurned 流程。`summon_existing` 把墓地或移除区的原随从送入完整可取消召唤流程，取消或满场时恢复；`summon_existing_at` 还会使用记录的原战场位置。`move_to_hand` 可把原实体转入指定玩家手牌，`shuffle_copy_into_deck` 会保留被复制实体的状态。`summon_fresh_copy_with_stats` 创建无增益模板副本并最终定值攻血。`lose_weapon_durability` 扣除已装备武器耐久，归零时走普通可取消的 `weapon_destroyed` 生命周期。`add_attack_collateral` 为待结算攻击加入同批战斗伤害。
 
-`damage_batch` 对冻结目标集原子结算不同伤害值，其忽略法术伤害版本不叠加法强。`modify_all` 同样对冻结目标组应用一个属性修改，并支持 `reset_damage = true` 实现同时生命定值。`force_attack` 无需攻击者处于可攻击状态即可发起完整攻击事件；`take_extra_turn` 为指定玩家排入可回放的额外回合。`grant_keyword_until_next_turn` 在该随从控制者的下回合开始时到期，且不依赖来源实体继续存在。
+`damage_batch` 对冻结目标集原子结算不同伤害值，其忽略法术伤害版本不叠加法强。`modify_all` 对冻结目标组应用同一属性规格；`modify_batch` 接受逐实体规格，每个属性操作不同时可传 `modifiers` 数组。两者都支持 `reset_damage = true`。`force_attack` 无需攻击者处于可攻击状态即可发起完整攻击事件；`take_extra_turn` 为指定玩家排入可回放的额外回合。`grant_keyword_until_next_turn` 在该随从控制者的下回合开始时到期，且不依赖来源实体继续存在。
 
 区域查询返回稳定顺序的实体 ID 副本，脚本不能修改 Rust 内部列表。`hand`、`deck` 等接口也允许查询对手隐藏区；Lua 卡牌是服务端可信规则代码，UI 不会直接获得这些结果。需要向玩家公开或选择隐藏信息时，应由卡牌显式构造 `choose_*` 选项。
 
 `discard` 只对参数玩家当前手牌中的实体生效；实体已被更早效果移走时安全地不做任何事。引擎先发布 `card_discarded/before`，此时目标仍在手牌，因此目标自己的 `active_zones = { "hand" }` 触发器可以调用 `cancel_event`。成功提交后卡牌进入墓地，依次批量发布 `card_discarded/after` 和 `zone_changed/after`；取消时不发布二者。事件字段为 `source`、`player`、`entity`。随机弃牌应先从 `ctx:hand(player)` 过滤候选，再调用 `random_entity` 并在 resume hook 中 `discard`，以保持 Rust RNG、事件日志和 replay 的确定性。
 
-`cast_spell` 由 Rust 创建一个新的真实法术实体，并用它作为法术伤害、治疗和后续事件的来源。普通法术进入墓地，满足 `enters_secret_zone` Lua 规则的法术进入奥秘/任务区；不支付法力、不产生 `card_played`、不增加连击计数，也不会触发只反制手牌出牌的 `card_played/before` 奥秘。法术正文全部结算后发布 `spell_cast/after` 并进入 `spells_cast` 历史。该事件额外包含 `generated`、`generated_by` 和声明的 `target`；直接从手牌施放时前两者分别为 `false/nil`，效果施放时指向产生它的实体，无目标法术的 `target` 为 `nil`。`cast_drawn` 则移动抽到的同一个实体并执行正文，供“抽到时施放”模块使用。
+`cast_spell` 由 Rust 创建一个新的真实法术实体，并用它作为法术伤害、治疗和后续事件的来源。普通法术进入墓地，满足 `enters_secret_zone` Lua 规则的法术进入奥秘/任务区；不支付法力、不产生 `card_played`、不增加连击计数，也不会触发只反制手牌出牌的 `card_played/before` 奥秘。法术正文全部结算后发布 `spell_cast/after` 并进入 `spells_cast` 历史。该事件额外包含 `generated`、`generated_by` 和声明的 `target`；直接从手牌施放时前两者分别为 `false/nil`，效果施放时指向产生它的实体，无目标法术的 `target` 为 `nil`。抽到即施放使用 `cast_existing_spell(self, { skip_if_invalid = true })`，移动并施放同一个实体。
 
 目标法术必须传入目标，且目标必须通过该法术自身的 Lua `targets` 选择器以及 Rust 的潜行/免疫过滤；缺失或非法目标会令当前玩家命令事务回滚。无目标法术可省略第四个参数。自动施放非 spell 定义同样是脚本错误。自动施放奥秘时若奥秘区已满则不产生任何实体或事件。`CastSpell` 本身可序列化，因此可以位于等待选择的剩余结算队列中，并由 snapshot/replay 恢复。
 

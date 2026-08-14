@@ -12,7 +12,7 @@ function card.on_play(ctx, self)
             if keyword == "dormant" then dormant = true break end
         end
         if entity.type == "minion" and not dormant then
-            ctx:attach_deathrattle(minion, "OG_045")
+            ctx:attach_hook(minion, "on_deathrattle", "OG_045")
             ctx:grant_keyword(minion, "deathrattle")
         end
     end

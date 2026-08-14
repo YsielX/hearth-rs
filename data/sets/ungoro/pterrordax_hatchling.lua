@@ -1,6 +1,6 @@
 local options = { "UNG_999t2", "UNG_999t3", "UNG_999t4", "UNG_999t5", "UNG_999t6", "UNG_999t7", "UNG_999t8", "UNG_999t10", "UNG_999t13", "UNG_999t14" }
 local function apply(ctx, target, choice)
-    if choice == "UNG_999t2" then ctx:attach_deathrattle(target, "UNG_999t2"); ctx:grant_keyword(target, "deathrattle")
+    if choice == "UNG_999t2" then ctx:attach_hook(target, "on_deathrattle", "UNG_999t2"); ctx:grant_keyword(target, "deathrattle")
     elseif choice == "UNG_999t3" then ctx:buff(target, 3, 0)
     elseif choice == "UNG_999t4" then ctx:buff(target, 0, 3)
     elseif choice == "UNG_999t5" then ctx:grant_keyword(target, "elusive")

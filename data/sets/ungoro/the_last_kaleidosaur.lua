@@ -7,7 +7,7 @@ local function apply_adaptation(ctx, target, adaptation)
     if ctx:entity(target).zone ~= "board" then return end
     for _, keyword in ipairs(ctx:entity(target).keywords) do if keyword == "dormant" then return end end
     if adaptation == "UNG_999t2" then
-        ctx:attach_deathrattle(target, "UNG_999t2")
+        ctx:attach_hook(target, "on_deathrattle", "UNG_999t2")
         ctx:grant_keyword(target, "deathrattle")
     elseif adaptation == "UNG_999t3" then
         ctx:buff(target, 3, 0)

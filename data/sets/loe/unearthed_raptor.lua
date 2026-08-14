@@ -37,7 +37,7 @@ function card.on_battlecry(ctx, self, target)
     local function copy_if_deathrattle(card_id)
         for _, keyword in ipairs(ctx:card_definition(card_id).keywords or {}) do
             if keyword == "deathrattle" then
-                ctx:attach_deathrattle(self, card_id)
+                ctx:attach_hook(self, "on_deathrattle", card_id)
                 copied = copied + 1
                 return
             end
@@ -48,8 +48,8 @@ function card.on_battlecry(ctx, self, target)
     for _, card_id in ipairs(snapshot.attached_cards or {}) do
         copy_if_deathrattle(card_id)
     end
-    for _, card_id in ipairs(snapshot.attached_deathrattles or {}) do
-        ctx:attach_deathrattle(self, card_id)
+    for _, card_id in ipairs((snapshot.hook_attachments or {}).on_deathrattle or {}) do
+        ctx:attach_hook(self, "on_deathrattle", card_id)
         copied = copied + 1
     end
     if copied > 0 then ctx:grant_keyword(self, "deathrattle") end

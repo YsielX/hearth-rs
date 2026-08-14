@@ -16,7 +16,7 @@ local function spell_pool(ctx)
     return result
 end
 
-return {
+local card = {
     api_version = 1,
     id = "OG_134",
     name = "Yogg-Saron, Hope's End",
@@ -30,6 +30,25 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:cast_random_spells(player, spell_pool(ctx), math.min(30, #ctx:spells_cast(player)))
+        cardlib.random_spell.choose(
+            ctx,
+            player,
+            spell_pool(ctx),
+            math.min(30, #ctx:spells_cast(player)),
+            "yogg_spell_chosen"
+        )
     end,
 }
+
+function card.yogg_spell_chosen(ctx, self, choice)
+    cardlib.random_spell.cast(ctx, choice)
+    cardlib.random_spell.choose(
+        ctx,
+        choice.player,
+        spell_pool(ctx),
+        choice.remaining,
+        "yogg_spell_chosen"
+    )
+end
+
+return card

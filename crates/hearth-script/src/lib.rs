@@ -6,11 +6,11 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 use hearth_core::{
-    AuraSpec, CardActionSpec, CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoiceValue,
-    EffectDuration, EffectSpec, EntityId, EventId, EventTiming, GameEvent, GameOutcome, GameState,
-    Locale, LocalizedCardText, MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES,
-    MAX_CHOICE_VALUE_STRING_BYTES, ModifierOperation, PlayerId, ScriptEvent, Stat, StatModifier,
-    TargetMode, Zone, ZonePlacement,
+    AuraSpec, CardActionSpec, CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy,
+    ChoiceValue, EffectDuration, EffectSpec, EntityId, EntityStatModification, EventId,
+    EventTiming, GameEvent, GameOutcome, GameState, Locale, LocalizedCardText,
+    MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES, MAX_CHOICE_VALUE_STRING_BYTES,
+    ModifierOperation, PlayerId, ScriptEvent, Stat, StatModifier, TargetMode, Zone, ZonePlacement,
 };
 use mlua::{Function, HookTriggers, Lua, RegistryKey, Table, Value, VmState};
 use thiserror::Error;
@@ -128,6 +128,18 @@ impl LuaCardRuntime {
                     source,
                 })?;
         }
+        globals
+            .set(
+                "cardlib",
+                lua.create_table().map_err(|source| ScriptLoadError::Lua {
+                    path: root.to_owned(),
+                    source,
+                })?,
+            )
+            .map_err(|source| ScriptLoadError::Lua {
+                path: root.to_owned(),
+                source,
+            })?;
         // A runaway card should not be able to consume arbitrary process memory.
         lua.set_memory_limit(16 * 1024 * 1024)
             .map_err(|source| ScriptLoadError::Lua {
@@ -156,7 +168,16 @@ impl LuaCardRuntime {
         })?;
         let mut files = Vec::new();
         collect_lua_files(root, &mut files)?;
-        files.sort();
+        files.sort_by(|left, right| {
+            let is_library = |path: &PathBuf| {
+                path.strip_prefix(root).is_ok_and(|relative| {
+                    relative
+                        .components()
+                        .any(|component| component.as_os_str() == "libraries")
+                })
+            };
+            (!is_library(left), left).cmp(&(!is_library(right), right))
+        });
         if files.is_empty() {
             return Err(ScriptLoadError::NoCards(root.to_owned()));
         }
@@ -196,6 +217,10 @@ impl LuaCardRuntime {
                     source,
                 })?
                 .unwrap_or_else(|| "card".to_owned());
+            if module_type == "library" {
+                register_library_module(&lua, root, &path, module)?;
+                continue;
+            }
             if module_type == "keyword" {
                 register_keyword_module(&lua, &mut keywords, &path, module)?;
                 continue;
@@ -228,7 +253,7 @@ impl LuaCardRuntime {
                 return Err(ScriptLoadError::Lua {
                     path: path.clone(),
                     source: mlua::Error::runtime(format!(
-                        "unsupported module_type {module_type}; expected card, hero_power, or keyword"
+                        "unsupported module_type {module_type}; expected card, hero_power, keyword, or library"
                     )),
                 });
             }
@@ -717,31 +742,20 @@ impl LuaCardRuntime {
             .card_id
             .clone();
         if self.cards.contains_key(&card_id) {
-            let card_module = self.module(&card_id)?;
-            if let Some(rules) = card_module
-                .get::<Option<Table>>("rules")
-                .map_err(|error| error.to_string())?
-                && let Some(function) = rules
-                    .get::<Option<Function>>(rule)
+            value = self.run_card_bool_rule(state, entity, &card_id, rule, value, other)?;
+        }
+        let rule_entity = state.entity(entity).unwrap();
+        if rule_entity.kind == CardKind::Hero && rule_entity.controller == state.active_player {
+            if let Some(weapon) = state.player(rule_entity.controller).weapon {
+                let weapon_card = state.entities[&weapon].card_id.as_str();
+                let module = self.module(weapon_card)?;
+                if module
+                    .get::<Option<bool>>("rules_inherit_to_hero")
                     .map_err(|error| error.to_string())?
-            {
-                let emitted = Rc::new(RefCell::new(Vec::new()));
-                let ctx = build_context(
-                    &self.lua,
-                    state,
-                    entity,
-                    emitted.clone(),
-                    self.catalog.clone(),
-                    self.locale,
-                )
-                .map_err(|error| error.to_string())?;
-                value = function
-                    .call((ctx, entity.0, value, other.map(|id| id.0)))
-                    .map_err(|error| format!("card {card_id} rule {rule}: {error}"))?;
-                if !emitted.borrow().is_empty() {
-                    return Err(format!(
-                        "card {card_id} rule {rule} attempted to emit an effect"
-                    ));
+                    .unwrap_or(false)
+                {
+                    value =
+                        self.run_card_bool_rule(state, entity, weapon_card, rule, value, other)?;
                 }
             }
         }
@@ -777,6 +791,49 @@ impl LuaCardRuntime {
                     "keyword {keyword} rule {rule} attempted to emit an effect"
                 ));
             }
+        }
+        Ok(value)
+    }
+
+    fn run_card_bool_rule(
+        &self,
+        state: &GameState,
+        entity: EntityId,
+        card_id: &str,
+        rule: &str,
+        value: bool,
+        other: Option<EntityId>,
+    ) -> Result<bool, String> {
+        let card_module = self.module(card_id)?;
+        let Some(rules) = card_module
+            .get::<Option<Table>>("rules")
+            .map_err(|error| error.to_string())?
+        else {
+            return Ok(value);
+        };
+        let Some(function) = rules
+            .get::<Option<Function>>(rule)
+            .map_err(|error| error.to_string())?
+        else {
+            return Ok(value);
+        };
+        let emitted = Rc::new(RefCell::new(Vec::new()));
+        let ctx = build_context(
+            &self.lua,
+            state,
+            entity,
+            emitted.clone(),
+            self.catalog.clone(),
+            self.locale,
+        )
+        .map_err(|error| error.to_string())?;
+        let value = function
+            .call((ctx, entity.0, value, other.map(|id| id.0)))
+            .map_err(|error| format!("card {card_id} rule {rule}: {error}"))?;
+        if !emitted.borrow().is_empty() {
+            return Err(format!(
+                "card {card_id} rule {rule} attempted to emit an effect"
+            ));
         }
         Ok(value)
     }
@@ -1372,8 +1429,8 @@ impl CardRuntime for LuaCardRuntime {
             card_ids.push(entity.card_id.clone());
         }
         card_ids.extend(entity.attached_cards.iter().cloned());
-        if hook == "on_deathrattle" {
-            card_ids.extend(entity.attached_deathrattles.iter().cloned());
+        if let Some(attachments) = entity.hook_attachments.get(hook) {
+            card_ids.extend(attachments.iter().cloned());
         }
         let mut output = Vec::new();
         let mut found = false;

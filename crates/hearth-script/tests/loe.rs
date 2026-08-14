@@ -203,7 +203,10 @@ fn explorers_hat_stacks_deathrattles_and_silence_allows_only_a_new_attachment() 
     advance_to_mana(&mut game, PlayerId::ONE, 10);
     play(&mut game, PlayerId::ONE, "LOE_105", Some(target));
     assert_eq!(
-        game.state().entity(target).unwrap().attached_deathrattles,
+        game.state()
+            .entity(target)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle"),
         ["LOE_105", "LOE_105"]
     );
 
@@ -212,14 +215,17 @@ fn explorers_hat_stacks_deathrattles_and_silence_allows_only_a_new_attachment() 
         game.state()
             .entity(target)
             .unwrap()
-            .attached_deathrattles
+            .scripts_for_hook("on_deathrattle")
             .is_empty()
     );
     wait_for_hand(&mut game, PlayerId::ONE, "LOE_105");
     advance_to_mana(&mut game, PlayerId::ONE, 10);
     play(&mut game, PlayerId::ONE, "LOE_105", Some(target));
     assert_eq!(
-        game.state().entity(target).unwrap().attached_deathrattles,
+        game.state()
+            .entity(target)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle"),
         ["LOE_105"]
     );
 
@@ -234,7 +240,7 @@ fn explorers_hat_stacks_deathrattles_and_silence_allows_only_a_new_attachment() 
 }
 
 #[test]
-fn unearthed_raptor_copies_native_and_attached_deathrattles() {
+fn unearthed_raptor_copies_native_and_hook_attached_deathrattles() {
     let mut game = game(
         mixed(&["EX1_096", "LOE_105", "LOE_019", "CS2_120"]),
         repeated("CS2_029"),
@@ -249,7 +255,10 @@ fn unearthed_raptor_copies_native_and_attached_deathrattles() {
     play(&mut game, PlayerId::ONE, "LOE_105", Some(hoarder));
     let raptor = play(&mut game, PlayerId::ONE, "LOE_019", Some(hoarder));
     assert_eq!(
-        game.state().entity(raptor).unwrap().attached_deathrattles,
+        game.state()
+            .entity(raptor)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle"),
         ["EX1_096", "LOE_105"]
     );
 

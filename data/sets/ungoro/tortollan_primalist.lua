@@ -19,6 +19,9 @@ function card.on_battlecry(ctx, self)
     if #pool > 0 then ctx:discover_cards(player, "Choose a spell to cast", pool, 3, "cast_primalist_spell") end
 end
 function card.cast_primalist_spell(ctx, self, id)
-    ctx:cast_spell_random_target(ctx:controller(self), id)
+    ctx:cast_spell(ctx:controller(self), id, {
+        skip_if_invalid = true,
+        random_target = true,
+    })
 end
 return card

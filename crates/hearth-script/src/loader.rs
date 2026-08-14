@@ -1,5 +1,56 @@
 use super::*;
 
+pub(super) fn register_library_module(
+    lua: &Lua,
+    root: &Path,
+    path: &Path,
+    module: Table,
+) -> Result<(), ScriptLoadError> {
+    let api_version: u32 = module
+        .get("api_version")
+        .map_err(|source| ScriptLoadError::Lua {
+            path: path.to_owned(),
+            source,
+        })?;
+    if api_version != 1 {
+        return Err(ScriptLoadError::Lua {
+            path: path.to_owned(),
+            source: mlua::Error::runtime(format!(
+                "unsupported library api_version {api_version}; expected 1"
+            )),
+        });
+    }
+    let id: String = module.get("id").map_err(|source| ScriptLoadError::Lua {
+        path: path.to_owned(),
+        source,
+    })?;
+    if id.trim().is_empty() {
+        return Err(ScriptLoadError::Lua {
+            path: path.to_owned(),
+            source: mlua::Error::runtime("library id cannot be empty"),
+        });
+    }
+    let libraries: Table = lua
+        .globals()
+        .get("cardlib")
+        .map_err(|source| ScriptLoadError::Lua {
+            path: root.to_owned(),
+            source,
+        })?;
+    if !matches!(libraries.get::<Value>(id.as_str()), Ok(Value::Nil)) {
+        return Err(ScriptLoadError::Lua {
+            path: path.to_owned(),
+            source: mlua::Error::runtime(format!("duplicate library id {id}")),
+        });
+    }
+    libraries
+        .set(id, module)
+        .map_err(|source| ScriptLoadError::Lua {
+            path: path.to_owned(),
+            source,
+        })
+}
+
 #[derive(serde::Deserialize)]
 struct LocaleCatalogEntry {
     id: String,
