@@ -5,6 +5,7 @@ return {
     text = "Give all minions in your hand +1/+1.",
     set = "GANGS",
     type = "spell",
+    spell_school = "holy",
     class = "paladin",
     cost = 1,
 

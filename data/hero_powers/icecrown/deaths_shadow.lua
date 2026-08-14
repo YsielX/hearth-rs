@@ -28,12 +28,23 @@ return {
                 ctx:give_card(ctx:controller(self), "ICC_827t")
             end,
         },
+        {
+            event = "transformed", timing = "after", active_zones = { "hero_power" },
+            condition = function(ctx, self, event)
+                return event.from_card == "ICC_827t"
+                    and ctx:controller(event.entity) == ctx:controller(self)
+            end,
+            effect = function(ctx, self, event)
+                ctx:grant_keyword(event.entity, "temporary")
+            end,
+        },
     },
     tokens = {
         {
             id = "ICC_827t", name = "Shadow Reflection",
             text = "Each time you play a card, transform this into a copy of it.",
             set = "ICECROWN", type = "spell", class = "rogue", cost = 0,
+            keywords = { "temporary" },
             triggers = {
                 {
                     event = "card_played", timing = "before", active_zones = { "hand" },
@@ -43,13 +54,6 @@ return {
                     effect = function(ctx, self, event)
                         ctx:transform(self, ctx:entity(event.entity).card_id)
                     end,
-                },
-                {
-                    event = "turn_ended", timing = "after", active_zones = { "hand" },
-                    condition = function(ctx, self, event)
-                        return event.player == ctx:controller(self)
-                    end,
-                    effect = function(ctx, self) ctx:move(self, "removed") end,
                 },
             },
         },

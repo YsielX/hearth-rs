@@ -1,0 +1,27 @@
+[
+  {
+    "keyword": "recruit",
+    "card_id": "LOOT_093",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/43384-call-to-arms"
+  },
+  {
+    "keyword": "sidequest",
+    "card_id": "DRG_051",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/55262-strength-in-numbers"
+  },
+  {
+    "keyword": "start_of_game",
+    "card_id": "KAR_096",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/39840-prince-malchezaar"
+  },
+  {
+    "keyword": "summoned_when_drawn",
+    "card_id": "TTN_083t",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/97099-son-of-hodir"
+  },
+  {
+    "keyword": "twinspell",
+    "card_id": "DAL_378",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/52089-unleash-the-beast"
+  }
+]

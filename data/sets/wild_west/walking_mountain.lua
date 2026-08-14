@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "WW_382",
+    name = "Walking Mountain",
+    text = "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)",
+    set = "WILD_WEST",
+    type = "minion",
+    class = "shaman",
+    tags = { "elemental" },
+    cost = 9,
+    attack = 4,
+    health = 16,
+    keywords = { "rush", "lifesteal", "mega_windfury", "overload" },
+    keyword_params = { overload = 2 },
+}

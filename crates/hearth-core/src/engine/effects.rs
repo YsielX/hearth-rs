@@ -26,7 +26,7 @@ impl<R: CardRuntime> Game<R> {
                 unreachable!("staged effects are handled by resolve_effect_item")
             }
             EffectSpec::GiveCard {
-                source: _,
+                source,
                 player,
                 card_id,
             } => {
@@ -43,14 +43,18 @@ impl<R: CardRuntime> Game<R> {
                         .unwrap()
                         .entered_hand_turn = Some(self.state.turn);
                     self.state.player_mut(player).hand.push(card);
-                    Ok(vec![GameEvent::CardCreated { player, card }])
+                    Ok(vec![GameEvent::CardCreated {
+                        source,
+                        player,
+                        card,
+                    }])
                 } else {
                     self.state.player_mut(player).graveyard.push(card);
                     Ok(vec![GameEvent::CardBurned { player, card }])
                 }
             }
             EffectSpec::GiveCardAt {
-                source: _,
+                source,
                 player,
                 card_id,
                 position,
@@ -69,14 +73,18 @@ impl<R: CardRuntime> Game<R> {
                         .entered_hand_turn = Some(self.state.turn);
                     let position = position.min(self.state.player(player).hand.len());
                     self.state.player_mut(player).hand.insert(position, card);
-                    Ok(vec![GameEvent::CardCreated { player, card }])
+                    Ok(vec![GameEvent::CardCreated {
+                        source,
+                        player,
+                        card,
+                    }])
                 } else {
                     self.state.player_mut(player).graveyard.push(card);
                     Ok(vec![GameEvent::CardBurned { player, card }])
                 }
             }
             EffectSpec::GiveMergedMinion {
-                source: _,
+                source,
                 player,
                 template,
                 first,
@@ -145,14 +153,18 @@ impl<R: CardRuntime> Game<R> {
                         .unwrap()
                         .entered_hand_turn = Some(self.state.turn);
                     self.state.player_mut(player).hand.push(card);
-                    Ok(vec![GameEvent::CardCreated { player, card }])
+                    Ok(vec![GameEvent::CardCreated {
+                        source,
+                        player,
+                        card,
+                    }])
                 } else {
                     self.state.player_mut(player).graveyard.push(card);
                     Ok(vec![GameEvent::CardBurned { player, card }])
                 }
             }
             EffectSpec::ShuffleCardIntoDeck {
-                source: _,
+                source,
                 player,
                 card_id,
             } => {
@@ -162,7 +174,11 @@ impl<R: CardRuntime> Game<R> {
                     .random_range(0..=self.state.player(player).deck.len());
                 self.state.random_counter = self.state.random_counter.saturating_add(1);
                 self.state.player_mut(player).deck.insert(position, card);
-                Ok(vec![GameEvent::CardCreated { player, card }])
+                Ok(vec![GameEvent::CardCreated {
+                    source,
+                    player,
+                    card,
+                }])
             }
             EffectSpec::ReplaceHeroPower {
                 source,

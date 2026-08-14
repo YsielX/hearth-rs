@@ -16,6 +16,7 @@ return {
     text = "Deal $2 damage to an enemy and <b>Freeze</b> it.",
     set = "PATH_OF_ARTHAS",
     type = "spell",
+    spell_school = "frost",
     class = "death_knight",
     cost = 1,
     target_mode = "required",

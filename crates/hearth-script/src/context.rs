@@ -31,6 +31,12 @@ pub(super) fn build_context(
         lua.create_function(move |_, _ctx: Table| Ok(current_turn))?,
     )?;
 
+    let active_player = state.active_player;
+    ctx.set(
+        "active_player",
+        lua.create_function(move |_, _ctx: Table| Ok(active_player.0))?,
+    )?;
+
     let snapshot = state.clone();
     let definitions = catalog.clone();
     ctx.set(

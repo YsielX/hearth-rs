@@ -5,6 +5,7 @@ return {
     text = "<b>Combo:</b> Gain +2/+2 for each other card you've played this turn.",
     set = "EXPERT1",
     type = "minion",
+    rarity = "legendary",
     class = "rogue",
     cost = 3,
     attack = 2,

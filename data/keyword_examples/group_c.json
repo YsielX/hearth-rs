@@ -1,0 +1,77 @@
+[
+  {
+    "keyword": "lifesteal",
+    "card_id": "GIL_143",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/46710-vicious-scalehide"
+  },
+  {
+    "keyword": "magnetic",
+    "card_id": "BOT_563",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/49356-wargear"
+  },
+  {
+    "keyword": "manathirst",
+    "card_id": "RLK_843",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/86274-arcane-bolt"
+  },
+  {
+    "keyword": "mega_windfury",
+    "card_id": "WW_382",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/101482-walking-mountain"
+  },
+  {
+    "keyword": "miniaturize",
+    "card_id": "TOY_811",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/103633-tigress-plushy"
+  },
+  {
+    "keyword": "outcast",
+    "card_id": "BT_491",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/58453-spectral-sight"
+  },
+  {
+    "keyword": "overheal",
+    "card_id": "AT_011",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/2555-holy-champion"
+  },
+  {
+    "keyword": "overkill",
+    "card_id": "TRL_015",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/49066-ticket-scalper"
+  },
+  {
+    "keyword": "overload",
+    "card_id": "EX1_238",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/505-lightning-bolt"
+  },
+  {
+    "keyword": "passive",
+    "card_id": "ICC_827p",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/43188-deaths-shadow"
+  },
+  {
+    "keyword": "poisonous",
+    "card_id": "WW_376",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/101461-cactus-rager"
+  },
+  {
+    "keyword": "prepare",
+    "card_id": "CATA_EVENT_401",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/124074-tunneling-geomancer"
+  },
+  {
+    "keyword": "quest",
+    "card_id": "UNG_067",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/41222-the-caverns-below"
+  },
+  {
+    "keyword": "questline",
+    "card_id": "SW_028",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/64280-raid-the-docks"
+  },
+  {
+    "keyword": "quickdraw",
+    "card_id": "WW_363",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/101133-bounty-wrangler"
+  }
+]

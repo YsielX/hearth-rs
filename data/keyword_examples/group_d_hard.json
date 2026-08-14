@@ -1,0 +1,32 @@
+[
+  {
+    "keyword": "rewind",
+    "card_id": "TIME_000",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/118636-semi-stable-portal/"
+  },
+  {
+    "keyword": "shatter",
+    "card_id": "CATA_489",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/123692-arcane-flow/"
+  },
+  {
+    "keyword": "starship",
+    "card_id": "GDB_100",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/110091-arkonite-defense-crystal/"
+  },
+  {
+    "keyword": "temporary",
+    "card_id": "ICC_827t",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/45724-shadow-reflection/"
+  },
+  {
+    "keyword": "titan",
+    "card_id": "TTN_858",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/98061-amitus-the-peacekeeper/"
+  },
+  {
+    "keyword": "tourist",
+    "card_id": "VAC_437",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/107926-buttons/"
+  }
+]

@@ -5,6 +5,7 @@ local card = {
     text = "[x]Whenever you <b>Trade</b>,\n<b>Discover</b> a card from your\n deck to draw instead.",
     set = "STORMWIND",
     type = "minion",
+    rarity = "legendary",
     cost = 2,
     attack = 2,
     health = 3,

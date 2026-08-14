@@ -884,7 +884,7 @@ fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale)
             "{player} 爆掉 {}",
             name(card)
         ),
-        GameEvent::CardCreated { player, card } => {
+        GameEvent::CardCreated { player, card, .. } => {
             lf!(
                 locale,
                 "{player} received {}",

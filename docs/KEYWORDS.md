@@ -75,7 +75,7 @@ Cards express those concepts with player data, dynamic pools, and generic effect
 | `colossal` | Colossal | Component callback after summon from any source |
 | `corrupt` | Corrupt | Hand listener for a higher-Cost play and one-shot transform |
 | `dredge` | Dredge | Shared entry; payload uses deck-entity choice and move-to-top primitives |
-| `echo` | Echo | Shared entry; payload creates a Temporary same-turn copy |
+| `echo` | Echo | Creates a same-turn Temporary copy, inherits the played Cost, and enforces the official 1-Mana floor on Echo copies |
 | `excavate` | Excavate | Player-level four-tier cycle passed to reward payload |
 | `fabled` | Fabled | Pre-opening companion callback from the deck |
 | `finale` | Finale | Fires only when payment leaves zero Mana |
@@ -88,7 +88,7 @@ Cards express those concepts with player data, dynamic pools, and generic effect
 | `infuse` | Infuse | Friendly minion deaths while in hand; one-shot parameter threshold |
 | `inspire` | Inspire | Trigger after a friendly successful Hero Power use |
 | `invoke` | Invoke | Player-level count passed to the invocation payload |
-| `kindred` | Kindred | Compare tribe tags with cards played last turn |
+| `kindred` | Kindred | Compare minion types or spell schools with cards played last turn |
 | `magnetic` | Magnetic | Adjacent Mech placement, stat/keyword/script merge, Silence behavior |
 | `manathirst` | Manathirst | Required maximum-Mana threshold parameter |
 | `miniaturize` | Miniaturize | Shared entry; payload creates the official 1/1 Mini token |
@@ -112,5 +112,7 @@ Cards express those concepts with player data, dynamic pools, and generic effect
 A keyword is not always one fixed numeric effect. Taunt, Divine Shield, and Magnetic are fully executed by their modules. Battlecry, Discover, Adapt, and Miniaturize own shared timing, but their target pools, values, options, or official token IDs belong to the individual card text.
 
 Modules use `required_card_hooks`, `required_card_actions`, `required_card_fields`, and `requires_param` to enforce those payloads at load time. A missing hook, action, field, or parameter rejects the card pack; it never degrades into a display-only string.
+
+The manifests under [`data/keyword_examples`](../data/keyword_examples/README.md) map all 68 modules one-to-one to implemented cards in Blizzard's official Card Library. Dedicated tests assert the real state transition or effect for every mapped keyword, not merely that the card ID loads.
 
 Therefore a new card using these 68 keywords still requires only Lua. Rust changes are reserved for a genuinely new reusable rule, event, choice, or atomic effect boundary.

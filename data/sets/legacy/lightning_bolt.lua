@@ -5,6 +5,7 @@ return {
     text = "Deal $3 damage. <b>Overload:</b> (1)",
     set = "EXPERT1",
     type = "spell",
+    spell_school = "nature",
     class = "shaman",
     cost = 1,
     keywords = { "overload" },

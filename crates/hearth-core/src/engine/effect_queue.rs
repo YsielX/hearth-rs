@@ -735,7 +735,16 @@ impl<R: CardRuntime> Game<R> {
                     .runtime
                     .definition(&card_id)
                     .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
-                if definition.kind != entity.kind {
+                let hand_can_change_kind = entity.zone == Zone::Hand
+                    && matches!(
+                        definition.kind,
+                        CardKind::Hero
+                            | CardKind::Minion
+                            | CardKind::Spell
+                            | CardKind::Weapon
+                            | CardKind::Location
+                    );
+                if definition.kind != entity.kind && !hand_can_change_kind {
                     return Err(GameError::CardCannotTransformInto(card_id));
                 }
                 if entity.card_id == card_id {

@@ -5,6 +5,7 @@ return {
     text = "[x]After you play a Pirate,\nsummon this minion\nfrom your deck.",
     set = "GANGS",
     type = "minion",
+    rarity = "legendary",
     cost = 1,
     attack = 1,
     health = 1,

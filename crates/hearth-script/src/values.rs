@@ -228,6 +228,8 @@ pub(super) fn card_definition_to_table(lua: &Lua, card: &CardDefinition) -> mlua
     table.set("type", card_kind_name(card.kind))?;
     table.set("collectible", card.collectible)?;
     table.set("class", card.class.as_str())?;
+    table.set("rarity", card.rarity.as_deref())?;
+    table.set("spell_school", card.spell_school.as_deref())?;
     table.set("cost", card.cost)?;
     table.set("attack", card.attack)?;
     table.set("health", card.health)?;
@@ -279,10 +281,18 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
         }
         GameEvent::CardDrawn { player, card }
         | GameEvent::CardBurned { player, card }
-        | GameEvent::CardCreated { player, card }
         | GameEvent::CardPlayed { player, card }
         | GameEvent::CardCountered { player, card }
         | GameEvent::CardTraded { player, card } => {
+            table.set("player", player.0)?;
+            table.set("entity", card.0)?;
+        }
+        GameEvent::CardCreated {
+            source,
+            player,
+            card,
+        } => {
+            table.set("source", source.0)?;
             table.set("player", player.0)?;
             table.set("entity", card.0)?;
         }

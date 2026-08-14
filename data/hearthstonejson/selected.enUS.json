@@ -1,5 +1,43 @@
 [
   {
+    "artist": "Alex Garner",
+    "attack": 1,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 2555,
+    "flavor": "她最爱做的事就是先把人打个半死，再帮那人慢慢恢复。",
+    "health": 4,
+    "id": "AT_011",
+    "mechanics": [
+      "OVERHEAL"
+    ],
+    "name": "Holy Champion",
+    "rarity": "COMMON",
+    "set": "TGT",
+    "text": "<b>Overheal:</b> Gain +2 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ron Spears",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 2486,
+    "flavor": "还不算最低的！",
+    "health": 2,
+    "id": "AT_082",
+    "mechanics": [
+      "INSPIRE"
+    ],
+    "name": "Lowly Squire",
+    "rarity": "COMMON",
+    "set": "TGT",
+    "text": "<b>Inspire:</b> Gain +1 Attack.",
+    "type": "MINION"
+  },
+  {
     "artist": "Evgeniy Zagumennyy",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -17,6 +55,25 @@
     "rarity": "COMMON",
     "set": "TGT",
     "text": "<b>Charge</b>\n<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 70219,
+    "flavor": "她要为阵营尽一份力。",
+    "health": 3,
+    "id": "AV_121",
+    "mechanics": [
+      "HONORABLE_KILL"
+    ],
+    "name": "Gnome Private",
+    "rarity": "COMMON",
+    "set": "ALTERAC_VALLEY",
+    "text": "[x]<b>Honorable Kill:</b> Gain\n+2 Attack.",
     "type": "MINION"
   },
   {
@@ -60,6 +117,28 @@
     ],
     "set": "ALTERAC_VALLEY",
     "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vladimir Kafanov",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 62706,
+    "flavor": "我怒了！我破防了！",
+    "health": 4,
+    "id": "BAR_025",
+    "mechanics": [
+      "FRENZY"
+    ],
+    "name": "Sunwell Initiate",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "DIVINE_SHIELD"
+    ],
+    "set": "THE_BARRENS",
+    "text": "<b>Frenzy:</b> Gain <b>Divine Shield</b>.",
     "type": "MINION"
   },
   {
@@ -109,6 +188,20 @@
     "text": ""
   },
   {
+    "artist": "Ivan Fomin",
+    "cardClass": "NEUTRAL",
+    "cost": 5,
+    "dbfId": 48752,
+    "id": "BOT_511t",
+    "mechanics": [
+      "ImmuneToSpellpower"
+    ],
+    "name": "Bomb",
+    "set": "BOOMSDAY",
+    "text": "<b>Casts When Drawn</b>\nYou take 5 damage.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Dave Allsop",
     "attack": 6,
     "cardClass": "NEUTRAL",
@@ -152,6 +245,26 @@
     "type": "SPELL"
   },
   {
+    "artist": "Mike Sass",
+    "attack": 3,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 56676,
+    "flavor": "“欢迎光临邪蹄廉价大清仓！萨特出马，随从降价！”",
+    "health": 3,
+    "id": "BT_127",
+    "name": "Imprisoned Satyr",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "COMMON",
+    "set": "BLACK_TEMPLE",
+    "text": "[x]<b>Dormant</b> for 2 turns.\nWhen this awakens, reduce\nthe Cost of a random minion\nin your hand by (5).",
+    "type": "MINION"
+  },
+  {
     "artist": "Andrew Hou",
     "attack": 1,
     "cardClass": "DEMONHUNTER",
@@ -175,6 +288,23 @@
     "set": "DEMON_HUNTER_INITIATE",
     "text": "After your hero attacks, gain +1 Attack.",
     "type": "MINION"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "cardClass": "DEMONHUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 58453,
+    "flavor": "“选一张牌，随意选！最好是最左或最右边的。”",
+    "id": "BT_491",
+    "mechanics": [
+      "OUTCAST"
+    ],
+    "name": "Spectral Sight",
+    "rarity": "COMMON",
+    "set": "BLACK_TEMPLE",
+    "text": "[x]Draw a card.\n<b>Outcast:</b> Draw another.",
+    "type": "SPELL"
   },
   {
     "artist": "Ivan Fomin",
@@ -201,6 +331,95 @@
     "set": "BLACK_TEMPLE",
     "targetingArrowText": "冻结一个敌人。",
     "text": "<b>Battlecry:</b> <b>Freeze</b> an enemy.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 123692,
+    "flavor": "很高兴能和这张穿越的卡牌联动。",
+    "id": "CATA_489",
+    "name": "Arcane Flow",
+    "rarity": "RARE",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "[x]<b>Shatter</b>\nDeal $4 damage.\n Deal $2 damage to\n all enemies.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "cost": 4,
+    "dbfId": 123743,
+    "id": "CATA_489t",
+    "mechanics": [
+      "EVIL_GLOW"
+    ],
+    "name": "Arcane Flow",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "<b>Shattered</b>\nDeal $4 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "cost": 4,
+    "dbfId": 123744,
+    "id": "CATA_489t2",
+    "mechanics": [
+      "EVIL_GLOW"
+    ],
+    "name": "Arcane Flow",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "<b>Shattered</b>\nDeal $2 damage to\nall enemies.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Stefano Spagnuolo",
+    "attack": 0,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 122953,
+    "flavor": "赵氏奥拉基尔……原来奥拉基尔姓赵呀。",
+    "health": 2,
+    "id": "CATA_565",
+    "mechanics": [
+      "BATTLECRY",
+      "TAUNT"
+    ],
+    "name": "Skywall Sentinel",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "RARE",
+    "set": "CATACLYSM",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Herald</b> {0}.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "attack": 1,
+    "cardClass": "SHAMAN",
+    "cost": 1,
+    "dbfId": 127071,
+    "health": 2,
+    "id": "CATA_565t",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Soldier of Al'Akir",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "set": "CATACLYSM",
+    "text": "[x]Adjacent minions\nhave +{0} Attack.\n<i><b>Herald</b> twice to upgrade.</i>@[x]Adjacent minions\nhave +{0} Attack.\n<i><b>Herald</b> once to upgrade.</i>@[x]Adjacent minions\nhave +{0} Attack.",
     "type": "MINION"
   },
   {
@@ -384,6 +603,24 @@
     "set": "LEGACY",
     "spellSchool": "ARCANE",
     "text": "Transform a minion\ninto a 1/1 Sheep.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Steve Ellis",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 662,
+    "flavor": "在你用这张牌的时候，你可以随意喊出一些咒语，比如“冻住！”“冻结！”或者“结冰，结冰吧，宝贝儿！”",
+    "id": "CS2_024",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Frostbolt",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FROST",
+    "text": "Deal $3 damage to a character and <b>Freeze</b> it.",
     "type": "SPELL"
   },
   {
@@ -625,6 +862,26 @@
     "text": ""
   },
   {
+    "artist": "Malcolm Davis",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 179,
+    "flavor": "如果你用足够多的小精灵攻击艾瑞达领主的话，他就会爆炸。但这是为什么呢？",
+    "health": 1,
+    "id": "CS2_231",
+    "name": "Wisp",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
     "attack": 1,
     "cardClass": "MAGE",
     "cost": 1,
@@ -639,6 +896,170 @@
     "set": "LEGACY",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "A. J. Nazzaro",
+    "attack": 3,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 51735,
+    "flavor": "有些人拧着拧着就炸了。",
+    "health": 3,
+    "id": "DAL_060",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Clockwork Goblin",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "rarity": "RARE",
+    "set": "DALARAN",
+    "text": "[x]<b>Battlecry:</b> Shuffle a Bomb\ninto your opponent's deck.\nWhen drawn, it explodes\nfor 5 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 52089,
+    "flavor": "肯瑞托在强制宠物栓绳方面的法规一直很宽松。",
+    "id": "DAL_378",
+    "mechanics": [
+      "TWINSPELL"
+    ],
+    "name": "Unleash the Beast",
+    "rarity": "RARE",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "text": "<b>Twinspell</b>\nSummon a 5/5 Wyvern with <b>Rush</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "attack": 5,
+    "cardClass": "HUNTER",
+    "cost": 5,
+    "dbfId": 54146,
+    "health": 5,
+    "id": "DAL_378t1",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "Wyvern",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "DALARAN",
+    "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
+    "cardClass": "HUNTER",
+    "cost": 6,
+    "dbfId": 54145,
+    "id": "DAL_378ts",
+    "name": "Unleash the Beast",
+    "rarity": "RARE",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "text": "Summon a 5/5 Wyvern with <b>Rush</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Slawomir Maniak",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53160,
+    "health": 1,
+    "id": "DAL_613",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Faceless Lackey",
+    "set": "DALARAN",
+    "text": "<b>Battlecry:</b> Summon a random 2-Cost minion.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ivan Fomin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53161,
+    "health": 1,
+    "id": "DAL_614",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Kobold Lackey",
+    "set": "DALARAN",
+    "targetingArrowText": "造成2点伤害。",
+    "text": "<b>Battlecry:</b> Deal 2 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jeremy Cranford",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53162,
+    "health": 1,
+    "id": "DAL_615",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Witchy Lackey",
+    "set": "DALARAN",
+    "targetingArrowText": "将一个随从变形。",
+    "text": "<b>Battlecry:</b> Transform a friendly minion into one that costs (1) more.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ivan Fomin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 52897,
+    "health": 1,
+    "id": "DAL_739",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Goblin Lackey",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "targetingArrowText": "获得+1攻击力和<b>突袭</b>。",
+    "text": "<b>Battlecry:</b> Give a friendly minion +1 Attack and <b>Rush</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Rafael Zanchetin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 52900,
+    "health": 1,
+    "id": "DAL_741",
+    "mechanics": [
+      "BATTLECRY",
+      "DISCOVER"
+    ],
+    "name": "Ethereal Lackey",
+    "set": "DALARAN",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a spell.",
+    "type": "MINION"
   },
   {
     "artist": "Matt Dixon",
@@ -706,6 +1127,91 @@
     "type": "MINION"
   },
   {
+    "artist": "Jim Nelson",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 61223,
+    "flavor": "腐蚀，其实就是拉你下水。",
+    "id": "DMF_701",
+    "mechanics": [
+      "CORRUPT"
+    ],
+    "name": "Dunk Tank",
+    "rarity": "RARE",
+    "set": "DARKMOON_FAIRE",
+    "spellSchool": "NATURE",
+    "text": "Deal $4 damage.\n<b>Corrupt:</b> Then deal $2 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jim Nelson",
+    "cardClass": "SHAMAN",
+    "cost": 4,
+    "dbfId": 61655,
+    "id": "DMF_701t",
+    "name": "Dunk Tank",
+    "rarity": "RARE",
+    "set": "DARKMOON_FAIRE",
+    "spellSchool": "NATURE",
+    "text": "<b>Corrupted</b>\nDeal $4 damage, then\ndeal $2 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Anzka Nguyen",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 55210,
+    "flavor": "虽说是一群狂徒，但他们对迦拉克隆的虔信坚定不移。",
+    "health": 2,
+    "id": "DRG_050",
+    "mechanics": [
+      "BATTLECRY",
+      "RUSH"
+    ],
+    "name": "Devoted Maniac",
+    "rarity": "COMMON",
+    "set": "DRAGONS",
+    "text": "<b>Rush</b>\n<b>Battlecry:</b> <b>Invoke</b> Galakrond.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luke Mancini",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 55262,
+    "flavor": "一个随从，两个随从……树个随从！",
+    "id": "DRG_051",
+    "mechanics": [
+      "SIDE_QUEST"
+    ],
+    "name": "Strength in Numbers",
+    "rarity": "COMMON",
+    "set": "DRAGONS",
+    "text": "<b>Sidequest:</b> Spend 10 Mana on minions.\n<b>Reward:</b> Summon a minion from your deck.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dave Allsop",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 55378,
+    "health": 1,
+    "id": "DRG_052",
+    "mechanics": [
+      "BATTLECRY",
+      "DISCOVER"
+    ],
+    "name": "Draconic Lackey",
+    "set": "DRAGONS",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a Dragon.",
+    "type": "MINION"
+  },
+  {
     "artist": "Arthur Bozonnet",
     "attack": 5,
     "cardClass": "NEUTRAL",
@@ -731,6 +1237,43 @@
     "type": "MINION"
   },
   {
+    "artist": "A. J. Nazzaro",
+    "attack": 1,
+    "cardClass": "WARLOCK",
+    "cost": 1,
+    "dbfId": 55366,
+    "health": 1,
+    "id": "DRG_238t12t2",
+    "name": "Draconic Imp",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "set": "DRAGONS",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Arthur Gimaldinov",
+    "attack": 2,
+    "cardClass": "SHAMAN",
+    "cost": 2,
+    "dbfId": 55809,
+    "health": 1,
+    "id": "DRG_238t14t3",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "Windswept Elemental",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "set": "DRAGONS",
+    "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Ian Ameling",
     "attack": 3,
     "cardClass": "WARRIOR",
@@ -748,6 +1291,45 @@
     "set": "EMERALD_DREAM",
     "targetingArrowText": "造成1点伤害并使其获得+4攻击力。",
     "text": "<b>Battlecry:</b> Deal 1 damage to a minion and give it\n+4 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "MAGE",
+    "cost": 2,
+    "dbfId": 114056,
+    "id": "EDR_851p",
+    "mechanics": [
+      "ImmuneToSpellpower"
+    ],
+    "name": "Blessing of the Wisp",
+    "referencedTags": [
+      "IMBUE"
+    ],
+    "set": "EMERALD_DREAM",
+    "text": "[x]Summon <b>@</b> Wisp.\nDeal <b>$@</b> damage\nrandomly split among\nall enemies.",
+    "type": "HERO_POWER"
+  },
+  {
+    "artist": "Mike Sass",
+    "attack": 2,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 116462,
+    "flavor": "静聆小精灵，小精灵径临。",
+    "health": 1,
+    "id": "EDR_871",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Spirit Gatherer",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "IMBUE"
+    ],
+    "set": "EMERALD_DREAM",
+    "text": "<b>Battlecry:</b> Get a Wisp. <b>Imbue</b> your Hero Power.",
     "type": "MINION"
   },
   {
@@ -834,6 +1416,32 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>Stealth</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 749,
+    "elite": true,
+    "flavor": "他负责每年一度的血色修道院献血运动！",
+    "health": 1,
+    "id": "EX1_012",
+    "mechanics": [
+      "DEATHRATTLE",
+      "SPELLPOWER"
+    ],
+    "name": "Bloodmage Thalnos",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>\n<b>Deathrattle:</b> Draw a card.",
     "type": "MINION"
   },
   {
@@ -1241,6 +1849,49 @@
     "type": "SPELL"
   },
   {
+    "artist": "Stefan Bogdasarov",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 110091,
+    "flavor": "我单纯只想问问你是不是真的喜欢这种星舰造型，没必要这么叠甲吧。",
+    "health": 4,
+    "id": "GDB_100",
+    "mechanics": [
+      "DEATHRATTLE",
+      "STARSHIP_PIECE",
+      "TAUNT"
+    ],
+    "name": "Arkonite Defense Crystal",
+    "rarity": "RARE",
+    "referencedTags": [
+      "STARSHIP"
+    ],
+    "set": "SPACE",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Gain 4 Armor. <b>Starship Piece</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectionText": "<b>星舰</b>\n<i>（由{0}个组件构成。）</i>",
+    "cost": 0,
+    "dbfId": 110094,
+    "elite": true,
+    "health": 0,
+    "hideCost": true,
+    "id": "GDB_100t2",
+    "mechanics": [
+      "STARSHIP"
+    ],
+    "name": "The Exile's Hope",
+    "set": "SPACE",
+    "text": "<b>Starship</b>\n<i>(Costs (5) Mana to launch.)</i>",
+    "type": "MINION"
+  },
+  {
     "artist": "Eva Widermann",
     "attack": 4,
     "cardClass": "NEUTRAL",
@@ -1289,6 +1940,30 @@
     "type": "MINION"
   },
   {
+    "artist": "Dai Yang",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 46634,
+    "flavor": "这些家伙招募自吉尔尼斯歌剧院。",
+    "health": 4,
+    "id": "GIL_207",
+    "mechanics": [
+      "ECHO",
+      "TAUNT"
+    ],
+    "name": "Phantom Militia",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "RARE",
+    "set": "GILNEAS",
+    "text": "<b>Echo</b>\n<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Slawomir Maniak",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -1309,6 +1984,35 @@
     "rarity": "RARE",
     "set": "GILNEAS",
     "text": "[x]<b>Battlecry:</b> Deal 3 damage to\nthe enemy hero. Restore\n#3 Health to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "attack": 9,
+    "battlegroundsPremiumDbfId": 58428,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 1986,
+    "elite": true,
+    "flavor": "背叛这种事情，如果是主角做了，他就会翻开历史新的一页；如果是配角做了，他的牺牲会帮助主角翻开历史新的一页。",
+    "health": 7,
+    "id": "GVG_021",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Mal'Ganis",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "GVG",
+    "techLevel": 5,
+    "text": "Your hero is <b>Immune</b>.\nYour other Demons\nhave +2/+2.",
     "type": "MINION"
   },
   {
@@ -2142,6 +2846,32 @@
     "type": "MINION"
   },
   {
+    "artist": "Joe Madureira & Grace Liu",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 39840,
+    "elite": true,
+    "flavor": "玛克扎尔在一次淘旧货时买到了血吼。但是当他发现这把传奇武器是赝品时，气得把整个旧货市场都送进了扭曲虚空。",
+    "health": 6,
+    "howToEarn": "加入“卡拉赞之夜”冒险模式，在上层塔中\n解锁。",
+    "howToEarnGolden": "加入“卡拉赞之夜”冒险模式，在上层塔中\n解锁制作。",
+    "id": "KAR_096",
+    "mechanics": [
+      "START_OF_GAME_KEYWORD"
+    ],
+    "name": "Prince Malchezaar",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "KARA",
+    "text": "[x]<b>Start of Game:</b>\nAdd 5 extra <b>Legendary</b>\nminions to your deck.",
+    "type": "MINION"
+  },
+  {
     "artist": "Dave Allsop",
     "attack": 6,
     "cardClass": "ROGUE",
@@ -2187,6 +2917,23 @@
     "type": "MINION"
   },
   {
+    "artist": "Konstantin Turovec",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 43384,
+    "flavor": "有了手机还要号角干什么？",
+    "id": "LOOT_093",
+    "name": "Call to Arms",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "RECRUIT"
+    ],
+    "set": "LOOTAPALOOZA",
+    "text": "[x]<b>Recruit</b> 3 minions that\n cost (2) or less.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Vladimir Kafanov",
     "attack": 4,
     "cardClass": "WARRIOR",
@@ -2205,6 +2952,57 @@
     "rarity": "COMMON",
     "set": "REVENDRETH",
     "text": "<b><b>Taunt</b>.</b> <b>Battlecry:</b> If you have 4 or more Armor, gain +4/+4.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kleston Marques",
+    "attack": 2,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 108615,
+    "flavor": "这只小熊真的是用心做成的。",
+    "health": 4,
+    "id": "MIS_300",
+    "isMiniSet": true,
+    "mechanics": [
+      "ELUSIVE",
+      "GIGANTIFY",
+      "LIFESTEAL",
+      "TAUNT"
+    ],
+    "name": "Snuggle Teddy",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>Gigantify</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kleston Marques",
+    "attack": 8,
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 108616,
+    "health": 8,
+    "id": "MIS_300t",
+    "isMiniSet": true,
+    "mechanics": [
+      "ELUSIVE",
+      "LIFESTEAL",
+      "TAUNT"
+    ],
+    "name": "Snuggle Teddy",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>Gigantic</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>",
     "type": "MINION"
   },
   {
@@ -2278,6 +3076,29 @@
     "text": ""
   },
   {
+    "artist": "Anton Zemskov",
+    "attack": 3,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 38318,
+    "elite": true,
+    "flavor": "每当范达尔·鹿盔举起酒杯，并以“想当年我在种世界之树的时候……”为开场白在那老调重弹时，众酒客便会作鸟兽散。",
+    "health": 6,
+    "id": "OG_044",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Fandral Staghelm",
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "CHOOSE_ONE"
+    ],
+    "set": "OG",
+    "text": "Your <b>Choose One</b> cards and powers have both effects combined.",
+    "type": "MINION"
+  },
+  {
     "artist": "James Ryman",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -2317,6 +3138,26 @@
     "name": "Ooze",
     "set": "OG",
     "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Paul Mafayon",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 78153,
+    "flavor": "“美味的漏斗蛋糕？我好多年没尝过了……”",
+    "health": 3,
+    "id": "REV_956",
+    "mechanics": [
+      "INFUSE",
+      "TAUNT"
+    ],
+    "name": "Priest of the Deceased",
+    "rarity": "COMMON",
+    "set": "REVENDRETH",
+    "text": "<b>Taunt</b>\n<b>Infuse (3):</b> Gain +2/+2.",
     "type": "MINION"
   },
   {
@@ -2381,6 +3222,24 @@
     "text": ""
   },
   {
+    "artist": "Sergey Tsvelykh",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 86274,
+    "flavor": "你等着，等到我有8点法力值的时候！",
+    "id": "RLK_843",
+    "mechanics": [
+      "MANATHIRST"
+    ],
+    "name": "Arcane Bolt",
+    "rarity": "COMMON",
+    "set": "RETURN_OF_THE_LICH_KING",
+    "spellSchool": "ARCANE",
+    "text": "Deal $2 damage. <b>Manathirst (8):</b> Deal $3 damage instead.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Ursula Dorada",
     "attack": 1,
     "cardClass": "NEUTRAL",
@@ -2418,6 +3277,90 @@
     "set": "SCHOLOMANCE",
     "targetingArrowText": "造成1点伤害。",
     "text": "[x]<b>Battlecry:</b> Deal 1 damage\nto a minion.\n <b><b>Spellburst</b>:</b> Return this\nto your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Arthur Bozonnet",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 64280,
+    "elite": true,
+    "flavor": "赢得了一年一度的棘齿城帆船大赛，他们真的很开心。",
+    "id": "SW_028",
+    "name": "Raid the Docks",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Draw a weapon.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 64281,
+    "elite": true,
+    "hideCost": true,
+    "id": "SW_028t",
+    "name": "Create a Distraction",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Deal $2 damage\nto a random enemy twice.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 64282,
+    "elite": true,
+    "hideCost": true,
+    "id": "SW_028t2",
+    "name": "Secure the Supplies",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Cap'n Rokara.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "attack": 7,
+    "cardClass": "WARRIOR",
+    "cost": 5,
+    "dbfId": 67551,
+    "elite": true,
+    "health": 7,
+    "id": "SW_028t5",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Cap'n Rokara",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "set": "STORMWIND",
+    "text": "<b>Battlecry:</b> Summon The Juggernaut!",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jun Yan",
+    "attack": 0,
+    "cardClass": "WARRIOR",
+    "cost": 5,
+    "dbfId": 71431,
+    "elite": true,
+    "health": 1,
+    "hideCost": true,
+    "hideStats": true,
+    "id": "SW_028t6",
+    "mechanics": [
+      "TRIGGER_VISUAL",
+      "UNTOUCHABLE"
+    ],
+    "name": "The Juggernaut",
+    "set": "STORMWIND",
+    "text": "[x]<b>Start of Your Turn:</b>\nSummon a Pirate, equip a\nWarrior weapon, and fire two\n cannons that deal 2 damage!",
     "type": "MINION"
   },
   {
@@ -2464,6 +3407,23 @@
     "type": "MINION"
   },
   {
+    "artist": "Patrik Bjorkstrom",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 118636,
+    "flavor": "传送门技术进步神速！现在每年的传送门维护费用降到了GDP的29%。",
+    "howToEarn": "打开<i>穿越时间流</i>卡牌包后可解锁。",
+    "howToEarnGolden": "打开<i>穿越时间流</i>金色包后可解锁。",
+    "id": "TIME_000",
+    "name": "Semi-Stable Portal",
+    "rarity": "RARE",
+    "set": "TIME_TRAVEL",
+    "spellSchool": "ARCANE",
+    "text": "<b>Rewind</b>\nAdd a random minion\nto your hand. It costs\n(3) less.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Kevin Sidharta",
     "attack": 7,
     "cardClass": "NEUTRAL",
@@ -2485,6 +3445,78 @@
     "text": ""
   },
   {
+    "artist": "Eva Widermann",
+    "attack": 5,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 119928,
+    "elite": true,
+    "flavor": "艾萨拉曾是卡多雷一族仁善的女王。而在某条时间线中，她一直都是这样的女王。",
+    "health": 5,
+    "id": "TIME_211",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Lady Azshara",
+    "rarity": "LEGENDARY",
+    "set": "TIME_TRAVEL",
+    "text": "[x]<b>Fabled</b>. <b>Choose One -</b>\nEmpower Zin-Azshari; or\nThe Well of Eternity. <i>(The\n  other gets destroyed!)</i>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 119929,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t1",
+    "name": "The Well of Eternity",
+    "set": "TIME_TRAVEL",
+    "text": "Fill your hand\nwith random\n<b>Temporary</b> spells.",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 120200,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t1t",
+    "name": "The Well of Eternity",
+    "set": "TIME_TRAVEL",
+    "text": "[x]Fill your hand\nwith random <b>Temporary</b>\nspells. They cast twice.",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 119930,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t2",
+    "name": "Zin-Azshari",
+    "set": "TIME_TRAVEL",
+    "text": "Summon a copy of a friendly minion.",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 120202,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t2t",
+    "name": "Zin-Azshari",
+    "set": "TIME_TRAVEL",
+    "text": "Summon a copy of a friendly minion with\nits stats doubled.",
+    "type": "LOCATION"
+  },
+  {
     "artist": "Matt Dixon",
     "attack": 14,
     "cardClass": "NEUTRAL",
@@ -2503,6 +3535,46 @@
     "set": "THE_LOST_CITY",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 118580,
+    "flavor": "啊，难怪你们都灭绝了。",
+    "id": "TLC_519",
+    "name": "Ambush Predators",
+    "rarity": "RARE",
+    "referencedTags": [
+      "POISONOUS",
+      "STEALTH"
+    ],
+    "set": "THE_LOST_CITY",
+    "spellSchool": "SHADOW",
+    "text": "Summon a 1/1 Spitter with <b>Stealth</b>\nand <b>Poisonous</b>.\n<b>Kindred:</b> Do it again.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "attack": 1,
+    "cardClass": "ROGUE",
+    "cost": 2,
+    "dbfId": 119664,
+    "health": 1,
+    "id": "TLC_519t",
+    "mechanics": [
+      "POISONOUS",
+      "STEALTH"
+    ],
+    "name": "Venomous Spitter",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "THE_LOST_CITY",
+    "text": "<b>Stealth</b>\n <b>Poisonous</b>",
+    "type": "MINION"
   },
   {
     "artist": "Mauricio Herrera",
@@ -2526,6 +3598,78 @@
     "rarity": "COMMON",
     "set": "WHIZBANGS_WORKSHOP",
     "text": "<b>Battlecry:</b> <b>Discover</b> a\n2-Cost card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ursula Dorada",
+    "attack": 3,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 103633,
+    "flavor": "新一代的萌虎之神。",
+    "health": 2,
+    "id": "TOY_811",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "MINIATURIZE",
+      "RUSH"
+    ],
+    "name": "Tigress Plushy",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>Miniaturize</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ursula Dorada",
+    "attack": 1,
+    "cardClass": "PALADIN",
+    "cost": 1,
+    "dbfId": 103637,
+    "health": 1,
+    "id": "TOY_811t",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "RUSH"
+    ],
+    "name": "Tigress Plushy",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>Mini</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "David Kegg",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 49066,
+    "flavor": "按原价的三倍出售！",
+    "health": 3,
+    "id": "TRL_015",
+    "mechanics": [
+      "OVERKILL"
+    ],
+    "name": "Ticket Scalper",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "TROLL",
+    "text": "<b>Overkill</b>: Draw 2 cards.",
     "type": "MINION"
   },
   {
@@ -2553,6 +3697,79 @@
     "type": "MINION"
   },
   {
+    "artist": "Zoltan Boros",
+    "attack": 6,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 71712,
+    "elite": true,
+    "flavor": "一万年前，辛艾萨莉落入了海底……有一部分落到了可拉克的壳上。",
+    "health": 5,
+    "id": "TSC_026",
+    "mechanics": [
+      "COLOSSAL"
+    ],
+    "name": "Colaque",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "THE_SUNKEN_CITY",
+    "text": "[x]<b>Colossal +1</b>\n <b>Immune</b> while you control\nColaque's Shell.",
+    "type": "MINION"
+  },
+  {
+    "attack": 0,
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 71828,
+    "elite": true,
+    "health": 8,
+    "id": "TSC_026t",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "Colaque's Shell",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "THE_SUNKEN_CITY",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Gain 8 Armor.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 72105,
+    "flavor": "“鱼鳞？垃圾。墓碑？垃圾。怪模怪样的谜之匣？垃圾。啊哈！海盗之锚！”",
+    "health": 3,
+    "howToEarnGolden": "完成成就“海底拾贝”后解锁。",
+    "id": "TSC_909",
+    "mechanics": [
+      "BATTLECRY",
+      "DREDGE"
+    ],
+    "name": "Tuskarrrr Trawler",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "THE_SUNKEN_CITY",
+    "text": "<b>Battlecry:</b> <b>Dredge</b>.",
+    "type": "MINION"
+  },
+  {
     "artist": "Matt Dixon",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -2576,6 +3793,38 @@
     ],
     "set": "THE_SUNKEN_CITY",
     "text": "<b>Battlecry:</b> <b>Silence</b> ALL other minions.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 97099,
+    "flavor": "你好像脱水了，喝点水吧！来啊！喝啊！喝啊！喝啊！喝啊！",
+    "health": 8,
+    "id": "TTN_083",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Son of Hodir",
+    "rarity": "EPIC",
+    "set": "TITANS",
+    "text": "<b>Battlecry:</b> Shuffle four\n8/8 Giants into your deck that are summoned when drawn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "cost": 8,
+    "dbfId": 97529,
+    "health": 8,
+    "id": "TTN_083t",
+    "name": "Frost Tyrant",
+    "set": "TITANS",
+    "text": "<b>Summoned When Drawn</b>",
     "type": "MINION"
   },
   {
@@ -2636,6 +3885,27 @@
     "text": ""
   },
   {
+    "artist": "Zoltan Boros",
+    "attack": 1,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 98061,
+    "elite": true,
+    "flavor": "阿米图斯曾是维护和谐的勇士，消弭了万神殿的诸多纷争。萨格拉斯堕落之后不久，她也一同消失了。",
+    "health": 8,
+    "id": "TTN_858",
+    "mechanics": [
+      "TAUNT",
+      "TITAN"
+    ],
+    "name": "Amitus, the Peacekeeper",
+    "rarity": "LEGENDARY",
+    "set": "TITANS",
+    "text": "<b>Titan</b>\n<b>Taunt</b>. Your minions\ncan't take more than 2 damage at a time.",
+    "type": "MINION"
+  },
+  {
     "artist": "MAR Studio",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -2658,6 +3928,26 @@
     "rarity": "RARE",
     "set": "ULDUM",
     "text": "[x]<b>Taunt</b>, <b>Reborn</b>\n<b>Deathrattle:</b> Restore #3\nHealth to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "MAR Studio",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53163,
+    "health": 1,
+    "id": "ULD_616",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Titanic Lackey",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "ULDUM",
+    "targetingArrowText": "获得+2生命值和<b>嘲讽</b>。",
+    "text": "<b>Battlecry:</b> Give a friendly minion +2 Health and <b>Taunt</b>.",
     "type": "MINION"
   },
   {
@@ -2749,6 +4039,202 @@
     "text": ""
   },
   {
+    "artist": "Hideaki Takamura",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 41944,
+    "flavor": "要是祈求救赎没成功的话，就祈求长出更多的尖牙和利爪吧。",
+    "id": "UNG_961",
+    "name": "Adaptation",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "ADAPT"
+    ],
+    "set": "UNGORO",
+    "text": "<b>Adapt</b> a friendly minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Slawomir Maniak",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41054,
+    "hideCost": true,
+    "id": "UNG_999t10",
+    "mechanics": [
+      "STEALTH"
+    ],
+    "name": "Shrouding Mist",
+    "set": "UNGORO",
+    "text": "<b>Stealth</b> until your next turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Mauricio Herrera",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41211,
+    "hideCost": true,
+    "id": "UNG_999t13",
+    "mechanics": [
+      "POISONOUS"
+    ],
+    "name": "Poison Spit",
+    "set": "UNGORO",
+    "text": "<b>Poisonous</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Rudy Siswanto",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41691,
+    "hideCost": true,
+    "id": "UNG_999t14",
+    "name": "Volcanic Might",
+    "set": "UNGORO",
+    "text": "+1/+1",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41057,
+    "hideCost": true,
+    "id": "UNG_999t2",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "Living Spores",
+    "set": "UNGORO",
+    "text": "<b>Deathrattle:</b> Summon two 1/1 Plants.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 41067,
+    "health": 1,
+    "id": "UNG_999t2t1",
+    "name": "Plant",
+    "set": "UNGORO",
+    "techLevel": 1,
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Garrett Hanna",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41058,
+    "hideCost": true,
+    "id": "UNG_999t3",
+    "name": "Flaming Claws",
+    "set": "UNGORO",
+    "text": "+3 Attack",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Arthur Gimaldinov",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41059,
+    "hideCost": true,
+    "id": "UNG_999t4",
+    "name": "Rocky Carapace",
+    "set": "UNGORO",
+    "text": "+3 Health",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41060,
+    "hideCost": true,
+    "id": "UNG_999t5",
+    "mechanics": [
+      "ELUSIVE"
+    ],
+    "name": "Liquid Membrane",
+    "set": "UNGORO",
+    "text": "<b>Elusive</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41061,
+    "hideCost": true,
+    "id": "UNG_999t6",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Massive",
+    "set": "UNGORO",
+    "text": "<b>Taunt</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "James Ryman",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41062,
+    "hideCost": true,
+    "id": "UNG_999t7",
+    "mechanics": [
+      "WINDFURY"
+    ],
+    "name": "Lightning Speed",
+    "set": "UNGORO",
+    "text": "<b>Windfury</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41063,
+    "hideCost": true,
+    "id": "UNG_999t8",
+    "mechanics": [
+      "DIVINE_SHIELD"
+    ],
+    "name": "Crackling Shield",
+    "set": "UNGORO",
+    "text": "<b>Divine Shield</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Anton Zemskov",
+    "attack": 4,
+    "cardClass": "DEATHKNIGHT",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 107926,
+    "elite": true,
+    "flavor": "“再乱买徽章我就剁手！”",
+    "health": 4,
+    "id": "VAC_437",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Buttons",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "ISLAND_VACATION",
+    "text": "<b>Shaman Tourist</b>\n <b>Battlecry:</b> Draw a spell of each spell school.",
+    "type": "MINION"
+  },
+  {
     "artist": "Alex Alexandrov",
     "attack": 6,
     "cardClass": "NEUTRAL",
@@ -2789,6 +4275,284 @@
     "type": "MINION"
   },
   {
+    "artist": "John Loren",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 98762,
+    "flavor": "会挖矿的狗头人，消耗为2点，生命值极低，还能给你提供资源……这不是《魔兽大作战》吗？",
+    "health": 1,
+    "howToEarnGolden": "可以在<i>决战荒芜之地</i>奖励路线中获得该奖励。",
+    "id": "WW_001",
+    "mechanics": [
+      "BATTLECRY",
+      "EXCAVATE"
+    ],
+    "name": "Kobold Miner",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>Battlecry:</b> <b>Excavate</b>\na treasure.",
+    "type": "MINION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98738,
+    "id": "WW_001t",
+    "name": "Rock",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "Deal $3 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98755,
+    "health": 2,
+    "id": "WW_001t11",
+    "name": "Ogrefist Boulder",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "Set a minion's stats\nto 6/7.",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "Mauricio Herrera",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98759,
+    "id": "WW_001t12",
+    "name": "Collapse!",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "Deal $3 damage\nto all enemies.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Juan Calle",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98760,
+    "health": 7,
+    "id": "WW_001t13",
+    "mechanics": [
+      "ELUSIVE",
+      "REBORN",
+      "TAUNT"
+    ],
+    "name": "Steelhide Mole",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>Taunt</b>\n<b>Reborn</b>\n<b>Elusive</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98761,
+    "id": "WW_001t14",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Azerite Gem",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>Discover</b> a 5-Cost card.\nIt costs (0).",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Melvin Chan",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98744,
+    "health": 4,
+    "id": "WW_001t16",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "Living Stone",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> Summon a\nrandom 2-Cost minion.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Stone",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98857,
+    "health": 3,
+    "id": "WW_001t17",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "RUSH"
+    ],
+    "name": "Motherlode Drake",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>Rush</b>\n<b>Divine Shield</b>\n<b>Lifesteal</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vladimir Kafanov",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98859,
+    "id": "WW_001t18",
+    "name": "Pouch of Coins",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "Get two Coins.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98739,
+    "id": "WW_001t2",
+    "name": "Water Source",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "Restore #3 Health.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98740,
+    "id": "WW_001t3",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Fool's Azerite",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>Discover</b> a 2-Cost card.\nIt costs (0).",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98741,
+    "health": 3,
+    "id": "WW_001t4",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "Escaping Trogg",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Angelica Alieva",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98742,
+    "id": "WW_001t5",
+    "name": "Falling Stalactite",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "Deal $3 damage\nto a minion and the\nenemy hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Edgar Hidalgo",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98747,
+    "health": 2,
+    "id": "WW_001t7",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Canary",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "targetingArrowText": "将一个敌方随从移回手牌。",
+    "text": "<b>Battlecry:</b> Return an\nenemy minion to its owner's hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jason Kang",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98748,
+    "id": "WW_001t8",
+    "name": "Glowing Glyph",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "Give a minion and its neighbors +1/+2.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Sergey Tsvelykh",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98749,
+    "id": "WW_001t9",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Azerite Chunk",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "<b>Discover</b> a 3-Cost card.\nIt costs (0).",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 3,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 101133,
+    "flavor": "满手的钱，得意的笑，她太贪了。",
+    "health": 4,
+    "id": "WW_363",
+    "mechanics": [
+      "COMBO",
+      "QUICKDRAW"
+    ],
+    "name": "Bounty Wrangler",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "<b>Quickdraw or Combo:</b>\nGet a Coin.",
+    "type": "MINION"
+  },
+  {
     "artist": "Adam Byrne",
     "attack": 5,
     "cardClass": "NEUTRAL",
@@ -2805,6 +4569,32 @@
     "rarity": "COMMON",
     "set": "WILD_WEST",
     "text": "<b>Poisonous</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "attack": 4,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 101482,
+    "flavor": "山动了！",
+    "health": 16,
+    "id": "WW_382",
+    "mechanics": [
+      "LIFESTEAL",
+      "OVERLOAD",
+      "RUSH"
+    ],
+    "name": "Walking Mountain",
+    "overload": 2,
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)",
     "type": "MINION"
   }
 ]

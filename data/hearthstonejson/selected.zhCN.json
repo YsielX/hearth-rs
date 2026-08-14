@@ -1,5 +1,43 @@
 [
   {
+    "artist": "Alex Garner",
+    "attack": 1,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 2555,
+    "flavor": "她最爱做的事就是先把人打个半死，再帮那人慢慢恢复。",
+    "health": 4,
+    "id": "AT_011",
+    "mechanics": [
+      "OVERHEAL"
+    ],
+    "name": "神圣勇士",
+    "rarity": "COMMON",
+    "set": "TGT",
+    "text": "<b>过量治疗：</b>获得+2攻击力。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ron Spears",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 2486,
+    "flavor": "还不算最低的！",
+    "health": 2,
+    "id": "AT_082",
+    "mechanics": [
+      "INSPIRE"
+    ],
+    "name": "低阶侍从",
+    "rarity": "COMMON",
+    "set": "TGT",
+    "text": "<b>激励：</b>\n获得+1攻击力。",
+    "type": "MINION"
+  },
+  {
     "artist": "Evgeniy Zagumennyy",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -17,6 +55,25 @@
     "rarity": "COMMON",
     "set": "TGT",
     "text": "<b>冲锋</b>\n<b>圣盾</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 70219,
+    "flavor": "她要为阵营尽一份力。",
+    "health": 3,
+    "id": "AV_121",
+    "mechanics": [
+      "HONORABLE_KILL"
+    ],
+    "name": "侏儒列兵",
+    "rarity": "COMMON",
+    "set": "ALTERAC_VALLEY",
+    "text": "<b>荣誉消灭：</b>获得+2攻击力。",
     "type": "MINION"
   },
   {
@@ -60,6 +117,28 @@
     ],
     "set": "ALTERAC_VALLEY",
     "text": "<b>突袭</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vladimir Kafanov",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 62706,
+    "flavor": "我怒了！我破防了！",
+    "health": 4,
+    "id": "BAR_025",
+    "mechanics": [
+      "FRENZY"
+    ],
+    "name": "太阳之井新兵",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "DIVINE_SHIELD"
+    ],
+    "set": "THE_BARRENS",
+    "text": "<b>暴怒：</b>获得<b>圣盾</b>。",
     "type": "MINION"
   },
   {
@@ -108,6 +187,20 @@
     "type": "MINION"
   },
   {
+    "artist": "Ivan Fomin",
+    "cardClass": "NEUTRAL",
+    "cost": 5,
+    "dbfId": 48752,
+    "id": "BOT_511t",
+    "mechanics": [
+      "ImmuneToSpellpower"
+    ],
+    "name": "炸弹",
+    "set": "BOOMSDAY",
+    "text": "<b>抽到时施放</b>\n你受到5点伤害。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Dave Allsop",
     "attack": 6,
     "cardClass": "NEUTRAL",
@@ -151,6 +244,26 @@
     "type": "SPELL"
   },
   {
+    "artist": "Mike Sass",
+    "attack": 3,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 56676,
+    "flavor": "“欢迎光临邪蹄廉价大清仓！萨特出马，随从降价！”",
+    "health": 3,
+    "id": "BT_127",
+    "name": "被禁锢的萨特",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "COMMON",
+    "set": "BLACK_TEMPLE",
+    "text": "<b>休眠</b>2回合。唤醒时，使你手牌中的随机一张随从牌的法力值消耗减少（5）点。",
+    "type": "MINION"
+  },
+  {
     "artist": "Andrew Hou",
     "attack": 1,
     "cardClass": "DEMONHUNTER",
@@ -174,6 +287,23 @@
     "set": "DEMON_HUNTER_INITIATE",
     "text": "在你的英雄攻击后，获得+1攻击力。",
     "type": "MINION"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "cardClass": "DEMONHUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 58453,
+    "flavor": "“选一张牌，随意选！最好是最左或最右边的。”",
+    "id": "BT_491",
+    "mechanics": [
+      "OUTCAST"
+    ],
+    "name": "幽灵视觉",
+    "rarity": "COMMON",
+    "set": "BLACK_TEMPLE",
+    "text": "抽一张牌。<b>流放：</b>再抽一张。",
+    "type": "SPELL"
   },
   {
     "artist": "Ivan Fomin",
@@ -200,6 +330,95 @@
     "set": "BLACK_TEMPLE",
     "targetingArrowText": "冻结一个敌人。",
     "text": "<b>战吼：</b>\n<b>冻结</b>一个敌人。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 123692,
+    "flavor": "很高兴能和这张穿越的卡牌联动。",
+    "id": "CATA_489",
+    "name": "奥术涌流",
+    "rarity": "RARE",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "<b>裂变</b>\n造成$4点伤害。对所有敌人造成$2点伤害。123743造成$4点伤害。对所有敌人造成$2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "cost": 4,
+    "dbfId": 123743,
+    "id": "CATA_489t",
+    "mechanics": [
+      "EVIL_GLOW"
+    ],
+    "name": "奥术涌流",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "<b>已裂变</b>\n造成$4点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tee Fuyuan",
+    "cardClass": "MAGE",
+    "cost": 4,
+    "dbfId": 123744,
+    "id": "CATA_489t2",
+    "mechanics": [
+      "EVIL_GLOW"
+    ],
+    "name": "奥术涌流",
+    "set": "CATACLYSM",
+    "spellSchool": "ARCANE",
+    "text": "<b>已裂变</b>\n对所有敌人造成$2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Stefano Spagnuolo",
+    "attack": 0,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 122953,
+    "flavor": "赵氏奥拉基尔……原来奥拉基尔姓赵呀。",
+    "health": 2,
+    "id": "CATA_565",
+    "mechanics": [
+      "BATTLECRY",
+      "TAUNT"
+    ],
+    "name": "天空之墙哨兵",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "RARE",
+    "set": "CATACLYSM",
+    "text": "<b>嘲讽</b>。<b>战吼：</b><b>兆示</b>{0}。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "attack": 1,
+    "cardClass": "SHAMAN",
+    "cost": 1,
+    "dbfId": 127071,
+    "health": 2,
+    "id": "CATA_565t",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "奥拉基尔的士兵",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "set": "CATACLYSM",
+    "text": "相邻的随从拥有+{0}攻击力。<i><b>兆示</b>两次后升级。</i>1相邻的随从拥有+{0}攻击力。<i><b>兆示</b>一次后升级。</i>1相邻的随从拥有+{0}攻击力。",
     "type": "MINION"
   },
   {
@@ -383,6 +602,24 @@
     "set": "LEGACY",
     "spellSchool": "ARCANE",
     "text": "使一个随从变形成为1/1的绵羊。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Steve Ellis",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 662,
+    "flavor": "在你用这张牌的时候，你可以随意喊出一些咒语，比如“冻住！”“冻结！”或者“结冰，结冰吧，宝贝儿！”",
+    "id": "CS2_024",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "寒冰箭",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FROST",
+    "text": "对一个角色造成$3点伤害，并使其<b>冻结</b>。",
     "type": "SPELL"
   },
   {
@@ -618,6 +855,25 @@
     "type": "MINION"
   },
   {
+    "artist": "Malcolm Davis",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 179,
+    "flavor": "如果你用足够多的小精灵攻击艾瑞达领主的话，他就会爆炸。但这是为什么呢？",
+    "health": 1,
+    "id": "CS2_231",
+    "name": "小精灵",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "type": "MINION"
+  },
+  {
     "attack": 1,
     "cardClass": "MAGE",
     "cost": 1,
@@ -630,6 +886,170 @@
       "BEAST"
     ],
     "set": "LEGACY",
+    "type": "MINION"
+  },
+  {
+    "artist": "A. J. Nazzaro",
+    "attack": 3,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 51735,
+    "flavor": "有些人拧着拧着就炸了。",
+    "health": 3,
+    "id": "DAL_060",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "发条地精",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "rarity": "RARE",
+    "set": "DALARAN",
+    "text": "<b>战吼：</b>将一张“炸弹” 牌洗入你对手的牌库。当抽到“炸弹”时，便会受到5点伤害。",
+    "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 52089,
+    "flavor": "肯瑞托在强制宠物栓绳方面的法规一直很宽松。",
+    "id": "DAL_378",
+    "mechanics": [
+      "TWINSPELL"
+    ],
+    "name": "猛兽出笼",
+    "rarity": "RARE",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "text": "<b>双生法术</b>\n召唤一只5/5并具有<b>突袭</b>的双足飞龙。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "attack": 5,
+    "cardClass": "HUNTER",
+    "cost": 5,
+    "dbfId": 54146,
+    "health": 5,
+    "id": "DAL_378t1",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "双足飞龙",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "DALARAN",
+    "text": "<b>突袭</b>",
+    "type": "MINION"
+  },
+  {
+    "cardClass": "HUNTER",
+    "cost": 6,
+    "dbfId": 54145,
+    "id": "DAL_378ts",
+    "name": "猛兽出笼",
+    "rarity": "RARE",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "text": "召唤一只5/5并具有<b>突袭</b>的双足飞龙。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Slawomir Maniak",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53160,
+    "health": 1,
+    "id": "DAL_613",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "无面跟班",
+    "set": "DALARAN",
+    "text": "<b>战吼：</b>随机召唤一个法力值消耗为（2）的随从。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ivan Fomin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53161,
+    "health": 1,
+    "id": "DAL_614",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "狗头人跟班",
+    "set": "DALARAN",
+    "targetingArrowText": "造成2点伤害。",
+    "text": "<b>战吼：</b>造成2点伤害。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jeremy Cranford",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53162,
+    "health": 1,
+    "id": "DAL_615",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "女巫跟班",
+    "set": "DALARAN",
+    "targetingArrowText": "将一个随从变形。",
+    "text": "<b>战吼：</b>将一个友方随从变形成为一个法力值消耗增加（1）点的随从。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ivan Fomin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 52897,
+    "health": 1,
+    "id": "DAL_739",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "地精跟班",
+    "referencedTags": [
+      "RUSH"
+    ],
+    "set": "DALARAN",
+    "targetingArrowText": "获得+1攻击力和<b>突袭</b>。",
+    "text": "<b>战吼：</b>\n使一个友方随从获得+1攻击力和<b>突袭</b>。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Rafael Zanchetin",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 52900,
+    "health": 1,
+    "id": "DAL_741",
+    "mechanics": [
+      "BATTLECRY",
+      "DISCOVER"
+    ],
+    "name": "虚灵跟班",
+    "set": "DALARAN",
+    "text": "<b>战吼：</b>\n<b>发现</b>一张法术牌。",
     "type": "MINION"
   },
   {
@@ -697,6 +1117,91 @@
     "type": "MINION"
   },
   {
+    "artist": "Jim Nelson",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 61223,
+    "flavor": "腐蚀，其实就是拉你下水。",
+    "id": "DMF_701",
+    "mechanics": [
+      "CORRUPT"
+    ],
+    "name": "深水炸弹",
+    "rarity": "RARE",
+    "set": "DARKMOON_FAIRE",
+    "spellSchool": "NATURE",
+    "text": "造成$4点伤害。<b>腐蚀：</b>再对所有敌方随从造成$2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jim Nelson",
+    "cardClass": "SHAMAN",
+    "cost": 4,
+    "dbfId": 61655,
+    "id": "DMF_701t",
+    "name": "深水炸弹",
+    "rarity": "RARE",
+    "set": "DARKMOON_FAIRE",
+    "spellSchool": "NATURE",
+    "text": "<b>已腐蚀</b>\n造成$4点伤害，再对所有敌方随从造成$2点\n伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Anzka Nguyen",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 55210,
+    "flavor": "虽说是一群狂徒，但他们对迦拉克隆的虔信坚定不移。",
+    "health": 2,
+    "id": "DRG_050",
+    "mechanics": [
+      "BATTLECRY",
+      "RUSH"
+    ],
+    "name": "虔信狂徒",
+    "rarity": "COMMON",
+    "set": "DRAGONS",
+    "text": "<b>突袭，战吼：</b>\n<b>祈求</b>迦拉克隆。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luke Mancini",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 55262,
+    "flavor": "一个随从，两个随从……树个随从！",
+    "id": "DRG_051",
+    "mechanics": [
+      "SIDE_QUEST"
+    ],
+    "name": "人多势众",
+    "rarity": "COMMON",
+    "set": "DRAGONS",
+    "text": "<b>支线任务：</b>\n消耗10点法力值用于随从牌上。<b>奖励：</b>从你的牌库中召唤一个随从。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dave Allsop",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 55378,
+    "health": 1,
+    "id": "DRG_052",
+    "mechanics": [
+      "BATTLECRY",
+      "DISCOVER"
+    ],
+    "name": "龙族跟班",
+    "set": "DRAGONS",
+    "text": "<b>战吼：</b>\n<b>发现</b>一张龙牌。",
+    "type": "MINION"
+  },
+  {
     "artist": "Arthur Bozonnet",
     "attack": 5,
     "cardClass": "NEUTRAL",
@@ -722,6 +1227,42 @@
     "type": "MINION"
   },
   {
+    "artist": "A. J. Nazzaro",
+    "attack": 1,
+    "cardClass": "WARLOCK",
+    "cost": 1,
+    "dbfId": 55366,
+    "health": 1,
+    "id": "DRG_238t12t2",
+    "name": "龙裔小鬼",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "set": "DRAGONS",
+    "type": "MINION"
+  },
+  {
+    "artist": "Arthur Gimaldinov",
+    "attack": 2,
+    "cardClass": "SHAMAN",
+    "cost": 2,
+    "dbfId": 55809,
+    "health": 1,
+    "id": "DRG_238t14t3",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "啸风元素",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "set": "DRAGONS",
+    "text": "<b>突袭</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Ian Ameling",
     "attack": 3,
     "cardClass": "WARRIOR",
@@ -739,6 +1280,45 @@
     "set": "EMERALD_DREAM",
     "targetingArrowText": "造成1点伤害并使其获得+4攻击力。",
     "text": "<b>战吼：</b>对一个随从造成1点伤害，并使其获得+4攻击力。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "MAGE",
+    "cost": 2,
+    "dbfId": 114056,
+    "id": "EDR_851p",
+    "mechanics": [
+      "ImmuneToSpellpower"
+    ],
+    "name": "小精灵的祝福",
+    "referencedTags": [
+      "IMBUE"
+    ],
+    "set": "EMERALD_DREAM",
+    "text": "召唤<b>1个小精灵</b>。造成<b>$1</b>点伤害，随机分配到所有敌人身上。",
+    "type": "HERO_POWER"
+  },
+  {
+    "artist": "Mike Sass",
+    "attack": 2,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 116462,
+    "flavor": "静聆小精灵，小精灵径临。",
+    "health": 1,
+    "id": "EDR_871",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "灵体采集者",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "IMBUE"
+    ],
+    "set": "EMERALD_DREAM",
+    "text": "<b>战吼：</b>获取\n一张小精灵。<b>灌注</b>你的英雄技能。",
     "type": "MINION"
   },
   {
@@ -825,6 +1405,32 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>潜行</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 749,
+    "elite": true,
+    "flavor": "他负责每年一度的血色修道院献血运动！",
+    "health": 1,
+    "id": "EX1_012",
+    "mechanics": [
+      "DEATHRATTLE",
+      "SPELLPOWER"
+    ],
+    "name": "血法师萨尔诺斯",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "spellDamage": 1,
+    "text": "<b>法术伤害+1</b>，<b>亡语：</b>抽一张牌。",
     "type": "MINION"
   },
   {
@@ -1231,6 +1837,49 @@
     "type": "SPELL"
   },
   {
+    "artist": "Stefan Bogdasarov",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 110091,
+    "flavor": "我单纯只想问问你是不是真的喜欢这种星舰造型，没必要这么叠甲吧。",
+    "health": 4,
+    "id": "GDB_100",
+    "mechanics": [
+      "DEATHRATTLE",
+      "STARSHIP_PIECE",
+      "TAUNT"
+    ],
+    "name": "阿肯尼特防护水晶",
+    "rarity": "RARE",
+    "referencedTags": [
+      "STARSHIP"
+    ],
+    "set": "SPACE",
+    "text": "<b>嘲讽</b>。<b>亡语：</b>获得4点护甲值。\n<b>星舰组件</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectionText": "<b>星舰</b>\n<i>（由{0}个组件构成。）</i>",
+    "cost": 0,
+    "dbfId": 110094,
+    "elite": true,
+    "health": 0,
+    "hideCost": true,
+    "id": "GDB_100t2",
+    "mechanics": [
+      "STARSHIP"
+    ],
+    "name": "流亡者的希望",
+    "set": "SPACE",
+    "text": "<b>星舰</b>\n<i>（消耗5点法力值即可发射。）</i>",
+    "type": "MINION"
+  },
+  {
     "artist": "Eva Widermann",
     "attack": 4,
     "cardClass": "NEUTRAL",
@@ -1279,6 +1928,30 @@
     "type": "MINION"
   },
   {
+    "artist": "Dai Yang",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 46634,
+    "flavor": "这些家伙招募自吉尔尼斯歌剧院。",
+    "health": 4,
+    "id": "GIL_207",
+    "mechanics": [
+      "ECHO",
+      "TAUNT"
+    ],
+    "name": "魅影民兵",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "RARE",
+    "set": "GILNEAS",
+    "text": "<b>回响，嘲讽</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Slawomir Maniak",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -1299,6 +1972,35 @@
     "rarity": "RARE",
     "set": "GILNEAS",
     "text": "<b>战吼：</b>对敌方英雄造成3点伤害。为你的英雄恢复#3点生命值。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "attack": 9,
+    "battlegroundsPremiumDbfId": 58428,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 1986,
+    "elite": true,
+    "flavor": "背叛这种事情，如果是主角做了，他就会翻开历史新的一页；如果是配角做了，他的牺牲会帮助主角翻开历史新的一页。",
+    "health": 7,
+    "id": "GVG_021",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "玛尔加尼斯",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "GVG",
+    "techLevel": 5,
+    "text": "你的英雄<b>免疫</b>。你的其他恶魔拥有+2/+2。",
     "type": "MINION"
   },
   {
@@ -2126,6 +2828,32 @@
     "type": "MINION"
   },
   {
+    "artist": "Joe Madureira & Grace Liu",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 39840,
+    "elite": true,
+    "flavor": "玛克扎尔在一次淘旧货时买到了血吼。但是当他发现这把传奇武器是赝品时，气得把整个旧货市场都送进了扭曲虚空。",
+    "health": 6,
+    "howToEarn": "加入“卡拉赞之夜”冒险模式，在上层塔中\n解锁。",
+    "howToEarnGolden": "加入“卡拉赞之夜”冒险模式，在上层塔中\n解锁制作。",
+    "id": "KAR_096",
+    "mechanics": [
+      "START_OF_GAME_KEYWORD"
+    ],
+    "name": "玛克扎尔王子",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "KARA",
+    "text": "<b>对战开始时：</b>额外将五张<b>传说</b>随从牌置入你的牌库。",
+    "type": "MINION"
+  },
+  {
     "artist": "Dave Allsop",
     "attack": 6,
     "cardClass": "ROGUE",
@@ -2171,6 +2899,23 @@
     "type": "MINION"
   },
   {
+    "artist": "Konstantin Turovec",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 43384,
+    "flavor": "有了手机还要号角干什么？",
+    "id": "LOOT_093",
+    "name": "战斗号角",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "RECRUIT"
+    ],
+    "set": "LOOTAPALOOZA",
+    "text": "<b>招募</b>三个法力值消耗小于或等于（2）点的随从。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Vladimir Kafanov",
     "attack": 4,
     "cardClass": "WARRIOR",
@@ -2189,6 +2934,57 @@
     "rarity": "COMMON",
     "set": "REVENDRETH",
     "text": "<b><b>嘲讽</b>。</b><b>战吼：</b>如果你的护甲值大于或等于4点，获得+4/+4。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kleston Marques",
+    "attack": 2,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 108615,
+    "flavor": "这只小熊真的是用心做成的。",
+    "health": 4,
+    "id": "MIS_300",
+    "isMiniSet": true,
+    "mechanics": [
+      "ELUSIVE",
+      "GIGANTIFY",
+      "LIFESTEAL",
+      "TAUNT"
+    ],
+    "name": "抱抱泰迪熊",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>扩大</b>\n<b>扰魔</b>，<b>吸血</b>，<b>嘲讽</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kleston Marques",
+    "attack": 8,
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 108616,
+    "health": 8,
+    "id": "MIS_300t",
+    "isMiniSet": true,
+    "mechanics": [
+      "ELUSIVE",
+      "LIFESTEAL",
+      "TAUNT"
+    ],
+    "name": "抱抱泰迪熊",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>大型</b>\n<b>扰魔</b>，<b>吸血</b>，<b>嘲讽</b>",
     "type": "MINION"
   },
   {
@@ -2261,6 +3057,29 @@
     "type": "MINION"
   },
   {
+    "artist": "Anton Zemskov",
+    "attack": 3,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 38318,
+    "elite": true,
+    "flavor": "每当范达尔·鹿盔举起酒杯，并以“想当年我在种世界之树的时候……”为开场白在那老调重弹时，众酒客便会作鸟兽散。",
+    "health": 6,
+    "id": "OG_044",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "范达尔·鹿盔",
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "CHOOSE_ONE"
+    ],
+    "set": "OG",
+    "text": "你的<b>抉择</b>牌和英雄技能可以同时拥有两种效果。",
+    "type": "MINION"
+  },
+  {
     "artist": "James Ryman",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -2300,6 +3119,26 @@
     "name": "软泥怪",
     "set": "OG",
     "text": "<b>嘲讽</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Paul Mafayon",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 78153,
+    "flavor": "“美味的漏斗蛋糕？我好多年没尝过了……”",
+    "health": 3,
+    "id": "REV_956",
+    "mechanics": [
+      "INFUSE",
+      "TAUNT"
+    ],
+    "name": "亡者牧师",
+    "rarity": "COMMON",
+    "set": "REVENDRETH",
+    "text": "<b>嘲讽</b>，<b>注能（3）：</b>获得+2/+2。",
     "type": "MINION"
   },
   {
@@ -2363,6 +3202,24 @@
     "type": "MINION"
   },
   {
+    "artist": "Sergey Tsvelykh",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 86274,
+    "flavor": "你等着，等到我有8点法力值的时候！",
+    "id": "RLK_843",
+    "mechanics": [
+      "MANATHIRST"
+    ],
+    "name": "奥术箭",
+    "rarity": "COMMON",
+    "set": "RETURN_OF_THE_LICH_KING",
+    "spellSchool": "ARCANE",
+    "text": "造成$2点伤害。<b>法力渴求（8）：</b>改为造成$3点伤害。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Ursula Dorada",
     "attack": 1,
     "cardClass": "NEUTRAL",
@@ -2400,6 +3257,90 @@
     "set": "SCHOLOMANCE",
     "targetingArrowText": "造成1点伤害。",
     "text": "<b>战吼：</b>对一个随从造成1点伤害。<b>法术迸发：</b>将本随从移回你的\n手牌。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Arthur Bozonnet",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 64280,
+    "elite": true,
+    "flavor": "赢得了一年一度的棘齿城帆船大赛，他们真的很开心。",
+    "id": "SW_028",
+    "name": "开进码头",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "<b>任务线：</b>使用三张海盗牌。<b>奖励：</b>抽一张武器牌。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 64281,
+    "elite": true,
+    "hideCost": true,
+    "id": "SW_028t",
+    "name": "制造混乱",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "<b>任务线：</b>使用三张海盗牌。<b>奖励：</b>随机对一个敌人造成$2点伤害，触发两次。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 64282,
+    "elite": true,
+    "hideCost": true,
+    "id": "SW_028t2",
+    "name": "保证补给",
+    "rarity": "LEGENDARY",
+    "set": "STORMWIND",
+    "text": "<b>任务线：</b>使用三张海盗牌。<b>奖励：</b>船长洛卡拉。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "attack": 7,
+    "cardClass": "WARRIOR",
+    "cost": 5,
+    "dbfId": 67551,
+    "elite": true,
+    "health": 7,
+    "id": "SW_028t5",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "船长洛卡拉",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "set": "STORMWIND",
+    "text": "<b>战吼：</b>召唤毁灭战舰！",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jun Yan",
+    "attack": 0,
+    "cardClass": "WARRIOR",
+    "cost": 5,
+    "dbfId": 71431,
+    "elite": true,
+    "health": 1,
+    "hideCost": true,
+    "hideStats": true,
+    "id": "SW_028t6",
+    "mechanics": [
+      "TRIGGER_VISUAL",
+      "UNTOUCHABLE"
+    ],
+    "name": "毁灭战舰",
+    "set": "STORMWIND",
+    "text": "<b>在你的回合开始时：</b>召唤一个海盗，装备一把战士武器，并向敌人发射两发炮弹，每发造成2点伤害。",
     "type": "MINION"
   },
   {
@@ -2446,6 +3387,23 @@
     "type": "MINION"
   },
   {
+    "artist": "Patrik Bjorkstrom",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 118636,
+    "flavor": "传送门技术进步神速！现在每年的传送门维护费用降到了GDP的29%。",
+    "howToEarn": "打开<i>穿越时间流</i>卡牌包后可解锁。",
+    "howToEarnGolden": "打开<i>穿越时间流</i>金色包后可解锁。",
+    "id": "TIME_000",
+    "name": "半稳定的传送门",
+    "rarity": "RARE",
+    "set": "TIME_TRAVEL",
+    "spellSchool": "ARCANE",
+    "text": "<b>回溯</b>。随机将一张随从牌置入你的手牌。该牌的法力值消耗减少（3）点。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Kevin Sidharta",
     "attack": 7,
     "cardClass": "NEUTRAL",
@@ -2466,6 +3424,78 @@
     "type": "MINION"
   },
   {
+    "artist": "Eva Widermann",
+    "attack": 5,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 119928,
+    "elite": true,
+    "flavor": "艾萨拉曾是卡多雷一族仁善的女王。而在某条时间线中，她一直都是这样的女王。",
+    "health": 5,
+    "id": "TIME_211",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "艾萨拉女士",
+    "rarity": "LEGENDARY",
+    "set": "TIME_TRAVEL",
+    "text": "<b>奇闻</b>\n<b>抉择：</b>强化辛艾萨莉；或者永恒之井。<i>（未选择的选项会被摧毁！）</i>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 119929,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t1",
+    "name": "永恒之井",
+    "set": "TIME_TRAVEL",
+    "text": "用随机的<b>临时</b>法术牌填满你的手牌。",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "Daniil Kudriavtsev",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 120200,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t1t",
+    "name": "永恒之井",
+    "set": "TIME_TRAVEL",
+    "text": "用随机的<b>临时</b>法术牌填满你的手牌，这些牌会施放两次。",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 119930,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t2",
+    "name": "辛艾萨莉",
+    "set": "TIME_TRAVEL",
+    "text": "召唤一个友方随从的一个复制。",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 120202,
+    "elite": true,
+    "health": 3,
+    "id": "TIME_211t2t",
+    "name": "辛艾萨莉",
+    "set": "TIME_TRAVEL",
+    "text": "召唤一个友方随从的一个具有翻倍属性值的复制。",
+    "type": "LOCATION"
+  },
+  {
     "artist": "Matt Dixon",
     "attack": 14,
     "cardClass": "NEUTRAL",
@@ -2482,6 +3512,46 @@
     ],
     "rarity": "COMMON",
     "set": "THE_LOST_CITY",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 118580,
+    "flavor": "啊，难怪你们都灭绝了。",
+    "id": "TLC_519",
+    "name": "潜踪掠食",
+    "rarity": "RARE",
+    "referencedTags": [
+      "POISONOUS",
+      "STEALTH"
+    ],
+    "set": "THE_LOST_CITY",
+    "spellSchool": "SHADOW",
+    "text": "召唤一只1/1并具有<b>潜行</b>和<b>剧毒</b>的喷毒龙。<b>延系：</b>重复一次。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "attack": 1,
+    "cardClass": "ROGUE",
+    "cost": 2,
+    "dbfId": 119664,
+    "health": 1,
+    "id": "TLC_519t",
+    "mechanics": [
+      "POISONOUS",
+      "STEALTH"
+    ],
+    "name": "喷毒龙",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "THE_LOST_CITY",
+    "text": "<b>潜行</b>。<b>剧毒</b>",
     "type": "MINION"
   },
   {
@@ -2509,6 +3579,78 @@
     "type": "MINION"
   },
   {
+    "artist": "Ursula Dorada",
+    "attack": 3,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 103633,
+    "flavor": "新一代的萌虎之神。",
+    "health": 2,
+    "id": "TOY_811",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "MINIATURIZE",
+      "RUSH"
+    ],
+    "name": "绒绒虎",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>微缩</b>\n<b>突袭</b>，<b>吸血</b>，<b>圣盾</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ursula Dorada",
+    "attack": 1,
+    "cardClass": "PALADIN",
+    "cost": 1,
+    "dbfId": 103637,
+    "health": 1,
+    "id": "TOY_811t",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "RUSH"
+    ],
+    "name": "绒绒虎",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "WHIZBANGS_WORKSHOP",
+    "text": "<b>微型</b>\n<b>突袭</b>，<b>吸血</b>，<b>圣盾</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "David Kegg",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 49066,
+    "flavor": "按原价的三倍出售！",
+    "health": 3,
+    "id": "TRL_015",
+    "mechanics": [
+      "OVERKILL"
+    ],
+    "name": "黑心票贩",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "TROLL",
+    "text": "<b>超杀</b>：抽两张牌。",
+    "type": "MINION"
+  },
+  {
     "artist": "Vlad Botos",
     "attack": 5,
     "cardClass": "NEUTRAL",
@@ -2530,6 +3672,79 @@
     "rarity": "COMMON",
     "set": "TROLL",
     "text": "<b>突袭</b>\n<b>嘲讽</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "attack": 6,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 71712,
+    "elite": true,
+    "flavor": "一万年前，辛艾萨莉落入了海底……有一部分落到了可拉克的壳上。",
+    "health": 5,
+    "id": "TSC_026",
+    "mechanics": [
+      "COLOSSAL"
+    ],
+    "name": "可拉克",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "THE_SUNKEN_CITY",
+    "text": "<b>巨型+1</b>\n当你控制可拉克的壳时<b>免疫</b>。",
+    "type": "MINION"
+  },
+  {
+    "attack": 0,
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 71828,
+    "elite": true,
+    "health": 8,
+    "id": "TSC_026t",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "可拉克的壳",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "THE_SUNKEN_CITY",
+    "text": "<b>嘲讽</b>，<b>亡语：</b>获得8点护甲值。",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 72105,
+    "flavor": "“鱼鳞？垃圾。墓碑？垃圾。怪模怪样的谜之匣？垃圾。啊哈！海盗之锚！”",
+    "health": 3,
+    "howToEarnGolden": "完成成就“海底拾贝”后解锁。",
+    "id": "TSC_909",
+    "mechanics": [
+      "BATTLECRY",
+      "DREDGE"
+    ],
+    "name": "拖网海象人",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "THE_SUNKEN_CITY",
+    "text": "<b>战吼：</b><b>探底</b>。",
     "type": "MINION"
   },
   {
@@ -2556,6 +3771,38 @@
     ],
     "set": "THE_SUNKEN_CITY",
     "text": "<b>战吼：</b><b>沉默</b>所有其他随从。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 97099,
+    "flavor": "你好像脱水了，喝点水吧！来啊！喝啊！喝啊！喝啊！喝啊！",
+    "health": 8,
+    "id": "TTN_083",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "霍迪尔之子",
+    "rarity": "EPIC",
+    "set": "TITANS",
+    "text": "<b>战吼：</b>将四张抽到时会被召唤的8/8的巨人洗入你的牌库。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "cost": 8,
+    "dbfId": 97529,
+    "health": 8,
+    "id": "TTN_083t",
+    "name": "冰霜霸主",
+    "set": "TITANS",
+    "text": "<b>抽到时召唤</b>",
     "type": "MINION"
   },
   {
@@ -2615,6 +3862,27 @@
     "type": "MINION"
   },
   {
+    "artist": "Zoltan Boros",
+    "attack": 1,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 98061,
+    "elite": true,
+    "flavor": "阿米图斯曾是维护和谐的勇士，消弭了万神殿的诸多纷争。萨格拉斯堕落之后不久，她也一同消失了。",
+    "health": 8,
+    "id": "TTN_858",
+    "mechanics": [
+      "TAUNT",
+      "TITAN"
+    ],
+    "name": "维和者阿米图斯",
+    "rarity": "LEGENDARY",
+    "set": "TITANS",
+    "text": "<b>泰坦</b>\n<b>嘲讽</b>。你的随从每次受到伤害不会超过2点。",
+    "type": "MINION"
+  },
+  {
     "artist": "MAR Studio",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -2637,6 +3905,26 @@
     "rarity": "RARE",
     "set": "ULDUM",
     "text": "<b>嘲讽</b>，<b>复生</b>。<b>亡语：</b>为你的英雄恢复#3点生命值。",
+    "type": "MINION"
+  },
+  {
+    "artist": "MAR Studio",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 53163,
+    "health": 1,
+    "id": "ULD_616",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "泰坦造物跟班",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "ULDUM",
+    "targetingArrowText": "获得+2生命值和<b>嘲讽</b>。",
+    "text": "<b>战吼：</b>使一个友方随从获得+2生命值和\n<b>嘲讽</b>。",
     "type": "MINION"
   },
   {
@@ -2727,6 +4015,201 @@
     "type": "MINION"
   },
   {
+    "artist": "Hideaki Takamura",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 41944,
+    "flavor": "要是祈求救赎没成功的话，就祈求长出更多的尖牙和利爪吧。",
+    "id": "UNG_961",
+    "name": "适者生存",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "ADAPT"
+    ],
+    "set": "UNGORO",
+    "text": "<b>进化</b>一个友方随从。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Slawomir Maniak",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41054,
+    "hideCost": true,
+    "id": "UNG_999t10",
+    "mechanics": [
+      "STEALTH"
+    ],
+    "name": "氤氲迷雾",
+    "set": "UNGORO",
+    "text": "获得<b>潜行</b>直到你的下个回合。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Mauricio Herrera",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41211,
+    "hideCost": true,
+    "id": "UNG_999t13",
+    "mechanics": [
+      "POISONOUS"
+    ],
+    "name": "毒液喷吐",
+    "set": "UNGORO",
+    "text": "<b>剧毒</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Rudy Siswanto",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41691,
+    "hideCost": true,
+    "id": "UNG_999t14",
+    "name": "火山之力",
+    "set": "UNGORO",
+    "text": "+1/+1",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41057,
+    "hideCost": true,
+    "id": "UNG_999t2",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "活性孢子",
+    "set": "UNGORO",
+    "text": "<b>亡语：</b>召唤两个1/1的植物。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 41067,
+    "health": 1,
+    "id": "UNG_999t2t1",
+    "name": "植物",
+    "set": "UNGORO",
+    "techLevel": 1,
+    "type": "MINION"
+  },
+  {
+    "artist": "Garrett Hanna",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41058,
+    "hideCost": true,
+    "id": "UNG_999t3",
+    "name": "烈焰利爪",
+    "set": "UNGORO",
+    "text": "+3攻击力",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Arthur Gimaldinov",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41059,
+    "hideCost": true,
+    "id": "UNG_999t4",
+    "name": "岩质甲壳",
+    "set": "UNGORO",
+    "text": "+3生命值",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41060,
+    "hideCost": true,
+    "id": "UNG_999t5",
+    "mechanics": [
+      "ELUSIVE"
+    ],
+    "name": "液态外膜",
+    "set": "UNGORO",
+    "text": "<b>扰魔</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41061,
+    "hideCost": true,
+    "id": "UNG_999t6",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "巨型体态",
+    "set": "UNGORO",
+    "text": "<b>嘲讽</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "James Ryman",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41062,
+    "hideCost": true,
+    "id": "UNG_999t7",
+    "mechanics": [
+      "WINDFURY"
+    ],
+    "name": "闪电之速",
+    "set": "UNGORO",
+    "text": "<b>风怒</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 41063,
+    "hideCost": true,
+    "id": "UNG_999t8",
+    "mechanics": [
+      "DIVINE_SHIELD"
+    ],
+    "name": "爆裂护盾",
+    "set": "UNGORO",
+    "text": "<b>圣盾</b>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Anton Zemskov",
+    "attack": 4,
+    "cardClass": "DEATHKNIGHT",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 107926,
+    "elite": true,
+    "flavor": "“再乱买徽章我就剁手！”",
+    "health": 4,
+    "id": "VAC_437",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "扣子",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "ISLAND_VACATION",
+    "text": "<b>萨满祭司游客</b>\n<b>战吼：</b>抽取每个派系的法术牌各一张。",
+    "type": "MINION"
+  },
+  {
     "artist": "Alex Alexandrov",
     "attack": 6,
     "cardClass": "NEUTRAL",
@@ -2766,6 +4249,284 @@
     "type": "MINION"
   },
   {
+    "artist": "John Loren",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 98762,
+    "flavor": "会挖矿的狗头人，消耗为2点，生命值极低，还能给你提供资源……这不是《魔兽大作战》吗？",
+    "health": 1,
+    "howToEarnGolden": "可以在<i>决战荒芜之地</i>奖励路线中获得该奖励。",
+    "id": "WW_001",
+    "mechanics": [
+      "BATTLECRY",
+      "EXCAVATE"
+    ],
+    "name": "狗头人矿工",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>战吼：</b>\n<b>发掘</b>一个宝藏。",
+    "type": "MINION"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98738,
+    "id": "WW_001t",
+    "name": "石头",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "造成$3点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "BOSi Studio",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98755,
+    "health": 2,
+    "id": "WW_001t11",
+    "name": "魔拳岩",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "将一个随从的属性值变为6/7。",
+    "type": "LOCATION"
+  },
+  {
+    "artist": "Mauricio Herrera",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98759,
+    "id": "WW_001t12",
+    "name": "塌陷",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "对所有敌人造成$3点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Juan Calle",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98760,
+    "health": 7,
+    "id": "WW_001t13",
+    "mechanics": [
+      "ELUSIVE",
+      "REBORN",
+      "TAUNT"
+    ],
+    "name": "铁皮鼹鼠",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>嘲讽</b>。<b>复生</b>。<b>扰魔</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98761,
+    "id": "WW_001t14",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "艾泽里特晶石",
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>发现</b>一张法力值消耗为（5）的卡牌，其消耗变为（0）点。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Melvin Chan",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98744,
+    "health": 4,
+    "id": "WW_001t16",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "活体石头",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "<b>嘲讽</b>。<b>亡语：</b>随机召唤一个法力值消耗为（2）的随从。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Stone",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 98857,
+    "health": 3,
+    "id": "WW_001t17",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "LIFESTEAL",
+      "RUSH"
+    ],
+    "name": "主矿区幼龙",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>突袭</b>\n<b>圣盾</b>。<b>吸血</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vladimir Kafanov",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98859,
+    "id": "WW_001t18",
+    "name": "钱袋",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "获取两张幸运币。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98739,
+    "id": "WW_001t2",
+    "name": "喷涌水源",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "恢复#3点生命值。抽一张牌。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98740,
+    "id": "WW_001t3",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "愚人艾泽里特",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>发现</b>一张法力值消耗为（2）的卡牌，其消耗变为（0）点。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jakub Kasper",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 98741,
+    "health": 3,
+    "id": "WW_001t4",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "脱逃的穴居人",
+    "rarity": "COMMON",
+    "set": "WILD_WEST",
+    "text": "<b>突袭</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Angelica Alieva",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98742,
+    "id": "WW_001t5",
+    "name": "钟乳落石",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "对一个随从和敌方英雄造成$3点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Edgar Hidalgo",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98747,
+    "health": 2,
+    "id": "WW_001t7",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "金丝雀",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "targetingArrowText": "将一个敌方随从移回手牌。",
+    "text": "<b>战吼：</b>将一个\n敌方随从移回其拥有者的手牌。",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jason Kang",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98748,
+    "id": "WW_001t8",
+    "name": "辐光雕文",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "使一个随从及其相邻随从获得+1/+2。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Sergey Tsvelykh",
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 98749,
+    "id": "WW_001t9",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "大块艾泽里特",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "<b>发现</b>一张法力值消耗为（3）的卡牌，其消耗变为（0）点。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 3,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 101133,
+    "flavor": "满手的钱，得意的笑，她太贪了。",
+    "health": 4,
+    "id": "WW_363",
+    "mechanics": [
+      "COMBO",
+      "QUICKDRAW"
+    ],
+    "name": "押注猎手",
+    "rarity": "RARE",
+    "set": "WILD_WEST",
+    "text": "<b>快枪或连击：</b>获取一张幸运币。",
+    "type": "MINION"
+  },
+  {
     "artist": "Adam Byrne",
     "attack": 5,
     "cardClass": "NEUTRAL",
@@ -2782,6 +4543,32 @@
     "rarity": "COMMON",
     "set": "WILD_WEST",
     "text": "<b>剧毒</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & K. Turovec",
+    "attack": 4,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 101482,
+    "flavor": "山动了！",
+    "health": 16,
+    "id": "WW_382",
+    "mechanics": [
+      "LIFESTEAL",
+      "OVERLOAD",
+      "RUSH"
+    ],
+    "name": "步移山丘",
+    "overload": 2,
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "EPIC",
+    "set": "WILD_WEST",
+    "text": "<b>突袭</b>。<b>吸血</b>。<b>超级风怒</b>。<b>过载：</b>（2）",
     "type": "MINION"
   }
 ]

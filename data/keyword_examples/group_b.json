@@ -1,0 +1,77 @@
+[
+  {
+    "keyword": "excavate",
+    "card_id": "WW_001",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/98762-kobold-miner"
+  },
+  {
+    "keyword": "fabled",
+    "card_id": "TIME_211",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/119928-lady-azshara"
+  },
+  {
+    "keyword": "finale",
+    "card_id": "ETC_088",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/91080-ghost-writer"
+  },
+  {
+    "keyword": "forge",
+    "card_id": "TTN_724",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/97726-storm-giant"
+  },
+  {
+    "keyword": "freeze",
+    "card_id": "CS2_024",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/662-frostbolt"
+  },
+  {
+    "keyword": "frenzy",
+    "card_id": "BAR_025",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/62706-sunwell-initiate"
+  },
+  {
+    "keyword": "gigantify",
+    "card_id": "MIS_300",
+    "official_url": "https://hearthstone.blizzard.com/en-gb/cards/108615-snuggle-teddy"
+  },
+  {
+    "keyword": "herald",
+    "card_id": "CATA_565",
+    "official_url": "https://hearthstone.blizzard.com/en-gb/cards/122953-skywall-sentinel"
+  },
+  {
+    "keyword": "honorable_kill",
+    "card_id": "AV_121",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/70219-gnome-private"
+  },
+  {
+    "keyword": "imbue",
+    "card_id": "EDR_871",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/116462-spirit-gatherer"
+  },
+  {
+    "keyword": "immune",
+    "card_id": "GVG_021",
+    "official_url": "https://hearthstone.blizzard.com/en-gb/cards/1986"
+  },
+  {
+    "keyword": "infuse",
+    "card_id": "REV_956",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/78153"
+  },
+  {
+    "keyword": "inspire",
+    "card_id": "AT_082",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/2486"
+  },
+  {
+    "keyword": "invoke",
+    "card_id": "DRG_050",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/55210-devoted-maniac"
+  },
+  {
+    "keyword": "kindred",
+    "card_id": "TLC_519",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/118580-ambush-predators"
+  }
+]

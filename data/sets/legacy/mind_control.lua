@@ -16,6 +16,7 @@ return {
     text = "Take control of an enemy minion.",
     set = "LEGACY",
     type = "spell",
+    spell_school = "shadow",
     class = "priest",
     cost = 9,
     target_mode = "required",

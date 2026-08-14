@@ -32,7 +32,9 @@ local prompt = ctx:localize(
 | `type` | string | 卡牌模块 | `hero`、`minion`、`spell`、`weapon` 或 `location`；英雄技能模块无需填写 |
 | `collectible` | boolean | 否 | 主卡默认 `true`；内嵌 token 默认 `false`，用于动态牌池过滤 |
 | `class` | string | 否 | 卡牌职业，默认 `neutral`；Lua 可自行定义命名体系 |
-| `tags` | string[] | 否 | 种族、法术派系或卡牌包自定义标签，用于 Lua 牌池过滤 |
+| `rarity` | string | 否 | 印刷稀有度，统一为小写，用于动态牌池过滤 |
+| `spell_school` | string | 否 | 印刷法术派系，统一为小写，用于动态牌池过滤 |
+| `tags` | string[] | 否 | 种族或卡牌包自定义标签，用于 Lua 牌池过滤 |
 | `cost` | integer | 是 | 基础费用 |
 | `attack` | integer | 随从/武器必需 | 随从或武器的基础攻击力 |
 | `health` | integer | 随从/武器/地标必需 | 随从生命值；武器或地标中表示耐久度 |
@@ -178,6 +180,7 @@ ctx:combo_active(entity)        -- 此实体本次从手牌打出时，之前是
 ctx:outcast_active(entity)      -- 此实体离手前是否位于最左或最右
 ctx:entered_hand_this_turn(entity)
 ctx:turn()
+ctx:active_player()             -- 当前行动玩家，返回 0 或 1
 ctx:cards_played(player)        -- 本局从手牌打出的卡牌 ID；包含被反制的牌
 ctx:spells_cast(player)         -- 本局成功施放的法术 ID
 ctx:minions_played(player)      -- 本局成功打出的随从 ID
@@ -224,7 +227,7 @@ fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
 
 五个历史查询返回按发生顺序冻结的卡牌定义 ID 数组，而不是动态反查实体：随从即使后来变形，历史中仍保留它打出时的原定义。`cards_played` 在费用支付并离手时记录，因此反制牌也存在；四个类型历史在相应 `spell_cast/minion_played/weapon_played/location_played` 成功时记录。法术自己的 `on_play` 结算期间尚未进入 `spells_cast`，完成正文后才成为 `last_spell_cast`。由 `cast_spell` 产生的法术进入成功施法历史，但不进入从手牌出牌历史。这些数组属于 Rust 权威状态并进入 snapshot/replay，不应由 Lua 全局变量代替。
 
-卡牌定义快照包含 `id, name, text, set, type, collectible, class, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。其中 `requires_target` 只作为旧脚本兼容字段；新逻辑应读取 `target_mode`。例如可以完全在 Lua 中构造动态发现池：
+卡牌定义快照包含 `id, name, text, set, type, collectible, class, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。其中 `requires_target` 只作为旧脚本兼容字段；新逻辑应读取 `target_mode`。例如可以完全在 Lua 中构造动态发现池：
 
 ```lua
 local candidates = {}
@@ -755,7 +758,7 @@ keyword_disabled, frozen, entity_died, conceded, game_ended,
 choice_requested, choice_made, random_choice_made, random_cards_sampled, random_entities_sampled
 ```
 
-事件 table 始终有 `name`，并按事件包含 `player`、`entity`、`source`、`target`、`amount`、`attacker` 或 `defender` 等字段。`spell_cast` 还包含布尔值 `generated` 和可空的 `generated_by`；`keyword_disabled` 包含 `keyword`；`entity_died` 包含 `player` 和该实体被移除时的零基 `position`。`trade_draw` 包含 `player/entity/replacement`；`card_traded` 包含 `player/entity`，在替换抽牌完成且原实体进入牌库后发布。
+事件 table 始终有 `name`，并按事件包含 `player`、`entity`、`source`、`target`、`amount`、`attacker` 或 `defender` 等字段。`card_created` 同时包含新实体 `entity` 与创建它的效果来源 `source`。`spell_cast` 还包含布尔值 `generated` 和可空的 `generated_by`；`keyword_disabled` 包含 `keyword`；`entity_died` 包含 `player` 和该实体被移除时的零基 `position`。`trade_draw` 包含 `player/entity/replacement`；`card_traded` 包含 `player/entity`，在替换抽牌完成且原实体进入牌库后发布。
 
 `damage_prevented` 包含 `source`、`target` 和当前的 `reason = "immune"`，它替代该次伤害的 `damaged/after`。地标不是伤害目标，因此对地标输出伤害效果时不会创建伤害事件。
 

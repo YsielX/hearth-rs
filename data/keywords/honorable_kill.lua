@@ -12,6 +12,7 @@ return {
             event = "damaged", timing = "after", active_zones = { "board", "weapon", "graveyard" },
             condition = function(ctx, self, event)
                 return event.amount > 0 and dealt_by(ctx, self, event)
+                    and ctx:controller(self) == ctx:active_player()
                     and ctx:entity(event.target).health == 0
             end,
             effect = function(ctx, self, event)

@@ -1,0 +1,52 @@
+[
+  {
+    "keyword": "reborn",
+    "card_id": "ULD_208",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/53409-khartut-defender/"
+  },
+  {
+    "keyword": "rush",
+    "card_id": "TRL_550",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/50776-amani-war-bear/"
+  },
+  {
+    "keyword": "secret",
+    "card_id": "EX1_287",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/113-counterspell/"
+  },
+  {
+    "keyword": "silence",
+    "card_id": "EX1_332",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/1189-silence/"
+  },
+  {
+    "keyword": "spell_damage",
+    "card_id": "ICC_913",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/46103-tainted-zealot/"
+  },
+  {
+    "keyword": "spellburst",
+    "card_id": "GDB_860",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/111180-starscale-constellar/"
+  },
+  {
+    "keyword": "stealth",
+    "card_id": "EX1_010",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/994-worgen-infiltrator/"
+  },
+  {
+    "keyword": "taunt",
+    "card_id": "CS2_125",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/1182-ironfur-grizzly/"
+  },
+  {
+    "keyword": "tradeable",
+    "card_id": "EX1_005",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/1657-big-game-hunter/"
+  },
+  {
+    "keyword": "windfury",
+    "card_id": "EX1_033",
+    "official_url": "https://hearthstone.blizzard.com/en-us/cards/567-windfury-harpy/"
+  }
+]

@@ -375,11 +375,13 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
         class: module
             .get::<Option<String>>("class")?
             .unwrap_or_else(|| "neutral".to_owned()),
+        rarity: module.get::<Option<String>>("rarity")?,
         tags: module
             .get::<Option<Table>>("tags")?
             .map(|values| values.sequence_values::<String>().collect())
             .transpose()?
             .unwrap_or_default(),
+        spell_school: module.get::<Option<String>>("spell_school")?,
         cost: module.get("cost")?,
         attack: module.get::<Option<i32>>("attack")?.unwrap_or(0),
         health: module.get::<Option<i32>>("health")?.unwrap_or(0),

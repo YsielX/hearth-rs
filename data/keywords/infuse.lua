@@ -7,6 +7,7 @@ return {
             event = "entity_died", timing = "after", active_zones = { "hand" },
             condition = function(ctx, self, event)
                 return event.player == ctx:controller(self)
+                    and ctx:entity(event.entity).type == "minion"
             end,
             effect = function(ctx, self, event)
                 local progress = ctx:get_data(self, "infuse_progress") + 1

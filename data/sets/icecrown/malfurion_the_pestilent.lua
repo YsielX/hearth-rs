@@ -27,6 +27,14 @@ function card.chosen(ctx, self, choice)
     ctx:summon(player, token)
 end
 
+function card.on_choose_multiple(ctx, self)
+    local player = ctx:controller(self)
+    ctx:summon(player, "ICC_832t4")
+    ctx:summon(player, "ICC_832t4")
+    ctx:summon(player, "ICC_832t3")
+    ctx:summon(player, "ICC_832t3")
+end
+
 card.tokens = {
     {
         id = "ICC_832t3", name = "Frost Widow", text = "<b>Poisonous</b>",

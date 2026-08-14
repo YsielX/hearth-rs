@@ -693,6 +693,7 @@ impl<R: CardRuntime> Game<R> {
         let coin = self.instantiate(DEFAULT_COIN, PlayerId::TWO, Zone::Hand)?;
         self.state.player_mut(PlayerId::TWO).hand.push(coin);
         self.state.log.push(GameEvent::CardCreated {
+            source: coin,
             player: PlayerId::TWO,
             card: coin,
         });

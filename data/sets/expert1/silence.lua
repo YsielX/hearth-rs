@@ -7,6 +7,7 @@ return {
     type = "spell",
     class = "priest",
     cost = 0,
+    keywords = { "silence" },
     target_mode = "required",
     targets = function(ctx, self)
         return ctx:minions()

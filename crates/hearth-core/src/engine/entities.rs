@@ -512,6 +512,17 @@ impl<R: CardRuntime> Game<R> {
                 }
             }
         }
+        // Cost floors are folded through the same generic Lua keyword rule boundary as
+        // attack limits and target rules. The engine deliberately does not know which
+        // keyword supplied the floor (Echo copies are one consumer).
+        let mut minimum_costs = Vec::with_capacity(self.state.entities.len());
+        for id in self.state.entities.keys().copied() {
+            minimum_costs.push((id, self.keyword_i32(id, "minimum_cost", 0, None)?));
+        }
+        for (id, minimum) in minimum_costs {
+            let entity = self.state.entities.get_mut(&id).unwrap();
+            entity.cost = entity.cost.max(minimum.clamp(0, i32::from(u8::MAX)) as u8);
+        }
         let mut spell_damage = Vec::with_capacity(self.state.entities.len());
         for id in self.state.entities.keys().copied() {
             let base = self.keyword_i32(id, "base_spell_damage", 0, None)?;

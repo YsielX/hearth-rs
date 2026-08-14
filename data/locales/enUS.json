@@ -1,8 +1,23 @@
 [
   {
+    "id": "AT_011",
+    "name": "Holy Champion",
+    "text": "<b>Overheal:</b> Gain +2 Attack."
+  },
+  {
+    "id": "AT_082",
+    "name": "Lowly Squire",
+    "text": "<b>Inspire:</b> Gain +1 Attack."
+  },
+  {
     "id": "AT_087",
     "name": "Argent Horserider",
     "text": "<b>Charge</b>\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "AV_121",
+    "name": "Gnome Private",
+    "text": "[x]<b>Honorable Kill:</b> Gain\n+2 Attack."
   },
   {
     "id": "AV_219",
@@ -15,6 +30,11 @@
     "text": "<b>Rush</b>"
   },
   {
+    "id": "BAR_025",
+    "name": "Sunwell Initiate",
+    "text": "<b>Frenzy:</b> Gain <b>Divine Shield</b>."
+  },
+  {
     "id": "BAR_065",
     "name": "Venomous Scorpid",
     "text": "<b>Poisonous</b>\n<b>Battlecry:</b> <b>Discover</b> a spell."
@@ -23,6 +43,11 @@
     "id": "BOT_309",
     "name": "Upgradeable Framebot",
     "text": ""
+  },
+  {
+    "id": "BOT_511t",
+    "name": "Bomb",
+    "text": "<b>Casts When Drawn</b>\nYou take 5 damage."
   },
   {
     "id": "BOT_563",
@@ -35,14 +60,49 @@
     "text": "Deal $2 damage.\nUnlock your <b>Overloaded</b> Mana Crystals."
   },
   {
+    "id": "BT_127",
+    "name": "Imprisoned Satyr",
+    "text": "[x]<b>Dormant</b> for 2 turns.\nWhen this awakens, reduce\nthe Cost of a random minion\nin your hand by (5)."
+  },
+  {
     "id": "BT_351",
     "name": "Battlefiend",
     "text": "After your hero attacks, gain +1 Attack."
   },
   {
+    "id": "BT_491",
+    "name": "Spectral Sight",
+    "text": "[x]Draw a card.\n<b>Outcast:</b> Draw another."
+  },
+  {
     "id": "BT_714",
     "name": "Frozen Shadoweaver",
     "text": "<b>Battlecry:</b> <b>Freeze</b> an enemy."
+  },
+  {
+    "id": "CATA_489",
+    "name": "Arcane Flow",
+    "text": "[x]<b>Shatter</b>\nDeal $4 damage.\n Deal $2 damage to\n all enemies."
+  },
+  {
+    "id": "CATA_489t",
+    "name": "Arcane Flow",
+    "text": "<b>Shattered</b>\nDeal $4 damage."
+  },
+  {
+    "id": "CATA_489t2",
+    "name": "Arcane Flow",
+    "text": "<b>Shattered</b>\nDeal $2 damage to\nall enemies."
+  },
+  {
+    "id": "CATA_565",
+    "name": "Skywall Sentinel",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> <b>Herald</b> {0}."
+  },
+  {
+    "id": "CATA_565t",
+    "name": "Soldier of Al'Akir",
+    "text": "[x]Adjacent minions\nhave +{0} Attack.\n<i><b>Herald</b> twice to upgrade.</i>@[x]Adjacent minions\nhave +{0} Attack.\n<i><b>Herald</b> once to upgrade.</i>@[x]Adjacent minions\nhave +{0} Attack."
   },
   {
     "id": "CATA_612",
@@ -93,6 +153,11 @@
     "id": "CS2_022",
     "name": "Polymorph",
     "text": "Transform a minion\ninto a 1/1 Sheep."
+  },
+  {
+    "id": "CS2_024",
+    "name": "Frostbolt",
+    "text": "Deal $3 damage to a character and <b>Freeze</b> it."
   },
   {
     "id": "CS2_029",
@@ -160,9 +225,59 @@
     "text": ""
   },
   {
+    "id": "CS2_231",
+    "name": "Wisp",
+    "text": ""
+  },
+  {
     "id": "CS2_tk1",
     "name": "Sheep",
     "text": ""
+  },
+  {
+    "id": "DAL_060",
+    "name": "Clockwork Goblin",
+    "text": "[x]<b>Battlecry:</b> Shuffle a Bomb\ninto your opponent's deck.\nWhen drawn, it explodes\nfor 5 damage."
+  },
+  {
+    "id": "DAL_378",
+    "name": "Unleash the Beast",
+    "text": "<b>Twinspell</b>\nSummon a 5/5 Wyvern with <b>Rush</b>."
+  },
+  {
+    "id": "DAL_378t1",
+    "name": "Wyvern",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "DAL_378ts",
+    "name": "Unleash the Beast",
+    "text": "Summon a 5/5 Wyvern with <b>Rush</b>."
+  },
+  {
+    "id": "DAL_613",
+    "name": "Faceless Lackey",
+    "text": "<b>Battlecry:</b> Summon a random 2-Cost minion."
+  },
+  {
+    "id": "DAL_614",
+    "name": "Kobold Lackey",
+    "text": "<b>Battlecry:</b> Deal 2 damage."
+  },
+  {
+    "id": "DAL_615",
+    "name": "Witchy Lackey",
+    "text": "<b>Battlecry:</b> Transform a friendly minion into one that costs (1) more."
+  },
+  {
+    "id": "DAL_739",
+    "name": "Goblin Lackey",
+    "text": "<b>Battlecry:</b> Give a friendly minion +1 Attack and <b>Rush</b>."
+  },
+  {
+    "id": "DAL_741",
+    "name": "Ethereal Lackey",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a spell."
   },
   {
     "id": "DAL_743",
@@ -180,14 +295,59 @@
     "text": "<b>Taunt</b>\n<i>This has all minion types.</i>"
   },
   {
+    "id": "DMF_701",
+    "name": "Dunk Tank",
+    "text": "Deal $4 damage.\n<b>Corrupt:</b> Then deal $2 damage to all enemy minions."
+  },
+  {
+    "id": "DMF_701t",
+    "name": "Dunk Tank",
+    "text": "<b>Corrupted</b>\nDeal $4 damage, then\ndeal $2 damage to all enemy minions."
+  },
+  {
+    "id": "DRG_050",
+    "name": "Devoted Maniac",
+    "text": "<b>Rush</b>\n<b>Battlecry:</b> <b>Invoke</b> Galakrond."
+  },
+  {
+    "id": "DRG_051",
+    "name": "Strength in Numbers",
+    "text": "<b>Sidequest:</b> Spend 10 Mana on minions.\n<b>Reward:</b> Summon a minion from your deck."
+  },
+  {
+    "id": "DRG_052",
+    "name": "Draconic Lackey",
+    "text": "<b>Battlecry:</b> <b>Discover</b> a Dragon."
+  },
+  {
     "id": "DRG_079",
     "name": "Evasive Wyrm",
     "text": "<b>Rush</b>\n<b>Divine Shield</b>\n<b>Elusive</b>"
   },
   {
+    "id": "DRG_238t12t2",
+    "name": "Draconic Imp",
+    "text": ""
+  },
+  {
+    "id": "DRG_238t14t3",
+    "name": "Windswept Elemental",
+    "text": "<b>Rush</b>"
+  },
+  {
     "id": "EDR_468",
     "name": "Eggbasher",
     "text": "<b>Battlecry:</b> Deal 1 damage to a minion and give it\n+4 Attack."
+  },
+  {
+    "id": "EDR_851p",
+    "name": "Blessing of the Wisp",
+    "text": "[x]Summon <b>@</b> Wisp.\nDeal <b>$@</b> damage\nrandomly split among\nall enemies."
+  },
+  {
+    "id": "EDR_871",
+    "name": "Spirit Gatherer",
+    "text": "<b>Battlecry:</b> Get a Wisp. <b>Imbue</b> your Hero Power."
   },
   {
     "id": "ETC_088",
@@ -208,6 +368,11 @@
     "id": "EX1_010",
     "name": "Worgen Infiltrator",
     "text": "<b>Stealth</b>"
+  },
+  {
+    "id": "EX1_012",
+    "name": "Bloodmage Thalnos",
+    "text": "<b>Spell Damage +1</b>\n<b>Deathrattle:</b> Draw a card."
   },
   {
     "id": "EX1_015",
@@ -320,6 +485,16 @@
     "text": "Gain 1 Mana Crystal this turn only."
   },
   {
+    "id": "GDB_100",
+    "name": "Arkonite Defense Crystal",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Gain 4 Armor. <b>Starship Piece</b>"
+  },
+  {
+    "id": "GDB_100t2",
+    "name": "The Exile's Hope",
+    "text": "<b>Starship</b>\n<i>(Costs (5) Mana to launch.)</i>"
+  },
+  {
     "id": "GDB_860",
     "name": "Starscale Constellar",
     "text": "<b><b>Spellburst</b>:</b> Double this minion's Attack."
@@ -330,9 +505,19 @@
     "text": "<b>Lifesteal</b>\n<b>Rush</b>"
   },
   {
+    "id": "GIL_207",
+    "name": "Phantom Militia",
+    "text": "<b>Echo</b>\n<b>Taunt</b>"
+  },
+  {
     "id": "GIL_622",
     "name": "Lifedrinker",
     "text": "[x]<b>Battlecry:</b> Deal 3 damage to\nthe enemy hero. Restore\n#3 Health to your hero."
+  },
+  {
+    "id": "GVG_021",
+    "name": "Mal'Ganis",
+    "text": "Your hero is <b>Immune</b>.\nYour other Demons\nhave +2/+2."
   },
   {
     "id": "GVG_085",
@@ -585,6 +770,11 @@
     "text": "<b>Battlecry:</b> Add a random card from another class to your hand."
   },
   {
+    "id": "KAR_096",
+    "name": "Prince Malchezaar",
+    "text": "[x]<b>Start of Game:</b>\nAdd 5 extra <b>Legendary</b>\nminions to your deck."
+  },
+  {
     "id": "LOE_012",
     "name": "Tomb Pillager",
     "text": "<b>Deathrattle:</b> Get a Coin."
@@ -595,9 +785,24 @@
     "text": "<b>Battlecry:</b> Draw a card. Deal 2 damage to your hero."
   },
   {
+    "id": "LOOT_093",
+    "name": "Call to Arms",
+    "text": "[x]<b>Recruit</b> 3 minions that\n cost (2) or less."
+  },
+  {
     "id": "MAW_028",
     "name": "Mawsworn Bailiff",
     "text": "<b><b>Taunt</b>.</b> <b>Battlecry:</b> If you have 4 or more Armor, gain +4/+4."
+  },
+  {
+    "id": "MIS_300",
+    "name": "Snuggle Teddy",
+    "text": "<b>Gigantify</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>"
+  },
+  {
+    "id": "MIS_300t",
+    "name": "Snuggle Teddy",
+    "text": "<b>Gigantic</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>"
   },
   {
     "id": "NEW1_009",
@@ -620,6 +825,11 @@
     "text": ""
   },
   {
+    "id": "OG_044",
+    "name": "Fandral Staghelm",
+    "text": "Your <b>Choose One</b> cards and powers have both effects combined."
+  },
+  {
     "id": "OG_156",
     "name": "Bilefin Tidehunter",
     "text": "<b>Battlecry:</b> Summon a 1/1 Ooze with <b>Taunt</b>."
@@ -628,6 +838,11 @@
     "id": "OG_156a",
     "name": "Ooze",
     "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "REV_956",
+    "name": "Priest of the Deceased",
+    "text": "<b>Taunt</b>\n<b>Infuse (3):</b> Gain +2/+2."
   },
   {
     "id": "RLK_038",
@@ -645,6 +860,11 @@
     "text": ""
   },
   {
+    "id": "RLK_843",
+    "name": "Arcane Bolt",
+    "text": "Deal $2 damage. <b>Manathirst (8):</b> Deal $3 damage instead."
+  },
+  {
     "id": "SCH_231",
     "name": "Intrepid Initiate",
     "text": "<b>Spellburst:</b> Gain +2 Attack."
@@ -653,6 +873,31 @@
     "id": "SCH_248",
     "name": "Pen Flinger",
     "text": "[x]<b>Battlecry:</b> Deal 1 damage\nto a minion.\n <b><b>Spellburst</b>:</b> Return this\nto your hand."
+  },
+  {
+    "id": "SW_028",
+    "name": "Raid the Docks",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Draw a weapon."
+  },
+  {
+    "id": "SW_028t",
+    "name": "Create a Distraction",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Deal $2 damage\nto a random enemy twice."
+  },
+  {
+    "id": "SW_028t2",
+    "name": "Secure the Supplies",
+    "text": "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Cap'n Rokara."
+  },
+  {
+    "id": "SW_028t5",
+    "name": "Cap'n Rokara",
+    "text": "<b>Battlecry:</b> Summon The Juggernaut!"
+  },
+  {
+    "id": "SW_028t6",
+    "name": "The Juggernaut",
+    "text": "[x]<b>Start of Your Turn:</b>\nSummon a Pirate, equip a\nWarrior weapon, and fire two\n cannons that deal 2 damage!"
   },
   {
     "id": "SW_045",
@@ -665,9 +910,39 @@
     "text": "<b>Battlecry:</b> Deal damage equal to your hand size to all other minions."
   },
   {
+    "id": "TIME_000",
+    "name": "Semi-Stable Portal",
+    "text": "<b>Rewind</b>\nAdd a random minion\nto your hand. It costs\n(3) less."
+  },
+  {
     "id": "TIME_053",
     "name": "Sandmaw",
     "text": ""
+  },
+  {
+    "id": "TIME_211",
+    "name": "Lady Azshara",
+    "text": "[x]<b>Fabled</b>. <b>Choose One -</b>\nEmpower Zin-Azshari; or\nThe Well of Eternity. <i>(The\n  other gets destroyed!)</i>"
+  },
+  {
+    "id": "TIME_211t1",
+    "name": "The Well of Eternity",
+    "text": "Fill your hand\nwith random\n<b>Temporary</b> spells."
+  },
+  {
+    "id": "TIME_211t1t",
+    "name": "The Well of Eternity",
+    "text": "[x]Fill your hand\nwith random <b>Temporary</b>\nspells. They cast twice."
+  },
+  {
+    "id": "TIME_211t2",
+    "name": "Zin-Azshari",
+    "text": "Summon a copy of a friendly minion."
+  },
+  {
+    "id": "TIME_211t2t",
+    "name": "Zin-Azshari",
+    "text": "Summon a copy of a friendly minion with\nits stats doubled."
   },
   {
     "id": "TLC_248",
@@ -675,9 +950,34 @@
     "text": ""
   },
   {
+    "id": "TLC_519",
+    "name": "Ambush Predators",
+    "text": "Summon a 1/1 Spitter with <b>Stealth</b>\nand <b>Poisonous</b>.\n<b>Kindred:</b> Do it again."
+  },
+  {
+    "id": "TLC_519t",
+    "name": "Venomous Spitter",
+    "text": "<b>Stealth</b>\n <b>Poisonous</b>"
+  },
+  {
     "id": "TOY_006",
     "name": "Scarab Keychain",
     "text": "<b>Battlecry:</b> <b>Discover</b> a\n2-Cost card."
+  },
+  {
+    "id": "TOY_811",
+    "name": "Tigress Plushy",
+    "text": "<b>Miniaturize</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "TOY_811t",
+    "name": "Tigress Plushy",
+    "text": "<b>Mini</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>"
+  },
+  {
+    "id": "TRL_015",
+    "name": "Ticket Scalper",
+    "text": "<b>Overkill</b>: Draw 2 cards."
   },
   {
     "id": "TRL_550",
@@ -685,9 +985,34 @@
     "text": "<b>Rush</b>\n<b>Taunt</b>"
   },
   {
+    "id": "TSC_026",
+    "name": "Colaque",
+    "text": "[x]<b>Colossal +1</b>\n <b>Immune</b> while you control\nColaque's Shell."
+  },
+  {
+    "id": "TSC_026t",
+    "name": "Colaque's Shell",
+    "text": "<b>Taunt</b>\n<b>Deathrattle:</b> Gain 8 Armor."
+  },
+  {
+    "id": "TSC_909",
+    "name": "Tuskarrrr Trawler",
+    "text": "<b>Battlecry:</b> <b>Dredge</b>."
+  },
+  {
     "id": "TSC_926",
     "name": "Smothering Starfish",
     "text": "<b>Battlecry:</b> <b>Silence</b> ALL other minions."
+  },
+  {
+    "id": "TTN_083",
+    "name": "Son of Hodir",
+    "text": "<b>Battlecry:</b> Shuffle four\n8/8 Giants into your deck that are summoned when drawn."
+  },
+  {
+    "id": "TTN_083t",
+    "name": "Frost Tyrant",
+    "text": "<b>Summoned When Drawn</b>"
   },
   {
     "id": "TTN_724",
@@ -705,9 +1030,19 @@
     "text": ""
   },
   {
+    "id": "TTN_858",
+    "name": "Amitus, the Peacekeeper",
+    "text": "<b>Titan</b>\n<b>Taunt</b>. Your minions\ncan't take more than 2 damage at a time."
+  },
+  {
     "id": "ULD_208",
     "name": "Khartut Defender",
     "text": "[x]<b>Taunt</b>, <b>Reborn</b>\n<b>Deathrattle:</b> Restore #3\nHealth to your hero."
+  },
+  {
+    "id": "ULD_616",
+    "name": "Titanic Lackey",
+    "text": "<b>Battlecry:</b> Give a friendly minion +2 Health and <b>Taunt</b>."
   },
   {
     "id": "UNG_060",
@@ -735,6 +1070,71 @@
     "text": ""
   },
   {
+    "id": "UNG_961",
+    "name": "Adaptation",
+    "text": "<b>Adapt</b> a friendly minion."
+  },
+  {
+    "id": "UNG_999t10",
+    "name": "Shrouding Mist",
+    "text": "<b>Stealth</b> until your next turn."
+  },
+  {
+    "id": "UNG_999t13",
+    "name": "Poison Spit",
+    "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "UNG_999t14",
+    "name": "Volcanic Might",
+    "text": "+1/+1"
+  },
+  {
+    "id": "UNG_999t2",
+    "name": "Living Spores",
+    "text": "<b>Deathrattle:</b> Summon two 1/1 Plants."
+  },
+  {
+    "id": "UNG_999t2t1",
+    "name": "Plant",
+    "text": ""
+  },
+  {
+    "id": "UNG_999t3",
+    "name": "Flaming Claws",
+    "text": "+3 Attack"
+  },
+  {
+    "id": "UNG_999t4",
+    "name": "Rocky Carapace",
+    "text": "+3 Health"
+  },
+  {
+    "id": "UNG_999t5",
+    "name": "Liquid Membrane",
+    "text": "<b>Elusive</b>"
+  },
+  {
+    "id": "UNG_999t6",
+    "name": "Massive",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "UNG_999t7",
+    "name": "Lightning Speed",
+    "text": "<b>Windfury</b>"
+  },
+  {
+    "id": "UNG_999t8",
+    "name": "Crackling Shield",
+    "text": "<b>Divine Shield</b>"
+  },
+  {
+    "id": "VAC_437",
+    "name": "Buttons",
+    "text": "<b>Shaman Tourist</b>\n <b>Battlecry:</b> Draw a spell of each spell school."
+  },
+  {
     "id": "WON_366",
     "name": "Worgen Greaser",
     "text": ""
@@ -745,8 +1145,98 @@
     "text": "<b>Battlecry:</b> Give your\n1-Attack minions +1/+1."
   },
   {
+    "id": "WW_001",
+    "name": "Kobold Miner",
+    "text": "<b>Battlecry:</b> <b>Excavate</b>\na treasure."
+  },
+  {
+    "id": "WW_001t",
+    "name": "Rock",
+    "text": "Deal $3 damage."
+  },
+  {
+    "id": "WW_001t11",
+    "name": "Ogrefist Boulder",
+    "text": "Set a minion's stats\nto 6/7."
+  },
+  {
+    "id": "WW_001t12",
+    "name": "Collapse!",
+    "text": "Deal $3 damage\nto all enemies."
+  },
+  {
+    "id": "WW_001t13",
+    "name": "Steelhide Mole",
+    "text": "<b>Taunt</b>\n<b>Reborn</b>\n<b>Elusive</b>"
+  },
+  {
+    "id": "WW_001t14",
+    "name": "Azerite Gem",
+    "text": "<b>Discover</b> a 5-Cost card.\nIt costs (0)."
+  },
+  {
+    "id": "WW_001t16",
+    "name": "Living Stone",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> Summon a\nrandom 2-Cost minion."
+  },
+  {
+    "id": "WW_001t17",
+    "name": "Motherlode Drake",
+    "text": "<b>Rush</b>\n<b>Divine Shield</b>\n<b>Lifesteal</b>"
+  },
+  {
+    "id": "WW_001t18",
+    "name": "Pouch of Coins",
+    "text": "Get two Coins."
+  },
+  {
+    "id": "WW_001t2",
+    "name": "Water Source",
+    "text": "Restore #3 Health.\nDraw a card."
+  },
+  {
+    "id": "WW_001t3",
+    "name": "Fool's Azerite",
+    "text": "<b>Discover</b> a 2-Cost card.\nIt costs (0)."
+  },
+  {
+    "id": "WW_001t4",
+    "name": "Escaping Trogg",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "WW_001t5",
+    "name": "Falling Stalactite",
+    "text": "Deal $3 damage\nto a minion and the\nenemy hero."
+  },
+  {
+    "id": "WW_001t7",
+    "name": "Canary",
+    "text": "<b>Battlecry:</b> Return an\nenemy minion to its owner's hand."
+  },
+  {
+    "id": "WW_001t8",
+    "name": "Glowing Glyph",
+    "text": "Give a minion and its neighbors +1/+2."
+  },
+  {
+    "id": "WW_001t9",
+    "name": "Azerite Chunk",
+    "text": "<b>Discover</b> a 3-Cost card.\nIt costs (0)."
+  },
+  {
+    "id": "WW_363",
+    "name": "Bounty Wrangler",
+    "text": "<b>Quickdraw or Combo:</b>\nGet a Coin."
+  },
+  {
     "id": "WW_376",
     "name": "Cactus Rager",
     "text": "<b>Poisonous</b>"
+  },
+  {
+    "id": "WW_382",
+    "name": "Walking Mountain",
+    "text": "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)"
   }
 ]

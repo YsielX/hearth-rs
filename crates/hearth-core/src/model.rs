@@ -250,8 +250,14 @@ pub struct CardDefinition {
     pub collectible: bool,
     #[serde(default = "default_card_class")]
     pub class: String,
+    /// Printed rarity, normalized to lowercase for generation pool filters.
+    #[serde(default)]
+    pub rarity: Option<String>,
     #[serde(default)]
     pub tags: Vec<String>,
+    /// Printed spell school, normalized to lowercase for Lua pool filters.
+    #[serde(default)]
+    pub spell_school: Option<String>,
     pub cost: u8,
     pub attack: i32,
     pub health: i32,
@@ -1157,6 +1163,7 @@ pub enum GameEvent {
         card: EntityId,
     },
     CardCreated {
+        source: EntityId,
         player: PlayerId,
         card: EntityId,
     },

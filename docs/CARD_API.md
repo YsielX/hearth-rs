@@ -17,7 +17,9 @@ Every `.lua` file returns one table. The loader sandbox does not expose `io`, `o
 | `type` | string | card modules | `hero`, `minion`, `spell`, `weapon`, or `location`; implicit for Hero Power modules |
 | `collectible` | boolean | no | Main cards default true; embedded tokens default false |
 | `class` | string | no | Defaults to `neutral` |
-| `tags` | string[] | no | Tribes, spell schools, or pack-defined pool tags |
+| `rarity` | string | no | Printed rarity, normalized to lowercase for generation filters |
+| `spell_school` | string | no | Printed spell school, normalized to lowercase for generation filters |
+| `tags` | string[] | no | Tribes or pack-defined pool tags |
 | `cost` | integer | yes | Base Mana Cost |
 | `attack` | integer | minion/weapon | Base Attack |
 | `health` | integer | minion/weapon/location | Health or Durability |
@@ -192,6 +194,7 @@ Cards may additionally declare `card_actions`, `action_targets`, and `action_tar
 
 ```lua
 ctx:turn()
+ctx:active_player()
 ctx:controller(entity)
 ctx:opponent(player)
 ctx:player(player)
@@ -233,6 +236,8 @@ ctx:get_player_data(player, key)
 Entity snapshots include identity, definition, owner/controller, zone/type, Attack, current/max Health, damage, Armor, Cost, Spell Damage, keywords, Silence, Freeze, Location cooldown, enchantments, hand-entry/play context, and script data relevant to rules.
 
 Player snapshots include class, hero, Hero Power, weapon, mana fields, overload fields, play histories/counts, fatigue, zone sizes, and Hero Power use.
+
+Card definition snapshots returned by `ctx:card_definition` include `rarity` and `spell_school` when declared. `card_created` events include both the created `entity` and the creating effect's `source`, allowing generated-card mechanics to identify only their own output.
 
 Returned arrays/tables are snapshots. Lua cannot mutate Rust containers. Scripts are trusted server rules and may query hidden zones; UI clients do not receive those values automatically.
 

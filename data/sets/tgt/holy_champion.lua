@@ -1,0 +1,16 @@
+return {
+    api_version = 1,
+    id = "AT_011",
+    name = "Holy Champion",
+    text = "<b>Overheal:</b> Gain +2 Attack.",
+    set = "TGT",
+    type = "minion",
+    class = "priest",
+    cost = 2,
+    attack = 1,
+    health = 4,
+    keywords = { "overheal" },
+    on_overheal = function(ctx, self, amount)
+        ctx:modify(self, { stat = "attack", operation = "add", value = 2 })
+    end,
+}

@@ -5,6 +5,7 @@ return {
     text = "Deal $6 damage.",
     set = "LEGACY",
     type = "spell",
+    spell_school = "fire",
     class = "mage",
     cost = 4,
     target_mode = "required",

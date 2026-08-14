@@ -5,6 +5,7 @@ return {
     text = "<b>Stealth</b>\nAt the end of your turn, summon a 1/1 Steward.",
     set = "KARA",
     type = "minion",
+    rarity = "legendary",
     cost = 3,
     attack = 1,
     health = 1,

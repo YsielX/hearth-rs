@@ -1,0 +1,19 @@
+[
+  { "keyword": "adapt", "card_id": "UNG_961", "official_url": "https://hearthstone.blizzard.com/en-us/cards/41944/" },
+  { "keyword": "battlecry", "card_id": "EX1_015", "official_url": "https://hearthstone.blizzard.com/en-us/cards/284/" },
+  { "keyword": "casts_when_drawn", "card_id": "BOT_511t", "official_url": "https://hearthstone.blizzard.com/en-us/cards/48752/" },
+  { "keyword": "charge", "card_id": "CS2_171", "official_url": "https://hearthstone.blizzard.com/en-us/cards/648/" },
+  { "keyword": "choose_multiple", "card_id": "OG_044", "official_url": "https://hearthstone.blizzard.com/en-us/cards/38318/" },
+  { "keyword": "choose_one", "card_id": "ICC_832", "official_url": "https://hearthstone.blizzard.com/en-us/cards/43417/" },
+  { "keyword": "colossal", "card_id": "TSC_026", "official_url": "https://hearthstone.blizzard.com/en-us/cards/71712/" },
+  { "keyword": "combo", "card_id": "EX1_134", "official_url": "https://hearthstone.blizzard.com/en-us/cards/1117/" },
+  { "keyword": "corrupt", "card_id": "DMF_701", "official_url": "https://hearthstone.blizzard.com/en-us/cards/61223/" },
+  { "keyword": "counter", "card_id": "EX1_287", "official_url": "https://hearthstone.blizzard.com/en-us/cards/113/" },
+  { "keyword": "deathrattle", "card_id": "EX1_096", "official_url": "https://hearthstone.blizzard.com/en-us/cards/251/" },
+  { "keyword": "discover", "card_id": "BAR_065", "official_url": "https://hearthstone.blizzard.com/en-us/cards/62486/" },
+  { "keyword": "divine_shield", "card_id": "EX1_008", "official_url": "https://hearthstone.blizzard.com/en-us/cards/757/" },
+  { "keyword": "dormant", "card_id": "BT_127", "official_url": "https://hearthstone.blizzard.com/en-us/cards/56676/" },
+  { "keyword": "dredge", "card_id": "TSC_909", "official_url": "https://hearthstone.blizzard.com/en-us/cards/72105/" },
+  { "keyword": "echo", "card_id": "GIL_207", "official_url": "https://hearthstone.blizzard.com/en-us/cards/46634/" },
+  { "keyword": "elusive", "card_id": "DRG_079", "official_url": "https://hearthstone.blizzard.com/en-us/cards/55429/" }
+]
