@@ -100,6 +100,80 @@ fn game_with_hero_powers(
     game
 }
 
+#[test]
+fn player_view_hides_opponent_hand_deck_order_and_secret_identity() {
+    let mut game = game_with_decks(repeated("CS2_120"), repeated("CFM_800"));
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    let secret_play = game
+        .legal_actions()
+        .unwrap()
+        .into_iter()
+        .find(|command| {
+            matches!(
+                command,
+                PlayerCommand::PlayCard { card, .. }
+                    if game.state().entity(*card).unwrap().card_id == "CFM_800"
+            )
+        })
+        .unwrap();
+    game.dispatch(secret_play).unwrap();
+
+    let player_one = game.state().player_view(PlayerId::ONE);
+    let opponent = player_one.player(PlayerId::TWO);
+    assert_eq!(
+        opponent.hand_size,
+        game.state().player(PlayerId::TWO).hand.len()
+    );
+    assert!(opponent.hand.is_empty());
+    assert_eq!(opponent.secrets_count, 1);
+    assert!(opponent.secrets.is_empty());
+    for hidden in game
+        .state()
+        .player(PlayerId::TWO)
+        .hand
+        .iter()
+        .chain(game.state().player(PlayerId::TWO).deck.iter())
+        .chain(game.state().player(PlayerId::TWO).secrets.iter())
+    {
+        assert!(!player_one.entities.contains_key(hidden));
+    }
+
+    let player_two = game.state().player_view(PlayerId::TWO);
+    assert_eq!(
+        player_two.player(PlayerId::TWO).hand,
+        game.state().player(PlayerId::TWO).hand
+    );
+    assert_eq!(
+        player_two.player(PlayerId::TWO).secrets,
+        game.state().player(PlayerId::TWO).secrets
+    );
+    assert!(
+        game.state()
+            .player(PlayerId::TWO)
+            .deck
+            .iter()
+            .all(|entity| !player_two.entities.contains_key(entity))
+    );
+
+    let mut quest_game = game_with_decks(repeated("CS2_120"), repeated("UNG_067"));
+    quest_game.dispatch(PlayerCommand::EndTurn).unwrap();
+    let quest_play = quest_game
+        .legal_actions()
+        .unwrap()
+        .into_iter()
+        .find(|command| matches!(command, PlayerCommand::PlayCard { .. }))
+        .unwrap();
+    quest_game.dispatch(quest_play).unwrap();
+    let quest = quest_game.state().player(PlayerId::TWO).secrets[0];
+    let opponent_view = quest_game.state().player_view(PlayerId::ONE);
+    assert_eq!(opponent_view.player(PlayerId::TWO).secrets_count, 0);
+    assert_eq!(
+        opponent_view.player(PlayerId::TWO).public_objectives,
+        vec![quest]
+    );
+    assert_eq!(opponent_view.entity(quest).unwrap().card_id, "UNG_067");
+}
+
 fn end_turn(game: &mut Game<LuaCardRuntime>) {
     game.dispatch(PlayerCommand::EndTurn).unwrap();
 }

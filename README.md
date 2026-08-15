@@ -18,8 +18,9 @@ data/
 crates/
 ├── hearth-core/           # State machine, zones, event queue, RNG, replay
 ├── hearth-script/         # Lua sandbox, module loader, rules/effect bridge
-└── hearth-cli/            # Two-player hot-seat CLI
-fuzz/                      # Standalone deterministic state-machine fuzzer
+├── hearth-cli/            # Interactive/Bot/Fuzzer game runner and fuzz command
+├── hearth-bot/            # Non-cheating deterministic baseline Bot
+└── hearth-fuzz/           # Standalone deterministic state-machine fuzzer
 decks/demo.json            # Mixed-class mechanics showcase
 decks/quest_rogue.json     # Dog's 2017 Caverns Quest Rogue
 ```
@@ -164,6 +165,22 @@ snapshot <file>               save a state snapshot
 
 Normal deck files enforce class/Neutral legality. Tourist cards declare generic `deck_allowances` in Lua. `demo.json` explicitly sets `unrestricted: true` because it intentionally mixes classes to showcase mechanics.
 
+## Player controllers and hidden information
+
+Each player slot independently accepts `interactive`, `bot`, or `fuzzer`:
+
+```bash
+cargo run -p hearth-cli --release -- \
+  --deck-one decks/quest_rogue.json \
+  --deck-two decks/quest_rogue.json \
+  --player-one interactive \
+  --player-two bot
+```
+
+Controllers receive a player-facing projection and authoritative legal-action metadata, never raw `GameState`. The projection excludes deck order (including the viewer's own deck), opponent hand and ordinary Secret identities, script data, hidden aura sources, RNG state, and replay data. Public Quests, Questlines, and Sidequests remain visible as in the official game. CLI event output redacts opponent draws, generated hand cards, Secret names, hidden choices, and hidden random samples. Two-human hot-seat games use a terminal-clearing handoff screen. Authoritative replay/snapshot export is disabled during ordinary play; `--debug-state` explicitly enables this debugging capability.
+
+The baseline [`hearth-bot`](crates/hearth-bot/README.md) prioritizes board lethal, plans currently legal plays to minimize unspent Mana, takes favorable trades, then attacks face. Taunt and other attack restrictions remain authoritative because the Bot selects only from engine-enumerated legal attacks.
+
 ## Verification
 
 ```bash
@@ -176,11 +193,13 @@ End-to-end tests compare every Lua definition with the English source snapshot, 
 
 ## State-machine fuzzing
 
-The deterministic state-machine fuzzer is isolated under [`fuzz/`](fuzz/README.md), so normal `cargo test` runs do not start fuzz campaigns. It generates class-legal decks, dispatches sampled legal actions, validates state after every step, and compares the final state with replay:
+The deterministic state-machine fuzzer is isolated under [`crates/hearth-fuzz/`](crates/hearth-fuzz/README.md), so normal `cargo test` runs do not start fuzz campaigns. It generates class-legal decks, dispatches sampled legal actions, validates state after every step, and compares the final state with replay. Run it through the main CLI:
 
 ```bash
-cargo run -p hearth-fuzz --release -- --seeds 100 --steps 180
+cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ```
+
+The dedicated `hearth-state-fuzz` binary remains available through `cargo run -p hearth-fuzz --release -- ...`; both entry points share the same implementation.
 
 ## Scope
 

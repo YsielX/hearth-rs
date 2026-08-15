@@ -425,6 +425,64 @@ impl<R: CardRuntime> Game<R> {
         Ok(actions)
     }
 
+    /// Enumerates legal commands together with the Mana each command commits
+    /// in the current state. Controllers should consume this projection rather
+    /// than infer dynamic costs from card definitions.
+    pub fn legal_action_options(&self) -> Result<Vec<LegalAction>, GameError> {
+        self.legal_actions()?
+            .into_iter()
+            .map(|command| {
+                let mana_cost = self.command_mana_cost(&command)?;
+                Ok(LegalAction { command, mana_cost })
+            })
+            .collect()
+    }
+
+    fn command_mana_cost(&self, command: &PlayerCommand) -> Result<u8, GameError> {
+        let player = self.state.input_player();
+        match command {
+            PlayerCommand::PlayCard { card, .. } | PlayerCommand::PlayCardAt { card, .. } => {
+                let entity = self
+                    .state
+                    .entity(*card)
+                    .ok_or(GameError::UnknownEntity(*card))?;
+                let (costs_health, _) = self.card_cost_resource(*card, player)?;
+                Ok(if costs_health { 0 } else { entity.cost })
+            }
+            PlayerCommand::TradeCard { .. } => Ok(1),
+            PlayerCommand::UseHeroPower { .. } => self
+                .state
+                .entity(self.state.player(player).hero_power)
+                .map(|entity| entity.cost)
+                .ok_or(GameError::UnknownEntity(
+                    self.state.player(player).hero_power,
+                )),
+            PlayerCommand::UseCardAction { card, action, .. } => {
+                let spec = self
+                    .runtime
+                    .card_actions(&self.state, *card)
+                    .map_err(GameError::Script)?
+                    .into_iter()
+                    .find(|candidate| candidate.id == *action)
+                    .ok_or_else(|| GameError::CardActionUnavailable {
+                        card: *card,
+                        action: action.clone(),
+                    })?;
+                Ok(if spec.spend_all_mana {
+                    self.state.player(player).mana
+                } else {
+                    spec.cost
+                })
+            }
+            PlayerCommand::Mulligan { .. }
+            | PlayerCommand::Attack { .. }
+            | PlayerCommand::UseLocation { .. }
+            | PlayerCommand::EndTurn
+            | PlayerCommand::Concede
+            | PlayerCommand::Choose { .. } => Ok(0),
+        }
+    }
+
     /// Applies one player command transactionally. Script failures restore the previous state.
     pub fn dispatch(&mut self, command: PlayerCommand) -> Result<(), GameError> {
         if self.state.outcome.is_some() {

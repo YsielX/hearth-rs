@@ -3,10 +3,13 @@ use std::error::Error;
 use std::io::{self, Write};
 use std::path::PathBuf;
 
+use hearth_bot::SimpleBot;
 use hearth_core::{
     CardKind, CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, GameOutcome,
-    GameSnapshot, Locale, PlayerCommand, PlayerId, Replay,
+    GameSnapshot, LegalAction, Locale, PlayerCommand, PlayerController, PlayerId, PlayerView,
+    Replay,
 };
+use hearth_fuzz::{FuzzController, FuzzOptions, run_campaign};
 use hearth_script::LuaCardRuntime;
 use serde::Deserialize;
 
@@ -39,6 +42,69 @@ struct CliOptions {
     replay: Option<PathBuf>,
     snapshot: Option<PathBuf>,
     locale: Locale,
+    controllers: [ControllerKind; 2],
+    debug_state: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ControllerKind {
+    Interactive,
+    Bot,
+    Fuzzer,
+}
+
+impl std::str::FromStr for ControllerKind {
+    type Err = String;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value.to_ascii_lowercase().as_str() {
+            "interactive" | "human" | "cli" => Ok(Self::Interactive),
+            "bot" => Ok(Self::Bot),
+            "fuzzer" | "fuzz" => Ok(Self::Fuzzer),
+            _ => Err(format!(
+                "unknown controller {value}; expected interactive, bot, or fuzzer"
+            )),
+        }
+    }
+}
+
+#[derive(Debug)]
+enum Controller {
+    Interactive,
+    Bot(SimpleBot),
+    Fuzzer(FuzzController),
+}
+
+impl Controller {
+    fn from_kind(kind: ControllerKind, seed: u64) -> Self {
+        match kind {
+            ControllerKind::Interactive => Self::Interactive,
+            ControllerKind::Bot => Self::Bot(SimpleBot),
+            ControllerKind::Fuzzer => Self::Fuzzer(FuzzController::new(seed)),
+        }
+    }
+
+    fn is_interactive(&self) -> bool {
+        matches!(self, Self::Interactive)
+    }
+
+    fn choose_action(
+        &mut self,
+        view: &PlayerView,
+        legal_actions: &[LegalAction],
+    ) -> Result<PlayerCommand, String> {
+        match self {
+            Self::Interactive => Err("interactive controller requires terminal input".to_owned()),
+            Self::Bot(bot) => bot.choose_action(view, legal_actions),
+            Self::Fuzzer(fuzzer) => fuzzer.choose_action(view, legal_actions),
+        }
+    }
+}
+
+#[derive(Debug)]
+enum CliInvocation {
+    Play(CliOptions),
+    Fuzz { data: PathBuf, options: FuzzOptions },
 }
 
 #[derive(Debug, Deserialize)]
@@ -59,8 +125,26 @@ fn default_deck_class() -> String {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let Some(options) = parse_options()? else {
+    let Some(invocation) = parse_options()? else {
         return Ok(());
+    };
+    let options = match invocation {
+        CliInvocation::Play(options) => options,
+        CliInvocation::Fuzz { data, options } => {
+            println!(
+                "state-machine fuzz: data={}, start_seed={}, seeds={}, max_steps={}",
+                data.display(),
+                options.start_seed,
+                options.seeds,
+                options.steps
+            );
+            run_campaign(&data, &options)?;
+            println!(
+                "state-machine fuzz passed: {} deterministic seeds",
+                options.seeds
+            );
+            return Ok(());
+        }
     };
     let locale = options.locale;
     let runtime = LuaCardRuntime::load_dir_with_locale(&options.data, locale)?;
@@ -165,12 +249,65 @@ fn main() -> Result<(), Box<dyn Error>> {
             )?
         }
     };
+    let mut controllers = [
+        Controller::from_kind(options.controllers[0], options.seed ^ 0x243f_6a88_85a3_08d3),
+        Controller::from_kind(options.controllers[1], options.seed ^ 0x1319_8a2e_0370_7344),
+    ];
     print_help(locale);
-    print_state(&game, locale);
+    let initial_viewer = observer_for(&controllers, game.state().input_player());
+    print_state(&game, initial_viewer, locale);
 
     let stdin = io::stdin();
+    let hotseat = controllers.iter().all(Controller::is_interactive);
+    let mut last_interactive_player = hotseat.then_some(game.state().input_player());
+    let mut automated_actions = 0usize;
     loop {
-        print!("{}> ", game.state().active_player);
+        let input_player = game.state().input_player();
+        let viewer = observer_for(&controllers, input_player);
+        if hotseat && last_interactive_player != Some(input_player) {
+            println!(
+                "{}",
+                lf!(
+                    locale,
+                    "Pass control to {0}, then press Enter.",
+                    "请将控制权交给 {0}，然后按回车。",
+                    "請將控制權交給 {0}，然後按 Enter。",
+                    input_player
+                )
+            );
+            io::stdout().flush()?;
+            let mut confirmation = String::new();
+            if stdin.read_line(&mut confirmation)? == 0 {
+                break;
+            }
+            print!("\x1b[2J\x1b[3J\x1b[H");
+            print_state(&game, input_player, locale);
+            last_interactive_player = Some(input_player);
+        }
+        if !controllers[input_player.index()].is_interactive() {
+            automated_actions = automated_actions.saturating_add(1);
+            if automated_actions > 10_000 {
+                return Err(io::Error::other("automated game exceeded 10,000 commands").into());
+            }
+            let legal_actions = game.legal_action_options()?;
+            let view = game.state().player_view(input_player);
+            let command = controllers[input_player.index()]
+                .choose_action(&view, &legal_actions)
+                .map_err(io::Error::other)?;
+            println!("{}: {}", input_player, display_command(&command));
+            let before = game.state().log.len();
+            game.dispatch(command)?;
+            for event in &game.state().log[before..] {
+                println!("  {}", display_event(&game, event, locale, viewer));
+            }
+            print_state(&game, viewer, locale);
+            if let Some(outcome) = game.state().outcome {
+                print_outcome(outcome, locale);
+                break;
+            }
+            continue;
+        }
+        print!("{}> ", input_player);
         io::stdout().flush()?;
         let mut line = String::new();
         if stdin.read_line(&mut line)? == 0 {
@@ -182,8 +319,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         match words[0] {
             "help" | "?" => print_help(locale),
-            "state" | "s" => print_state(&game, locale),
-            "hand" | "h" => print_hand(&game, locale),
+            "state" | "s" => print_state(&game, viewer, locale),
+            "hand" | "h" => print_hand(&game, viewer, locale),
             "cards" => {
                 for id in game.runtime().card_ids() {
                     let card = game.runtime().definition(&id).unwrap();
@@ -218,6 +355,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                     lf!(locale, "Error: {error}", "错误：{error}", "錯誤：{error}")
                 ),
             },
+            "save" | "snapshot" if !options.debug_state => eprintln!(
+                "{}",
+                lt!(
+                    locale,
+                    "Authoritative replay/snapshot export is disabled during player-visible games; restart with --debug-state to enable it.",
+                    "玩家可见对局中已禁用权威 replay/snapshot 导出；如需调试，请使用 --debug-state 重新启动。",
+                    "玩家可見對局中已停用權威 replay/snapshot 匯出；如需除錯，請使用 --debug-state 重新啟動。"
+                )
+            ),
             "save" if words.len() == 2 => {
                 let replay = serde_json::to_string_pretty(&game.replay())?;
                 std::fs::write(words[1], replay)?;
@@ -276,7 +422,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         .transpose()?;
                     Ok(PlayerCommand::PlayCard { card, target })
                 });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "playat" | "pa" if words.len() == 3 || words.len() == 4 => {
                 let command = parse_entity(words[1], locale).and_then(|card| {
@@ -299,12 +445,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                         position,
                     })
                 });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "trade" | "tr" if words.len() == 2 => {
                 let command =
                     parse_entity(words[1], locale).map(|card| PlayerCommand::TradeCard { card });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "action" | "act" if words.len() == 3 || words.len() == 4 => {
                 let command = parse_entity(words[1], locale).and_then(|card| {
@@ -318,7 +464,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         target,
                     })
                 });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "attack" | "a" if words.len() == 3 => {
                 let command = parse_entity(words[1], locale).and_then(|attacker| {
@@ -327,7 +473,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         defender: parse_entity(words[2], locale)?,
                     })
                 });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "choose" | "c" if words.len() == 2 => {
                 let command = words[1]
@@ -342,7 +488,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                             words[1]
                         )
                     });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "mulligan" | "m" => {
                 let replace = words[1..]
@@ -350,13 +496,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .map(|value| parse_entity(value, locale))
                     .collect::<Result<Vec<_>, _>>()
                     .map(|replace| PlayerCommand::Mulligan { replace });
-                run_command(&mut game, replace, locale);
+                run_command(&mut game, replace, viewer, locale);
             }
             "keep" | "k" if words.len() == 1 => run_command(
                 &mut game,
                 Ok(PlayerCommand::Mulligan {
                     replace: Vec::new(),
                 }),
+                viewer,
                 locale,
             ),
             "power" if words.len() == 1 || words.len() == 2 => {
@@ -365,7 +512,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .map(|value| parse_entity(value, locale))
                     .transpose()
                     .map(|target| PlayerCommand::UseHeroPower { target });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
             "location" | "loc" if words.len() == 2 || words.len() == 3 => {
                 let command = parse_entity(words[1], locale).and_then(|location| {
@@ -375,10 +522,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                         .transpose()?;
                     Ok(PlayerCommand::UseLocation { location, target })
                 });
-                run_command(&mut game, command, locale);
+                run_command(&mut game, command, viewer, locale);
             }
-            "end" | "e" => run_command(&mut game, Ok(PlayerCommand::EndTurn), locale),
-            "concede" => run_command(&mut game, Ok(PlayerCommand::Concede), locale),
+            "end" | "e" => run_command(&mut game, Ok(PlayerCommand::EndTurn), viewer, locale),
+            "concede" => run_command(&mut game, Ok(PlayerCommand::Concede), viewer, locale),
             "quit" | "q" => break,
             _ => eprintln!(
                 "{}",
@@ -391,35 +538,20 @@ fn main() -> Result<(), Box<dyn Error>> {
             ),
         }
         if let Some(outcome) = game.state().outcome {
-            match outcome {
-                GameOutcome::Winner(winner) => println!(
-                    "{}",
-                    lf!(
-                        locale,
-                        "Game over. {} wins.",
-                        "游戏结束，{} 获胜。",
-                        "遊戲結束，{} 獲勝。",
-                        winner
-                    )
-                ),
-                GameOutcome::Draw => println!(
-                    "{}",
-                    lt!(
-                        locale,
-                        "Game over. Draw.",
-                        "游戏结束，平局。",
-                        "遊戲結束，平手。"
-                    )
-                ),
-            }
+            print_outcome(outcome, locale);
             break;
         }
     }
     Ok(())
 }
 
-fn parse_options() -> Result<Option<CliOptions>, Box<dyn Error>> {
+fn parse_options() -> Result<Option<CliInvocation>, Box<dyn Error>> {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let mut args = env::args().skip(1).peekable();
+    if args.peek().is_some_and(|argument| argument == "fuzz") {
+        args.next();
+        return parse_fuzz_options(&root, args);
+    }
     let default_deck = root.join("decks/demo.json");
     let mut options = CliOptions {
         data: root.join("data"),
@@ -429,9 +561,10 @@ fn parse_options() -> Result<Option<CliOptions>, Box<dyn Error>> {
         replay: None,
         snapshot: None,
         locale: Locale::EnUs,
+        controllers: [ControllerKind::Interactive, ControllerKind::Interactive],
+        debug_state: false,
     };
     let mut show_help = false;
-    let mut args = env::args().skip(1);
     while let Some(argument) = args.next() {
         match argument.as_str() {
             "--data" => options.data = required_value(&mut args, "--data")?.into(),
@@ -451,6 +584,18 @@ fn parse_options() -> Result<Option<CliOptions>, Box<dyn Error>> {
             "--snapshot" => {
                 options.snapshot = Some(required_value(&mut args, "--snapshot")?.into())
             }
+            "--player-one" | "--p1" => {
+                options.controllers[0] =
+                    required_value(&mut args, "--player-one")?.parse().map_err(
+                        |message: String| io::Error::new(io::ErrorKind::InvalidInput, message),
+                    )?
+            }
+            "--player-two" | "--p2" => {
+                options.controllers[1] =
+                    required_value(&mut args, "--player-two")?.parse().map_err(
+                        |message: String| io::Error::new(io::ErrorKind::InvalidInput, message),
+                    )?
+            }
             "--locale" => {
                 options.locale =
                     required_value(&mut args, "--locale")?
@@ -459,6 +604,7 @@ fn parse_options() -> Result<Option<CliOptions>, Box<dyn Error>> {
                             io::Error::new(io::ErrorKind::InvalidInput, message)
                         })?
             }
+            "--debug-state" => options.debug_state = true,
             "--help" | "-h" => {
                 show_help = true;
             }
@@ -482,7 +628,89 @@ fn parse_options() -> Result<Option<CliOptions>, Box<dyn Error>> {
         print_usage(options.locale);
         return Ok(None);
     }
-    Ok(Some(options))
+    Ok(Some(CliInvocation::Play(options)))
+}
+
+fn observer_for(controllers: &[Controller; 2], input_player: PlayerId) -> PlayerId {
+    let interactive = [PlayerId::ONE, PlayerId::TWO]
+        .into_iter()
+        .filter(|player| controllers[player.index()].is_interactive())
+        .collect::<Vec<_>>();
+    if interactive.len() == 1 {
+        interactive[0]
+    } else {
+        input_player
+    }
+}
+
+fn print_outcome(outcome: GameOutcome, locale: Locale) {
+    match outcome {
+        GameOutcome::Winner(winner) => println!(
+            "{}",
+            lf!(
+                locale,
+                "Game over. {} wins.",
+                "游戏结束，{} 获胜。",
+                "遊戲結束，{} 獲勝。",
+                winner
+            )
+        ),
+        GameOutcome::Draw => println!(
+            "{}",
+            lt!(
+                locale,
+                "Game over. Draw.",
+                "游戏结束，平局。",
+                "遊戲結束，平手。"
+            )
+        ),
+    }
+}
+
+fn parse_fuzz_options(
+    root: &std::path::Path,
+    mut args: impl Iterator<Item = String>,
+) -> Result<Option<CliInvocation>, Box<dyn Error>> {
+    let mut data = root.join("data");
+    let mut options = FuzzOptions::default();
+    let mut show_help = false;
+    while let Some(argument) = args.next() {
+        match argument.as_str() {
+            "--data" => data = required_value(&mut args, "--data")?.into(),
+            // Compatibility alias for launch scripts created before the data/ migration.
+            "--cards" => data = required_value(&mut args, "--cards")?.into(),
+            "--start-seed" => options.start_seed = parse_fuzz_value(&mut args, "--start-seed")?,
+            "--seeds" => options.seeds = parse_fuzz_value(&mut args, "--seeds")?,
+            "--steps" => options.steps = parse_fuzz_value(&mut args, "--steps")?,
+            "--help" | "-h" => show_help = true,
+            value => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    format!("unknown fuzz option {value}; use fuzz --help for usage"),
+                )
+                .into());
+            }
+        }
+    }
+    if show_help {
+        print_fuzz_usage();
+        return Ok(None);
+    }
+    options.validate()?;
+    Ok(Some(CliInvocation::Fuzz { data, options }))
+}
+
+fn parse_fuzz_value<T: std::str::FromStr>(
+    args: &mut impl Iterator<Item = String>,
+    option: &str,
+) -> Result<T, io::Error> {
+    let value = required_value(args, option)?;
+    value.parse().map_err(|_| {
+        io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("{option} must be a non-negative integer"),
+        )
+    })
 }
 
 fn required_value(
@@ -616,6 +844,7 @@ fn validate_deck(
 fn run_command(
     game: &mut Game<LuaCardRuntime>,
     command: Result<PlayerCommand, String>,
+    viewer: PlayerId,
     locale: Locale,
 ) {
     let before = game.state().log.len();
@@ -623,9 +852,9 @@ fn run_command(
         Ok(command) => match game.dispatch(command) {
             Ok(()) => {
                 for event in &game.state().log[before..] {
-                    println!("  {}", display_event(game, event, locale));
+                    println!("  {}", display_event(game, event, locale, viewer));
                 }
-                print_state(game, locale);
+                print_state(game, viewer, locale);
             }
             Err(error) => eprintln!(
                 "{}",
@@ -650,7 +879,7 @@ fn parse_entity(value: &str, locale: Locale) -> Result<EntityId, String> {
     })
 }
 
-fn print_state(game: &Game<LuaCardRuntime>, locale: Locale) {
+fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
     let state = game.state();
     if state.mulligan.is_some() {
         println!(
@@ -782,6 +1011,16 @@ fn print_state(game: &Game<LuaCardRuntime>, locale: Locale) {
                 }
             )
         );
+        let public_objectives = player
+            .secrets
+            .iter()
+            .copied()
+            .filter(|entity| {
+                state
+                    .entity(*entity)
+                    .is_some_and(hearth_core::Entity::is_public_objective)
+            })
+            .collect::<Vec<_>>();
         println!(
             "{}",
             lf!(
@@ -789,12 +1028,42 @@ fn print_state(game: &Game<LuaCardRuntime>, locale: Locale) {
                 "   Secrets: {}",
                 "   奥秘: {}个",
                 "   秘密：{}個",
-                player.secrets.len()
+                player.secrets.len().saturating_sub(public_objectives.len())
             )
         );
+        if !public_objectives.is_empty() {
+            println!(
+                "{}",
+                lf!(
+                    locale,
+                    "   Public objectives: {}",
+                    "   公开任务：{}",
+                    "   公開任務：{}",
+                    public_objectives
+                        .iter()
+                        .map(|entity| localized_entity_name(game, *entity, locale))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            );
+        }
     }
-    print_hand(game, locale);
+    print_hand(game, viewer, locale);
     if let Some(pending) = &state.pending_input {
+        if pending.player != viewer {
+            println!(
+                "{}",
+                lf!(
+                    locale,
+                    "Waiting for {0} to make a hidden choice.",
+                    "等待 {0} 完成隐藏选择。",
+                    "等待 {0} 完成隱藏選擇。",
+                    pending.player
+                )
+            );
+            println!();
+            return;
+        }
         println!(
             "{}",
             lf!(
@@ -813,18 +1082,12 @@ fn print_state(game: &Game<LuaCardRuntime>, locale: Locale) {
     println!();
 }
 
-fn print_hand(game: &Game<LuaCardRuntime>, locale: Locale) {
+fn print_hand(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
     let state = game.state();
-    let player = state.player(state.active_player);
+    let player = state.player(viewer);
     print!(
         "{}",
-        lf!(
-            locale,
-            "{} hand:",
-            "{} 手牌:",
-            "{} 手牌：",
-            state.active_player
-        )
+        lf!(locale, "{} hand:", "{} 手牌:", "{} 手牌：", viewer)
     );
     for id in &player.hand {
         let entity = state.entity(*id).unwrap();
@@ -868,12 +1131,150 @@ fn localized_entity_name(game: &Game<LuaCardRuntime>, id: EntityId, locale: Loca
         .unwrap_or_else(|| entity.name.clone())
 }
 
-fn display_event(game: &Game<LuaCardRuntime>, event: &GameEvent, locale: Locale) -> String {
+fn entity_controller(game: &Game<LuaCardRuntime>, entity: EntityId) -> Option<PlayerId> {
+    game.state().entity(entity).map(|entity| entity.controller)
+}
+
+fn is_hidden_secret(game: &Game<LuaCardRuntime>, entity: EntityId, viewer: PlayerId) -> bool {
+    game.state().entity(entity).is_some_and(|entity| {
+        entity.zone == hearth_core::Zone::Secret
+            && entity.controller != viewer
+            && !entity.is_public_objective()
+    })
+}
+
+fn hidden_zone_change(
+    game: &Game<LuaCardRuntime>,
+    viewer: PlayerId,
+    entity: EntityId,
+    from: hearth_core::Zone,
+    to: hearth_core::Zone,
+) -> bool {
+    use hearth_core::Zone;
+
+    let Some(entity) = game.state().entity(entity) else {
+        return true;
+    };
+    if entity.is_public_objective() {
+        return false;
+    }
+    if entity.owner == viewer || entity.controller == viewer {
+        return from == Zone::Deck && to == Zone::Deck;
+    }
+    let destination_is_public = matches!(
+        to,
+        Zone::Hero | Zone::Board | Zone::Weapon | Zone::HeroPower | Zone::Graveyard | Zone::Removed
+    );
+    !destination_is_public
+        && (matches!(from, Zone::Deck | Zone::Hand | Zone::Secret)
+            || matches!(to, Zone::Deck | Zone::Hand | Zone::Secret | Zone::SetAside))
+}
+
+fn display_event(
+    game: &Game<LuaCardRuntime>,
+    event: &GameEvent,
+    locale: Locale,
+    viewer: PlayerId,
+) -> String {
+    match event {
+        GameEvent::CardDrawn { player, .. } if *player != viewer => {
+            return lf!(
+                locale,
+                "{player} drew a card",
+                "{player} 抽了一张牌",
+                "{player} 抽了一張牌"
+            );
+        }
+        GameEvent::CardCreated { player, card, .. }
+            if *player != viewer
+                && game.state().entity(*card).is_some_and(|entity| {
+                    matches!(
+                        entity.zone,
+                        hearth_core::Zone::Hand | hearth_core::Zone::Deck
+                    )
+                }) =>
+        {
+            return lf!(
+                locale,
+                "{player} received a hidden card",
+                "{player} 获得了一张隐藏卡牌",
+                "{player} 獲得了一張隱藏卡牌"
+            );
+        }
+        GameEvent::SecretPlayed { player, secret }
+            if *player != viewer && is_hidden_secret(game, *secret, viewer) =>
+        {
+            return lf!(
+                locale,
+                "{player} played a Secret",
+                "{player} 挂上了一个奥秘",
+                "{player} 掛上了一個秘密"
+            );
+        }
+        GameEvent::TradeDraw { player, .. } if *player != viewer => {
+            return lf!(
+                locale,
+                "{player} completed the Trade draw",
+                "{player} 完成交易抽牌",
+                "{player} 完成交易抽牌"
+            );
+        }
+        GameEvent::PlayerScriptDataChanged { player, .. } if *player != viewer => {
+            return lf!(
+                locale,
+                "{player}'s hidden state changed",
+                "{player} 的隐藏状态发生变化",
+                "{player} 的隱藏狀態發生變化"
+            );
+        }
+        GameEvent::ZoneChanged { entity, from, to }
+            if hidden_zone_change(game, viewer, *entity, *from, *to) =>
+        {
+            return lt!(
+                locale,
+                "A hidden card changed zones",
+                "一张隐藏卡牌改变了区域",
+                "一張隱藏卡牌改變了區域"
+            )
+            .to_owned();
+        }
+        GameEvent::RandomCardsSampled {
+            source, population, ..
+        } if entity_controller(game, *source).is_some_and(|player| player != viewer) => {
+            return lf!(
+                locale,
+                "An opponent effect sampled hidden cards from {population} candidates",
+                "对手效果从 {population} 张候选牌中进行了隐藏抽样",
+                "對手效果從 {population} 張候選牌中進行了隱藏抽樣"
+            );
+        }
+        GameEvent::RandomEntitiesSampled {
+            source, population, ..
+        } if entity_controller(game, *source).is_some_and(|player| player != viewer) => {
+            return lf!(
+                locale,
+                "An opponent effect sampled hidden entities from {population} candidates",
+                "对手效果从 {population} 个候选实体中进行了隐藏抽样",
+                "對手效果從 {population} 個候選實體中進行了隱藏抽樣"
+            );
+        }
+        _ => {}
+    }
     let name = |id: &EntityId| {
-        game.state()
-            .entity(*id)
-            .map(|_| format!("{}[{}]", localized_entity_name(game, *id, locale), id))
-            .unwrap_or_else(|| lf!(locale, "Entity[{id}]", "实体[{id}]", "實體[{id}]"))
+        let Some(entity) = game.state().entity(*id) else {
+            return lf!(locale, "Entity[{id}]", "实体[{id}]", "實體[{id}]");
+        };
+        if entity.zone == hearth_core::Zone::Deck
+            || (entity.controller != viewer && entity.zone == hearth_core::Zone::Hand)
+            || is_hidden_secret(game, *id, viewer)
+        {
+            return if entity.zone == hearth_core::Zone::Secret {
+                lt!(locale, "a hidden Secret", "一个隐藏奥秘", "一個隱藏秘密").to_owned()
+            } else {
+                lt!(locale, "a hidden card", "一张隐藏卡牌", "一張隱藏卡牌").to_owned()
+            };
+        }
+        format!("{}[{}]", localized_entity_name(game, *id, locale), id)
     };
     match event {
         GameEvent::GameStarted => lt!(locale, "Game started", "对战开始", "對戰開始").to_owned(),
@@ -1501,9 +1902,9 @@ fn print_help(locale: Locale) {
         "{}",
         lt!(
             locale,
-            "Commands: state | hand | cards | legal | save <replay-file> | snapshot <snapshot-file> | mulligan [card-ids...] | keep | targets <card> | play <card> [target] | playat <card> <position> [target] | trade <card> | action <card> <action> [target] | attack <attacker> <target> | power [target] | location <location> [target] | choose <index> | end | concede | quit",
-            "命令：state | hand | cards | legal | save <replay文件> | snapshot <快照文件> | mulligan [换牌ID...] | keep | targets <卡牌> | play <卡牌> [目标] | playat <卡牌> <位置> [目标] | trade <卡牌> | action <卡牌> <动作> [目标] | attack <攻击者> <目标> | power [目标] | location <地标> [目标] | choose <编号> | end | concede | quit",
-            "命令：state | hand | cards | legal | save <replay檔案> | snapshot <快照檔案> | mulligan [換牌ID...] | keep | targets <卡牌> | play <卡牌> [目標] | playat <卡牌> <位置> [目標] | trade <卡牌> | action <卡牌> <動作> [目標] | attack <攻擊者> <目標> | power [目標] | location <地標> [目標] | choose <編號> | end | concede | quit"
+            "Commands: state | hand | cards | legal | save <replay-file> [debug] | snapshot <snapshot-file> [debug] | mulligan [card-ids...] | keep | targets <card> | play <card> [target] | playat <card> <position> [target] | trade <card> | action <card> <action> [target] | attack <attacker> <target> | power [target] | location <location> [target] | choose <index> | end | concede | quit",
+            "命令：state | hand | cards | legal | save <replay文件> [调试] | snapshot <快照文件> [调试] | mulligan [换牌ID...] | keep | targets <卡牌> | play <卡牌> [目标] | playat <卡牌> <位置> [目标] | trade <卡牌> | action <卡牌> <动作> [目标] | attack <攻击者> <目标> | power [目标] | location <地标> [目标] | choose <编号> | end | concede | quit",
+            "命令：state | hand | cards | legal | save <replay檔案> [除錯] | snapshot <快照檔案> [除錯] | mulligan [換牌ID...] | keep | targets <卡牌> | play <卡牌> [目標] | playat <卡牌> <位置> [目標] | trade <卡牌> | action <卡牌> <動作> [目標] | attack <攻擊者> <目標> | power [目標] | location <地標> [目標] | choose <編號> | end | concede | quit"
         )
     );
 }
@@ -1513,9 +1914,98 @@ fn print_usage(locale: Locale) {
         "{}",
         lt!(
             locale,
-            "Usage: hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE]",
-            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE]",
-            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE]"
+            "Usage: hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n       hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]",
+            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n      hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]",
+            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n      hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]"
         )
     );
+}
+
+fn print_fuzz_usage() {
+    println!(
+        "Usage: hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]\n\
+         \n\
+         Options:\n\
+           --data DIR      Lua card data directory (default: repository data/)\n\
+           --start-seed N  first deterministic seed (default: 0)\n\
+           --seeds N       number of games to explore (default: 8)\n\
+           --steps N       maximum actions per game (default: 180)\n\
+           -h, --help      show this help"
+    );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn opponent_draw_and_secret_events_are_redacted() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let mut game = Game::new_unrestricted(
+            LuaCardRuntime::load_dir(root.join("data")).unwrap(),
+            std::iter::repeat_n("CS2_120".to_owned(), 20).collect(),
+            std::iter::repeat_n("CFM_800".to_owned(), 20).collect(),
+            7,
+        )
+        .unwrap();
+        let hidden = game.state().player(PlayerId::TWO).hand[0];
+        let draw = display_event(
+            &game,
+            &GameEvent::CardDrawn {
+                player: PlayerId::TWO,
+                card: hidden,
+                source: None,
+            },
+            Locale::EnUs,
+            PlayerId::ONE,
+        );
+        assert_eq!(draw, "P2 drew a card");
+        assert!(!draw.contains("Getaway Kodo"));
+        assert!(!draw.contains(&hidden.to_string()));
+
+        game.dispatch(PlayerCommand::Mulligan {
+            replace: Vec::new(),
+        })
+        .unwrap();
+        game.dispatch(PlayerCommand::Mulligan {
+            replace: Vec::new(),
+        })
+        .unwrap();
+        game.dispatch(PlayerCommand::EndTurn).unwrap();
+        let secret_play = game
+            .legal_actions()
+            .unwrap()
+            .into_iter()
+            .find(|command| matches!(command, PlayerCommand::PlayCard { .. }))
+            .unwrap();
+        game.dispatch(secret_play).unwrap();
+        let secret_entity = game.state().player(PlayerId::TWO).secrets[0];
+        let secret = display_event(
+            &game,
+            &GameEvent::SecretPlayed {
+                player: PlayerId::TWO,
+                secret: secret_entity,
+            },
+            Locale::EnUs,
+            PlayerId::ONE,
+        );
+        assert_eq!(secret, "P2 played a Secret");
+        assert!(!secret.contains("Getaway Kodo"));
+        assert!(!secret.contains(&secret_entity.to_string()));
+
+        let mana = display_event(
+            &game,
+            &GameEvent::ManaSpent {
+                player: PlayerId::TWO,
+                source: secret_entity,
+                amount: 1,
+                temporary: 0,
+            },
+            Locale::EnUs,
+            PlayerId::ONE,
+        );
+        assert!(mana.contains("hidden Secret"));
+        assert!(!mana.contains("Getaway Kodo"));
+        assert!(!mana.contains(&secret_entity.to_string()));
+    }
 }

@@ -471,6 +471,12 @@ impl Entity {
     pub fn has_keyword(&self, keyword: &str) -> bool {
         self.keywords.iter().any(|value| value == keyword)
     }
+
+    pub fn is_public_objective(&self) -> bool {
+        ["quest", "questline", "sidequest"]
+            .into_iter()
+            .any(|keyword| self.has_keyword(keyword))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

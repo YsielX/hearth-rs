@@ -10,5 +10,5 @@ name = "hearth-state-fuzz"
 path = "src/main.rs"
 
 [dependencies]
-hearth-core = { path = "../crates/hearth-core" }
-hearth-script = { path = "../crates/hearth-script" }
+hearth-core = { path = "../hearth-core" }
+hearth-script = { path = "../hearth-script" }

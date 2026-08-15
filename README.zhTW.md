@@ -18,8 +18,9 @@ data/
 crates/
 ├── hearth-core/           # 狀態機、區域、事件佇列、確定性 RNG、replay
 ├── hearth-script/         # Lua 沙箱、模組載入、規則鉤子與效果橋接
-└── hearth-cli/            # 雙人熱座命令列
-fuzz/                      # 獨立的確定性狀態機 Fuzzer
+├── hearth-cli/            # 互動/Bot/Fuzzer 對局執行器和 fuzz 子命令
+├── hearth-bot/            # 不讀取隱藏資訊的確定性基礎 Bot
+└── hearth-fuzz/           # 獨立的確定性狀態機 Fuzzer
 decks/demo.json            # 官方卡演示牌組
 decks/quest_rogue.json     # Dog 2017 經典洞穴任務賊
 ```
@@ -151,6 +152,22 @@ save <檔案>                 儲存 replay
 snapshot <檔案>             儲存狀態快照
 ```
 
+## 玩家控制器與隱藏資訊
+
+兩個玩家位置都可以獨立選擇 `interactive`、`bot` 或 `fuzzer`：
+
+```bash
+cargo run -p hearth-cli --release -- \
+  --deck-one decks/quest_rogue.json \
+  --deck-two decks/quest_rogue.json \
+  --player-one interactive \
+  --player-two bot
+```
+
+控制器只能接收玩家視角投影和引擎給出的合法操作後設資料，不能讀取原始 `GameState`。玩家視角會排除雙方牌庫順序（也包括自己的牌庫順序）、對手手牌和普通秘密身分、指令碼資料、隱藏光環來源、RNG 狀態以及 replay；任務、任務線和支線任務則按官方規則保持公開。CLI 事件輸出會隱藏對手抽牌、產生到手牌的卡、未揭示秘密名稱、隱藏選擇和隱藏隨機抽樣。雙互動玩家熱座模式使用清屏交接；普通對局中禁止匯出包含權威隱藏狀態的 replay/snapshot，只有明確傳入 `--debug-state` 才會開啟該除錯能力。
+
+基礎 [`hearth-bot`](crates/hearth-bot/README.md) 按「場攻斬殺、規劃目前合法操作以儘量打滿費用、優勢交換、打臉」的順序行動。嘲諷等攻擊限制仍完全由引擎決定，因為 Bot 只會從引擎列舉的合法攻擊中選擇。
+
 ## 驗證
 
 ```bash
@@ -163,11 +180,13 @@ cargo test --workspace
 
 ## 狀態機 Fuzz 測試
 
-確定性狀態機 Fuzzer 已獨立放在 [`fuzz/`](fuzz/README.md)，普通 `cargo test` 不會啟動 fuzz campaign。它會產生職業合法牌組、抽取引擎列舉的合法操作、在每一步校驗狀態不變量，並將最終狀態與 replay 比對：
+確定性狀態機 Fuzzer 已獨立放在 [`crates/hearth-fuzz/`](crates/hearth-fuzz/README.md)，普通 `cargo test` 不會啟動 fuzz campaign。它會產生職業合法牌組、抽取引擎列舉的合法操作、在每一步校驗狀態不變量，並將最終狀態與 replay 比對。可以直接透過主 CLI 執行：
 
 ```bash
-cargo run -p hearth-fuzz --release -- --seeds 100 --steps 180
+cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ```
+
+也可以透過 `cargo run -p hearth-fuzz --release -- ...` 執行專用二進位；兩個入口共用同一份實作。
 
 ## 邊界
 
