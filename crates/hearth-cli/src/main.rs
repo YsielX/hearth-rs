@@ -5,9 +5,9 @@ use std::path::PathBuf;
 
 use hearth_bot::SimpleBot;
 use hearth_core::{
-    CardKind, CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, GameOutcome,
-    GameSnapshot, LegalAction, Locale, PlayerCommand, PlayerController, PlayerId, PlayerView,
-    Replay,
+    CardKind, CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameOutcome, GameSnapshot,
+    LegalAction, Locale, PlayerCommand, PlayerController, PlayerId, PlayerView, PublicEntity,
+    PublicEvent, Replay,
 };
 use hearth_fuzz::{FuzzController, FuzzOptions, run_campaign};
 use hearth_script::LuaCardRuntime;
@@ -294,11 +294,15 @@ fn main() -> Result<(), Box<dyn Error>> {
             let command = controllers[input_player.index()]
                 .choose_action(&view, &legal_actions)
                 .map_err(io::Error::other)?;
-            println!("{}: {}", input_player, display_command(&command));
-            let before = game.state().log.len();
+            println!(
+                "{}: {}",
+                input_player,
+                display_automated_command(&command, input_player, viewer, locale)
+            );
+            let before = game.state().public_history(viewer).len();
             game.dispatch(command)?;
-            for event in &game.state().log[before..] {
-                println!("  {}", display_event(&game, event, locale, viewer));
+            for record in &game.state().public_history(viewer)[before..] {
+                println!("  {}", display_public_event(&game, &record.event, locale));
             }
             print_state(&game, viewer, locale);
             if let Some(outcome) = game.state().outcome {
@@ -847,12 +851,12 @@ fn run_command(
     viewer: PlayerId,
     locale: Locale,
 ) {
-    let before = game.state().log.len();
+    let before = game.state().public_history(viewer).len();
     match command {
         Ok(command) => match game.dispatch(command) {
             Ok(()) => {
-                for event in &game.state().log[before..] {
-                    println!("  {}", display_event(game, event, locale, viewer));
+                for record in &game.state().public_history(viewer)[before..] {
+                    println!("  {}", display_public_event(game, &record.event, locale));
                 }
                 print_state(game, viewer, locale);
             }
@@ -1131,237 +1135,97 @@ fn localized_entity_name(game: &Game<LuaCardRuntime>, id: EntityId, locale: Loca
         .unwrap_or_else(|| entity.name.clone())
 }
 
-fn entity_controller(game: &Game<LuaCardRuntime>, entity: EntityId) -> Option<PlayerId> {
-    game.state().entity(entity).map(|entity| entity.controller)
-}
-
-fn is_hidden_secret(game: &Game<LuaCardRuntime>, entity: EntityId, viewer: PlayerId) -> bool {
-    game.state().entity(entity).is_some_and(|entity| {
-        entity.zone == hearth_core::Zone::Secret
-            && entity.controller != viewer
-            && !entity.is_public_objective()
-    })
-}
-
-fn hidden_zone_change(
+fn display_public_event(
     game: &Game<LuaCardRuntime>,
-    viewer: PlayerId,
-    entity: EntityId,
-    from: hearth_core::Zone,
-    to: hearth_core::Zone,
-) -> bool {
-    use hearth_core::Zone;
-
-    let Some(entity) = game.state().entity(entity) else {
-        return true;
-    };
-    if entity.is_public_objective() {
-        return false;
-    }
-    if entity.owner == viewer || entity.controller == viewer {
-        return from == Zone::Deck && to == Zone::Deck;
-    }
-    let destination_is_public = matches!(
-        to,
-        Zone::Hero | Zone::Board | Zone::Weapon | Zone::HeroPower | Zone::Graveyard | Zone::Removed
-    );
-    !destination_is_public
-        && (matches!(from, Zone::Deck | Zone::Hand | Zone::Secret)
-            || matches!(to, Zone::Deck | Zone::Hand | Zone::Secret | Zone::SetAside))
-}
-
-fn display_event(
-    game: &Game<LuaCardRuntime>,
-    event: &GameEvent,
+    event: &PublicEvent,
     locale: Locale,
-    viewer: PlayerId,
 ) -> String {
-    match event {
-        GameEvent::CardDrawn { player, .. } if *player != viewer => {
-            return lf!(
-                locale,
-                "{player} drew a card",
-                "{player} 抽了一张牌",
-                "{player} 抽了一張牌"
-            );
-        }
-        GameEvent::CardCreated { player, card, .. }
-            if *player != viewer
-                && game.state().entity(*card).is_some_and(|entity| {
-                    matches!(
-                        entity.zone,
-                        hearth_core::Zone::Hand | hearth_core::Zone::Deck
-                    )
-                }) =>
-        {
-            return lf!(
-                locale,
-                "{player} received a hidden card",
-                "{player} 获得了一张隐藏卡牌",
-                "{player} 獲得了一張隱藏卡牌"
-            );
-        }
-        GameEvent::SecretPlayed { player, secret }
-            if *player != viewer && is_hidden_secret(game, *secret, viewer) =>
-        {
-            return lf!(
-                locale,
-                "{player} played a Secret",
-                "{player} 挂上了一个奥秘",
-                "{player} 掛上了一個秘密"
-            );
-        }
-        GameEvent::TradeDraw { player, .. } if *player != viewer => {
-            return lf!(
-                locale,
-                "{player} completed the Trade draw",
-                "{player} 完成交易抽牌",
-                "{player} 完成交易抽牌"
-            );
-        }
-        GameEvent::PlayerScriptDataChanged { player, .. } if *player != viewer => {
-            return lf!(
-                locale,
-                "{player}'s hidden state changed",
-                "{player} 的隐藏状态发生变化",
-                "{player} 的隱藏狀態發生變化"
-            );
-        }
-        GameEvent::ZoneChanged { entity, from, to }
-            if hidden_zone_change(game, viewer, *entity, *from, *to) =>
-        {
-            return lt!(
-                locale,
-                "A hidden card changed zones",
-                "一张隐藏卡牌改变了区域",
-                "一張隱藏卡牌改變了區域"
-            )
-            .to_owned();
-        }
-        GameEvent::RandomCardsSampled {
-            source, population, ..
-        } if entity_controller(game, *source).is_some_and(|player| player != viewer) => {
-            return lf!(
-                locale,
-                "An opponent effect sampled hidden cards from {population} candidates",
-                "对手效果从 {population} 张候选牌中进行了隐藏抽样",
-                "對手效果從 {population} 張候選牌中進行了隱藏抽樣"
-            );
-        }
-        GameEvent::RandomEntitiesSampled {
-            source, population, ..
-        } if entity_controller(game, *source).is_some_and(|player| player != viewer) => {
-            return lf!(
-                locale,
-                "An opponent effect sampled hidden entities from {population} candidates",
-                "对手效果从 {population} 个候选实体中进行了隐藏抽样",
-                "對手效果從 {population} 個候選實體中進行了隱藏抽樣"
-            );
-        }
-        _ => {}
-    }
-    let name = |id: &EntityId| {
-        let Some(entity) = game.state().entity(*id) else {
-            return lf!(locale, "Entity[{id}]", "实体[{id}]", "實體[{id}]");
-        };
-        if entity.zone == hearth_core::Zone::Deck
-            || (entity.controller != viewer && entity.zone == hearth_core::Zone::Hand)
-            || is_hidden_secret(game, *id, viewer)
-        {
-            return if entity.zone == hearth_core::Zone::Secret {
-                lt!(locale, "a hidden Secret", "一个隐藏奥秘", "一個隱藏秘密").to_owned()
-            } else {
-                lt!(locale, "a hidden card", "一张隐藏卡牌", "一張隱藏卡牌").to_owned()
-            };
-        }
-        format!("{}[{}]", localized_entity_name(game, *id, locale), id)
+    let name = |entity: &PublicEntity| {
+        let label = game
+            .runtime()
+            .definition(&entity.card_id)
+            .map(|definition| definition.localized(locale).name)
+            .unwrap_or_else(|| entity.card_id.clone());
+        format!("{}[{}]", label, entity.id)
+    };
+    let effect = |source: &Option<PublicEntity>| {
+        source
+            .as_ref()
+            .map(&name)
+            .unwrap_or_else(|| lt!(locale, "an effect", "一个效果", "一個效果").to_owned())
     };
     match event {
-        GameEvent::GameStarted => lt!(locale, "Game started", "对战开始", "對戰開始").to_owned(),
-        GameEvent::TurnStarted { player, turn } => lf!(
+        PublicEvent::GameStarted => lt!(locale, "Game started", "对战开始", "對戰開始").to_owned(),
+        PublicEvent::TurnStarted { player, turn } => lf!(
             locale,
             "Turn {turn} started: {player}",
             "回合 {turn} 开始：{player}",
             "回合 {turn} 開始：{player}"
         ),
-        GameEvent::TurnEnded { player, .. } => lf!(
+        PublicEvent::TurnEnded { player, .. } => lf!(
             locale,
             "{player} ended the turn",
             "{player} 结束回合",
             "{player} 結束回合"
         ),
-        GameEvent::CardDrawn { player, card, .. } => lf!(
-            locale,
-            "{player} drew {}",
-            "{player} 抽到 {}",
-            "{player} 抽到 {}",
-            name(card)
-        ),
-        GameEvent::CardBurned { player, card, .. } => lf!(
+        PublicEvent::CardDrawn { player, card, .. } => match card {
+            Some(card) => lf!(
+                locale,
+                "{player} drew {}",
+                "{player} 抽到 {}",
+                "{player} 抽到 {}",
+                name(card)
+            ),
+            None => lf!(
+                locale,
+                "{player} drew a card",
+                "{player} 抽了一张牌",
+                "{player} 抽了一張牌"
+            ),
+        },
+        PublicEvent::CardBurned { player, card, .. } => lf!(
             locale,
             "{player} burned {}",
             "{player} 爆掉 {}",
             "{player} 爆掉 {}",
             name(card)
         ),
-        GameEvent::CardCreated { player, card, .. } => {
-            lf!(
+        PublicEvent::CardCreated { player, card, .. } => match card {
+            Some(card) => lf!(
                 locale,
                 "{player} received {}",
                 "{player} 获得 {}",
                 "{player} 獲得 {}",
                 name(card)
-            )
-        }
-        GameEvent::Fatigue { player, amount } => lf!(
+            ),
+            None => lf!(
+                locale,
+                "{player} received a hidden card",
+                "{player} 获得了一张隐藏卡牌",
+                "{player} 獲得了一張隱藏卡牌"
+            ),
+        },
+        PublicEvent::Fatigue { player, amount } => lf!(
             locale,
             "{player} took {amount} Fatigue damage",
             "{player} 受到 {amount} 点疲劳伤害",
             "{player} 受到 {amount} 點疲勞傷害"
         ),
-        GameEvent::PlayerScriptDataChanged {
-            player,
-            key,
-            old,
-            new,
-            ..
-        } => lf!(
-            locale,
-            "{player} changed {key}: {old} -> {new}",
-            "{player} 更改 {key}：{old} -> {new}",
-            "{player} 更改 {key}：{old} -> {new}"
-        ),
-        GameEvent::CardPlayed { player, card, .. } => lf!(
+        PublicEvent::CardPlayed { player, card, .. } => lf!(
             locale,
             "{player} played {}",
             "{player} 打出 {}",
             "{player} 打出 {}",
             name(card)
         ),
-        GameEvent::SpellCast {
-            player,
-            spell,
-            generated_by,
-            target: _,
-            ..
-        } => match generated_by {
-            Some(source) => lf!(
-                locale,
-                "{player} cast {0} from {1}",
-                "{player} 由 {1} 施放 {0}",
-                "{player} 由 {1} 施放 {0}",
-                name(spell),
-                name(source)
-            ),
-            None => lf!(
-                locale,
-                "{player} cast {}",
-                "{player} 施放 {}",
-                "{player} 施放 {}",
-                name(spell)
-            ),
-        },
-        GameEvent::SpellTargeted {
+        PublicEvent::SpellCast { player, spell, .. } => lf!(
+            locale,
+            "{player} cast {}",
+            "{player} 施放 {}",
+            "{player} 施放 {}",
+            name(spell)
+        ),
+        PublicEvent::SpellTargeted {
             player,
             spell,
             target,
@@ -1374,83 +1238,70 @@ fn display_event(
             name(spell),
             name(target)
         ),
-        GameEvent::MinionPlayed { player, minion } => {
-            lf!(
-                locale,
-                "{player} played minion {}",
-                "{player} 打出随从 {}",
-                "{player} 打出手下 {}",
-                name(minion)
-            )
-        }
-        GameEvent::WeaponPlayed { player, weapon } => {
-            lf!(
-                locale,
-                "{player} played weapon {}",
-                "{player} 打出武器 {}",
-                "{player} 打出武器 {}",
-                name(weapon)
-            )
-        }
-        GameEvent::CardCountered { player, card } => {
-            lf!(
-                locale,
-                "{player}'s {} was Countered",
-                "{player} 的 {} 被反制",
-                "{player} 的 {} 被反制",
-                name(card)
-            )
-        }
-        GameEvent::CardDiscarded {
-            source,
-            player,
-            card,
-        } => lf!(
+        PublicEvent::MinionPlayed { player, minion } => lf!(
             locale,
-            "{player} discarded {0} because of {1}",
-            "{player} 因 {1} 弃掉 {0}",
-            "{player} 因 {1} 棄掉 {0}",
-            name(card),
-            name(source)
+            "{player} played minion {}",
+            "{player} 打出随从 {}",
+            "{player} 打出手下 {}",
+            name(minion)
         ),
-        GameEvent::CardTraded { player, card } => {
-            lf!(
+        PublicEvent::WeaponPlayed { player, weapon } => lf!(
+            locale,
+            "{player} played weapon {}",
+            "{player} 打出武器 {}",
+            "{player} 打出武器 {}",
+            name(weapon)
+        ),
+        PublicEvent::LocationPlayed { player, location } => lf!(
+            locale,
+            "{player} played Location {}",
+            "{player} 打出地标 {}",
+            "{player} 打出地標 {}",
+            name(location)
+        ),
+        PublicEvent::CardCountered { player, card } => lf!(
+            locale,
+            "{player}'s {} was Countered",
+            "{player} 的 {} 被反制",
+            "{player} 的 {} 被反制",
+            name(card)
+        ),
+        PublicEvent::CardDiscarded { player, card, .. } => lf!(
+            locale,
+            "{player} discarded {}",
+            "{player} 弃掉 {}",
+            "{player} 棄掉 {}",
+            name(card)
+        ),
+        PublicEvent::CardTraded { player, card } => match card {
+            Some(card) => lf!(
                 locale,
                 "{player} Traded {}",
                 "{player} 交易了 {}",
                 "{player} 交易了 {}",
                 name(card)
-            )
-        }
-        GameEvent::TradeDraw {
-            player,
-            replacement,
-            ..
-        } => match replacement {
-            Some(card) => lf!(
-                locale,
-                "{player} replaced the Trade draw with {}",
-                "{player} 将交易抽牌替换为 {}",
-                "{player} 將交易抽牌替換為 {}",
-                name(card)
             ),
             None => lf!(
                 locale,
-                "{player} completed the Trade draw",
-                "{player} 完成交易抽牌",
-                "{player} 完成交易抽牌"
+                "{player} Traded a card",
+                "{player} 交易了一张牌",
+                "{player} 交易了一張牌"
             ),
         },
-        GameEvent::MinionSummoned { player, entity } => {
-            lf!(
-                locale,
-                "{player} summoned {}",
-                "{player} 召唤 {}",
-                "{player} 召喚 {}",
-                name(entity)
-            )
-        }
-        GameEvent::Magnetized {
+        PublicEvent::TradeDraw { player } => lf!(
+            locale,
+            "{player} completed the Trade draw",
+            "{player} 完成交易抽牌",
+            "{player} 完成交易抽牌"
+        ),
+        PublicEvent::MinionSummoned { player, entity } => lf!(
+            locale,
+            "{player} summoned {}",
+            "{player} 召唤 {}",
+            "{player} 召喚 {}",
+            name(entity)
+        ),
+        PublicEvent::Magnetized {
             player,
             attachment,
             target,
@@ -1462,34 +1313,21 @@ fn display_event(
             name(attachment),
             name(target)
         ),
-        GameEvent::WeaponEquipped { player, weapon } => {
-            lf!(
-                locale,
-                "{player} equipped {}",
-                "{player} 装备 {}",
-                "{player} 裝備 {}",
-                name(weapon)
-            )
-        }
-        GameEvent::WeaponDestroyed { player, weapon } => {
-            lf!(
-                locale,
-                "{player}'s {} was destroyed",
-                "{player} 的 {} 被摧毁",
-                "{player} 的 {} 被摧毀",
-                name(weapon)
-            )
-        }
-        GameEvent::LocationPlayed { player, location } => {
-            lf!(
-                locale,
-                "{player} played Location {}",
-                "{player} 打出地标 {}",
-                "{player} 打出地標 {}",
-                name(location)
-            )
-        }
-        GameEvent::LocationUsed {
+        PublicEvent::WeaponEquipped { player, weapon } => lf!(
+            locale,
+            "{player} equipped {}",
+            "{player} 装备 {}",
+            "{player} 裝備 {}",
+            name(weapon)
+        ),
+        PublicEvent::WeaponDestroyed { player, weapon } => lf!(
+            locale,
+            "{player}'s {} was destroyed",
+            "{player} 的 {} 被摧毁",
+            "{player} 的 {} 被摧毀",
+            name(weapon)
+        ),
+        PublicEvent::LocationUsed {
             player, location, ..
         } => lf!(
             locale,
@@ -1498,16 +1336,14 @@ fn display_event(
             "{player} 啟用地標 {}",
             name(location)
         ),
-        GameEvent::LocationDestroyed { player, location } => {
-            lf!(
-                locale,
-                "{player}'s Location {} was depleted",
-                "{player} 的地标 {} 耗尽",
-                "{player} 的地標 {} 耗盡",
-                name(location)
-            )
-        }
-        GameEvent::HeroPowerUsed {
+        PublicEvent::LocationDestroyed { player, location } => lf!(
+            locale,
+            "{player}'s Location {} was depleted",
+            "{player} 的地标 {} 耗尽",
+            "{player} 的地標 {} 耗盡",
+            name(location)
+        ),
+        PublicEvent::HeroPowerUsed {
             player, hero_power, ..
         } => lf!(
             locale,
@@ -1516,7 +1352,7 @@ fn display_event(
             "{player} 使用 {}",
             name(hero_power)
         ),
-        GameEvent::HeroPowerReplaced {
+        PublicEvent::HeroPowerReplaced {
             player, old, new, ..
         } => lf!(
             locale,
@@ -1526,7 +1362,7 @@ fn display_event(
             name(old),
             name(new)
         ),
-        GameEvent::HeroReplaced { player, old, new } => lf!(
+        PublicEvent::HeroReplaced { player, old, new } => lf!(
             locale,
             "{player} replaced Hero {} with {}",
             "{player} 将英雄 {} 替换为 {}",
@@ -1534,34 +1370,36 @@ fn display_event(
             name(old),
             name(new)
         ),
-        GameEvent::SecretPlayed { player, secret } => {
-            lf!(
+        PublicEvent::SecretPlayed { player, secret } => match secret {
+            Some(secret) => lf!(
                 locale,
                 "{player} played Secret {}",
                 "{player} 挂上奥秘 {}",
                 "{player} 掛上秘密 {}",
                 name(secret)
-            )
-        }
-        GameEvent::SecretRevealed { player, secret } => {
-            lf!(
+            ),
+            None => lf!(
                 locale,
-                "{player}'s Secret {} triggered",
-                "{player} 的奥秘 {} 被触发",
-                "{player} 的秘密 {} 被觸發",
-                name(secret)
-            )
-        }
-        GameEvent::ZoneChanged { entity, from, to } => {
-            lf!(
-                locale,
-                "{} moved from {from:?} to {to:?}",
-                "{} 从 {from:?} 移动到 {to:?}",
-                "{} 從 {from:?} 移動到 {to:?}",
-                name(entity)
-            )
-        }
-        GameEvent::ControllerChanged {
+                "{player} played a Secret",
+                "{player} 挂上了一个奥秘",
+                "{player} 掛上了一個秘密"
+            ),
+        },
+        PublicEvent::SecretRevealed { player, secret } => lf!(
+            locale,
+            "{player}'s Secret {} triggered",
+            "{player} 的奥秘 {} 被触发",
+            "{player} 的秘密 {} 被觸發",
+            name(secret)
+        ),
+        PublicEvent::ZoneChanged { entity, from, to } => lf!(
+            locale,
+            "{} moved from {from:?} to {to:?}",
+            "{} 从 {from:?} 移动到 {to:?}",
+            "{} 從 {from:?} 移動到 {to:?}",
+            name(entity)
+        ),
+        PublicEvent::ControllerChanged {
             entity, from, to, ..
         } => lf!(
             locale,
@@ -1570,7 +1408,7 @@ fn display_event(
             "{} 的控制權從 {from} 轉移給 {to}",
             name(entity)
         ),
-        GameEvent::Transformed {
+        PublicEvent::Transformed {
             entity,
             from_card,
             to_card,
@@ -1582,19 +1420,17 @@ fn display_event(
             "{} 從 {from_card} 變形為 {to_card}",
             name(entity)
         ),
-        GameEvent::Attack {
+        PublicEvent::Attack {
             attacker, defender, ..
-        } => {
-            lf!(
-                locale,
-                "{} attacked {}",
-                "{} 攻击 {}",
-                "{} 攻擊 {}",
-                name(attacker),
-                name(defender)
-            )
-        }
-        GameEvent::Damaged {
+        } => lf!(
+            locale,
+            "{} attacked {}",
+            "{} 攻击 {}",
+            "{} 攻擊 {}",
+            name(attacker),
+            name(defender)
+        ),
+        PublicEvent::Damaged {
             source,
             target,
             amount,
@@ -1603,10 +1439,10 @@ fn display_event(
             "{} dealt {amount} damage to {}",
             "{} 对 {} 造成 {amount} 点伤害",
             "{} 對 {} 造成 {amount} 點傷害",
-            name(source),
+            effect(source),
             name(target)
         ),
-        GameEvent::DamagePrevented {
+        PublicEvent::DamagePrevented {
             source,
             target,
             reason,
@@ -1615,10 +1451,10 @@ fn display_event(
             "damage from {} to {} was prevented ({reason})",
             "{} 对 {} 的伤害被阻止（{reason}）",
             "{} 對 {} 的傷害被阻止（{reason}）",
-            name(source),
+            effect(source),
             name(target)
         ),
-        GameEvent::Healed {
+        PublicEvent::Healed {
             source,
             target,
             amount,
@@ -1627,10 +1463,10 @@ fn display_event(
             "{} restored {amount} Health to {}",
             "{} 为 {} 恢复 {amount} 点生命",
             "{} 為 {} 恢復 {amount} 點生命",
-            name(source),
+            effect(source),
             name(target)
         ),
-        GameEvent::ArmorGained {
+        PublicEvent::ArmorGained {
             source,
             target,
             amount,
@@ -1639,151 +1475,119 @@ fn display_event(
             "{} gave {} {amount} Armor",
             "{} 使 {} 获得 {amount} 点护甲",
             "{} 使 {} 獲得 {amount} 點護甲",
-            name(source),
+            effect(source),
             name(target)
         ),
-        GameEvent::OverloadQueued {
-            source,
-            player,
-            amount,
-        } => lf!(
+        PublicEvent::OverloadQueued { player, amount, .. } => lf!(
             locale,
-            "{} gave {player} Overload: ({amount})",
-            "{} 使 {player} 下回合过载 {amount}",
-            "{} 使 {player} 下回合超載 {amount}",
-            name(source)
+            "{player} queued Overload: ({amount})",
+            "{player} 下回合过载 {amount}",
+            "{player} 下回合超載 {amount}"
         ),
-        GameEvent::ManaLocked { player, amount } => {
-            lf!(
-                locale,
-                "{player} has {amount} Mana Crystals locked this turn",
-                "{player} 本回合锁定 {amount} 个法力水晶",
-                "{player} 本回合鎖定 {amount} 個法力水晶"
-            )
-        }
-        GameEvent::ManaUnlocked {
-            source,
-            player,
-            amount,
-        } => lf!(
+        PublicEvent::ManaLocked { player, amount } => lf!(
             locale,
-            "{} unlocked {amount} Mana Crystals for {player}",
-            "{} 为 {player} 解锁 {amount} 个法力水晶",
-            "{} 為 {player} 解鎖 {amount} 個法力水晶",
-            name(source)
+            "{player} has {amount} Mana Crystals locked this turn",
+            "{player} 本回合锁定 {amount} 个法力水晶",
+            "{player} 本回合鎖定 {amount} 個法力水晶"
         ),
-        GameEvent::OverloadCleared {
-            source,
+        PublicEvent::ManaUnlocked { player, amount, .. } => lf!(
+            locale,
+            "{player} unlocked {amount} Mana Crystals",
+            "{player} 解锁 {amount} 个法力水晶",
+            "{player} 解鎖 {amount} 個法力水晶"
+        ),
+        PublicEvent::OverloadCleared {
             player,
             pending,
             locked,
+            ..
         } => lf!(
             locale,
-            "{} cleared {player}'s Overload (locked {locked}, pending {pending})",
-            "{} 为 {player} 清除过载（当前 {locked}，待生效 {pending}）",
-            "{} 為 {player} 清除超載（目前 {locked}，待生效 {pending}）",
-            name(source)
+            "{player}'s Overload was cleared (locked {locked}, pending {pending})",
+            "{player} 的过载被清除（当前 {locked}，待生效 {pending}）",
+            "{player} 的超載被清除（目前 {locked}，待生效 {pending}）"
         ),
-        GameEvent::TemporaryManaGained {
-            source,
-            player,
-            amount,
-        } => lf!(
+        PublicEvent::TemporaryManaGained { player, amount, .. } => lf!(
             locale,
-            "{} gave {player} {amount} temporary Mana",
-            "{} 使 {player} 获得 {amount} 点临时法力",
-            "{} 使 {player} 獲得 {amount} 點暫時法力",
-            name(source)
+            "{player} gained {amount} temporary Mana",
+            "{player} 获得 {amount} 点临时法力",
+            "{player} 獲得 {amount} 點暫時法力"
         ),
-        GameEvent::TemporaryManaExpired { player, amount } => {
-            lf!(
-                locale,
-                "{player}'s {amount} temporary Mana expired",
-                "{player} 的 {amount} 点临时法力过期",
-                "{player} 的 {amount} 點暫時法力失效"
-            )
-        }
-        GameEvent::ManaCrystalsGained {
-            source,
+        PublicEvent::TemporaryManaExpired { player, amount } => lf!(
+            locale,
+            "{player}'s {amount} temporary Mana expired",
+            "{player} 的 {amount} 点临时法力过期",
+            "{player} 的 {amount} 點暫時法力失效"
+        ),
+        PublicEvent::ManaCrystalsGained {
             player,
             amount,
             filled,
+            ..
         } => lf!(
             locale,
-            "{} gave {player} {amount} {} Mana Crystals",
-            "{} 使 {player} 获得 {amount} 个{}法力水晶",
-            "{} 使 {player} 獲得 {amount} 個{}法力水晶",
-            name(source),
+            "{player} gained {amount} {} Mana Crystals",
+            "{player} 获得 {amount} 个{}法力水晶",
+            "{player} 獲得 {amount} 個{}法力水晶",
             if *filled {
                 lt!(locale, "full", "已充能", "已充能")
             } else {
                 lt!(locale, "empty", "空", "空")
             }
         ),
-        GameEvent::ManaCrystalsDestroyed {
-            source,
-            player,
-            amount,
-        } => lf!(
+        PublicEvent::ManaCrystalsDestroyed { player, amount, .. } => lf!(
             locale,
-            "{} destroyed {amount} of {player}'s Mana Crystals",
-            "{} 摧毁 {player} 的 {amount} 个法力水晶",
-            "{} 摧毀 {player} 的 {amount} 個法力水晶",
-            name(source)
+            "{player} lost {amount} Mana Crystals",
+            "{player} 失去 {amount} 个法力水晶",
+            "{player} 失去 {amount} 個法力水晶"
         ),
-        GameEvent::ManaSpent {
+        PublicEvent::ManaSpent {
             player,
-            source,
             amount,
             temporary,
+            ..
         } => lf!(
             locale,
-            "{player} spent {amount} Mana on {} ({temporary} temporary)",
-            "{player} 为 {} 花费 {amount} 点法力（临时 {temporary}）",
-            "{player} 為 {} 花費 {amount} 點法力（暫時 {temporary}）",
-            name(source)
+            "{player} spent {amount} Mana ({temporary} temporary)",
+            "{player} 花费 {amount} 点法力（临时 {temporary}）",
+            "{player} 花費 {amount} 點法力（暫時 {temporary}）"
         ),
-        GameEvent::KeywordDisabled {
+        PublicEvent::KeywordDisabled {
             source,
             target,
             keyword,
-        } => {
-            lf!(
-                locale,
-                "{0} removed keyword {1} from {2}",
-                "{0} 使 {2} 失去关键词 {1}",
-                "{0} 使 {2} 失去關鍵字 {1}",
-                name(source),
-                keyword,
-                name(target)
-            )
-        }
-        GameEvent::Frozen { source, target } => {
-            lf!(
-                locale,
-                "{} Froze {}",
-                "{} 冻结了 {}",
-                "{} 凍結了 {}",
-                name(source),
-                name(target)
-            )
-        }
-        GameEvent::EntityDied { entity, .. } => {
+        } => lf!(
+            locale,
+            "{} removed keyword {keyword} from {}",
+            "{} 使 {} 失去关键词 {keyword}",
+            "{} 使 {} 失去關鍵字 {keyword}",
+            effect(source),
+            name(target)
+        ),
+        PublicEvent::Frozen { source, target } => lf!(
+            locale,
+            "{} Froze {}",
+            "{} 冻结了 {}",
+            "{} 凍結了 {}",
+            effect(source),
+            name(target)
+        ),
+        PublicEvent::EntityDied { entity, .. } => {
             lf!(locale, "{} died", "{} 死亡", "{} 死亡", name(entity))
         }
-        GameEvent::Conceded { player } => lf!(
+        PublicEvent::Conceded { player } => lf!(
             locale,
             "{player} conceded",
             "{player} 认输",
             "{player} 投降"
         ),
-        GameEvent::GameEnded { outcome } => match outcome {
+        PublicEvent::GameEnded { outcome } => match outcome {
             GameOutcome::Winner(winner) => {
                 lf!(locale, "{winner} won", "{winner} 获胜", "{winner} 獲勝")
             }
             GameOutcome::Draw => lt!(locale, "Draw", "平局", "平手").to_owned(),
         },
-        GameEvent::ChoiceRequested {
+        PublicEvent::ChoiceRequested {
             player, options, ..
         } => lf!(
             locale,
@@ -1791,53 +1595,20 @@ fn display_event(
             "{player} 需要从 {options} 个选项中选择",
             "{player} 需要從 {options} 個選項中選擇"
         ),
-        GameEvent::ChoiceMade { player, index, .. } => {
-            lf!(
+        PublicEvent::ChoiceMade { player, index, .. } => match index {
+            Some(index) => lf!(
                 locale,
                 "{player} chose option {index}",
                 "{player} 选择了选项 {index}",
                 "{player} 選擇了選項 {index}"
-            )
-        }
-        GameEvent::RandomChoiceMade {
-            source,
-            index,
-            options,
-        } => lf!(
-            locale,
-            "{} randomly selected option {index}/{options}",
-            "{} 的随机选择命中选项 {index}/{options}",
-            "{} 的隨機選擇命中選項 {index}/{options}",
-            name(source)
-        ),
-        GameEvent::RandomCardsSampled {
-            source,
-            cards,
-            population,
-        } => lf!(
-            locale,
-            "{} sampled {} from {population} candidate cards",
-            "{} 从 {population} 张候选牌中抽样得到 {}",
-            "{} 從 {population} 張候選牌中抽樣得到 {}",
-            name(source),
-            cards.join(", ")
-        ),
-        GameEvent::RandomEntitiesSampled {
-            source,
-            entities,
-            population,
-        } => lf!(
-            locale,
-            "{} sampled {} from {population} candidate entities",
-            "{} 从 {population} 个候选实体中抽样得到 {}",
-            "{} 從 {population} 個候選實體中抽樣得到 {}",
-            name(source),
-            entities
-                .iter()
-                .map(|entity| name(entity))
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
+            ),
+            None => lf!(
+                locale,
+                "{player} made a hidden choice",
+                "{player} 完成了一次隐藏选择",
+                "{player} 完成了一次隱藏選擇"
+            ),
+        },
     }
 }
 
@@ -1897,6 +1668,39 @@ fn display_command(command: &PlayerCommand) -> String {
     }
 }
 
+fn display_automated_command(
+    command: &PlayerCommand,
+    actor: PlayerId,
+    viewer: PlayerId,
+    locale: Locale,
+) -> String {
+    if actor == viewer {
+        return display_command(command);
+    }
+    match command {
+        PlayerCommand::Mulligan { replace } => lf!(
+            locale,
+            "replaced {} opening cards",
+            "更换了 {} 张起手牌",
+            "更換了 {} 張起手牌",
+            replace.len()
+        ),
+        PlayerCommand::Choose { .. } => lt!(
+            locale,
+            "made a hidden choice",
+            "完成了一次隐藏选择",
+            "完成了一次隱藏選擇"
+        )
+        .to_owned(),
+        PlayerCommand::TradeCard { .. } => {
+            lt!(locale, "Traded a card", "交易了一张牌", "交易了一張牌").to_owned()
+        }
+        PlayerCommand::EndTurn => "end".to_owned(),
+        PlayerCommand::Concede => "concede".to_owned(),
+        _ => lt!(locale, "acted", "执行了一个动作", "執行了一個動作").to_owned(),
+    }
+}
+
 fn print_help(locale: Locale) {
     println!(
         "{}",
@@ -1939,7 +1743,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn opponent_draw_and_secret_events_are_redacted() {
+    fn public_events_render_without_reintroducing_hidden_details() {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
         let mut game = Game::new_unrestricted(
             LuaCardRuntime::load_dir(root.join("data")).unwrap(),
@@ -1948,20 +1752,22 @@ mod tests {
             7,
         )
         .unwrap();
-        let hidden = game.state().player(PlayerId::TWO).hand[0];
-        let draw = display_event(
-            &game,
-            &GameEvent::CardDrawn {
-                player: PlayerId::TWO,
-                card: hidden,
-                source: None,
-            },
-            Locale::EnUs,
-            PlayerId::ONE,
-        );
+        let draw_event = game
+            .state()
+            .public_history(PlayerId::ONE)
+            .iter()
+            .find_map(|record| match &record.event {
+                event @ PublicEvent::CardDrawn {
+                    player: PlayerId::TWO,
+                    card: None,
+                    ..
+                } => Some(event),
+                _ => None,
+            })
+            .unwrap();
+        let draw = display_public_event(&game, draw_event, Locale::EnUs);
         assert_eq!(draw, "P2 drew a card");
         assert!(!draw.contains("Getaway Kodo"));
-        assert!(!draw.contains(&hidden.to_string()));
 
         game.dispatch(PlayerCommand::Mulligan {
             replace: Vec::new(),
@@ -1979,33 +1785,41 @@ mod tests {
             .find(|command| matches!(command, PlayerCommand::PlayCard { .. }))
             .unwrap();
         game.dispatch(secret_play).unwrap();
-        let secret_entity = game.state().player(PlayerId::TWO).secrets[0];
-        let secret = display_event(
-            &game,
-            &GameEvent::SecretPlayed {
-                player: PlayerId::TWO,
-                secret: secret_entity,
-            },
-            Locale::EnUs,
-            PlayerId::ONE,
-        );
+        let secret_event = game
+            .state()
+            .public_history(PlayerId::ONE)
+            .iter()
+            .rev()
+            .find_map(|record| match &record.event {
+                event @ PublicEvent::SecretPlayed {
+                    player: PlayerId::TWO,
+                    secret: None,
+                } => Some(event),
+                _ => None,
+            })
+            .unwrap();
+        let secret = display_public_event(&game, secret_event, Locale::EnUs);
         assert_eq!(secret, "P2 played a Secret");
         assert!(!secret.contains("Getaway Kodo"));
-        assert!(!secret.contains(&secret_entity.to_string()));
 
-        let mana = display_event(
+        let choice = display_public_event(
             &game,
-            &GameEvent::ManaSpent {
+            &PublicEvent::ChoiceMade {
                 player: PlayerId::TWO,
-                source: secret_entity,
-                amount: 1,
-                temporary: 0,
+                source: None,
+                index: None,
             },
             Locale::EnUs,
-            PlayerId::ONE,
         );
-        assert!(mana.contains("hidden Secret"));
-        assert!(!mana.contains("Getaway Kodo"));
-        assert!(!mana.contains(&secret_entity.to_string()));
+        assert_eq!(choice, "P2 made a hidden choice");
+
+        let mulligan = PlayerCommand::Mulligan {
+            replace: vec![EntityId(40), EntityId(41)],
+        };
+        let automated =
+            display_automated_command(&mulligan, PlayerId::TWO, PlayerId::ONE, Locale::EnUs);
+        assert_eq!(automated, "replaced 2 opening cards");
+        assert!(!automated.contains("40"));
+        assert!(!automated.contains("41"));
     }
 }

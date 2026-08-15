@@ -859,7 +859,7 @@ impl<R: CardRuntime> Game<R> {
         self.state.active_player = PlayerId::ONE;
         let coin = self.instantiate(DEFAULT_COIN, PlayerId::TWO, Zone::Hand)?;
         self.state.player_mut(PlayerId::TWO).hand.push(coin);
-        self.state.log.push(GameEvent::CardCreated {
+        self.state.record_event(GameEvent::CardCreated {
             source: coin,
             player: PlayerId::TWO,
             card: coin,

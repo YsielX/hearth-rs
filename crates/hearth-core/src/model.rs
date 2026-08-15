@@ -595,6 +595,10 @@ pub struct GameState {
     pub mulligan: Option<MulliganState>,
     pub pending_input: Option<PendingInput>,
     pub log: Vec<GameEvent>,
+    /// Viewer-specific, information-safe projections of `log`. This is a
+    /// derived cache rebuilt by replay rather than a second authoritative log.
+    #[serde(skip)]
+    pub(crate) public_logs: [std::sync::Arc<Vec<crate::PublicEventRecord>>; 2],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

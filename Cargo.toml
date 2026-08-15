@@ -4,6 +4,8 @@ members = [
     "crates/hearth-script",
     "crates/hearth-cli",
     "crates/hearth-bot",
+    "crates/hearth-env",
+    "crates/hearth-env-py",
     "crates/hearth-fuzz",
 ]
 resolver = "3"

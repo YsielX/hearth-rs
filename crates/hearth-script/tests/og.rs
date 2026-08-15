@@ -3,7 +3,8 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use hearth_core::{
-    CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, PlayerCommand, PlayerId, Zone,
+    CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, PlayerCommand, PlayerId,
+    PublicEvent, Zone,
 };
 use hearth_script::LuaCardRuntime;
 
@@ -368,6 +369,24 @@ fn shifter_zerus_keeps_its_script_and_transforms_on_consecutive_turns() {
         .filter(|event| matches!(event, GameEvent::Transformed { entity, .. } if *entity == zerus))
         .count();
     assert_eq!(transforms, 2);
+    assert_eq!(
+        game.state()
+            .public_history(PlayerId::ONE)
+            .iter()
+            .filter(|record| {
+                matches!(&record.event, PublicEvent::Transformed { entity, .. } if entity.id == zerus)
+            })
+            .count(),
+        2
+    );
+    assert!(
+        game.state()
+            .public_history(PlayerId::TWO)
+            .iter()
+            .all(|record| {
+                !matches!(&record.event, PublicEvent::Transformed { entity, .. } if entity.id == zerus)
+            })
+    );
     assert_eq!(game.state().entity(zerus).unwrap().zone, Zone::Hand);
     assert!(
         game.state()

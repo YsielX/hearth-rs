@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use hearth_core::{
     CardKind, CardRuntime, ChoiceValue, DEFAULT_HERO_POWER, Game, GameError, GameEvent, Locale,
-    PlayerCommand, PlayerId, Zone,
+    PlayerCommand, PlayerId, PublicEvent, Zone,
 };
 use hearth_script::LuaCardRuntime;
 
@@ -127,6 +127,24 @@ fn player_view_hides_opponent_hand_deck_order_and_secret_identity() {
     assert!(opponent.hand.is_empty());
     assert_eq!(opponent.secrets_count, 1);
     assert!(opponent.secrets.is_empty());
+    assert!(
+        player_one
+            .history
+            .windows(2)
+            .all(|events| events[0].sequence < events[1].sequence)
+    );
+    assert!(player_one.history.iter().any(|record| matches!(
+        &record.event,
+        PublicEvent::SecretPlayed {
+            player: PlayerId::TWO,
+            secret: None,
+        }
+    )));
+    assert!(
+        !serde_json::to_string(player_one.history.as_slice())
+            .unwrap()
+            .contains("CFM_800")
+    );
     for hidden in game
         .state()
         .player(PlayerId::TWO)
@@ -147,6 +165,13 @@ fn player_view_hides_opponent_hand_deck_order_and_secret_identity() {
         player_two.player(PlayerId::TWO).secrets,
         game.state().player(PlayerId::TWO).secrets
     );
+    assert!(player_two.history.iter().any(|record| matches!(
+        &record.event,
+        PublicEvent::SecretPlayed {
+            player: PlayerId::TWO,
+            secret: Some(secret),
+        } if secret.card_id == "CFM_800"
+    )));
     assert!(
         game.state()
             .player(PlayerId::TWO)
@@ -2009,9 +2034,15 @@ fn overload_lua_module_queues_its_parameter_and_locks_only_the_next_turn() {
     )));
 
     let snapshot = game.snapshot();
+    let encoded = serde_json::to_string(&snapshot).unwrap();
+    let portable: hearth_core::GameSnapshot = serde_json::from_str(&encoded).unwrap();
     let restored =
-        Game::from_snapshot(LuaCardRuntime::load_dir(data_path()).unwrap(), &snapshot).unwrap();
+        Game::from_snapshot(LuaCardRuntime::load_dir(data_path()).unwrap(), &portable).unwrap();
     assert_eq!(restored.state(), game.state());
+    assert_eq!(
+        restored.state().public_history(PlayerId::ONE),
+        game.state().public_history(PlayerId::ONE)
+    );
 
     end_turn(&mut game);
     end_turn(&mut game);

@@ -88,7 +88,7 @@ impl<R: CardRuntime> Game<R> {
                     continuation_owner,
                     remaining_resolution: queue.drain(..).collect(),
                 });
-                self.state.log.push(GameEvent::ChoiceRequested {
+                self.state.record_event(GameEvent::ChoiceRequested {
                     player,
                     source,
                     options: option_count,

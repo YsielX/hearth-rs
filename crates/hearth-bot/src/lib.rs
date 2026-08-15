@@ -408,6 +408,7 @@ mod tests {
             weapon: None,
             hero_power: power,
             hero_power_used: false,
+            hero_power_uses_this_turn: 0,
             secrets_count: 0,
             secrets: Vec::new(),
             public_objectives: Vec::new(),
@@ -417,6 +418,7 @@ mod tests {
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,
+            cards_played_this_turn: 0,
         };
         PlayerView {
             viewer: PlayerId::ONE,
@@ -431,6 +433,7 @@ mod tests {
             outcome: None,
             mulligan_eligible: Vec::new(),
             pending_input: None,
+            history: Default::default(),
         }
     }
 

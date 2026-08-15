@@ -1,0 +1,15 @@
+[package]
+name = "hearth-env"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+hearth-core = { path = "../hearth-core" }
+hearth-script = { path = "../hearth-script" }
+serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

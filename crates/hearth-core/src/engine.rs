@@ -256,7 +256,7 @@ impl<R: CardRuntime> Game<R> {
         if hand_history_changed {
             self.refresh_auras()?;
         }
-        self.state.log.push(event.clone());
+        self.state.record_event(event.clone());
         self.collect_triggers(&ScriptEvent {
             id,
             timing: EventTiming::After,
@@ -273,7 +273,7 @@ impl<R: CardRuntime> Game<R> {
             .any(|(_, event)| self.event_adds_card_to_hand(event));
         for (_, event) in &events {
             self.record_typed_play_history(event);
-            self.state.log.push(event.clone());
+            self.state.record_event(event.clone());
         }
         if hand_history_changed {
             self.refresh_auras()?;
@@ -563,6 +563,6 @@ impl<R: CardRuntime> Game<R> {
         self.state.outcome = Some(outcome);
         self.state.mulligan = None;
         self.state.pending_input = None;
-        self.state.log.push(GameEvent::GameEnded { outcome });
+        self.state.record_event(GameEvent::GameEnded { outcome });
     }
 }

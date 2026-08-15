@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
+use std::sync::Arc;
 
-use crate::{CardId, CardKind, Entity, EntityId, GameOutcome, GameState, PlayerId, Zone};
+use crate::{
+    CardId, CardKind, Entity, EntityId, GameOutcome, GameState, PlayerId, PublicEventRecord, Zone,
+};
 
 /// An entity projection containing only information visible to one player.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -71,6 +74,7 @@ pub struct PlayerStateView {
     pub weapon: Option<EntityId>,
     pub hero_power: EntityId,
     pub hero_power_used: bool,
+    pub hero_power_uses_this_turn: u8,
     /// Count of unrevealed ordinary Secrets. Public Quests are excluded.
     pub secrets_count: usize,
     /// Populated only for the viewing player.
@@ -83,6 +87,7 @@ pub struct PlayerStateView {
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
+    pub cards_played_this_turn: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -105,6 +110,10 @@ pub struct PlayerView {
     pub outcome: Option<GameOutcome>,
     pub mulligan_eligible: Vec<EntityId>,
     pub pending_input: Option<PendingInputView>,
+    /// Chronological, viewer-safe history. It is projected when each internal
+    /// event commits, so later transformations and hidden-zone moves cannot
+    /// retroactively change what the viewer observed.
+    pub history: Arc<Vec<PublicEventRecord>>,
 }
 
 impl PlayerView {
@@ -155,6 +164,7 @@ impl GameState {
                 weapon: player.weapon,
                 hero_power: player.hero_power,
                 hero_power_used: player.hero_power_used,
+                hero_power_uses_this_turn: player.hero_power_uses_this_turn,
                 secrets_count: player.secrets.len().saturating_sub(public_objectives.len()),
                 secrets: (player_id == viewer)
                     .then(|| player.secrets.clone())
@@ -166,6 +176,7 @@ impl GameState {
                 overload_pending: player.overload_pending,
                 overloaded_mana: player.overloaded_mana,
                 fatigue: player.fatigue,
+                cards_played_this_turn: player.cards_played_this_turn,
             }
         };
         let players = [build_player(PlayerId::ONE), build_player(PlayerId::TWO)];
@@ -215,6 +226,7 @@ impl GameState {
             outcome: self.outcome,
             mulligan_eligible,
             pending_input,
+            history: self.public_logs[viewer.index()].clone(),
         }
     }
 }

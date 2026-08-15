@@ -1,0 +1,14 @@
+[build-system]
+requires = ["maturin>=1.9,<2"]
+build-backend = "maturin"
+
+[project]
+name = "hearth-env"
+version = "0.1.0"
+requires-python = ">=3.10"
+description = "Python transport for the hearth-rs reinforcement-learning environment adapter"
+
+[tool.maturin]
+manifest-path = "crates/hearth-env-py/Cargo.toml"
+python-source = "python"
+module-name = "hearth_env._native"

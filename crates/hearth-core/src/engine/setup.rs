@@ -188,6 +188,7 @@ impl<R: CardRuntime> Game<R> {
             mulligan: None,
             pending_input: None,
             log: Vec::new(),
+            public_logs: std::array::from_fn(|_| std::sync::Arc::new(Vec::new())),
         };
 
         let initial_decks = [deck_one.clone(), deck_two.clone()];
@@ -278,6 +279,13 @@ impl<R: CardRuntime> Game<R> {
         &self.runtime
     }
 
+    /// Consumes the game and returns its rule runtime. Frontends that run many
+    /// matches can reuse an expensive runtime without teaching the rules engine
+    /// about worker pools, reinforcement learning, or any other caller policy.
+    pub fn into_runtime(self) -> R {
+        self.runtime
+    }
+
     pub fn replay(&self) -> Replay {
         Replay {
             format_version: 3,
@@ -306,7 +314,12 @@ impl<R: CardRuntime> Game<R> {
             return Err(GameError::UnsupportedSnapshot(snapshot.format_version));
         }
         let game = Self::from_replay(runtime, &snapshot.replay)?;
-        if game.state != snapshot.state {
+        let mut expected = snapshot.state.clone();
+        // Public logs are a replay-derived observer cache and are deliberately
+        // omitted from serialized snapshots. Never trust them as proof of the
+        // authoritative state.
+        expected.public_logs = game.state.public_logs.clone();
+        if game.state != expected {
             return Err(GameError::SnapshotStateMismatch);
         }
         Ok(game)
