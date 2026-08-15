@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_023", name="Arcane Intellect", text="Draw 2 cards.", set="LEGACY", type="spell", class="mage", spell_school="arcane", cost=3, on_play=function(ctx,self) ctx:draw(ctx:controller(self),2) end }

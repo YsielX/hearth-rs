@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_020", name = "Scarlet Crusader", text = "<b>Divine Shield</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 3, attack = 3, health = 1, keywords = { "divine_shield" } }

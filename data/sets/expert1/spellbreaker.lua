@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_048",name="Spellbreaker",text="<b>Battlecry:</b> <b>Silence</b> a minion.",set="EXPERT1",type="minion",rarity="common",cost=4,attack=4,health=3,keywords={"battlecry"},target_mode="required_if_available",targets=function(ctx)return ctx:minions()end,on_battlecry=function(ctx,self,target)if target then ctx:silence(target)end end}

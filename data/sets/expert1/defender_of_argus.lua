@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_093",name="Defender of Argus",text="<b>Battlecry:</b> Give adjacent minions +1/+1 and <b>Taunt</b>.",set="EXPERT1",type="minion",rarity="rare",cost=4,attack=3,health=3,tags={"draenei"},keywords={"battlecry"},on_battlecry=function(ctx,self)for _,e in ipairs(ctx:adjacent_minions(self))do ctx:buff(e,1,1);ctx:grant_keyword(e,"taunt")end end}

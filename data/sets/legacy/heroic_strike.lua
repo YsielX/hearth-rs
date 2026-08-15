@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_105",name="Heroic Strike",text="Give your hero +4 Attack this turn.",set="LEGACY",type="spell",class="warrior",cost=2,on_play=function(ctx,self)local p=ctx:controller(self);ctx:buff_until_end_of_turn(ctx:player(p).hero,4,0)end}

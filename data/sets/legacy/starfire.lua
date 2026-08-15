@@ -1,0 +1,1 @@
+return { api_version=1, id="EX1_173", name="Starfire", text="Deal $5 damage.\nDraw a card.", set="LEGACY", type="spell", class="druid", spell_school="arcane", cost=6, target_mode="required", targets=function(ctx) return ctx:characters() end, on_play=function(ctx,self,target) ctx:damage(target,5); ctx:draw(ctx:controller(self),1) end }

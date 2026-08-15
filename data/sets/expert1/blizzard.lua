@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_028",name="Blizzard",text="Deal $2 damage to all enemy minions and <b>Freeze</b> them.",set="EXPERT1",type="spell",class="mage",rarity="rare",spell_school="frost",cost=6,on_play=function(ctx,self)local m=ctx:enemy_minions(self);ctx:damage_all(m,2);for _,e in ipairs(m)do ctx:freeze(e)end end}

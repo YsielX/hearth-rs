@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_161",name="Naturalize",text="Destroy a minion.\nYour opponent draws 2 cards.",set="EXPERT1",type="spell",class="druid",rarity="common",cost=1,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:destroy(target);ctx:draw(ctx:opponent(ctx:controller(self)),2)end}

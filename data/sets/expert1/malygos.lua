@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_563",name="Malygos",text="<b>Spell Damage +5</b>",set="EXPERT1",type="minion",rarity="legendary",cost=9,attack=4,health=12,tags={"dragon"},keywords={"spell_damage"},keyword_params={spell_damage=5}}

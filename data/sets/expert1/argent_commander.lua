@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_067", name = "Argent Commander", text = "<b>Charge</b>\n<b>Divine Shield</b>", set = "EXPERT1", type = "minion", rarity = "rare", cost = 6, attack = 4, health = 2, keywords = { "charge", "divine_shield" } }

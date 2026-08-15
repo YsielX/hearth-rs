@@ -1,0 +1,1 @@
+return { api_version=1,id="CS1_130",name="Holy Smite",text="Deal $3 damage\nto a minion.",set="LEGACY",type="spell",class="priest",spell_school="holy",cost=1,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:damage(target,3)end }

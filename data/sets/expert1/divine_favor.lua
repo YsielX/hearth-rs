@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_349",name="Divine Favor",text="Draw cards until you have as many in hand as your opponent.",set="EXPERT1",type="spell",class="paladin",rarity="rare",spell_school="holy",cost=3,on_play=function(ctx,self)local p=ctx:controller(self);local n=#ctx:hand(ctx:opponent(p))-#ctx:hand(p);if n>0 then ctx:draw(p,n)end end}

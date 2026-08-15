@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS1_042", name = "Goldshire Footman", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", cost = 1, attack = 1, health = 2, keywords = { "taunt" } }

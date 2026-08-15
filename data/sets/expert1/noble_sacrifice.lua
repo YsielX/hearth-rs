@@ -1,0 +1,5 @@
+local card={api_version=1,id="EX1_130",name="Noble Sacrifice",text="<b>Secret:</b> When an enemy attacks, summon a 2/1 Defender as the new target.",set="EXPERT1",type="spell",class="paladin",rarity="common",cost=1,keywords={"secret"}}
+card.triggers={{event="attack",timing="before",active_zones={"secret"},condition=function(ctx,self,e)local p=ctx:controller(self);return ctx:controller(e.attacker)~=p and ctx:controller(e.defender)==p and #ctx:board(p)<7 end,effect=function(ctx,self,e)ctx:reveal_secret(self);ctx:set_data(self,"noble_attack",e.event_id);for _,x in ipairs(ctx:board(ctx:controller(self)))do ctx:set_data(self,"noble_seen_"..x,1)end;ctx:summon(ctx:controller(self),"EX1_130a");ctx:continue_with("noble_redirect")end}}
+function card.noble_redirect(ctx,self)for _,e in ipairs(ctx:board(ctx:controller(self)))do if ctx:get_data(self,"noble_seen_"..e)==0 and ctx:entity(e).card_id=="EX1_130a"then ctx:set_attack_defender(ctx:get_data(self,"noble_attack"),e);return end end end
+card.tokens={{id="EX1_130a",name="Defender",text="",set="EXPERT1",type="minion",class="paladin",collectible=false,cost=1,attack=2,health=1,tags={"draenei"}}}
+return card

@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_226", name="Frostwolf Warlord", text="<b>Battlecry:</b> Gain +1/+1 for each other friendly minion on the battlefield.", set="LEGACY", type="minion", cost=5, attack=4, health=4, keywords={"battlecry"}, on_battlecry=function(ctx,self) local n=math.max(0,#ctx:friendly_minions(self)-1); ctx:buff(self,n,n) end }

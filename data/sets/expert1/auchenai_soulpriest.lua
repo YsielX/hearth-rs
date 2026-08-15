@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_591",name="Auchenai Soulpriest",text="Your cards and powers that restore Health now deal damage instead.",set="EXPERT1",type="minion",class="priest",rarity="rare",cost=4,attack=3,health=5,tags={"draenei"},auras={{active_zones={"board"},keywords={"healing_becomes_damage"},targets=function(ctx,self)return{ctx:player(ctx:controller(self)).hero}end}}}

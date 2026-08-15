@@ -1,0 +1,5 @@
+local card={api_version=1,id="NEW1_029",name="Millhouse Manastorm",text="<b>Battlecry:</b> Enemy spells cost (0) next turn.",set="EXPERT1",type="minion",rarity="legendary",cost=2,attack=4,health=4,keywords={"battlecry"}}
+function card.on_battlecry(ctx,self)ctx:set_data(self,"millhouse_expiry",ctx:turn()+1)end
+card.auras={{active_zones={"board","graveyard","hand","deck","removed"},cost_set=0,targets=function(ctx,self)local expiry=ctx:get_data(self,"millhouse_expiry");if expiry==0 or ctx:turn()>expiry then return{}end;local enemy=ctx:opponent(ctx:controller(self));local r={};for _,e in ipairs(ctx:hand(enemy))do if ctx:entity(e).type=="spell"then r[#r+1]=e end end;return r end}}
+card.triggers={{event="turn_ended",timing="after",active_zones={"board","graveyard","hand","deck","removed"},condition=function(ctx,self,e)return ctx:get_data(self,"millhouse_expiry")>0 and e.player==ctx:opponent(ctx:controller(self))and e.turn>=ctx:get_data(self,"millhouse_expiry")end,effect=function(ctx,self)ctx:set_data(self,"millhouse_expiry",0)end}}
+return card

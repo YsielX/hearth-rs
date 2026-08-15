@@ -1,0 +1,3 @@
+local card={api_version=1,id="EX1_137",name="Headcrack",text="Deal $2 damage to the enemy hero. <b>Combo:</b> Return this to your hand next turn.",set="EXPERT1",type="spell",class="rogue",rarity="rare",cost=3,keywords={"combo"},on_play=function(ctx,self)local p=ctx:opponent(ctx:controller(self));ctx:damage(ctx:player(p).hero,2)end,on_combo=function(ctx,self)ctx:set_data(self,"return_turn",ctx:turn()+1)end}
+card.triggers={{event="turn_started",timing="after",active_zones={"graveyard"},condition=function(ctx,self,e)return e.player==ctx:controller(self)and ctx:get_data(self,"return_turn")==ctx:turn()end,effect=function(ctx,self)ctx:move_to_hand(ctx:controller(self),self)end}}
+return card

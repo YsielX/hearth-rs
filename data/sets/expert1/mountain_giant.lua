@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_105",name="Mountain Giant",text="Costs (1) less for each other card in your hand.",set="EXPERT1",type="minion",rarity="epic",cost=12,attack=8,health=8,tags={"elemental"},auras={{active_zones={"hand"},cost=function(ctx,self)return -(#ctx:hand(ctx:controller(self))-1)end,targets=function(ctx,self)return{self}end}}}

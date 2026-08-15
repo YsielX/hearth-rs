@@ -1,0 +1,2 @@
+local function pirate(ctx,e)for _,t in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags)do if t=="pirate"or t=="all"then return true end end return false end
+return {api_version=1,id="NEW1_027",name="Southsea Captain",text="Your other Pirates have +1/+1.",set="EXPERT1",type="minion",rarity="epic",cost=3,attack=3,health=3,tags={"pirate"},auras={{active_zones={"board"},attack=1,health=1,targets=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self and pirate(ctx,e)then r[#r+1]=e end end;return r end}}}

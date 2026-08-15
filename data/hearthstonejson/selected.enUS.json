@@ -7461,6 +7461,61 @@
     "type": "SPELL"
   },
   {
+    "artist": "Donato Giancola",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 922,
+    "faction": "ALLIANCE",
+    "flavor": "如果闪金镇都是由1/2的步兵把守的话，那它早在多年以前就被毁了。",
+    "health": 2,
+    "id": "CS1_042",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Goldshire Footman",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Monica Langlois",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 602,
+    "faction": "ALLIANCE",
+    "flavor": "它以前被称作沼泽兽，但这个名字会让人迷惑，因为它根本不是野兽。",
+    "health": 6,
+    "id": "CS1_069",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Fen Creeper",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 841,
+    "flavor": "没有得到圣光眷顾的人切忌使用这个法术，它滋润善者，惩罚恶徒。",
+    "id": "CS1_112",
+    "name": "Holy Nova",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Deal $2 damage to all enemy minions. Restore #2 Health to all friendly characters.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Sean O’Daniels",
     "cardClass": "PRIEST",
     "collectible": true,
@@ -7473,6 +7528,155 @@
     "set": "LEGACY",
     "spellSchool": "SHADOW",
     "text": "Take control of an enemy minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Steve Prescott",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 376,
+    "flavor": "“但是，真正的胜利，孩子——是鼓舞你的子民心中的斗志。”——泰瑞纳斯·米奈希尔",
+    "id": "CS1_129",
+    "name": "Inner Fire",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Change a minion's Attack to be equal to its Health.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Steve Ellis",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 279,
+    "flavor": "这和多么虔诚没有关系，每个人都需要时不时有人鞭策一下。",
+    "id": "CS1_130",
+    "name": "Holy Smite",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Deal $3 damage\nto a minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Michael Komarck",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1099,
+    "flavor": "你刚才做的事情我都看见了。",
+    "id": "CS2_003",
+    "name": "Mind Vision",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Put a copy of a random card in your opponent's hand into your hand.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jessica Jung",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 613,
+    "flavor": "额外的保护自然不错，但是这护盾阻碍了视野。",
+    "id": "CS2_004",
+    "name": "Power Word: Shield",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Give a minion +2 Health.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dany Orizio",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1050,
+    "flavor": "谁去谁留，都由爪子决定。",
+    "id": "CS2_005",
+    "name": "Claw",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Give your hero +2 Attack this turn. Gain 2 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Cyril Van Der Haegen",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 773,
+    "flavor": "见效快，疗效好，无毒副作用。",
+    "id": "CS2_007",
+    "name": "Healing Touch",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Restore #8 Health.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 467,
+    "flavor": "“把月火术拖到每一个技能栏位上。”——《如何成为一名德鲁伊》，第五章，第三节",
+    "id": "CS2_008",
+    "name": "Moonfire",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "ARCANE",
+    "text": "Deal $1 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Brad Vancata",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 213,
+    "flavor": "这种爪子形状的印记如果纹在身上，人们一定知道你是德鲁伊玩家。",
+    "id": "CS2_009",
+    "name": "Mark of the Wild",
+    "rarity": "FREE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Give a minion <b>Taunt</b> and +2/+3.<i>\n(+2 Attack/+3 Health)</i>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Grace Liu",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 742,
+    "flavor": "显然这对火元素和水元素也有作用。难道这说明元素也是长耳朵的吗？",
+    "id": "CS2_011",
+    "name": "Savage Roar",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Give your characters +2 Attack this turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Sean O’Daniels",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 64,
+    "flavor": "当一只熊向后仰身张开它的前臂时，他就要横扫！...或者拥抱你了。",
+    "id": "CS2_012",
+    "name": "Swipe",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $4 damage to an enemy and $1 damage to all other enemies.",
     "type": "SPELL"
   },
   {
@@ -7516,6 +7720,21 @@
     "type": "SPELL"
   },
   {
+    "artist": "Dave Berggren",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 555,
+    "flavor": "使用这张牌能让你变得更聪明。面对现实吧：变聪明些对我们大家来说都是好事。",
+    "id": "CS2_023",
+    "name": "Arcane Intellect",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "ARCANE",
+    "text": "Draw 2 cards.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Steve Ellis",
     "cardClass": "MAGE",
     "collectible": true,
@@ -7531,6 +7750,39 @@
     "set": "LEGACY",
     "spellSchool": "FROST",
     "text": "Deal $3 damage to a character and <b>Freeze</b> it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Howard Lyon",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 447,
+    "flavor": "魔爆术曾是让法师们区别于艾泽拉斯其他职业的技能之一。",
+    "id": "CS2_025",
+    "name": "Arcane Explosion",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "ARCANE",
+    "text": "Deal $1 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Josh Tallman",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 587,
+    "flavor": "嘿，伙计，这会冻死你的。我是说真的。",
+    "id": "CS2_026",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Frost Nova",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FROST",
+    "text": "<b>Freeze</b> all enemy minions.",
     "type": "SPELL"
   },
   {
@@ -7551,6 +7803,24 @@
     "type": "SPELL"
   },
   {
+    "artist": "Chris Seaman",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 457,
+    "flavor": "这不只是一张卡牌，更是一张招牌。",
+    "id": "CS2_028",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Blizzard",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "Deal $2 damage to all enemy minions and <b>Freeze</b> them.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Ralph Horsley",
     "cardClass": "MAGE",
     "collectible": true,
@@ -7563,6 +7833,168 @@
     "set": "LEGACY",
     "spellSchool": "FIRE",
     "text": "Deal $6 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Romain De Santi",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 1004,
+    "flavor": "当地板着火的时候，无论你在地上怎么打滚，都是没用的。",
+    "id": "CS2_032",
+    "name": "Flamestrike",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FIRE",
+    "text": "Deal $5 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "John Avon",
+    "attack": 3,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 395,
+    "flavor": "千万别在晚会上召唤水元素。它会把一切都搞砸的。",
+    "health": 6,
+    "id": "CS2_033",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Water Elemental",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Freeze</b> any character damaged by this minion.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 971,
+    "flavor": "年轻的萨满们可能没听说过《你与冰霜震击》这本书。",
+    "id": "CS2_037",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Frost Shock",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FROST",
+    "text": "Deal $1 damage to an enemy character and <b>Freeze</b> it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 404,
+    "flavor": "只是伤到些皮毛而已。",
+    "id": "CS2_038",
+    "name": "Ancestral Spirit",
+    "rarity": "RARE",
+    "referencedTags": [
+      "DEATHRATTLE"
+    ],
+    "set": "EXPERT1",
+    "text": "Give a minion \"<b>Deathrattle:</b> Resummon this minion.\"",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Justin Sweet",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 51,
+    "flavor": "比起“地怒”或是“火怒”，萨满们更喜欢使用“风怒”，因为它更轻巧，更飘逸。",
+    "id": "CS2_039",
+    "name": "Windfury",
+    "rarity": "FREE",
+    "referencedTags": [
+      "WINDFURY"
+    ],
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Give a minion <b>Windfury</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dan Scott",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 149,
+    "flavor": "你能在战斗中召唤祖先的灵魂！所以，出生在一个强大的家族是很重要的！",
+    "id": "CS2_041",
+    "name": "Ancestral Healing",
+    "rarity": "FREE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Restore a minion\nto full Health and\ngive it <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ralph Horsley",
+    "attack": 6,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 189,
+    "flavor": "他从来不洗澡。嗯...",
+    "health": 5,
+    "id": "CS2_042",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Fire Elemental",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "造成4点伤害。",
+    "text": "<b>Battlecry:</b> Deal 4 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 239,
+    "flavor": "如果你的敌人是石头做的，那就再好不过了。",
+    "id": "CS2_045",
+    "name": "Rockbiter Weapon",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Give a friendly character +3 Attack this turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Luca Zontini",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1171,
+    "flavor": "呜啊哇哇哇哇哇！",
+    "id": "CS2_046",
+    "name": "Bloodlust",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Give your minions +3 Attack this turn.",
     "type": "SPELL"
   },
   {
@@ -7624,6 +8056,150 @@
     "type": "MINION"
   },
   {
+    "artist": "Lars Grant-West",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 818,
+    "flavor": "德雷克塔尔失明了，但他依然能够看见很多东西。你懂得我的意思吗？你懂得用心灵去观察吗？",
+    "id": "CS2_053",
+    "name": "Far Sight",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Draw a card. That card costs (3) less.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dave Allsop",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 914,
+    "flavor": "黑暗中的威胁 —— 明枪易躲，暗箭难防。",
+    "id": "CS2_057",
+    "name": "Shadow Bolt",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Deal $4 damage\nto a minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Bernie Kang",
+    "attack": 0,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 469,
+    "flavor": "小鬼喜欢躲在暗处嘲讽附近的所有人，并且对此乐此不疲。",
+    "health": 1,
+    "id": "CS2_059",
+    "mechanics": [
+      "STEALTH",
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Blood Imp",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "[x]  <b>Stealth</b>. At the end of your  \nturn, give another random\n friendly minion +1 Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 919,
+    "flavor": "“我只是减少了你一年的寿命而已。”",
+    "id": "CS2_061",
+    "name": "Drain Life",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Deal $2 damage. Restore #2 Health to your hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Chippy",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 950,
+    "flavor": "鸟尽弓藏，兔死狗烹，术士才不需要什么忠心耿耿的随从。",
+    "id": "CS2_062",
+    "name": "Hellfire",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FIRE",
+    "text": "Deal $3 damage to ALL characters.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 982,
+    "flavor": "心灵的腐蚀来自于最初的一些小偷小摸，而在你意识到它之前...嘭！一切化为乌有！",
+    "id": "CS2_063",
+    "name": "Corruption",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Choose an enemy minion. At the start of your turn, destroy it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "attack": 6,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1019,
+    "flavor": "“地狱火！”——加拉克苏斯，燃烧军团的艾瑞达之王",
+    "health": 6,
+    "id": "CS2_064",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Dread Infernal",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Deal 1 damage to ALL other characters.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 1,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 48,
+    "flavor": "虽然他也拥有蓝色的，胖胖的身材，但他和某部动画片里的主角没关系。",
+    "health": 3,
+    "id": "CS2_065",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Voidwalker",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Michael Sutfin",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -7638,6 +8214,97 @@
     "type": "SPELL"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 268,
+    "flavor": "静如冰封，动如激瀑。",
+    "id": "CS2_073",
+    "mechanics": [
+      "COMBO"
+    ],
+    "name": "Cold Blood",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Give a minion +2 Attack. <b>Combo:</b> +4 Attack instead.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trevor Jacobs",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 459,
+    "flavor": "潜行者们都小心翼翼地保守着制毒的秘密，唯恐法师们把毒药用在他们的法术之中。毒性箭？剧毒之雨？毒元素？听上去就很可怕。",
+    "id": "CS2_074",
+    "name": "Deadly Poison",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Give your weapon +2 Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Frank Cho",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 710,
+    "flavor": "尽管这个技能的名字已被改变，但这并不意味着它就不再“邪恶”。",
+    "id": "CS2_075",
+    "name": "Sinister Strike",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $3 damage to the enemy hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Glenn Rane",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 345,
+    "flavor": "要是你不想被人暗杀，躲到贫瘠之地，然后隐姓埋名。祝你好运！",
+    "id": "CS2_076",
+    "name": "Assassinate",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Destroy an enemy minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "James Zhang",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 630,
+    "flavor": "潜行者们通常都不擅长慢跑。",
+    "id": "CS2_077",
+    "name": "Sprint",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Draw 4 cards.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Brian Huang",
+    "attack": 2,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 421,
+    "durability": 0,
+    "flavor": "只有真正的刺客才配拥有。如假包换。",
+    "health": 5,
+    "id": "CS2_080",
+    "name": "Assassin's Blade",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
     "attack": 1,
     "cardClass": "ROGUE",
     "cost": 1,
@@ -7650,6 +8317,70 @@
     "set": "LEGACY",
     "type": "WEAPON",
     "text": ""
+  },
+  {
+    "artist": "Jimmy Lo",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 141,
+    "flavor": "千万不要和猎人玩捉迷藏的游戏。",
+    "id": "CS2_084",
+    "name": "Hunter's Mark",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Change a minion's Health to 1.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 70,
+    "flavor": "没有善，没有恶，也没有圣光。只有——力量！",
+    "id": "CS2_087",
+    "name": "Blessing of Might",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Give a minion +3 Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "E. M. Gist",
+    "attack": 5,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 1068,
+    "flavor": "神圣的造物从天而降...真是老掉牙的剧情！",
+    "health": 7,
+    "id": "CS2_088",
+    "mechanics": [
+      "BATTLECRY",
+      "TAUNT"
+    ],
+    "name": "Guardian of Kings",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Restore #6 Health to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 291,
+    "flavor": "如果你经常暴露于圣光之下，你应该考虑随身带着防晒霜。",
+    "id": "CS2_089",
+    "name": "Holy Light",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Restore #8 Health to your hero.",
+    "type": "SPELL"
   },
   {
     "artist": "Glenn Rane",
@@ -7669,6 +8400,71 @@
     "text": ""
   },
   {
+    "artist": "Lucas Graciano",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 943,
+    "flavor": "你知道世界上有多少所谓的“王者”被暗杀了吗？你确定还想要王者祝福吗？",
+    "id": "CS2_092",
+    "name": "Blessing of Kings",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Give a minion +4/+4. <i>(+4 Attack/+4 Health)</i>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vance Kovacs",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 476,
+    "flavor": "神圣的能量从圣洁的大地涌出。但是，味道也有点熏人。",
+    "id": "CS2_093",
+    "name": "Consecration",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Deal $2 damage to all enemies.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Efrem Palacios",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 250,
+    "flavor": "一个称职的圣骑士身上会携带很多工具。愤怒之锤、复仇之钳、正义之锯，等等。",
+    "id": "CS2_094",
+    "name": "Hammer of Wrath",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Deal $3 damage.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ryan Sook",
+    "attack": 4,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 847,
+    "durability": 0,
+    "flavor": "它能用来切片，也能切块。你还可以用它来开罐头。（但你不会这么做的。）",
+    "health": 2,
+    "id": "CS2_097",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Truesilver Champion",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Whenever your hero attacks, restore #3 Health to it.",
+    "type": "WEAPON"
+  },
+  {
     "attack": 1,
     "cardClass": "PALADIN",
     "cost": 1,
@@ -7680,6 +8476,51 @@
     "set": "LEGACY",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 344,
+    "flavor": "“伙计们！伙计们！你们稳着点儿！”——某些不属于战士的随从。",
+    "id": "CS2_103",
+    "name": "Charge",
+    "rarity": "FREE",
+    "referencedTags": [
+      "CHARGE"
+    ],
+    "set": "LEGACY",
+    "text": "Give a friendly minion +2 Attack and <b>Charge</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jonboy Meyers",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1108,
+    "flavor": "随从很愤怒。随从很厉害！",
+    "id": "CS2_104",
+    "name": "Rampage",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Give a damaged minion +3/+3.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jonboy Meyers",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1007,
+    "flavor": "真英雄，必英勇，赶快使用英勇打击，做真英雄！",
+    "id": "CS2_105",
+    "name": "Heroic Strike",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Give your hero +4 Attack this turn.",
+    "type": "SPELL"
   },
   {
     "artist": "Lucas Graciano",
@@ -7696,6 +8537,111 @@
     "rarity": "FREE",
     "set": "LEGACY",
     "type": "WEAPON",
+    "text": ""
+  },
+  {
+    "artist": "Dany Orizio",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 785,
+    "flavor": "这没什么，他罪有应得。",
+    "id": "CS2_108",
+    "name": "Execute",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Destroy a damaged enemy minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Stefan Kopinski",
+    "attack": 5,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 304,
+    "durability": 0,
+    "flavor": "“那个消失了的潜行者再也不曾出现过...”",
+    "health": 2,
+    "id": "CS2_112",
+    "name": "Arcanite Reaper",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
+    "artist": "Phroilan Gardner",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 940,
+    "flavor": "嘿，你们俩...你们能不能站在一起？就一会儿...",
+    "id": "CS2_114",
+    "name": "Cleave",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "[x]Deal $2 damage to\ntwo random enemy\nminions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1651,
+    "flavor": "他确实能看得很远，他才不像那些肮脏的海盗们需要用望远镜。",
+    "health": 3,
+    "id": "CS2_117",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Earthen Ring Farseer",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "恢复#3点生命值。",
+    "text": "<b>Battlecry:</b> Restore #3 Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Gaser",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1653,
+    "flavor": "尽管现在每个人都能单刷熔火之心了，但他依然觉得自己很厉害。",
+    "health": 1,
+    "id": "CS2_118",
+    "name": "Magma Rager",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Ittoku",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1370,
+    "flavor": "它的梦想是能够像它的偶像那样飞行和吐息火焰，但这样的梦想永远无法实现。",
+    "health": 7,
+    "id": "CS2_119",
+    "name": "Oasis Snapjaw",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
     "text": ""
   },
   {
@@ -7719,6 +8665,64 @@
     "text": ""
   },
   {
+    "artist": "Richie Marella",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 41,
+    "flavor": "他的祖祖辈辈都是步兵，这已经不仅仅是一份工作而已了。",
+    "health": 2,
+    "id": "CS2_121",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Frostwolf Grunt",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Phill Gonzales",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1401,
+    "flavor": "“谁再敢OT的，扣掉50DKP！”",
+    "health": 3,
+    "id": "CS2_122",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Raid Leader",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Your other minions have +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dany Orizio",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 289,
+    "faction": "HORDE",
+    "flavor": "兽人劫掠者们以狼作为坐骑是因为它们能够适应艰苦的环境，而且它们特别温顺，很会讨兽人喜欢。",
+    "health": 1,
+    "id": "CS2_124",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Wolfrider",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Lars Grant-West",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -7740,6 +8744,92 @@
     "rarity": "FREE",
     "set": "LEGACY",
     "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daren Bader",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 67,
+    "faction": "HORDE",
+    "flavor": "尽管他表现得像个领导者，但实际上银背母猩猩才是真正管事的人。",
+    "health": 4,
+    "id": "CS2_127",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Silverback Patriarch",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ladronn",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 622,
+    "faction": "ALLIANCE",
+    "flavor": "对于“死亡之翼毁城事件”，他仍然耿耿于怀。",
+    "health": 5,
+    "id": "CS2_131",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Stormwind Knight",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tooth",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 339,
+    "faction": "ALLIANCE",
+    "flavor": "“准备！瞄准！干杯！”",
+    "health": 2,
+    "id": "CS2_141",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Ironforge Rifleman",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "造成1点伤害。",
+    "text": "<b>Battlecry:</b> Deal 1 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 672,
+    "faction": "HORDE",
+    "flavor": "在过去，狗头人是这片土地上最好的蜡烛交易商，直到它们被逼太甚...",
+    "health": 2,
+    "id": "CS2_142",
+    "mechanics": [
+      "SPELLPOWER"
+    ],
+    "name": "Kobold Geomancer",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>",
     "type": "MINION"
   },
   {
@@ -7767,6 +8857,67 @@
     "type": "MINION"
   },
   {
+    "artist": "Court Jones",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 308,
+    "faction": "ALLIANCE",
+    "flavor": "她从来不知道她想发明的是什么，她只知道要发明很棒的东西！",
+    "health": 4,
+    "id": "CS2_147",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Gnomish Inventor",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Draw a card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kev Walker",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 413,
+    "faction": "ALLIANCE",
+    "flavor": "雷矛特种兵都是爆破专家。他们还会烘焙简易的蛋糕。",
+    "health": 2,
+    "id": "CS2_150",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Stormpike Commando",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "造成2点伤害。",
+    "text": "<b>Battlecry:</b> Deal 2 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Starbuck",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 69,
+    "faction": "ALLIANCE",
+    "flavor": "做一名骑士很威风，但是做骑士的侍从感觉就差一点了。",
+    "health": 4,
+    "id": "CS2_151",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Silver Hand Knight",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Summon a 2/2 Squire.",
+    "type": "MINION"
+  },
+  {
     "attack": 2,
     "cardClass": "NEUTRAL",
     "cost": 1,
@@ -7778,6 +8929,112 @@
     "set": "EXPERT1",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "Steve Ellis",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 525,
+    "faction": "ALLIANCE",
+    "flavor": "只要你能消灭任何质疑你的头衔的人，你就能获得“大法师”的头衔。",
+    "health": 7,
+    "id": "CS2_155",
+    "mechanics": [
+      "SPELLPOWER"
+    ],
+    "name": "Archmage",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ralph Horsley",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 134,
+    "faction": "ALLIANCE",
+    "flavor": "把姓名和10000金币打包邮寄给他。剩下的他会帮你搞定。",
+    "health": 5,
+    "id": "CS2_161",
+    "mechanics": [
+      "STEALTH"
+    ],
+    "name": "Ravenholdt Assassin",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Stealth</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "E. M. Gist",
+    "attack": 6,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 157,
+    "faction": "ALLIANCE",
+    "flavor": "他曾经是一个2100分段的竞技场高端玩家。但那已经是几年前的事情了，而且没人能阻止他继续吹嘘这件事。",
+    "health": 5,
+    "id": "CS2_162",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Lord of the Arena",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dan Scott",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 191,
+    "faction": "ALLIANCE",
+    "flavor": "姆啦啦咯哈姆噶啊啊嘎，姆啦嘎嘎咯，啵啦啦嗯嘞噶哈，姆啦嗝，咯啦哈哈吧啦咯。加尔鲁什咯嘛啦喝，嘛啦咯呵！",
+    "health": 1,
+    "id": "CS2_168",
+    "name": "Murloc Raider",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Greg Hildebrandt",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 641,
+    "faction": "HORDE",
+    "flavor": "无论是战士还是诗人，都能从美丽的龙鹰身上获取战斗或是写作的灵感。",
+    "health": 1,
+    "id": "CS2_169",
+    "mechanics": [
+      "WINDFURY"
+    ],
+    "name": "Young Dragonhawk",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Windfury</b>",
+    "type": "MINION"
   },
   {
     "artist": "Howard Lyon",
@@ -7803,6 +9060,224 @@
     "type": "MINION"
   },
   {
+    "artist": "Dan Brereton",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 216,
+    "faction": "HORDE",
+    "flavor": "“去杀30条迅猛龙。”——赫米特·奈辛瓦里",
+    "health": 2,
+    "id": "CS2_172",
+    "name": "Bloodfen Raptor",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Jakub Kasper",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 739,
+    "flavor": "他只是想要一个拥抱。一个黏黏的...滑滑的...拥抱。",
+    "health": 1,
+    "id": "CS2_173",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Bluegill Warrior",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Brian Despain",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 635,
+    "faction": "HORDE",
+    "flavor": "如果你喜欢巨魔和沙尘的话，森金村还是个不错的地方。",
+    "health": 5,
+    "id": "CS2_179",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Sen'jin Shieldmasta",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Samwise",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1109,
+    "faction": "HORDE",
+    "flavor": "他说这是在一次惨烈的战斗中留下的伤疤，但我们觉得，他只是刮胡子的时候弄伤了自己。",
+    "health": 7,
+    "id": "CS2_181",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Injured Blademaster",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Deal 4 damage to HIMSELF.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Mauro Cascioli",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 90,
+    "flavor": "他梦想着有一天能够下山开一间拉面店。但他没有那个勇气。",
+    "health": 5,
+    "id": "CS2_182",
+    "name": "Chillwind Yeti",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Dave Kendall",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 712,
+    "flavor": "傀儡们从来不会胆怯，但是出于某种原因，当你对它们施放“恐惧”的时候，它们依然会逃跑。也许这就是天性？或是想要融入这个世界的渴望？",
+    "health": 7,
+    "id": "CS2_186",
+    "name": "War Golem",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Matt Cavotta",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1140,
+    "faction": "HORDE",
+    "flavor": "你可以雇佣他们为你效命...直到有人出更高的价钱来让他们对付你。",
+    "health": 4,
+    "id": "CS2_187",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Booty Bay Bodyguard",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 242,
+    "faction": "ALLIANCE",
+    "flavor": "“把我加入你的套牌，白痴！”",
+    "health": 1,
+    "id": "CS2_188",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Abusive Sergeant",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "在本回合中获得+2攻击力。",
+    "text": "<b>Battlecry:</b> Give a minion +2 Attack this turn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Steve Prescott",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 389,
+    "faction": "HORDE",
+    "flavor": "媚眼如丝，轻盈如燕，致命如箭。",
+    "health": 1,
+    "id": "CS2_189",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Elven Archer",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "造成1点伤害。",
+    "text": "<b>Battlecry:</b> Deal 1 damage.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Clint Langley",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 257,
+    "faction": "HORDE",
+    "flavor": "有人曾经把塔丝克惹毛过一次。就一次。",
+    "health": 3,
+    "id": "CS2_196",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Razorfen Hunter",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Summon a 1/1 Boar.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 995,
+    "flavor": "教授食人魔如何施法是个值得商榷的决定。",
+    "health": 4,
+    "id": "CS2_197",
+    "mechanics": [
+      "SPELLPOWER"
+    ],
+    "name": "Ogre Magi",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Brian Despain",
     "attack": 6,
     "cardClass": "NEUTRAL",
@@ -7817,6 +9292,159 @@
     "set": "LEGACY",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "E. M. Gist",
+    "attack": 9,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 1687,
+    "flavor": "你无法驯服一头熔火恶犬。你只能通过训练让它在吃掉你之前先吃掉其他人。",
+    "health": 5,
+    "id": "CS2_201",
+    "name": "Core Hound",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Trevor Jacobs",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 290,
+    "faction": "HORDE",
+    "flavor": "它们挥动翅膀的时候悄无声息，但是它们的嘶鸣却是...任何悄无声息的反义词都可以形容。",
+    "health": 1,
+    "id": "CS2_203",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Ironbeak Owl",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "referencedTags": [
+      "SILENCE"
+    ],
+    "set": "EXPERT1",
+    "targetingArrowText": "<b>沉默</b>一个随从。",
+    "text": "<b>Battlecry:</b> <b>Silence</b> a minion.",
+    "type": "MINION"
+  },
+  {
+    "artist": "John Polidora",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 445,
+    "faction": "HORDE",
+    "flavor": "一个疯狂的火箭兵加上一个装满炸药的火箭。完美的组合。",
+    "health": 2,
+    "id": "CS2_213",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Reckless Rocketeer",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Justin Sweet",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 61,
+    "faction": "HORDE",
+    "flavor": "她会为你代工一把好武器，但是你必须给她5个铁锭，3个土之微粒，以及她上一个顾客的头皮。",
+    "health": 6,
+    "id": "CS2_221",
+    "mechanics": [
+      "ENRAGED"
+    ],
+    "name": "Spiteful Smith",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Your weapon has +2 Attack while this is damaged.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Doug Alexander",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 753,
+    "faction": "ALLIANCE",
+    "flavor": "在死亡之翼攻击主城的时候，这个士兵是小队中唯一活下来的一个。现在，他已经变得忍辱负重，镇定自若了。",
+    "health": 7,
+    "id": "CS2_222",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Stormwind Champion",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Your other minions have +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 496,
+    "faction": "HORDE",
+    "flavor": "为了争夺奥克兰特山谷的控制权，霜狼氏族和雷矛探险队打得不可开交。任何前来企图进行和平谈判的斡旋者都会被处死。",
+    "health": 4,
+    "id": "CS2_226",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Frostwolf Warlord",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Gain +1/+1 for each other friendly minion on the battlefield.",
+    "type": "MINION"
+  },
+  {
+    "artist": "John Polidora",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1122,
+    "faction": "HORDE",
+    "flavor": "有钱能使鬼推磨。",
+    "health": 6,
+    "id": "CS2_227",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Venture Co. Mercenary",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Your minions cost (3) more.",
+    "type": "MINION"
   },
   {
     "artist": "Malcolm Davis",
@@ -7835,6 +9463,131 @@
     ],
     "rarity": "COMMON",
     "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Dave Allsop",
+    "attack": 8,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 205,
+    "flavor": "我打赌你一定不敢进攻达纳苏斯。",
+    "health": 8,
+    "id": "CS2_232",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Ironbark Protector",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1064,
+    "flavor": "“注意看好，并不是把匕首飞快地挥来挥去就行了，比那要复杂得多。”——潜行者训练师，肖",
+    "id": "CS2_233",
+    "mechanics": [
+      "AFFECTED_BY_SPELL_POWER"
+    ],
+    "name": "Blade Flurry",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Destroy your weapon and deal its damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1367,
+    "flavor": "许多侍僧学徒都会施放：“暗言术：怒”，这个法术是它的进阶法术。",
+    "id": "CS2_234",
+    "name": "Shadow Word: Pain",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Destroy a minion with 3 or less Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Terese Nielsen",
+    "attack": 1,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1650,
+    "flavor": "她们帮助被压迫和沮丧的人们。她们也卖饼干。",
+    "health": 3,
+    "id": "CS2_235",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Northshire Cleric",
+    "rarity": "COMMON",
+    "set": "LEGACY",
+    "text": "Whenever a minion is healed, draw a card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jim Pavelec",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1361,
+    "flavor": "加倍的付出会得到加倍的收获！",
+    "id": "CS2_236",
+    "name": "Divine Spirit",
+    "rarity": "COMMON",
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Double a minion's Health.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Bernie Kang",
+    "attack": 2,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1241,
+    "flavor": "如果你喂饱了它，它就名不副实了。",
+    "health": 1,
+    "id": "CS2_237",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Starving Buzzard",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Whenever you summon a Beast, draw a card.",
+    "type": "MINION"
+  },
+  {
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 298,
+    "health": 1,
+    "id": "CS2_boar",
+    "name": "Boar",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "LEGACY",
     "type": "MINION",
     "text": ""
   },
@@ -8131,6 +9884,70 @@
     "type": "SPELL"
   },
   {
+    "attack": 3,
+    "cardClass": "DREAM",
+    "cost": 2,
+    "dbfId": 340,
+    "health": 5,
+    "id": "DREAM_01",
+    "mechanics": [
+      "ELUSIVE"
+    ],
+    "name": "Laughing Sister",
+    "set": "EXPERT1",
+    "text": "<b>Elusive</b>",
+    "type": "MINION"
+  },
+  {
+    "cardClass": "DREAM",
+    "cost": 2,
+    "dbfId": 301,
+    "id": "DREAM_02",
+    "name": "Ysera Awakens",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Deal $5 damage to all characters except Ysera.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 7,
+    "cardClass": "DREAM",
+    "cost": 4,
+    "dbfId": 489,
+    "health": 6,
+    "id": "DREAM_03",
+    "name": "Emerald Drake",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "cardClass": "DREAM",
+    "cost": 0,
+    "dbfId": 808,
+    "id": "DREAM_04",
+    "name": "Dream",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Return a minion to its owner's hand.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DREAM",
+    "cost": 0,
+    "dbfId": 217,
+    "id": "DREAM_05",
+    "name": "Nightmare",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Give a minion +5/+5. At the start of your next turn, destroy it.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Anzka Nguyen",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -8247,6 +10064,182 @@
     "type": "MINION"
   },
   {
+    "artist": "Jesper Ejsing",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 582,
+    "flavor": "她只是在闲暇时间做一些治疗工作。这其实只不过是一个业余爱好罢了。",
+    "health": 5,
+    "id": "DS1_055",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Darkscale Healer",
+    "race": "NAGA",
+    "races": [
+      "NAGA"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Restore #2 Health to all friendly characters.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dan Brereton",
+    "attack": 4,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1003,
+    "flavor": "“是谁把狗放出来的？”他问。其实，这只是他的口头禅。",
+    "health": 3,
+    "id": "DS1_070",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Houndmaster",
+    "rarity": "FREE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "LEGACY",
+    "targetingArrowText": "使一个野兽获得+2/+2和嘲讽。",
+    "text": "<b>Battlecry:</b> Give a friendly Beast +2/+2 and <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Malcolm Davis",
+    "attack": 1,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 606,
+    "flavor": "其他野兽最喜欢和森林狼一起外出打猎了。",
+    "health": 2,
+    "id": "DS1_175",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Timber Wolf",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Your other Beasts have +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Lars Grant-West",
+    "attack": 2,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 699,
+    "flavor": "人们经常无法分清苔原犀牛和科多兽。这是一头苔原犀牛，对不对？",
+    "health": 5,
+    "id": "DS1_178",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Tundra Rhino",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "FREE",
+    "referencedTags": [
+      "CHARGE"
+    ],
+    "set": "LEGACY",
+    "text": "Your Beasts have <b>Charge</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ben Zhang",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 292,
+    "flavor": "看见没，我完全可以“一心两用”。",
+    "id": "DS1_183",
+    "name": "Multi-Shot",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $3 damage to two random enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Mauro Cascioli",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1047,
+    "flavor": "为了那些不知道该把什么牌放入套牌的人准备的！",
+    "id": "DS1_184",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Tracking",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Discover</b> a card from your deck.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Luca Zontini",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 877,
+    "flavor": "法师们用奥术强化箭矢，然后出售给猎人；后来猎人们自己学会了足够的魔法之后便能够自给自足。不少法师因此失业，给暴风城的经济带来不小的冲击。",
+    "id": "DS1_185",
+    "name": "Arcane Shot",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "ARCANE",
+    "text": "Deal $2 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Peter C. Lee",
+    "attack": 5,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 311,
+    "durability": 0,
+    "flavor": "弓弦很长，这使得射手能够射得更远，对付那些难闻的目标尤其有效。",
+    "health": 2,
+    "id": "DS1_188",
+    "name": "Gladiator's Longbow",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "EXPERT1",
+    "text": "Your hero is <b>Immune</b> while attacking.",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "Dave Allsop",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 545,
+    "flavor": "这个法术直接震爆你的心灵。",
+    "id": "DS1_233",
+    "name": "Mind Blast",
+    "rarity": "COMMON",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Deal $5 damage to the enemy hero.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Ian Ameling",
     "attack": 3,
     "cardClass": "WARRIOR",
@@ -8354,6 +10347,56 @@
     "type": "MINION"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1656,
+    "elite": true,
+    "flavor": "巫妖王派他来阻止银色锦标赛的进行。可以说那是个失败。",
+    "health": 4,
+    "howToEarn": "完成教学后解锁。",
+    "howToEarnGolden": "总计赢得5000场对战后解锁。",
+    "id": "EX1_002",
+    "mechanics": [
+      "BATTLECRY",
+      "TRADEABLE"
+    ],
+    "name": "The Black Knight",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "targetingArrowText": "消灭一个具有嘲讽的随从。",
+    "text": "<b>Tradeable</b>\n <b>Battlecry:</b> Destroy an  enemy minion with <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vance Kovacs",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1634,
+    "flavor": "她已经等不及想要学习2级的真言术：韧了。",
+    "health": 1,
+    "id": "EX1_004",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Young Priestess",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "At the end of your turn, give another random friendly minion +1 Health.",
+    "type": "MINION"
+  },
+  {
     "artist": "Chris Seaman",
     "attack": 4,
     "cardClass": "NEUTRAL",
@@ -8372,6 +10415,48 @@
     "set": "EXPERT1",
     "targetingArrowText": "消灭一个攻击力大于或等于7的随从。",
     "text": "[x]<b>Tradeable</b>\n<b>Battlecry:</b> Destroy a minion\nwith 7 or more Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Sean O’Daniels",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1658,
+    "flavor": "警报。警报。警报。",
+    "health": 3,
+    "id": "EX1_006",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Alarm-o-Bot",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "[x]At the start of your turn,\nswap this minion with a\n   random one in your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dave Kendall",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1659,
+    "flavor": "在他年轻的时候，他经受的是“快乐侍僧”的训练，但是训练成果并不如他想象的那么好。",
+    "health": 4,
+    "id": "EX1_007",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Acolyte of Pain",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Whenever this minion takes damage, draw a card.",
     "type": "MINION"
   },
   {
@@ -8395,6 +10480,29 @@
     "type": "MINION"
   },
   {
+    "artist": "Mike Sass",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1688,
+    "flavor": "没有什么野兽比一只彻底发疯的小鸡更加吓人（或者更加可笑）的了。",
+    "health": 1,
+    "id": "EX1_009",
+    "mechanics": [
+      "ENRAGED"
+    ],
+    "name": "Angry Chicken",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Has +5 Attack while damaged.",
+    "type": "MINION"
+  },
+  {
     "artist": "Raymond Swanland",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -8412,6 +10520,27 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>Stealth</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Karl Richardson",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 132,
+    "faction": "HORDE",
+    "flavor": "别以为带上大坏蛋面具，再把两根筷子插在嘴里，你就是巫医了，伙计。",
+    "health": 1,
+    "id": "EX1_011",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Voodoo Doctor",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "恢复#2点生命值。",
+    "text": "<b>Battlecry:</b> Restore #2 Health.",
     "type": "MINION"
   },
   {
@@ -8438,6 +10567,30 @@
     "set": "EXPERT1",
     "spellDamage": 1,
     "text": "<b>Spell Damage +1</b>\n<b>Deathrattle:</b> Draw a card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Sunny Gho",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1693,
+    "elite": true,
+    "flavor": "穆克拉在哈圭罗岛上徘徊，寻找他的真爱。",
+    "health": 6,
+    "id": "EX1_014",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "King Mukla",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Give your opponent 2 Bananas.",
     "type": "MINION"
   },
   {
@@ -8471,6 +10624,171 @@
     "type": "MINION"
   },
   {
+    "artist": "Jaemin Kim",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 921,
+    "faction": "HORDE",
+    "flavor": "荆棘谷是一个很适合观光的地方，但你绝对不会想住在那儿。",
+    "health": 2,
+    "id": "EX1_017",
+    "mechanics": [
+      "STEALTH"
+    ],
+    "name": "Jungle Panther",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Stealth</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Doug Alexander",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 608,
+    "flavor": "他们会随身带着一瓶太阳井能量饮料！",
+    "health": 2,
+    "id": "EX1_019",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Shattered Sun Cleric",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "targetingArrowText": "使其获得+1/+1。",
+    "text": "<b>Battlecry:</b> Give a friendly minion +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gonzalo Ordonez",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 642,
+    "faction": "ALLIANCE",
+    "flavor": "他们的狂热使衣衫上的猩红色更加刺眼。",
+    "health": 1,
+    "id": "EX1_020",
+    "mechanics": [
+      "DIVINE_SHIELD"
+    ],
+    "name": "Scarlet Crusader",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Efrem Palacios",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 765,
+    "faction": "HORDE",
+    "flavor": "他受命驻扎在地狱火半岛，但他很希望能够被调配到奥格瑞玛附近，或者随便什么地方，只要那里的土地不要老是着火就行。",
+    "health": 3,
+    "id": "EX1_021",
+    "mechanics": [
+      "WINDFURY"
+    ],
+    "name": "Thrallmar Farseer",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Windfury</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Phroilan Gardner",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 34,
+    "faction": "HORDE",
+    "flavor": "当他们首次试图在天灾军团的围攻下守住银月城时，事情进行得并不顺利...",
+    "health": 3,
+    "id": "EX1_023",
+    "mechanics": [
+      "DIVINE_SHIELD"
+    ],
+    "name": "Silvermoon Guardian",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Warren Mahy",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 523,
+    "faction": "ALLIANCE",
+    "flavor": "她依然在想办法为咬咬先生装上火箭发射器。",
+    "health": 4,
+    "id": "EX1_025",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Dragonling Mechanic",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Summon a 2/1 Mechanical Dragonling.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 59,
+    "health": 1,
+    "id": "EX1_025t",
+    "name": "Mechanical Dragonling",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL",
+      "DRAGON"
+    ],
+    "set": "LEGACY",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 68,
+    "faction": "ALLIANCE",
+    "flavor": "这些美丽的大猫是荆棘谷一道亮丽的风景！",
+    "health": 5,
+    "id": "EX1_028",
+    "mechanics": [
+      "STEALTH"
+    ],
+    "name": "Stranglethorn Tiger",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Stealth</b>",
+    "type": "MINION"
+  },
+  {
     "artist": "Glenn Rane",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -8487,6 +10805,27 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>Deathrattle:</b> Deal 2 damage to the enemy hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Andrea Uderzo",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 759,
+    "faction": "ALLIANCE",
+    "flavor": "她不是真的能够在太阳上行走。这只是个名称，别担心！",
+    "health": 5,
+    "id": "EX1_032",
+    "mechanics": [
+      "DIVINE_SHIELD",
+      "TAUNT"
+    ],
+    "name": "Sunwalker",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>\n<b>Divine Shield</b>",
     "type": "MINION"
   },
   {
@@ -8507,6 +10846,114 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>Windfury</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jaemin Kim",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1037,
+    "flavor": "暮光幼龙以神秘能量为食，还吃玉米卷。",
+    "health": 1,
+    "id": "EX1_043",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Twilight Drake",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Gain +1 Health for each card in your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Attila Adorjany",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 791,
+    "faction": "ALLIANCE",
+    "flavor": "“高价收购致命的短枪，卖的密！”",
+    "health": 2,
+    "id": "EX1_044",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Questing Adventurer",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Whenever you play a card, gain +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Richard Wright",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 605,
+    "faction": "ALLIANCE",
+    "flavor": "为什么在你走动的时候，会感觉它的眼珠也在跟着你动？",
+    "health": 5,
+    "id": "EX1_045",
+    "mechanics": [
+      "CANT_ATTACK"
+    ],
+    "name": "Ancient Watcher",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Can't attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Scott Hampton",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 348,
+    "faction": "ALLIANCE",
+    "flavor": "黑铁矿脉的守护者。也许那是最令人头疼的矿脉，因为你必须在某个特殊的地方才能熔炼它。",
+    "health": 4,
+    "id": "EX1_046",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Dark Iron Dwarf",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "使其获得+2攻击力。",
+    "text": "<b>Battlecry:</b> Give a minion +2 Attack this turn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Cavotta",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 754,
+    "faction": "HORDE",
+    "flavor": "破法者能够轻易地破除施法者制造的法术，整个过程就像大夫看门诊一样，毫无痛苦。",
+    "health": 3,
+    "id": "EX1_048",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Spellbreaker",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "SILENCE"
+    ],
+    "set": "EXPERT1",
+    "targetingArrowText": "<b>沉默</b>一个随从。",
+    "text": "<b>Battlecry:</b> <b>Silence</b> a minion.",
     "type": "MINION"
   },
   {
@@ -8531,6 +10978,373 @@
     "type": "MINION"
   },
   {
+    "artist": "Steve Prescott",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1016,
+    "flavor": "他们能够预见未来。在未来的时间里，双方玩家都将抽更多的牌。真准！",
+    "health": 2,
+    "id": "EX1_050",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Coldlight Oracle",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Each player draws 2 cards.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Hideaki Takamura",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 12,
+    "faction": "ALLIANCE",
+    "flavor": "她很想戒掉这嗜好，但是每当她感到压力很大的时候，她总是会吸上几口。",
+    "health": 3,
+    "id": "EX1_055",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Mana Addict",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Whenever you cast a spell, gain +2 Attack this turn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Bernie Kang",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 186,
+    "faction": "ALLIANCE",
+    "flavor": "大部分熊猫人都喜欢去他的酒坊喝酒，然后在好几天以后才能记起回家的路。",
+    "health": 4,
+    "id": "EX1_057",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Ancient Brewmaster",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "将一个随从移回你的手牌。",
+    "text": "<b>Battlecry:</b> Return a friendly minion from the battlefield to your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 891,
+    "faction": "ALLIANCE",
+    "flavor": "她拿着一面盾牌，但也只有这样，她才能把它给别人，然后躲在后面。",
+    "health": 3,
+    "id": "EX1_058",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Sunfury Protector",
+    "rarity": "RARE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Give adjacent minions <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tom Fleming",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 801,
+    "flavor": "“你一定会喜欢我的新配方的！”他总是这么说...特别是当你对你现在的触手数量不满意的时候。",
+    "health": 2,
+    "id": "EX1_059",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Crazed Alchemist",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "targetingArrowText": "将一个随从的攻击力和生命值互换。",
+    "text": "<b>Battlecry:</b> Swap the Attack and Health of a minion.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Chris Rahn",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 906,
+    "faction": "ALLIANCE",
+    "flavor": "软泥怪喜欢弗拉门戈舞。别问为什么。",
+    "health": 2,
+    "id": "EX1_066",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Acidic Swamp Ooze",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Destroy your opponent's weapon.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 281,
+    "flavor": "银色指挥官总是机警地注意着天灾军团的动向，同时阻止任何想在咖啡店里插队买咖啡的人。",
+    "health": 2,
+    "id": "EX1_067",
+    "mechanics": [
+      "CHARGE",
+      "DIVINE_SHIELD"
+    ],
+    "name": "Argent Commander",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>\n<b>Divine Shield</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ron Spears",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 37,
+    "faction": "ALLIANCE",
+    "flavor": "大个子召唤师就是由她召唤出来的。",
+    "health": 2,
+    "id": "EX1_076",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Pint-Sized Summoner",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "The first minion you play each turn costs (1) less.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 158,
+    "faction": "ALLIANCE",
+    "flavor": "她永远也不会告诉你曼科里克的妻子在哪里。",
+    "health": 2,
+    "id": "EX1_080",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Secretkeeper",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SECRET"
+    ],
+    "set": "EXPERT1",
+    "text": "Whenever a <b>Secret</b> is played, gain +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Mike Sass",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 762,
+    "faction": "ALLIANCE",
+    "flavor": "其实他也不算是很疯狂，他只是应该在携带炸药的时候更加小心一点而已。",
+    "health": 2,
+    "id": "EX1_082",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Mad Bomber",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Deal 3 damage randomly split between all other characters.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tom Baxa",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 570,
+    "elite": true,
+    "faction": "ALLIANCE",
+    "flavor": "在09年度的铁炉堡松鼠大暴走事件之后，工匠大师欧沃斯巴克差点丢掉了他的工匠执照。",
+    "health": 3,
+    "id": "EX1_083",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Tinkmaster Overspark",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "targetingArrowText": "随机将一个随从变形成为5/5或者1/1。",
+    "text": "[x]<b>Battlecry:</b> Transform\nanother random minion\ninto a 5/5 Devilsaur\n or a 1/1 Squirrel.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wei Wang",
+    "attack": 2,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1009,
+    "flavor": "战歌氏族中闹剧不断，什么三教九流的人都能当上他们的指挥官。",
+    "health": 3,
+    "id": "EX1_084",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Warsong Commander",
+    "rarity": "FREE",
+    "referencedTags": [
+      "CHARGE"
+    ],
+    "set": "LEGACY",
+    "text": "Whenever you summon a minion with 3 or less Attack, give it <b>Charge</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Leo Che",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 734,
+    "faction": "ALLIANCE",
+    "flavor": "精神控制技术正在日益改善，但这并不能说明什么。",
+    "health": 3,
+    "id": "EX1_085",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Mind Control Tech",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "targetingArrowText": "夺取一个随从的控制权。",
+    "text": "[x]<b>Battlecry:</b> If your opponent\nhas 4 or more minions,\ntake control of one.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Sedhayu Ardian",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 466,
+    "flavor": "如果家里有一台奥术傀儡的话，一定能够使房间蓬荜生辉，格调提高，而且，它们还能成为不错的谈资。",
+    "health": 2,
+    "id": "EX1_089",
+    "mechanics": [
+      "BATTLECRY",
+      "CHARGE"
+    ],
+    "name": "Arcane Golem",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>. <b>Battlecry:</b> Give your opponent a Mana Crystal.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Chippy",
+    "attack": 4,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 272,
+    "flavor": "你绝不知道谁在为这个秘密组织效劳...",
+    "health": 5,
+    "id": "EX1_091",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Cabal Shadow Priest",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "targetingArrowText": "偷取一个攻击力小于或等于2的敌方随从。",
+    "text": "<b>Battlecry:</b> Take control of an enemy minion that has 2 or less Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "battlegroundsPremiumDbfId": 57404,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 763,
+    "faction": "ALLIANCE",
+    "flavor": "你肯定没想到阿古斯会需要如此坚实的防御。但它确实需要。",
+    "health": 3,
+    "id": "EX1_093",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Defender of Argus",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "RARE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "techLevel": 4,
+    "text": "<b>Battlecry:</b> Give adjacent minions +1/+1 and <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 932,
+    "flavor": "他曾经经营过黑市的拍卖行，但是那里的暴力冲突太多了，他只好被迫离开。",
+    "health": 4,
+    "id": "EX1_095",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Gadgetzan Auctioneer",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Whenever you cast a spell, draw a card.",
+    "type": "MINION"
+  },
+  {
     "artist": "Jim Nelson",
     "attack": 2,
     "cardClass": "NEUTRAL",
@@ -8550,6 +11364,189 @@
     "type": "MINION"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 440,
+    "flavor": "憎恶喜欢享用新鲜的肉，以及在海滩上漫步。",
+    "health": 4,
+    "id": "EX1_097",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "Abomination",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>. <b>Deathrattle:</b> Deal 2\ndamage to ALL characters.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Mark Zug",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1135,
+    "elite": true,
+    "flavor": "游学者周卓整理并分享有关潘达利亚大陆的轶事，但他最喜欢的故事，是乔伊和菲比一起外出旅行发生的事情。",
+    "health": 4,
+    "id": "EX1_100",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Lorewalker Cho",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "Whenever a player casts a spell, put a copy into the other player’s hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 979,
+    "flavor": "攻城这件事一点儿也不好玩，而且通常还不怎么奏效，因为现在人人都有飞行坐骑。",
+    "health": 4,
+    "id": "EX1_102",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Demolisher",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "At the start of your turn, deal 2 damage to a random enemy.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Arthur Gimaldinov",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 453,
+    "flavor": "寒光鱼人终年居住于无底海渊最黑暗的洞穴之中。所以，是的，你到哪儿都别想摆脱鱼人。",
+    "health": 3,
+    "id": "EX1_103",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Coldlight Seer",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Give your other Murlocs +2 Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Samwise",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 12,
+    "dbfId": 993,
+    "flavor": "他的妈妈说，他只是骨架比较大而已。",
+    "health": 8,
+    "id": "EX1_105",
+    "name": "Mountain Giant",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Costs (1) less for each other card in your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 420,
+    "elite": true,
+    "faction": "ALLIANCE",
+    "flavor": "凯恩被加尔鲁什杀害了，所以...别把这张牌放在战士的套牌里，这完全说不通。",
+    "health": 5,
+    "id": "EX1_110",
+    "mechanics": [
+      "DEATHRATTLE",
+      "TAUNT"
+    ],
+    "name": "Cairne Bloodhoof",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "[x]<b>Taunt</b>\n<b>Deathrattle:</b> Summon a\n5/5 Baine Bloodhoof.",
+    "type": "MINION"
+  },
+  {
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "cost": 5,
+    "dbfId": 318,
+    "elite": true,
+    "health": 5,
+    "id": "EX1_110t",
+    "name": "Baine Bloodhoof",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Gabe from Penny Arcade",
+    "attack": 6,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 559,
+    "elite": true,
+    "faction": "ALLIANCE",
+    "flavor": "至少他还有愤怒的小鸡。",
+    "health": 2,
+    "id": "EX1_116",
+    "mechanics": [
+      "BATTLECRY",
+      "CHARGE"
+    ],
+    "name": "Leeroy Jenkins",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>. <b>Battlecry:</b> Summon two 1/1 Whelps for your opponent.",
+    "type": "MINION"
+  },
+  {
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 1912,
+    "health": 1,
+    "id": "EX1_116t",
+    "name": "Whelp",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
     "artist": "Ariel Olivetti",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -8567,6 +11564,20 @@
     "type": "SPELL"
   },
   {
+    "artist": "Lucas Graciano",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 282,
+    "flavor": "每个人都有背叛的价码。拿侏儒打比方的话，长毛绒玩具和一小点儿巧克力就能让他们就范。",
+    "id": "EX1_126",
+    "name": "Betrayal",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Force an enemy minion to deal its damage to the minions next to it.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Andrew Robinson",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -8579,6 +11590,110 @@
     "set": "LEGACY",
     "text": "Deal $1 damage to all enemy minions. Draw a card.",
     "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 584,
+    "flavor": "我们永远不会忘记你，“防御者！”",
+    "id": "EX1_130",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Noble Sacrifice",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Secret:</b> When an enemy attacks, summon a 2/1 Defender as the new target.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 2,
+    "cardClass": "PALADIN",
+    "cost": 1,
+    "dbfId": 102,
+    "health": 1,
+    "id": "EX1_130a",
+    "name": "Defender",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Dany Orizio",
+    "attack": 3,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 201,
+    "flavor": "他在数年前偷走了地契，所以理论上说这片地盘确实是他的。他还喜欢用“白痴”称呼别人，显得自己很有势力。",
+    "health": 2,
+    "id": "EX1_131",
+    "mechanics": [
+      "COMBO"
+    ],
+    "name": "Defias Ringleader",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Combo:</b> Summon a 2/1 Defias Bandit.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "ROGUE",
+    "cost": 1,
+    "dbfId": 488,
+    "health": 1,
+    "id": "EX1_131t",
+    "name": "Defias Bandit",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "James Ryman",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 462,
+    "flavor": "有时正义的表现形式就是这么简单：紧握的拳头打在瘫软的脸上。",
+    "id": "EX1_132",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Eye for an Eye",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "<b>Secret:</b> When your hero takes damage, deal that much damage to the enemy hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Daren Bader",
+    "attack": 2,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 391,
+    "durability": 0,
+    "flavor": "当拉格纳罗斯还买不起萨弗拉斯的时候，他的武器正是毁灭之刃。",
+    "health": 2,
+    "id": "EX1_133",
+    "mechanics": [
+      "BATTLECRY",
+      "COMBO"
+    ],
+    "name": "Perdition's Blade",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "targetingArrowText": "造成1点伤害。@造成2点伤害。",
+    "text": "<b>Battlecry:</b> Deal 1 damage. <b>Combo:</b> Deal 2 instead.",
+    "type": "WEAPON"
   },
   {
     "artist": "Chris Moeller",
@@ -8599,6 +11714,41 @@
     "targetingArrowText": "造成3点伤害。",
     "text": "<b>Combo:</b> Deal 3 damage.",
     "type": "MINION"
+  },
+  {
+    "artist": "Ittoku",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 140,
+    "flavor": "救赎并非是从罪恶中得以解脱，而是对生活的彻底肯定，包括其中的痛苦、折磨和荒诞。",
+    "id": "EX1_136",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Redemption",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "<b>Secret:</b> When a friendly minion dies, return it to life with 1 Health.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ludo Lullabi",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 708,
+    "flavor": "就算其他方法都不管用，直接往头上狠狠来一下总是会有效的。",
+    "id": "EX1_137",
+    "mechanics": [
+      "COMBO"
+    ],
+    "name": "Headcrack",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Deal $2 damage to the enemy hero. <b>Combo:</b> Return this to your hand next turn.",
+    "type": "SPELL"
   },
   {
     "artist": "Graven Tung",
@@ -8630,6 +11780,123 @@
     "type": "SPELL"
   },
   {
+    "artist": "Raymond Swanland",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 836,
+    "flavor": "棘齿城酒馆里的人们纷纷表示，这张牌太强了，应该是传说级别的。",
+    "id": "EX1_154",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Wrath",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "<b>Choose One -</b>\nDeal $3 damage to a minion; or $1 damage\nand draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 151,
+    "flavor": "只有德鲁伊们称之为“自然印记”。其他人都喜欢说“加个状态”。",
+    "id": "EX1_155",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Mark of Nature",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "<b>Choose One -</b> Give a minion +4 Attack; or +4 Health and <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Markus Erdt",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 381,
+    "flavor": "“重新造林”计划突然听起来像是个恐怖的阴谋。",
+    "id": "EX1_158",
+    "name": "Soul of the Forest",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "DEATHRATTLE"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Give your minions \"<b>Deathrattle:</b> Summon a 2/2 Treant.\"",
+    "type": "SPELL"
+  },
+  {
+    "attack": 2,
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 600,
+    "health": 2,
+    "id": "EX1_158t",
+    "name": "Treant",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Steve Tappin",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 503,
+    "flavor": "在灰谷的树林中，猎豹的毛皮漆黑油亮，数量众多。那为什么这地方要叫灰谷，而不是黑谷呢？",
+    "id": "EX1_160",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Power of the Wild",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Choose One -</b> Give your minions +1/+1; or Summon a 3/2 Panther.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 3,
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 812,
+    "health": 2,
+    "id": "EX1_160t",
+    "name": "Panther",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Leo Che",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 233,
+    "flavor": "又一位战死沙场的将士。",
+    "id": "EX1_161",
+    "name": "Naturalize",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Destroy a minion.\nYour opponent draws 2 cards.",
+    "type": "SPELL"
+  },
+  {
     "artist": "John Dickenson",
     "attack": 2,
     "battlegroundsPremiumDbfId": 60025,
@@ -8653,6 +11920,109 @@
     "set": "EXPERT1",
     "techLevel": 1,
     "text": "Adjacent minions have +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Terese Nielsen",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 95,
+    "flavor": "德鲁伊能够从很多地方获得精神上的滋养：自然的伟力；鸟儿的鸣唱；蛋糕的美味。",
+    "id": "EX1_164",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Nourish",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "<b>Choose One -</b> Gain 2 Mana Crystals; or Draw 3 cards.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 4,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 692,
+    "flavor": "是猎豹还是熊？！是猎豹还是熊？！真是艰难的抉择！",
+    "health": 6,
+    "id": "EX1_165",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Druid of the Claw",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "RUSH",
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "[x]<b>Choose One -</b> Transform\ninto a 7/6 with <b>Rush</b>;\nor a 4/9 with <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "attack": 7,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 1681,
+    "health": 6,
+    "id": "EX1_165t1",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "Druid of the Claw",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
+    "attack": 4,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 1682,
+    "health": 9,
+    "id": "EX1_165t2",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Druid of the Claw",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "attack": 2,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 601,
+    "flavor": "这些家伙不知道从哪儿冒出来，然后就自说自话地开始守护你的丛林了。",
+    "health": 4,
+    "id": "EX1_166",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Keeper of the Grove",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SILENCE"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Choose One -</b> Deal 2 damage; or <b>Silence</b> a minion.",
     "type": "MINION"
   },
   {
@@ -8695,6 +12065,43 @@
     "type": "MINION"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 823,
+    "flavor": "平衡对德鲁伊来说很重要。这张卡牌现在就很平衡了。",
+    "id": "EX1_173",
+    "name": "Starfire",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "ARCANE",
+    "text": "Deal $5 damage.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Sean O’Daniels",
+    "attack": 5,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 1035,
+    "flavor": "年轻的暗夜精灵们喜欢一种叫做“谁能让战争古树站起来”的游戏。如果在它起身的时候你被踩死了，你还是输了。",
+    "health": 5,
+    "id": "EX1_178",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Ancient of War",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Choose One -</b>\n+5 Attack; or +5 Health and <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
     "artist": "Daarken",
     "cardClass": "SHAMAN",
     "collectible": true,
@@ -8712,6 +12119,167 @@
     "spellSchool": "NATURE",
     "text": "Deal $3 damage. <b>Overload:</b> (1)",
     "type": "SPELL"
+  },
+  {
+    "artist": "Dan Scott",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 864,
+    "flavor": "就像火焰领主吐了一口口水，呃，火。",
+    "id": "EX1_241",
+    "mechanics": [
+      "OVERLOAD"
+    ],
+    "name": "Lava Burst",
+    "overload": 2,
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "FIRE",
+    "text": "Deal $5 damage. <b>Overload:</b> (2)",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 3,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 618,
+    "flavor": "西部荒野满是尘魔。还有秃鹰。还有失控的傀儡。还有海盗。为什么谁都喜欢住在这地方？",
+    "health": 1,
+    "id": "EX1_243",
+    "mechanics": [
+      "OVERLOAD",
+      "WINDFURY"
+    ],
+    "name": "Dust Devil",
+    "overload": 2,
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Windfury</b>. <b>Overload:</b> (2)",
+    "type": "MINION"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 830,
+    "flavor": "禁止踩踏图腾。",
+    "id": "EX1_244",
+    "name": "Totemic Might",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Give your Totems +2 Health.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Kevin Chen",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 767,
+    "flavor": "大地震击？确切地说，就是“艾泽拉斯震击”吗？",
+    "id": "EX1_245",
+    "mechanics": [
+      "SILENCE"
+    ],
+    "name": "Earth Shock",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "<b>Silence</b> a minion, then deal $1 damage to it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Steve Hui",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 766,
+    "flavor": "如果你对一个鱼人使用妖术...其实结果也没什么变化，对不对？",
+    "id": "EX1_246",
+    "name": "Hex",
+    "rarity": "FREE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "LEGACY",
+    "spellSchool": "NATURE",
+    "text": "Transform a minion into a 0/1 Frog with <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Nate Bowden",
+    "attack": 2,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 960,
+    "durability": 0,
+    "flavor": "哟，真是把不错的斧子。",
+    "health": 3,
+    "id": "EX1_247",
+    "mechanics": [
+      "OVERLOAD"
+    ],
+    "name": "Stormforged Axe",
+    "overload": 1,
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Overload:</b> (1)",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 238,
+    "flavor": "幽灵狼只是普通的狼而已，它们擅长发出吓人的寒光。",
+    "id": "EX1_248",
+    "mechanics": [
+      "OVERLOAD"
+    ],
+    "name": "Feral Spirit",
+    "overload": 1,
+    "rarity": "RARE",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Summon two 2/3 Spirit Wolves with <b>Taunt</b>. <b>Overload:</b> (1)",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ian Ameling",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 336,
+    "elite": true,
+    "flavor": "迦顿男爵曾经是拉格纳罗斯的首席副官，因为他实在太“火”了。",
+    "health": 7,
+    "id": "EX1_249",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Baron Geddon",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "At the end of your turn, deal 2 damage to ALL other characters.",
+    "type": "MINION"
   },
   {
     "artist": "Dan Scott",
@@ -8739,6 +12307,110 @@
     "type": "MINION"
   },
   {
+    "artist": "Ralph Horsley",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 299,
+    "flavor": "配上勺状闪电和刀状闪电，你就集齐整套闪电餐具了。",
+    "id": "EX1_251",
+    "mechanics": [
+      "OVERLOAD"
+    ],
+    "name": "Forked Lightning",
+    "overload": 2,
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Deal $2 damage to 2 random enemy minions. <b>Overload:</b> (2)",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Matt Gaser",
+    "attack": 3,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 774,
+    "flavor": "无拘无束的它喜欢在灯红酒绿的城里度过每个夜晚。",
+    "health": 4,
+    "id": "EX1_258",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Unbound Elemental",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "COMMON",
+    "referencedTags": [
+      "OVERLOAD"
+    ],
+    "set": "EXPERT1",
+    "text": "After you play a card with <b>Overload</b>, gain +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Christopher Moeller",
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 629,
+    "flavor": "恐怕打伞是没有用的。",
+    "id": "EX1_259",
+    "mechanics": [
+      "OVERLOAD"
+    ],
+    "name": "Lightning Storm",
+    "overload": 1,
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Deal $3 damage to all enemy minions. <b>Overload:</b> (1)",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Michael Komarck",
+    "attack": 3,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1737,
+    "flavor": "虚灵们浑身捆绑着布条，不仅是因为布料柔软舒适，更是为了让他们的外表更能为其他种族接受。",
+    "health": 3,
+    "id": "EX1_274",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Ethereal Arcanist",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SECRET"
+    ],
+    "set": "EXPERT1",
+    "text": "If you control a <b>Secret</b> at the end of your turn, gain +2/+2.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Leo Che",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 430,
+    "flavor": "冰锥术在大约90年前开始流行起来，而在那之前，肯瑞托的法师们习惯用的是冰块术。",
+    "id": "EX1_275",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Cone of Cold",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>Freeze</b> a minion and the minions next to it, and deal $1 damage to them.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Warren Mahy",
     "cardClass": "MAGE",
     "collectible": true,
@@ -8755,6 +12427,60 @@
     "spellSchool": "ARCANE",
     "text": "Deal $3 damage randomly split among all enemies.",
     "type": "SPELL"
+  },
+  {
+    "artist": "Alex Garner",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 573,
+    "flavor": "毒如鹤顶，刃若清刚；图穷匕现，君命难长。",
+    "id": "EX1_278",
+    "name": "Shiv",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $1 damage.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Luca Zontini",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 10,
+    "dbfId": 1087,
+    "flavor": "抽到这张牌的时候，发出一阵邪恶的狂笑吧。",
+    "id": "EX1_279",
+    "name": "Pyroblast",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "FIRE",
+    "text": "Deal $10 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dan Scott",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 512,
+    "flavor": "当水元素和冰元素相爱到一定程度的时候...",
+    "health": 5,
+    "id": "EX1_283",
+    "mechanics": [
+      "BATTLECRY",
+      "FREEZE"
+    ],
+    "name": "Frost Elemental",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "冻结一个角色。",
+    "text": "<b>Battlecry:</b> <b>Freeze</b> a character.",
+    "type": "MINION"
   },
   {
     "artist": "Jason Chan",
@@ -8778,6 +12504,365 @@
     "type": "SPELL"
   },
   {
+    "artist": "Alex Garner",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 621,
+    "flavor": "这只是这个技能的第一级，第二级会是...巧克力牛奶护体。",
+    "id": "EX1_289",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Ice Barrier",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>Secret:</b> When your\nhero is attacked,\ngain 8 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Raven Mimura",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 195,
+    "flavor": "“你先上。”——“巨兽”克鲁什格尔对他的宠物野猪说道。",
+    "id": "EX1_294",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Mirror Entity",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "<b>Secret:</b> After your opponent plays a minion, summon a copy of it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Carl Frank",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 192,
+    "flavor": "法师们都很奇怪，为什么把一样东西塞进冰箱需要三个步骤？",
+    "id": "EX1_295",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Ice Block",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>Secret:</b> When your hero takes fatal damage, prevent it and become <b>Immune</b> this turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "John Polidora",
+    "attack": 3,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 517,
+    "flavor": "没错，他会为你而战，但并非心甘情愿。",
+    "health": 5,
+    "id": "EX1_301",
+    "mechanics": [
+      "BATTLECRY",
+      "TAUNT"
+    ],
+    "name": "Felguard",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Destroy one of your Mana Crystals.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Gaser",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1092,
+    "flavor": "很久以前，术士们发现只要在普通的法术中加入一点令人作呕的颜色，就能在伤害敌人的同时使其恐惧。真是一举两得。",
+    "id": "EX1_302",
+    "name": "Mortal Coil",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "[x]Deal $1 damage to a minion.\n If it dies, draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dave Kendall",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 147,
+    "flavor": "始于一个强大的随从，终于一场华丽的浩劫。多么有趣！",
+    "id": "EX1_303",
+    "mechanics": [
+      "AFFECTED_BY_SPELL_POWER"
+    ],
+    "name": "Shadowflame",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Destroy a friendly minion and deal its Attack damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Alexandrov",
+    "attack": 3,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1221,
+    "flavor": "如果你把这张牌放到你的套牌中，你就会失去其他随从对你的信任。",
+    "health": 4,
+    "id": "EX1_304",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Void Terror",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "[x]<b>Battlecry:</b> Destroy both\nadjacent minions and gain\n their Attack and Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 4,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 592,
+    "flavor": "这个小家伙不咬鞋改咬卡牌了。",
+    "health": 3,
+    "id": "EX1_306",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Felstalker",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry:</b> Discard a random card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 974,
+    "flavor": "是把别人的灵魂点燃？还是用自己的灵魂把别人点燃？这似乎是有很大区别的。",
+    "id": "EX1_308",
+    "name": "Soulfire",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "FIRE",
+    "text": "[x]Deal $4 damage.\nDiscard a random card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tyler Walpole",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1100,
+    "flavor": "你最好避免虹吸自己的灵魂，这样会造成一些很奇怪的死循环。",
+    "id": "EX1_309",
+    "name": "Siphon Soul",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Destroy a minion. Restore #3 Health to your hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Lucas Graciano",
+    "attack": 5,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 631,
+    "flavor": "召唤末日守卫有很大的风险。总得有人付出生命的代价。",
+    "health": 7,
+    "id": "EX1_310",
+    "mechanics": [
+      "BATTLECRY",
+      "CHARGE"
+    ],
+    "name": "Doomguard",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>. <b>Battlecry:</b> Discard two random cards.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dave Allsop",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 859,
+    "flavor": "扭曲虚空浩渺无际，充满着魔法、幻象和被放逐的生命体。",
+    "id": "EX1_312",
+    "name": "Twisting Nether",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Destroy all minions\nand locations.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Glenn Rane",
+    "attack": 5,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 783,
+    "flavor": "或许玛诺洛斯、玛瑟里顿和布鲁塔卢斯都已经死了，但其实深渊领主还有很多很多。",
+    "health": 6,
+    "id": "EX1_313",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Pit Lord",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Deal 5 damage to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tyler Walpole",
+    "attack": 0,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 969,
+    "flavor": "不能少于1点！你在想什么坏主意呢！",
+    "health": 4,
+    "id": "EX1_315",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Summoning Portal",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Your minions cost (2) less, but not less than (1).",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raven Mimura",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 860,
+    "flavor": "一般说来，恶魔总是比较容易辨认的，不需要用一个法术来感知它们。",
+    "id": "EX1_317",
+    "name": "Sense Demons",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Draw 2 Demons\nfrom your deck.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1090,
+    "flavor": "小鬼们喜欢引火上身。它们就是喜欢。",
+    "health": 2,
+    "id": "EX1_319",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Flame Imp",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Deal 3 damage to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 23,
+    "flavor": "福无双至，祸不单行。",
+    "id": "EX1_320",
+    "name": "Bane of Doom",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Deal $3 damage to a character. If it dies, summon a random Demon.",
+    "type": "SPELL"
+  },
+  {
+    "armor": 5,
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 777,
+    "elite": true,
+    "flavor": "“渺小的侏儒！你的傲慢会招致灭亡！”",
+    "health": 30,
+    "heroPowerDbfId": 1178,
+    "id": "EX1_323",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Lord Jaraxxus",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Equip a 3/8 Blood Fury.",
+    "type": "HERO"
+  },
+  {
+    "attack": 3,
+    "cardClass": "WARLOCK",
+    "cost": 3,
+    "dbfId": 1660,
+    "durability": 0,
+    "elite": true,
+    "health": 8,
+    "id": "EX1_323w",
+    "name": "Blood Fury",
+    "set": "EXPERT1",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
     "artist": "Zoltan & Gabor",
     "cardClass": "PRIEST",
     "collectible": true,
@@ -8796,6 +12881,1484 @@
     "type": "SPELL"
   },
   {
+    "artist": "Mark Gibbons",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 220,
+    "flavor": "随你如何让它恢复理智，这个过程本身仍是件卑劣的事。",
+    "id": "EX1_334",
+    "name": "Shadow Madness",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Gain control of an enemy minion with 3 or less Attack until end of turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Daarken",
+    "attack": 0,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 886,
+    "flavor": "光耀孕育之子嗣，吾等子嗣之光耀。",
+    "health": 4,
+    "id": "EX1_335",
+    "name": "Lightspawn",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "This minion's Attack is always equal to its Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Garner",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 30,
+    "flavor": "“人类喜欢说‘对牛弹琴’来形容白费功夫，哼，我们喜欢说‘对兽人使用思维窃取’！”——牛头人长者",
+    "id": "EX1_339",
+    "name": "Thoughtsteal",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Copy 2 cards in your opponent's deck and add them to your hand.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Blizzard Entertainment",
+    "attack": 0,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 797,
+    "flavor": "以前有很多牧师都不明白，究竟是因为队友看不见光明之泉呢，还是他们故意不想点它呢？",
+    "health": 5,
+    "id": "EX1_341",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Lightwell",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "At the start of your turn, restore #3 Health to a damaged friendly character.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 145,
+    "flavor": "有时候你会觉得，一切不过是场游戏。",
+    "id": "EX1_345",
+    "name": "Mindgames",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Put a copy of\na random minion from\nyour opponent's deck into the battlefield.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Lucas Graciano",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 679,
+    "flavor": "这可是神的恩赐，就好像有人在关键时刻向你伸出援手。",
+    "id": "EX1_349",
+    "name": "Divine Favor",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Draw cards until you have as many in hand as your opponent.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Wei Wang",
+    "attack": 7,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 9,
+    "elite": true,
+    "flavor": "他被逐出了他的家园，他的兄弟们都变成了邪恶的主宰......但是除此之外，他好像也没有什么别的可以抱怨的了。",
+    "health": 7,
+    "id": "EX1_350",
+    "name": "Prophet Velen",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "Double the damage and healing of your spells and Hero Power.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 594,
+    "flavor": "抓住最后一根救命稻草。",
+    "id": "EX1_354",
+    "name": "Lay on Hands",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Restore #8 Health. Draw 3 cards.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Tyler Walpole",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1522,
+    "flavor": "“攻击翻倍，快乐加倍！”",
+    "id": "EX1_355",
+    "name": "Blessed Champion",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Double a minion's Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Daren Bader",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 854,
+    "flavor": "这张牌真是会让人的心情很糟糕，就像潮湿阴冷的天气。",
+    "id": "EX1_360",
+    "name": "Humility",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Change a minion's Attack to 1.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Doug Alexander",
+    "attack": 3,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1022,
+    "flavor": "“我没说你能够躲过火球。我是说有了这盾，你就不需要躲了。”",
+    "health": 2,
+    "id": "EX1_362",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Argent Protector",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "DIVINE_SHIELD"
+    ],
+    "set": "EXPERT1",
+    "targetingArrowText": "使其获得<b>圣盾</b>。",
+    "text": "<b>Battlecry:</b> Give a friendly minion <b>Divine Shield</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Chippy",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1373,
+    "flavor": "显然是智慧让他认清了这样一条真理：作为一个随从，每回合都要攻击才能体现其价值。",
+    "id": "EX1_363",
+    "name": "Blessing of Wisdom",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Choose a minion. Whenever it attacks, draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Justin Sweet",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 435,
+    "flavor": "来个熔核巨人吧！！",
+    "id": "EX1_365",
+    "mechanics": [
+      "AFFECTED_BY_SPELL_POWER"
+    ],
+    "name": "Holy Wrath",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Draw a card and deal damage equal to its Cost to a minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Efrem Palacios",
+    "attack": 1,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 643,
+    "durability": 0,
+    "flavor": "我封你为“牛腰肉爵士”！",
+    "health": 5,
+    "id": "EX1_366",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Sword of Justice",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "After you summon a minion, give it +1/+1 and this loses 1 Durability.",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 727,
+    "flavor": "这个法术的名字已经被修改了太多次，导致连圣骑士们都不知道它应该叫什么了。",
+    "id": "EX1_371",
+    "name": "Hand of Protection",
+    "rarity": "FREE",
+    "referencedTags": [
+      "DIVINE_SHIELD"
+    ],
+    "set": "LEGACY",
+    "spellSchool": "HOLY",
+    "text": "Give a minion <b>Divine Shield</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 232,
+    "flavor": "忏悔总会在湮灭前一刻到来。多么奥妙。",
+    "id": "EX1_379",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Repentance",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "<b>Secret:</b> After your opponent plays a minion, reduce its Health to 1.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dany Orizio",
+    "attack": 3,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1167,
+    "flavor": "奥尔多痛恨两样东西：占星者和湿鳞蜥蜴的眼睛。",
+    "health": 3,
+    "id": "EX1_382",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Aldor Peacekeeper",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "targetingArrowText": "使其攻击力变为1。",
+    "text": "<b>Battlecry:</b> Change an enemy minion's Attack to 1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Brom",
+    "attack": 8,
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 890,
+    "elite": true,
+    "flavor": "如果你还没听过《提里奥·弗丁主题曲》，那是因为它还没被谱写出来。",
+    "health": 8,
+    "id": "EX1_383",
+    "mechanics": [
+      "DEATHRATTLE",
+      "DIVINE_SHIELD",
+      "TAUNT"
+    ],
+    "name": "Tirion Fordring",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b><b>Divine Shield</b>,</b> <b>Taunt</b> <b>Deathrattle:</b> Equip a 5/3 Ashbringer.",
+    "type": "MINION"
+  },
+  {
+    "attack": 5,
+    "cardClass": "PALADIN",
+    "cost": 5,
+    "dbfId": 1730,
+    "durability": 0,
+    "elite": true,
+    "health": 3,
+    "id": "EX1_383t",
+    "name": "Ashbringer",
+    "set": "EXPERT1",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
+    "artist": "Alex Garner",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1174,
+    "flavor": "打！打！打！打！打！打！打！打！",
+    "id": "EX1_384",
+    "mechanics": [
+      "ImmuneToSpellpower"
+    ],
+    "name": "Avenging Wrath",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Deal $8 damage randomly split among all enemies.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Paul Warzecha",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 45,
+    "flavor": "牛头人战士：莫高雷勇士，野猪人杀手，雷霆崖电梯发明者。",
+    "health": 3,
+    "id": "EX1_390",
+    "mechanics": [
+      "ENRAGED",
+      "TAUNT"
+    ],
+    "name": "Tauren Warrior",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>\nHas +3 Attack while damaged.",
+    "type": "MINION"
+  },
+  {
+    "artist": "E. M. Gist",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 1074,
+    "flavor": "“咚次哒次，咚次哒次”：如果你听到食人魔这样的“歌声”，那已经太晚了。",
+    "id": "EX1_391",
+    "name": "Slam",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Deal $2 damage to a minion. If it survives, draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 400,
+    "flavor": "“你不会喜欢我生气的样子。”",
+    "id": "EX1_392",
+    "name": "Battle Rage",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Draw a card for each damaged friendly character.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Chippy",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 790,
+    "flavor": "如果阿曼尼狂战士问你：“你刚才看着我？！”正确的答案应该是：“没有，伙计。”",
+    "health": 3,
+    "id": "EX1_393",
+    "mechanics": [
+      "ENRAGED"
+    ],
+    "name": "Amani Berserker",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Has +3 Attack while damaged.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Cole Eastburn",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 700,
+    "flavor": "这些家伙们每天做的就是谈论雷神。真无聊！",
+    "health": 7,
+    "id": "EX1_396",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Mogu'shan Warden",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Samwise",
+    "attack": 3,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 538,
+    "flavor": "拳套武器限时特惠，第二把半价！",
+    "health": 3,
+    "id": "EX1_398",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Arathi Weaponsmith",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Equip a 2/2 weapon.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 1707,
+    "durability": 0,
+    "health": 2,
+    "id": "EX1_398t",
+    "name": "Battle Axe",
+    "set": "EXPERT1",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 768,
+    "flavor": "如果那些伤痛没能让你死掉，它们就会让你更强大。",
+    "health": 8,
+    "id": "EX1_399",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Gurubashi Berserker",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Whenever this minion takes damage, gain +3 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jonboy Meyers",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 636,
+    "flavor": "分辨资深战士和新手战士的最好办法：新手在用旋风斩时会喊“哇哇哇”。",
+    "id": "EX1_400",
+    "name": "Whirlwind",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $1 damage to ALL minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Greg Hildebrandt",
+    "attack": 1,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 596,
+    "flavor": "她接受公会修理资金！",
+    "health": 4,
+    "id": "EX1_402",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Armorsmith",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Whenever a friendly minion takes damage, gain 1 Armor.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Carl Critchlow",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 866,
+    "flavor": "你知道这个游戏里的盾牌都有多大吗？那可绝对不是轻松的差事。",
+    "health": 4,
+    "id": "EX1_405",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Shieldbearer",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 75,
+    "flavor": "你知道搏击俱乐部的第一守则吗？",
+    "id": "EX1_407",
+    "name": "Brawl",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Destroy all minions except one. <i>(chosen randomly)</i>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 804,
+    "flavor": "“如果你只有一个技能可以用，就用致死打击。”——《战士信条》，第6行",
+    "id": "EX1_408",
+    "name": "Mortal Strike",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Deal $4 damage. If you have 12 or less Health, deal $6 instead.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Matt Cavotta",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 511,
+    "flavor": "50点DKP玩一下，值！",
+    "id": "EX1_409",
+    "name": "Upgrade!",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "If you have a weapon, give it +1/+1. Otherwise equip a 1/3 weapon.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 1,
+    "cardClass": "WARRIOR",
+    "cost": 1,
+    "dbfId": 1661,
+    "durability": 0,
+    "health": 3,
+    "id": "EX1_409t",
+    "name": "Heavy Axe",
+    "set": "EXPERT1",
+    "type": "WEAPON",
+    "text": ""
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 546,
+    "flavor": "“什么是更好的武器？是敌人预料之中的利斧，还是敌人意想不到的钝刀？”——《战士的艺术》，第9章",
+    "id": "EX1_410",
+    "mechanics": [
+      "AFFECTED_BY_SPELL_POWER"
+    ],
+    "name": "Shield Slam",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Deal 1 damage to a minion for each Armor you have.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Zoltan & Gabor",
+    "attack": 7,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 810,
+    "durability": 0,
+    "flavor": "格罗玛什·地狱咆哮的著名战斧。然而它却在玛克扎尔王子的手中。这是怎么回事！",
+    "health": 1,
+    "id": "EX1_411",
+    "name": "Gorehowl",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Attacking a minion costs 1 Attack instead of 1 Durability.",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1155,
+    "flavor": "如果他现在还是很愤怒，那就等到他平静下来。",
+    "health": 3,
+    "id": "EX1_412",
+    "mechanics": [
+      "ENRAGED"
+    ],
+    "name": "Raging Worgen",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "WINDFURY"
+    ],
+    "set": "EXPERT1",
+    "text": "Has +1 Attack and <b>Windfury</b> while damaged.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Glenn Rane",
+    "attack": 4,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 338,
+    "elite": true,
+    "flavor": "灰谷南方，来自地狱的咆哮还在回响。",
+    "health": 9,
+    "id": "EX1_414",
+    "mechanics": [
+      "CHARGE",
+      "ENRAGED"
+    ],
+    "name": "Grommash Hellscream",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>\nHas +6 Attack while damaged.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dan Scott",
+    "attack": 2,
+    "battlegroundsPremiumDbfId": 57338,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 976,
+    "flavor": "“死亡之潮升涌而起！”",
+    "health": 1,
+    "id": "EX1_506",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Murloc Tidehunter",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "techLevel": 1,
+    "text": "<b>Battlecry:</b> Summon a 1/1 Murloc Scout.",
+    "type": "MINION"
+  },
+  {
+    "attack": 1,
+    "battlegroundsPremiumDbfId": 57339,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 1078,
+    "health": 1,
+    "id": "EX1_506a",
+    "name": "Murloc Scout",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "COMMON",
+    "set": "LEGACY",
+    "techLevel": 1,
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Tim McBurnie",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1063,
+    "flavor": "鱼人们老是发出一样的声音，难道不觉得厌烦吗？不！姆格拉咕嗯噜咕噜咕噜咕噜咕噜！",
+    "health": 3,
+    "id": "EX1_507",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Murloc Warleader",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Your other Murlocs have +2 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Phil Saunders",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 510,
+    "flavor": "这些算是有头脑的鱼人。但仍然有些名不副实。",
+    "health": 1,
+    "id": "EX1_508",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Grimscale Oracle",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Your other Murlocs have +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jaemin Kim",
+    "attack": 1,
+    "battlegroundsPremiumDbfId": 58138,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 475,
+    "flavor": "每当他和他的家人团聚时，这个家伙会变得特别厉害。",
+    "health": 2,
+    "id": "EX1_509",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Murloc Tidecaller",
+    "race": "MURLOC",
+    "races": [
+      "MURLOC"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "techLevel": 1,
+    "text": "Whenever you summon a Murloc, gain +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ben Olson",
+    "attack": 1,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1133,
+    "flavor": "其实他的耐性并不好。只是等待他的目标靠近需要花点时间。",
+    "health": 2,
+    "id": "EX1_522",
+    "mechanics": [
+      "POISONOUS",
+      "STEALTH"
+    ],
+    "name": "Patient Assassin",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Stealth</b>\n <b>Poisonous</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jim Nelson",
+    "attack": 2,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1281,
+    "flavor": "土狼偏爱科多兽和风蛇的骨头，但是其实他们什么都吃。甚至是抱子甘蓝。",
+    "health": 2,
+    "id": "EX1_531",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Scavenging Hyena",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Whenever a friendly Beast dies, gain +2/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daren Bader",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1091,
+    "flavor": "再狡猾的狐狸……也会被猎人误导。",
+    "id": "EX1_533",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Misdirection",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Secret:</b> When an enemy attacks your hero, instead it attacks another random character.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Milivoj Ceran",
+    "attack": 7,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1261,
+    "flavor": "在偌大丛林的生存游戏中，即使是狮子也会被成群的土狼拖垮。",
+    "health": 5,
+    "id": "EX1_534",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "Savannah Highmane",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Deathrattle:</b> Summon two 2/2 Hyenas.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Andrew Robinson",
+    "attack": 2,
+    "cardClass": "HUNTER",
+    "cost": 2,
+    "dbfId": 1624,
+    "health": 2,
+    "id": "EX1_534t",
+    "name": "Hyena",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Cyril Van Der Haegen",
+    "attack": 3,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1662,
+    "durability": 0,
+    "flavor": "第一课：把尖的那头对准别人。",
+    "health": 2,
+    "id": "EX1_536",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Eaglehorn Bow",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SECRET"
+    ],
+    "set": "EXPERT1",
+    "text": "[x]Whenever a friendly\n<b>Secret</b> is revealed,\ngain +1 Durability.",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "Tom Baxa",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 394,
+    "flavor": "拉动保险销，数到5，再开火。然后躲起来。",
+    "id": "EX1_537",
+    "name": "Explosive Shot",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "FIRE",
+    "text": "Deal $5 damage to a minion and $2 damage to adjacent ones.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Linggar Bramanty",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1243,
+    "flavor": "在你使用这张牌的时候，一定要喊出它的名字。",
+    "id": "EX1_538",
+    "name": "Unleash the Hounds",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "CHARGE"
+    ],
+    "set": "EXPERT1",
+    "text": "For each enemy minion, summon a 1/1 Hound with <b>Charge</b>.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 1,
+    "cardClass": "HUNTER",
+    "cost": 1,
+    "dbfId": 1715,
+    "health": 1,
+    "id": "EX1_538t",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Hound",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gabe from Penny Arcade",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 296,
+    "flavor": "“咬死他！”，他下达了命令。",
+    "id": "EX1_539",
+    "name": "Kill Command",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Deal $3 damage. If you control a Beast, deal\n$5 damage instead.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 8,
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 1144,
+    "elite": true,
+    "flavor": "对付暴龙王克鲁什最好的办法就是让某个你讨厌的人站在你前面。",
+    "health": 8,
+    "id": "EX1_543",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "King Krush",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Tyler Walpole",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 896,
+    "flavor": "它不但能让你的敌人无处遁形，还能让整个晚会熠熠生辉！",
+    "id": "EX1_544",
+    "name": "Flare",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SECRET",
+      "STEALTH"
+    ],
+    "set": "EXPERT1",
+    "text": "All minions lose <b>Stealth</b>. Destroy all enemy <b>Secrets</b>. Draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 903,
+    "flavor": "盛燃的愤怒掩藏于表面之下，同时还伴随着野性的狂放不羁和些许傲慢。",
+    "id": "EX1_549",
+    "name": "Bestial Wrath",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "IMMUNE"
+    ],
+    "set": "EXPERT1",
+    "text": "Give a friendly Beast +2 Attack and <b>Immune</b> this turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Bernie Kang",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 455,
+    "flavor": "蛇。为什么是蛇？",
+    "id": "EX1_554",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Snake Trap",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Secret:</b> When one of your minions is attacked, summon three 1/1 Snakes.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 1,
+    "cardClass": "HUNTER",
+    "cost": 1,
+    "dbfId": 204,
+    "health": 1,
+    "id": "EX1_554t",
+    "name": "Snake",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "techLevel": 1,
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Brian Despain",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 778,
+    "flavor": "“温度过高。系统失灵。二号仓粮食堵塞。正在关闭。”",
+    "health": 3,
+    "id": "EX1_556",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "Harvest Golem",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Deathrattle:</b> Summon a 2/1 Damaged Golem.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Steve Prescott",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1147,
+    "elite": true,
+    "flavor": "纳特·帕格是艾泽拉斯最棒的钓手！他发明了自动鱼竿3000型，伸缩鱼竿3000型，以及电气自动诱捕器2099型（仍在测试中）。",
+    "health": 4,
+    "id": "EX1_557",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Nat Pagle",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "At the start of your turn, you have a 50% chance to draw an extra card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Matt Dixon",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 912,
+    "elite": true,
+    "flavor": "“这东西应该陈列在探险者大厅里！”",
+    "health": 4,
+    "id": "EX1_558",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Harrison Jones",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Destroy your opponent's weapon and draw cards equal to its Durability.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "attack": 5,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 1080,
+    "elite": true,
+    "flavor": "肯瑞托的首席法师，达拉然最伟大的子民，安东尼达斯在被巫妖王阿尔萨斯杀死之前，曾是吉安娜的导师。",
+    "health": 7,
+    "id": "EX1_559",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Archmage Antonidas",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "Whenever you cast a spell, add a 'Fireball' spell to your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "James Ryman",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 411,
+    "elite": true,
+    "flavor": "没时间写什么卡牌趣文了。",
+    "health": 8,
+    "id": "EX1_560",
+    "name": "Nozdormu",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "Players only have 15 seconds to take their turns.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 581,
+    "elite": true,
+    "flavor": "生命的缚誓者阿莱克丝塔萨给所有人带来生命和希望。除了死亡之翼。除了玛里苟斯。除了耐克鲁斯。",
+    "health": 8,
+    "id": "EX1_561",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Alexstrasza",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "targetingArrowText": "将生命值变为15点。",
+    "text": "<b>Battlecry:</b> Set a hero's remaining Health to 15.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dany Orizio",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 363,
+    "elite": true,
+    "flavor": "伪装成女伯爵卡特拉娜·普瑞斯托，奥妮克希亚长期控制着暴风城议会。你可能会想，一定是她的大翅膀和鳞片让她漏出了马脚。",
+    "health": 8,
+    "id": "EX1_562",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Onyxia",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Summon 1/1 Whelps until your side of the battlefield is full.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Michael Komarck",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 436,
+    "elite": true,
+    "flavor": "玛里苟斯憎恨凡人使用魔法。那会让他气急败坏！",
+    "health": 12,
+    "id": "EX1_563",
+    "mechanics": [
+      "SPELLPOWER"
+    ],
+    "name": "Malygos",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +5</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 531,
+    "flavor": "作为尤格-萨隆的仆从，无面者们以人们的恐惧为食，而现在他们的菜谱中包括你对“不小心把好牌分解掉”的担心和忧虑。",
+    "health": 3,
+    "id": "EX1_564",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Faceless Manipulator",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "targetingArrowText": "成为一个随从的复制。",
+    "techLevel": 6,
+    "text": "<b>Battlecry:</b> Choose a minion and become a copy of it.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jonathan Ryder",
+    "attack": 0,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1008,
+    "flavor": "图腾制造师喜欢用最稀有的木材来打造图腾。甚至有传言说，这些图腾是由埃隆巴克保护者身上的树皮做的。",
+    "health": 3,
+    "id": "EX1_565",
+    "mechanics": [
+      "ADJACENT_BUFF",
+      "AURA"
+    ],
+    "name": "Flametongue Totem",
+    "race": "TOTEM",
+    "races": [
+      "TOTEM"
+    ],
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Adjacent minions have +2 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "John Polidora",
+    "attack": 2,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 352,
+    "durability": 0,
+    "flavor": "奥格瑞姆·毁灭之锤将他的传奇武器赠与了萨尔。他的名字只是纯属巧合。",
+    "health": 8,
+    "id": "EX1_567",
+    "mechanics": [
+      "OVERLOAD",
+      "WINDFURY"
+    ],
+    "name": "Doomhammer",
+    "overload": 2,
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Windfury, Overload:</b> (2)",
+    "type": "WEAPON"
+  },
+  {
+    "artist": "MAR Studio",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 577,
+    "flavor": "一般说来，你不把嘴里的肉嚼完，是不舍得变回人形态的。",
+    "id": "EX1_570",
+    "name": "Bite",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Give your hero +4 Attack this turn. Gain 4 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trevor Jacobs",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 493,
+    "flavor": "“我想我可以在这片树荫下打个盹儿。等等...啊啊啊啊啊！”——不幸的侏儒布林克菲兹",
+    "id": "EX1_571",
+    "name": "Force of Nature",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Summon three 2/2 Treants.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 9,
+    "dbfId": 1186,
+    "elite": true,
+    "flavor": "伊瑟拉统治翡翠梦境。所谓翡翠梦境，究竟只是现实世界的绿色朦胧倒影，还是其他别的什么地方？",
+    "health": 12,
+    "id": "EX1_572",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Ysera",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "At the end of your turn, get two random Dream cards.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 5,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 36,
+    "elite": true,
+    "flavor": "“当它们还是种子的时候，我便认识它们了……”",
+    "health": 8,
+    "id": "EX1_573",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Cenarius",
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Choose One -</b> Give your other minions +2/+2; or Summon two 2/2 Treants with <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 678,
+    "health": 2,
+    "id": "EX1_573t",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Treant",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Scott Altmann",
+    "attack": 0,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 513,
+    "flavor": "据说，有些萨满能够以很快的速度连着说十遍“疼痛的图腾”。",
+    "health": 3,
+    "id": "EX1_575",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Mana Tide Totem",
+    "race": "TOTEM",
+    "races": [
+      "TOTEM"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "At the end of your turn, draw a card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Glenn Rane",
+    "attack": 9,
+    "battlegroundsPremiumDbfId": 58394,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 962,
+    "elite": true,
+    "flavor": "他住在黑石山。他吃侏儒。基本上就是这样。",
+    "health": 7,
+    "id": "EX1_577",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "The Beast",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "techLevel": 3,
+    "text": "[x]<b>Deathrattle:</b> Summon a\n3/3 Pip Quickwit for\nyour opponent.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dave Rapoza",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 481,
+    "flavor": "确实有些德鲁伊野性十足，但仍有些喜欢在恬静的时刻品上一壶好茶。",
+    "id": "EX1_578",
+    "mechanics": [
+      "AFFECTED_BY_SPELL_POWER"
+    ],
+    "name": "Savagery",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Deal damage equal to your hero's Attack to a minion.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Scott Altmann",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -8810,6 +14373,301 @@
     "type": "SPELL"
   },
   {
+    "artist": "Jim Nelson",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 175,
+    "flavor": "你肯定没见过达拉然战士。",
+    "health": 4,
+    "id": "EX1_582",
+    "mechanics": [
+      "SPELLPOWER"
+    ],
+    "name": "Dalaran Mage",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dan Scott",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 424,
+    "flavor": "她是艾泽拉斯最早的“月光族”。",
+    "health": 4,
+    "id": "EX1_583",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Priestess of Elune",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Restore #4 Health to your hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Howard Lyon",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 915,
+    "flavor": "有时候他会很健忘，甚至迷迷糊糊地走进别人的游戏中去。",
+    "health": 5,
+    "id": "EX1_584",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Ancient Mage",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SPELLPOWER"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Give adjacent minions <b>Spell Damage +1</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Svetlin Velinov",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 10,
+    "dbfId": 211,
+    "flavor": "嗨，巨人！",
+    "health": 8,
+    "id": "EX1_586",
+    "name": "Sea Giant",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Costs (1) less for each other minion on the battlefield.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Vance Kovacs",
+    "attack": 3,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 178,
+    "flavor": "患有口臭的风语者...还有什么比这更糟糕的吗？",
+    "health": 3,
+    "id": "EX1_587",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Windspeaker",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "FREE",
+    "referencedTags": [
+      "WINDFURY"
+    ],
+    "set": "LEGACY",
+    "targetingArrowText": "使一个随从获得<b>风怒</b>。",
+    "text": "<b>Battlecry:</b> Give a friendly minion <b>Windfury</b>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 755,
+    "flavor": "血骑士从太阳井中获得他们的神圣能量，所以你别把那里当成是洗太阳浴的地方。",
+    "health": 3,
+    "id": "EX1_590",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Blood Knight",
+    "rarity": "EPIC",
+    "referencedTags": [
+      "DIVINE_SHIELD"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> All minions lose <b>Divine Shield</b>. Gain +3/+3 for each Shield lost.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Doug Alexander",
+    "attack": 3,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 237,
+    "flavor": "奥金尼的人们知道末日即将来临，只是不确定它到来的时间。",
+    "health": 5,
+    "id": "EX1_591",
+    "name": "Auchenai Soulpriest",
+    "race": "DRAENEI",
+    "races": [
+      "DRAENEI"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Your cards and powers that restore Health now deal damage instead.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 670,
+    "flavor": "你的脸可能是你最不希望被刀子碰到的地方，但却是潜行者们最喜欢下手的地方。",
+    "health": 4,
+    "id": "EX1_593",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Nightblade",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Battlecry: </b>Deal 3 damage to the enemy hero.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 286,
+    "flavor": "是不是因为死亡之翼的对手使用这张牌击败了他，所以他一怒之下引发了大灾变？我们不得而知。",
+    "id": "EX1_594",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Vaporize",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "FIRE",
+    "text": "<b>Secret:</b> When a minion attacks your hero, destroy it.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 811,
+    "flavor": "也许她是个邪恶的教派领袖，但是每个星期她都会和她的父母通电话。",
+    "health": 2,
+    "id": "EX1_595",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Cult Master",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "After a friendly minion dies, draw a card.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ben Wootten",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1142,
+    "flavor": "恶魔之火和普通火焰没什么区别，除了它从来不会熄灭...救命！",
+    "id": "EX1_596",
+    "name": "Demonfire",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FEL",
+    "text": "Deal $2 damage to a minion. If it’s a friendly Demon, give it +2/+2 instead.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Mark Gibbons",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 926,
+    "flavor": "如果她能让这些小鬼不再咬她的话，她会更加享受这份工作的。",
+    "health": 5,
+    "id": "EX1_597",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Imp Master",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "[x]At the end of your turn, deal\n1 damage to this minion\n and summon a 1/1 Imp.",
+    "type": "MINION"
+  },
+  {
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 76,
+    "health": 1,
+    "id": "EX1_598",
+    "name": "Imp",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Phroilan Gardner",
+    "attack": 2,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 285,
+    "flavor": "“这个周末你们必须来加班。”——严酷的监工",
+    "health": 3,
+    "id": "EX1_603",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Cruel Taskmaster",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "造成1点伤害并使其获得+2攻击力。",
+    "text": "<b>Battlecry:</b> Deal 1 damage to a minion and give it +2 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Simon Bisley",
+    "attack": 2,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 654,
+    "flavor": "在投身狂战士这份很有前途的工作之前，他是一个会计。",
+    "health": 4,
+    "id": "EX1_604",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Frothing Berserker",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Whenever a minion takes damage, gain +1 Attack.",
+    "type": "MINION"
+  },
+  {
     "artist": "Michael Komarck",
     "cardClass": "WARRIOR",
     "collectible": true,
@@ -8821,6 +14679,56 @@
     "rarity": "FREE",
     "set": "LEGACY",
     "text": "Gain 5 Armor.\nDraw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Slawomir Maniak",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 22,
+    "flavor": "吃得苦中苦，方为人上人。",
+    "id": "EX1_607",
+    "name": "Inner Rage",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Deal $1 damage to a minion and give it +2 Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 614,
+    "flavor": "学徒们就是用来到处使唤的。“给我做点魔法面包，再来杯咖啡！我要魔法咖啡！”",
+    "health": 2,
+    "id": "EX1_608",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Sorcerer's Apprentice",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Your spells cost (1) less\n<i>(but not less than 1)</i>.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Lorenzo Minaca",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 814,
+    "flavor": "伟大的狙击手总是能够正中目标。就像吃下一整块猪肋排。嗯，味道好极了。",
+    "id": "EX1_609",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Snipe",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Secret:</b> After your opponent plays a minion, deal $6 damage to it.",
     "type": "SPELL"
   },
   {
@@ -8842,6 +14750,46 @@
     "type": "SPELL"
   },
   {
+    "artist": "Matt Gaser",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 519,
+    "flavor": "“呃，好冷。”——当你中了冰冻陷阱或是听到一个冷笑话时，通常都是这个反应。",
+    "id": "EX1_611",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Freezing Trap",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>Secret:</b> When an enemy minion attacks, return it to its owner's hand. It costs (2) more.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Popo Wei",
+    "attack": 4,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 748,
+    "flavor": "肯瑞托的法师们居住在飘浮之城达拉然。怎样让达拉然飘起来？只要用魔法把氢气球变成透明的就行了。",
+    "health": 3,
+    "id": "EX1_612",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Kirin Tor Mage",
+    "rarity": "RARE",
+    "referencedTags": [
+      "SECRET"
+    ],
+    "set": "EXPERT1",
+    "text": "[x]<b>Battlecry:</b> The next <b>Secret</b>\nyou play this turn costs (0).",
+    "type": "MINION"
+  },
+  {
     "artist": "Efrem Palacios",
     "attack": 2,
     "cardClass": "ROGUE",
@@ -8860,6 +14808,336 @@
     "set": "EXPERT1",
     "text": "<b>Combo:</b> Gain +2/+2 for each other card you've played this turn.",
     "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 556,
+    "elite": true,
+    "flavor": "萨维斯怀着召唤萨格拉斯的宏伟噩梦，但他现在要从召唤萨特做起。",
+    "health": 5,
+    "id": "EX1_614",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Xavius",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "After you play a card, summon a 2/1 Satyr.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 1751,
+    "health": 1,
+    "id": "EX1_614t",
+    "name": "Xavian Satyr",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Luca Zontini",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 715,
+    "flavor": "它们在晚上出没，吸食残余的法力水晶。“嗯...”它们发出这样的声音。",
+    "health": 2,
+    "id": "EX1_616",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Mana Wraith",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "ALL minions cost (1) more.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Steven Prescott",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 1093,
+    "flavor": "我们的弩炮手效率很高，但准度就……",
+    "id": "EX1_617",
+    "name": "Deadly Shot",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Destroy a random enemy minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Michal Ivan",
+    "cardClass": "PALADIN",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 756,
+    "flavor": "正因为我们都是独一无二的，所以我们都是平等的。",
+    "id": "EX1_619",
+    "name": "Equality",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Change the Health of ALL minions to 1.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Glenn Rane",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 20,
+    "dbfId": 1372,
+    "flavor": "无数初次来到熔火之心的冒险者倒在他滚烫的脚掌之下。",
+    "health": 8,
+    "id": "EX1_620",
+    "name": "Molten Giant",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Costs (1) less for\neach Health your hero\nis missing.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daarken",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 1362,
+    "flavor": "神圣的象征。",
+    "id": "EX1_621",
+    "name": "Circle of Healing",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Restore #4 Health to ALL minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Raymond Swanland",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1363,
+    "flavor": "如果你的法术没有命中，那么你的目标身上会留下一道闪电形状的伤疤。",
+    "id": "EX1_622",
+    "name": "Shadow Word: Death",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Destroy a minion with 5 or more Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Daren Bader",
+    "attack": 5,
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1364,
+    "flavor": "他在每周四的夜晚都会悄然出现在猪和哨声旅店担当保镖。",
+    "health": 6,
+    "id": "EX1_623",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Temple Enforcer",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "targetingArrowText": "使其获得+3生命值。",
+    "text": "<b>Battlecry:</b> Give a friendly minion +3 Health.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Miguel Coimbra",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1365,
+    "flavor": "紧接着你就会看到“神圣之烟”！",
+    "id": "EX1_624",
+    "name": "Holy Fire",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "Deal $5 damage. Restore #5 Health to your hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1368,
+    "flavor": "当一道光亮照射在暗影牧师身上...他们的影子会投射在哪里？",
+    "id": "EX1_625",
+    "name": "Shadowform",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Your Hero Power becomes 'Deal 2 damage.'",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "PRIEST",
+    "cost": 2,
+    "dbfId": 1622,
+    "id": "EX1_625t",
+    "name": "Mind Spike",
+    "set": "EXPERT1",
+    "text": "Deal $2 damage.",
+    "type": "HERO_POWER"
+  },
+  {
+    "cardClass": "PRIEST",
+    "cost": 2,
+    "dbfId": 1623,
+    "id": "EX1_625t2",
+    "name": "Mind Shatter",
+    "set": "EXPERT1",
+    "text": "Deal $3 damage.",
+    "type": "HERO_POWER"
+  },
+  {
+    "artist": "Sean O’Daniels",
+    "cardClass": "PRIEST",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 1366,
+    "flavor": "它驱散了增益、力量、希望和梦想。",
+    "id": "EX1_626",
+    "mechanics": [
+      "SILENCE"
+    ],
+    "name": "Mass Dispel",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "HOLY",
+    "text": "<b>Silence</b> all enemy minions. Draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "cost": 3,
+    "dbfId": 1006,
+    "elite": true,
+    "health": 3,
+    "id": "EX1_finkle",
+    "name": "Pip Quickwit",
+    "set": "EXPERT1",
+    "techLevel": 1,
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "attack": 2,
+    "cardClass": "SHAMAN",
+    "cost": 2,
+    "dbfId": 533,
+    "health": 3,
+    "id": "EX1_tk11",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Spirit Wolf",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD",
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 1190,
+    "health": 1,
+    "id": "EX1_tk28",
+    "name": "Squirrel",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "cost": 5,
+    "dbfId": 332,
+    "health": 5,
+    "id": "EX1_tk29",
+    "name": "Devilsaur",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "cardClass": "WARLOCK",
+    "cost": 2,
+    "dbfId": 1178,
+    "id": "EX1_tk33",
+    "name": "INFERNO!",
+    "set": "EXPERT1",
+    "text": "Summon a 6/6 Infernal.",
+    "type": "HERO_POWER"
+  },
+  {
+    "attack": 6,
+    "cardClass": "WARLOCK",
+    "cost": 6,
+    "dbfId": 1143,
+    "health": 6,
+    "id": "EX1_tk34",
+    "name": "Infernal",
+    "race": "DEMON",
+    "races": [
+      "DEMON"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "attack": 2,
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 358,
+    "health": 2,
+    "id": "EX1_tk9",
+    "name": "Treant",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
   },
   {
     "artist": "E. M. Gist",
@@ -21664,6 +27942,95 @@
     "type": "MINION"
   },
   {
+    "artist": "Jim Nelson",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 0,
+    "dbfId": 163,
+    "flavor": "这就是恶魔不愿意和术士交朋友的原因。",
+    "id": "NEW1_003",
+    "name": "Sacrificial Pact",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "spellSchool": "SHADOW",
+    "text": "Destroy a friendly Demon. Restore #5 Health to your hero.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Sean O’Daniels",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 196,
+    "id": "NEW1_004",
+    "name": "Vanish",
+    "rarity": "COMMON",
+    "set": "LEGACY",
+    "text": "Return all minions to their owner's hand.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Dave Allsop",
+    "attack": 5,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 287,
+    "flavor": "他只是希望有人能看看他在假期里拍摄的照片而已。",
+    "health": 3,
+    "id": "NEW1_005",
+    "mechanics": [
+      "COMBO"
+    ],
+    "name": "Kidnapper",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "targetingArrowText": "将一个随从移回手牌。",
+    "text": "<b>Combo:</b> Return a minion to its owner's hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 86,
+    "flavor": "天塌下来了吗？是的。一点一点塌下来了。",
+    "id": "NEW1_007",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Starfall",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "<b>Choose One -</b>\nDeal $5 damage to a minion; or $2 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Patrik Hjelm",
+    "attack": 7,
+    "cardClass": "DRUID",
+    "collectible": true,
+    "cost": 7,
+    "dbfId": 920,
+    "flavor": "去吧，把你的名字刻在树皮上。",
+    "health": 7,
+    "id": "NEW1_008",
+    "mechanics": [
+      "CHOOSE_ONE"
+    ],
+    "name": "Ancient of Lore",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Choose One -</b> Draw 2 cards; or Restore #7 Health.",
+    "type": "MINION"
+  },
+  {
     "attack": 0,
     "cardClass": "SHAMAN",
     "cost": 1,
@@ -21684,6 +28051,141 @@
     "type": "MINION"
   },
   {
+    "artist": "Raymond Swanland",
+    "attack": 3,
+    "cardClass": "SHAMAN",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 32,
+    "elite": true,
+    "flavor": "他是四大元素领主中最弱的一个。而另外三个总是会提醒他这一点。",
+    "health": 6,
+    "id": "NEW1_010",
+    "mechanics": [
+      "CHARGE",
+      "DIVINE_SHIELD",
+      "TAUNT",
+      "WINDFURY"
+    ],
+    "name": "Al'Akir the Windlord",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Charge, Divine Shield, Taunt, Windfury</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 4,
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 28,
+    "flavor": "库卡隆就是加尔鲁什·地狱咆哮的精英部队。这么说吧，你最好不要穿着蓝色的战袍出现在这些壮汉面前。",
+    "health": 3,
+    "id": "NEW1_011",
+    "mechanics": [
+      "CHARGE"
+    ],
+    "name": "Kor'kron Elite",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Blizzard Cinematics",
+    "attack": 1,
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 405,
+    "flavor": "这些法力浮龙以奥术能量为食。所以尽管这些捣蛋鬼不会成为真正的威胁，你也不应该让它们接近任何法术力源。",
+    "health": 3,
+    "id": "NEW1_012",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Mana Wyrm",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "Whenever you cast a spell, gain +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Ron Spencer",
+    "attack": 4,
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 887,
+    "flavor": "实际上“她”是一个男性牛头人。你以为随便哪个人都配得上“伪装大师”的名号吗？",
+    "health": 4,
+    "id": "NEW1_014",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Master of Disguise",
+    "rarity": "RARE",
+    "referencedTags": [
+      "STEALTH"
+    ],
+    "set": "EXPERT1",
+    "targetingArrowText": "使一个友方随从获得<b>潜行</b>。",
+    "text": "<b>Battlecry:</b> Give a friendly minion <b>Stealth</b> until your next turn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jaemin Kim",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 443,
+    "flavor": "又是鱼人。开饭了。",
+    "health": 2,
+    "id": "NEW1_017",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Hungry Crab",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "targetingArrowText": "消灭一个<b>鱼人</b>。",
+    "text": "<b>Battlecry:</b> Destroy a Murloc and gain +2/+2.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jim Nelson",
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 999,
+    "flavor": "“我一个星期只出去打劫七天。”",
+    "health": 3,
+    "id": "NEW1_018",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Bloodsail Raider",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Gain Attack equal to the Attack\nof your weapon.",
+    "type": "MINION"
+  },
+  {
     "artist": "Matt Cavotta",
     "attack": 3,
     "cardClass": "NEUTRAL",
@@ -21700,6 +28202,141 @@
     "rarity": "RARE",
     "set": "EXPERT1",
     "text": "[x]After you summon a\nminion, deal 1 damage\nto a random enemy.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1014,
+    "flavor": "爆炸吧，宝贝儿！炸得越烂越好！让那些统治者去死吧！",
+    "health": 2,
+    "id": "NEW1_020",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Wild Pyromancer",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "After you cast a spell, deal 1 damage to ALL minions.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 0,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 138,
+    "flavor": "他的预言几乎都是准确的。他确信，大约会是在《大地的裂变》。",
+    "health": 7,
+    "id": "NEW1_021",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Doomsayer",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "At the start of your turn, destroy ALL minions.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 4,
+    "dbfId": 878,
+    "flavor": "“呀”在海盗的行话中代表“你好啊，有钱人。”",
+    "health": 3,
+    "id": "NEW1_022",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Dread Corsair",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>\nCosts (1) less per Attack of your weapon.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Samwise",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 609,
+    "flavor": "可爱至极，免疫魔法，不会在毯子上撒尿。真是完美的宠物！",
+    "health": 2,
+    "id": "NEW1_023",
+    "mechanics": [
+      "ELUSIVE"
+    ],
+    "name": "Faerie Dragon",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Elusive</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Dan Scott",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 456,
+    "elite": true,
+    "flavor": "要不是因为那些调皮捣蛋的小家伙们，他<i>差点</i>就把那艘毁灭战舰开进暴风城港口了！",
+    "health": 4,
+    "id": "NEW1_024",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Captain Greenskin",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Give your weapon +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Randy Gallegos",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 997,
+    "flavor": "每个海盗都用相同的四个数字来打开自动黄金分配装置。这些数字被称为“海盗密码”。",
+    "health": 2,
+    "id": "NEW1_025",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Bloodsail Corsair",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "[x]<b>Battlecry:</b> Remove\n1 Durability from your\nopponent's weapon.",
     "type": "MINION"
   },
   {
@@ -21732,6 +28369,87 @@
     "set": "EXPERT1",
     "type": "MINION",
     "text": ""
+  },
+  {
+    "artist": "Ken Steacy",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 680,
+    "flavor": "当他掠夺到足够的财宝之后，他一定要去订做一顶帅气的船长帽子。他是帽子控。",
+    "health": 3,
+    "id": "NEW1_027",
+    "mechanics": [
+      "AURA"
+    ],
+    "name": "Southsea Captain",
+    "race": "PIRATE",
+    "races": [
+      "PIRATE"
+    ],
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "Your other Pirates have +1/+1.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Jim Nelson",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 855,
+    "elite": true,
+    "flavor": "“我要把你们烤熟了，宝贝儿们！”",
+    "health": 4,
+    "id": "NEW1_029",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Millhouse Manastorm",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Enemy spells cost (0) next turn.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Bernie Kang",
+    "attack": 12,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 10,
+    "dbfId": 834,
+    "elite": true,
+    "flavor": "死亡之翼原本是高贵的巨龙奈萨里奥，他发疯之后制造了艾泽拉斯的大灾变，但最终被击败。子不教，父之过？",
+    "health": 12,
+    "id": "NEW1_030",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Deathwing",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Destroy all other minions and discard your hand.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wei Wang",
+    "cardClass": "HUNTER",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 437,
+    "flavor": "你可以召唤米莎，雷欧克或是霍弗！霍弗又没用，又爱惹麻烦！",
+    "id": "NEW1_031",
+    "name": "Animal Companion",
+    "rarity": "FREE",
+    "set": "LEGACY",
+    "text": "Summon a random Beast Companion.",
+    "type": "SPELL"
   },
   {
     "attack": 4,
@@ -21788,6 +28506,120 @@
     ],
     "set": "LEGACY",
     "text": "<b>Charge</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Wayne Reynolds",
+    "cardClass": "WARRIOR",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 1026,
+    "flavor": "“大声吼出来！把你的怒气吼出来！”——对训练中的战士的建议",
+    "id": "NEW1_036",
+    "name": "Commanding Shout",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "Your minions can't be reduced below 1 Health this turn. Draw a card.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "E. M. Gist",
+    "attack": 1,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 2,
+    "dbfId": 351,
+    "flavor": "他正在打造一把称为“连枷斧”的武器，但是其他铸剑师都表示那是不可能做到的。",
+    "health": 3,
+    "id": "NEW1_037",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Master Swordsmith",
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "At the end of your turn, give another random friendly minion +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Kev Walker",
+    "attack": 7,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 526,
+    "elite": true,
+    "flavor": "人们叫他“屠龙者”格鲁尔。其实他只是想抱抱它们……他不是故意要……",
+    "health": 7,
+    "id": "NEW1_038",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Gruul",
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "At the end of each turn, gain +1/+1 .",
+    "type": "MINION"
+  },
+  {
+    "artist": "Laurel Austin",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 640,
+    "elite": true,
+    "flavor": "霍格可是超级厉害的。如果你杀了他，只是因为他让你这么做的。",
+    "health": 4,
+    "id": "NEW1_040",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Hogger",
+    "rarity": "LEGENDARY",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "At the end of your turn, summon a 2/2 Gnoll with <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 2,
+    "dbfId": 460,
+    "health": 2,
+    "id": "NEW1_040t",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Gnoll",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "artist": "Daren Bader",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 1371,
+    "flavor": "这只科多兽太大了，以至于他经常会踩到一些小动物。",
+    "health": 5,
+    "id": "NEW1_041",
+    "mechanics": [
+      "BATTLECRY"
+    ],
+    "name": "Stampeding Kodo",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "text": "<b>Battlecry:</b> Destroy a random enemy minion with 2 or less Attack.",
     "type": "MINION"
   },
   {
@@ -29812,5 +36644,93 @@
     "set": "WILD_WEST",
     "text": "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)",
     "type": "MINION"
+  },
+  {
+    "attack": 0,
+    "cardClass": "SHAMAN",
+    "cost": 0,
+    "dbfId": 548,
+    "health": 1,
+    "id": "hexfrog",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Frog",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "set": "LEGACY",
+    "text": "<b>Taunt</b>",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "NEUTRAL",
+    "cost": 1,
+    "dbfId": 471,
+    "health": 1,
+    "id": "skele21",
+    "name": "Damaged Golem",
+    "race": "MECHANICAL",
+    "races": [
+      "MECHANICAL"
+    ],
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
+  },
+  {
+    "artist": "Alex Horley Orlandelli",
+    "attack": 3,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 397,
+    "flavor": "诟病食尸鬼吃“腐肉”其实对它们并不公平，它们只是没有别的可吃了而已。",
+    "health": 3,
+    "id": "tt_004",
+    "mechanics": [
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Flesheating Ghoul",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "techLevel": 3,
+    "text": "Whenever a minion dies, gain +1 Attack.",
+    "type": "MINION"
+  },
+  {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 3,
+    "dbfId": 366,
+    "flavor": "虽然干扰敌人的闪电箭非常有意思，但是扰咒师更喜欢干扰对手使用野性印记。那种感觉会更卑鄙。至于血精灵...呃，他们只是稍微有点卑鄙而已。",
+    "id": "tt_010",
+    "mechanics": [
+      "SECRET"
+    ],
+    "name": "Spellbender",
+    "rarity": "EPIC",
+    "set": "EXPERT1",
+    "text": "<b>Secret:</b> When an enemy casts a spell on a minion, summon a 1/3 as the new target.",
+    "type": "SPELL"
+  },
+  {
+    "attack": 1,
+    "cardClass": "MAGE",
+    "cost": 1,
+    "dbfId": 1086,
+    "health": 3,
+    "id": "tt_010a",
+    "name": "Spellbender",
+    "set": "EXPERT1",
+    "type": "MINION",
+    "text": ""
   }
 ]

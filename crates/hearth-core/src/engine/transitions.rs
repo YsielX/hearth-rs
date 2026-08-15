@@ -807,6 +807,12 @@ impl<R: CardRuntime> Game<R> {
                 ResolutionItem::CommitHeroPower { use_event, .. } if use_event.id == id => {
                     return Some(use_event);
                 }
+                ResolutionItem::ResolvePlayedSpell { target_event, .. }
+                | ResolutionItem::ResolveEffectSpell { target_event, .. }
+                    if target_event.id == id =>
+                {
+                    return Some(target_event);
+                }
                 ResolutionItem::CommitLocationUse(event) if event.id == id => return Some(event),
                 ResolutionItem::CommitWeaponEquip {
                     equip, replacement, ..

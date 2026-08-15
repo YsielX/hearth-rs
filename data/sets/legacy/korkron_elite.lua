@@ -1,0 +1,1 @@
+return { api_version = 1, id = "NEW1_011", name = "Kor'kron Elite", text = "<b>Charge</b>", set = "LEGACY", type = "minion", class = "warrior", cost = 4, attack = 4, health = 3, keywords = { "charge" } }

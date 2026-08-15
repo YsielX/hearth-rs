@@ -289,16 +289,32 @@ impl<R: CardRuntime> Game<R> {
         if definition.kind == CardKind::Spell
             && let Some(target) = target
         {
+            let targeted = self.begin_event(GameEvent::SpellTargeted {
+                player,
+                spell: card,
+                target,
+                generated_by: None,
+            })?;
             items.extend(
-                self.publish(GameEvent::SpellTargeted {
-                    player,
-                    spell: card,
-                    target,
-                    generated_by: None,
-                })?
-                .into_iter()
-                .map(ResolutionItem::Effect),
+                self.publish_after(targeted.id, targeted.event.clone())?
+                    .into_iter()
+                    .map(ResolutionItem::Effect),
             );
+            let target_was_friendly_minion = self.state.entity(target).is_some_and(|entity| {
+                entity.controller == player && entity.kind == CardKind::Minion
+            });
+            items.push(ResolutionItem::ResolvePlayedSpell {
+                target_event: targeted,
+                card_play_id: play.id,
+                cost,
+                secret: is_secret,
+                declared_target: target,
+                target_was_friendly_minion,
+            });
+            for item in items.into_iter().rev() {
+                queue.push_front(item);
+            }
+            return Ok(());
         }
         items.extend(
             self.runtime
@@ -375,6 +391,68 @@ impl<R: CardRuntime> Game<R> {
                 event: cast.event,
             });
         }
+        for item in items.into_iter().rev() {
+            queue.push_front(item);
+        }
+        Ok(())
+    }
+
+    pub(super) fn resolve_played_spell(
+        &mut self,
+        target_event: PendingEvent,
+        card_play_id: EventId,
+        cost: u8,
+        secret: bool,
+        declared_target: EntityId,
+        target_was_friendly_minion: bool,
+        queue: &mut VecDeque<ResolutionItem>,
+    ) -> Result<(), GameError> {
+        let GameEvent::SpellTargeted {
+            player,
+            spell,
+            target,
+            generated_by: None,
+        } = target_event.event
+        else {
+            return Err(GameError::EventSpellTargetNotReplaceable(target_event.id));
+        };
+        let mut items = self
+            .runtime
+            .on_play(&self.state, spell, Some(target))
+            .map_err(GameError::Script)?
+            .into_iter()
+            .map(ResolutionItem::Effect)
+            .collect::<Vec<_>>();
+        items.push(ResolutionItem::PublishAfter {
+            id: card_play_id,
+            event: GameEvent::CardPlayed {
+                player,
+                card: spell,
+                cost,
+            },
+        });
+        if secret {
+            let event = self.begin_event(GameEvent::SecretPlayed {
+                player,
+                secret: spell,
+            })?;
+            items.push(ResolutionItem::PublishAfter {
+                id: event.id,
+                event: event.event,
+            });
+        }
+        let cast = self.begin_event(GameEvent::SpellCast {
+            player,
+            spell,
+            generated_by: None,
+            target: Some(declared_target),
+            cost,
+            target_was_friendly_minion,
+        })?;
+        items.push(ResolutionItem::PublishAfter {
+            id: cast.id,
+            event: cast.event,
+        });
         for item in items.into_iter().rev() {
             queue.push_front(item);
         }

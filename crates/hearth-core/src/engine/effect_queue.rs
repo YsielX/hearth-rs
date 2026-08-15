@@ -1500,6 +1500,25 @@ impl<R: CardRuntime> Game<R> {
                 }
                 Ok(false)
             }
+            EffectSpec::MultiplyEventAmount {
+                source: _,
+                event,
+                factor,
+            } => {
+                let pending = Self::find_pending_event_mut(queue, event)
+                    .ok_or(GameError::EventNotPending(event))?;
+                match &mut pending.event {
+                    GameEvent::Damaged { amount, .. } | GameEvent::Healed { amount, .. } => {
+                        *amount = amount.saturating_mul(factor).max(0)
+                    }
+                    GameEvent::Fatigue { amount, .. } => {
+                        *amount =
+                            amount.saturating_mul(u32::try_from(factor.max(0)).unwrap_or(u32::MAX))
+                    }
+                    _ => return Err(GameError::EventAmountNotReplaceable(event)),
+                }
+                Ok(false)
+            }
             EffectSpec::SetAttackDefender {
                 source: _,
                 event,
@@ -1554,6 +1573,28 @@ impl<R: CardRuntime> Game<R> {
                         target: selected, ..
                     } => *selected = target,
                     _ => return Err(GameError::EventDamageNotReplaceable(event)),
+                }
+                Ok(false)
+            }
+            EffectSpec::SetSpellTarget {
+                source: _,
+                event,
+                target,
+            } => {
+                let entity = self
+                    .state
+                    .entity(target)
+                    .ok_or(GameError::UnknownEntity(target))?;
+                if entity.kind != CardKind::Minion || entity.zone != Zone::Board {
+                    return Err(GameError::InvalidTarget(target));
+                }
+                let pending = Self::find_pending_event_mut(queue, event)
+                    .ok_or(GameError::EventNotPending(event))?;
+                match &mut pending.event {
+                    GameEvent::SpellTargeted {
+                        target: selected, ..
+                    } => *selected = target,
+                    _ => return Err(GameError::EventSpellTargetNotReplaceable(event)),
                 }
                 Ok(false)
             }

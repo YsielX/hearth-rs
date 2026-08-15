@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_197", name = "Ogre Magi", text = "<b>Spell Damage +1</b>", set = "LEGACY", type = "minion", cost = 4, attack = 4, health = 4, keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 } }

@@ -1,0 +1,12 @@
+local dreams={"DREAM_01","DREAM_02","DREAM_03","DREAM_04","DREAM_05"}
+local card={api_version=1,id="EX1_572",name="Ysera",text="At the end of your turn, get two random Dream cards.",set="EXPERT1",type="minion",rarity="legendary",cost=9,attack=4,health=12,tags={"dragon"}}
+card.triggers={{event="turn_ended",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)ctx:set_data(self,"dreams_left",2);ctx:random_value(dreams,"ysera_dream")end}}
+function card.ysera_dream(ctx,self,id)ctx:give_card(ctx:controller(self),id);local left=ctx:get_data(self,"dreams_left")-1;ctx:set_data(self,"dreams_left",left);if left>0 then ctx:random_value(dreams,"ysera_dream")end end
+card.tokens={
+ {id="DREAM_01",name="Laughing Sister",text="<b>Elusive</b>",set="EXPERT1",type="minion",class="dream",collectible=false,cost=2,attack=3,health=5,keywords={"elusive"}},
+ {id="DREAM_02",name="Ysera Awakens",text="Deal $5 damage to all characters except Ysera.",set="EXPERT1",type="spell",class="dream",collectible=false,spell_school="nature",cost=2,on_play=function(ctx)local r={};for _,e in ipairs(ctx:characters())do if ctx:entity(e).card_id~="EX1_572"then r[#r+1]=e end end;ctx:damage_all(r,5)end},
+ {id="DREAM_03",name="Emerald Drake",text="",set="EXPERT1",type="minion",class="dream",collectible=false,cost=4,attack=7,health=6,tags={"dragon"}},
+ {id="DREAM_04",name="Dream",text="Return a minion to its owner's hand.",set="EXPERT1",type="spell",class="dream",collectible=false,spell_school="nature",cost=0,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:move_to_hand(ctx:entity(target).owner,target)end},
+ {id="DREAM_05",name="Nightmare",text="Give a minion +5/+5. At the start of your next turn, destroy it.",set="EXPERT1",type="spell",class="dream",collectible=false,spell_school="shadow",cost=0,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)local p=ctx:controller(self);ctx:buff(target,5,5);ctx:set_data(target,"nightmare_"..p,1);ctx:attach_script(target,"DREAM_05")end,triggers={{event="turn_started",timing="after",active_zones={"board"},condition=function(ctx,self,e)return(ctx:get_data(self,"nightmare_"..e.player)or 0)>0 end,effect=function(ctx,self,e)ctx:set_data(self,"nightmare_"..e.player,0);ctx:destroy(self)end}}},
+}
+return card

@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_028", name = "Stranglethorn Tiger", text = "<b>Stealth</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 5, attack = 5, health = 5, tags = { "beast" }, keywords = { "stealth" } }

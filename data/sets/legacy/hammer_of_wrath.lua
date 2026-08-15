@@ -1,0 +1,1 @@
+return { api_version=1,id="CS2_094",name="Hammer of Wrath",text="Deal $3 damage.\nDraw a card.",set="LEGACY",type="spell",class="paladin",spell_school="holy",cost=3,target_mode="required",targets=function(ctx)return ctx:characters()end,on_play=function(ctx,self,target)ctx:damage(target,3);ctx:draw(ctx:controller(self),1)end }

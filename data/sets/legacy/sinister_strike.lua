@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_075",name="Sinister Strike",text="Deal $3 damage to the enemy hero.",set="LEGACY",type="spell",class="rogue",cost=1,on_play=function(ctx,self)local p=ctx:opponent(ctx:controller(self));ctx:damage(ctx:player(p).hero,3)end}

@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_032", name = "Sunwalker", text = "<b>Taunt</b>\n<b>Divine Shield</b>", set = "EXPERT1", type = "minion", rarity = "rare", cost = 6, attack = 4, health = 5, keywords = { "taunt", "divine_shield" } }

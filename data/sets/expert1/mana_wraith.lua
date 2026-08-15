@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_616",name="Mana Wraith",text="ALL minions cost (1) more.",set="EXPERT1",type="minion",rarity="rare",cost=2,attack=2,health=2,auras={{active_zones={"board"},cost=1,targets=function(ctx)local r={};for p=0,1 do for _,e in ipairs(ctx:hand(p))do if ctx:entity(e).type=="minion"then r[#r+1]=e end end end;return r end}}}

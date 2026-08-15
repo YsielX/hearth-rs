@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_619",name="Equality",text="Change the Health of ALL minions to 1.",set="EXPERT1",type="spell",class="paladin",rarity="rare",spell_school="holy",cost=2,on_play=function(ctx)for _,e in ipairs(ctx:minions())do ctx:set_health(e,1)end end}

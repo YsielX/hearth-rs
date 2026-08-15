@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_586",name="Sea Giant",text="Costs (1) less for each other minion on the battlefield.",set="EXPERT1",type="minion",rarity="epic",cost=10,attack=8,health=8,auras={{active_zones={"hand"},cost=function(ctx)return -#ctx:minions()end,targets=function(ctx,self)return{self}end}}}

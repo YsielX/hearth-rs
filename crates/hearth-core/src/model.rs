@@ -1403,6 +1403,11 @@ pub enum EffectSpec {
         event: EventId,
         amount: i32,
     },
+    MultiplyEventAmount {
+        source: EntityId,
+        event: EventId,
+        factor: i32,
+    },
     SetAttackDefender {
         source: EntityId,
         event: EventId,
@@ -1415,6 +1420,11 @@ pub enum EffectSpec {
         amount: i32,
     },
     SetDamageTarget {
+        source: EntityId,
+        event: EventId,
+        target: EntityId,
+    },
+    SetSpellTarget {
         source: EntityId,
         event: EventId,
         target: EntityId,
@@ -1528,6 +1538,20 @@ pub enum ResolutionItem {
     CommitHeroPower {
         use_event: PendingEvent,
         target: Option<EntityId>,
+    },
+    ResolvePlayedSpell {
+        target_event: PendingEvent,
+        card_play_id: EventId,
+        cost: u8,
+        secret: bool,
+        declared_target: EntityId,
+        target_was_friendly_minion: bool,
+    },
+    ResolveEffectSpell {
+        target_event: PendingEvent,
+        generated_by: EntityId,
+        secret: bool,
+        declared_target: EntityId,
     },
     CommitLocationUse(PendingEvent),
     DestroySpentLocation {

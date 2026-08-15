@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_161", name = "Ravenholdt Assassin", text = "<b>Stealth</b>", set = "EXPERT1", type = "minion", rarity = "rare", cost = 7, attack = 7, health = 5, keywords = { "stealth" } }

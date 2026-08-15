@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_151",name="Silver Hand Knight",text="<b>Battlecry:</b> Summon a 2/2 Squire.",set="EXPERT1",type="minion",rarity="common",cost=5,attack=4,health=4,keywords={"battlecry"},on_battlecry=function(ctx,self)ctx:summon(ctx:controller(self),"CS2_152")end}

@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_301",name="Felguard",text="<b>Taunt</b>\n<b>Battlecry:</b> Destroy one of your Mana Crystals.",set="EXPERT1",type="minion",class="warlock",rarity="rare",cost=3,attack=3,health=5,tags={"demon"},keywords={"taunt","battlecry"},on_battlecry=function(ctx,self)ctx:destroy_mana_crystals(ctx:controller(self),1)end}

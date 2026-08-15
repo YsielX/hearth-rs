@@ -1,0 +1,1 @@
+return {api_version=1,id="NEW1_010",name="Al'Akir the Windlord",text="<b>Charge, Divine Shield, Taunt, Windfury</b>",set="EXPERT1",type="minion",class="shaman",rarity="legendary",cost=8,attack=3,health=6,tags={"elemental"},keywords={"charge","divine_shield","taunt","windfury"}}

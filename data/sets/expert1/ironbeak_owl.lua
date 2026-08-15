@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_203",name="Ironbeak Owl",text="<b>Battlecry:</b> <b>Silence</b> a minion.",set="EXPERT1",type="minion",rarity="common",cost=3,attack=2,health=1,tags={"beast"},keywords={"battlecry"},target_mode="required_if_available",targets=function(ctx)return ctx:minions()end,on_battlecry=function(ctx,self,target)if target then ctx:silence(target)end end}

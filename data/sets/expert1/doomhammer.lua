@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_567",name="Doomhammer",text="<b>Windfury, Overload:</b> (2)",set="EXPERT1",type="weapon",class="shaman",rarity="epic",cost=5,attack=2,health=8,keywords={"windfury","overload"},keyword_params={overload=2}}

@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_227",name="Venture Co. Mercenary",text="Your minions cost (3) more.",set="EXPERT1",type="minion",rarity="common",cost=5,attack=7,health=6,auras={{active_zones={"board"},cost=3,targets=function(ctx,self)local r={};for _,e in ipairs(ctx:hand(ctx:controller(self)))do if ctx:entity(e).type=="minion"then r[#r+1]=e end end;return r end}}}

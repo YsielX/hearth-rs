@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_122",name="Raid Leader",text="Your other minions have +1 Attack.",set="LEGACY",type="minion",cost=3,attack=2,health=3,auras={{active_zones={"board"},attack=1,targets=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self then r[#r+1]=e end end;return r end}}}

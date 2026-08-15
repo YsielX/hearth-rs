@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_390",name="Tauren Warrior",text="<b>Taunt</b>\nHas +3 Attack while damaged.",set="EXPERT1",type="minion",rarity="common",cost=3,attack=2,health=3,keywords={"taunt"},auras={{active_zones={"board"},attack=function(ctx,self)return ctx:entity(self).damage>0 and 3 or 0 end,targets=function(ctx,self)return{self}end}}}

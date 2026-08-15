@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_007", name="Healing Touch", text="Restore #8 Health.", set="LEGACY", type="spell", class="druid", spell_school="nature", cost=3, target_mode="required", targets=function(ctx) return ctx:characters() end, on_play=function(ctx,self,target) ctx:heal(target,8) end }

@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_625",name="Shadowform",text="Your Hero Power becomes 'Deal 2 damage.'",set="EXPERT1",type="spell",class="priest",rarity="epic",spell_school="shadow",cost=2,on_play=function(ctx,self)local p=ctx:controller(self);local current=ctx:entity(ctx:player(p).hero_power).card_id;ctx:replace_hero_power(p,current=="EX1_625t"and"EX1_625t2"or"EX1_625t")end}

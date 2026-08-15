@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_009",name="Angry Chicken",text="Has +5 Attack while damaged.",set="EXPERT1",type="minion",rarity="rare",cost=1,attack=1,health=1,tags={"beast"},auras={{active_zones={"board"},attack=function(ctx,self)return ctx:entity(self).damage>0 and 5 or 0 end,targets=function(ctx,self)return{self}end}}}

@@ -1,0 +1,1 @@
+return { api_version=1, id="DS1_185", name="Arcane Shot", text="Deal $2 damage.", set="LEGACY", type="spell", class="hunter", spell_school="arcane", cost=1, target_mode="required", targets=function(ctx) return ctx:characters() end, on_play=function(ctx,self,target) ctx:damage(target,2) end }

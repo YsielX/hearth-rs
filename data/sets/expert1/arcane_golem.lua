@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_089",name="Arcane Golem",text="<b>Charge</b>. <b>Battlecry:</b> Give your opponent a Mana Crystal.",set="EXPERT1",type="minion",rarity="rare",cost=3,attack=4,health=2,tags={"elemental"},keywords={"charge","battlecry"},on_battlecry=function(ctx,self)ctx:gain_mana_crystals(ctx:opponent(ctx:controller(self)),1,false)end}

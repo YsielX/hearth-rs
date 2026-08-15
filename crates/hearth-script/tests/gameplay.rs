@@ -386,17 +386,19 @@ fn catalog_contains_only_traceable_official_cards() {
         {
             metadata_mismatches.push(format!("{} health/durability", definition.id));
         }
+        let displayed_spell_damage = record["text"]
+            .as_str()
+            .and_then(|text| text.strip_prefix("<b>Spell Damage +"))
+            .and_then(|text| text.split("</b>").next())
+            .and_then(|amount| amount.parse::<i64>().ok());
         let expected_spell_damage = if definition.id == "LOE_051" {
             // Client data carries the legacy default value 1, but the card's
             // authoritative text is a symmetric player aura of +2.
             0
-        } else if record["text"]
-            .as_str()
-            .is_some_and(|text| text.starts_with("<b>Spell Damage +2</b>"))
-        {
-            // A few current client records retain the legacy numeric tag 1
-            // after their authoritative displayed text was buffed to +2.
-            2
+        } else if let Some(amount) = displayed_spell_damage {
+            // Some current client records retain the legacy numeric tag 1
+            // after their authoritative displayed text was changed.
+            amount
         } else {
             record["spellDamage"].as_i64().unwrap_or_else(|| {
                 record["text"]

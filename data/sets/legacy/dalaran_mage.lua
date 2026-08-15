@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_582", name = "Dalaran Mage", text = "<b>Spell Damage +1</b>", set = "LEGACY", type = "minion", cost = 3, attack = 1, health = 4, keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 } }

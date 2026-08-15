@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_312",name="Twisting Nether",text="Destroy all minions\nand locations.",set="EXPERT1",type="spell",class="warlock",rarity="epic",spell_school="shadow",cost=8,on_play=function(ctx)ctx:destroy_all(ctx:minions())end}

@@ -1,0 +1,1 @@
+return {api_version=1,id="NEW1_038",name="Gruul",text="At the end of each turn, gain +1/+1 .",set="EXPERT1",type="minion",rarity="legendary",cost=8,attack=7,health=7,triggers={{event="turn_ended",timing="after",active_zones={"board"},effect=function(ctx,self)ctx:buff(self,1,1)end}}}

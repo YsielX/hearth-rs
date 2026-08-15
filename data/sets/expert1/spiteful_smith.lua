@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_221",name="Spiteful Smith",text="Your weapon has +2 Attack while this is damaged.",set="EXPERT1",type="minion",rarity="common",cost=5,attack=4,health=6,tags={"undead"},auras={{active_zones={"board"},attack=2,targets=function(ctx,self)local w=ctx:player(ctx:controller(self)).weapon;if ctx:entity(self).damage>0 and w then return{w}end return{}end}}}

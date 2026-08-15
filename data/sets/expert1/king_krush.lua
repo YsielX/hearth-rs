@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_543", name = "King Krush", text = "<b>Charge</b>", set = "EXPERT1", type = "minion", class = "hunter", rarity = "legendary", cost = 9, attack = 8, health = 8, tags = { "beast" }, keywords = { "charge" } }

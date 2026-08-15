@@ -1,0 +1,1 @@
+return {api_version=1,id="NEW1_012",name="Mana Wyrm",text="Whenever you cast a spell, gain +1 Attack.",set="EXPERT1",type="minion",class="mage",rarity="common",cost=1,attack=1,health=3,triggers={{event="spell_cast",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)ctx:buff(self,1,0)end}}}

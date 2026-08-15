@@ -1,0 +1,1 @@
+return {api_version=1,module_type="hero_power",id="EX1_tk33",name="INFERNO!",text="Summon a 6/6 Infernal.",set="EXPERT1",class="warlock",cost=2,on_play=function(ctx,self)ctx:summon(ctx:controller(self),"EX1_tk34")end}

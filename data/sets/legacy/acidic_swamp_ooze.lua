@@ -1,0 +1,1 @@
+return { api_version=1, id="EX1_066", name="Acidic Swamp Ooze", text="<b>Battlecry:</b> Destroy your opponent's weapon.", set="LEGACY", type="minion", cost=2, attack=3, health=2, keywords={"battlecry"}, on_battlecry=function(ctx,self) local p=ctx:opponent(ctx:controller(self)); local w=ctx:player(p).weapon; if w then ctx:destroy(w) end end }

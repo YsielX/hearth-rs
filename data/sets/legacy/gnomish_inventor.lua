@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_147", name="Gnomish Inventor", text="<b>Battlecry:</b> Draw a card.", set="LEGACY", type="minion", cost=4, attack=2, health=4, keywords={"battlecry"}, on_battlecry=function(ctx,self) ctx:draw(ctx:controller(self),1) end }

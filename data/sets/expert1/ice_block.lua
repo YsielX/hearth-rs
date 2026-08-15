@@ -1,0 +1,3 @@
+local card={api_version=1,id="EX1_295",name="Ice Block",text="<b>Secret:</b> When your hero takes fatal damage, prevent it and become <b>Immune</b> this turn.",set="EXPERT1",type="spell",class="mage",rarity="epic",spell_school="frost",cost=3,keywords={"secret"}}
+card.triggers={{event="damaged",timing="before",active_zones={"secret"},condition=function(ctx,self,e)local hero=ctx:player(ctx:controller(self)).hero;local h=ctx:entity(hero);return ctx:get_data(self,"triggered")==0 and e.target==hero and e.amount>=h.health+h.armor end,effect=function(ctx,self,e)ctx:set_data(self,"triggered",1);ctx:reveal_secret(self);ctx:cancel_event(e);ctx:grant_keyword_until_end_of_turn(ctx:player(ctx:controller(self)).hero,"immune")end}}
+return card

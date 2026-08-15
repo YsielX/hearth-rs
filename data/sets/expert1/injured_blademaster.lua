@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_181",name="Injured Blademaster",text="<b>Battlecry:</b> Deal 4 damage to HIMSELF.",set="EXPERT1",type="minion",rarity="rare",cost=3,attack=4,health=7,keywords={"battlecry"},on_battlecry=function(ctx,self)ctx:damage(self,4)end}

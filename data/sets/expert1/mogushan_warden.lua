@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_396", name = "Mogu'shan Warden", text = "<b>Taunt</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 4, attack = 1, health = 7, keywords = { "taunt" } }

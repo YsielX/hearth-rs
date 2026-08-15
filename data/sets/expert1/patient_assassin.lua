@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_522", name = "Patient Assassin", text = "<b>Stealth</b>\n <b>Poisonous</b>", set = "EXPERT1", type = "minion", class = "rogue", rarity = "epic", cost = 2, attack = 1, health = 2, keywords = { "stealth", "poisonous" } }

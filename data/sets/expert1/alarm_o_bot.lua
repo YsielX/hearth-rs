@@ -1,0 +1,3 @@
+local card={api_version=1,id="EX1_006",name="Alarm-o-Bot",text="[x]At the start of your turn,\nswap this minion with a\n   random one in your hand.",set="EXPERT1",type="minion",rarity="rare",cost=3,attack=0,health=3,tags={"mech"},triggers={{event="turn_started",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)local r={};for _,e in ipairs(ctx:hand(ctx:controller(self)))do if ctx:entity(e).type=="minion"then r[#r+1]=e end end;if #r>0 then ctx:random_entity(r,"swap_selected")end end}}}
+function card.swap_selected(ctx,self,target)local p=ctx:controller(self);ctx:move_to_hand(p,self);ctx:summon_from_hand(target)end
+return card

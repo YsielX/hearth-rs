@@ -1,0 +1,1 @@
+return { api_version=1,id="DS1_233",name="Mind Blast",text="Deal $5 damage to the enemy hero.",set="LEGACY",type="spell",class="priest",spell_school="shadow",cost=2,on_play=function(ctx,self)local p=ctx:opponent(ctx:controller(self));ctx:damage(ctx:player(p).hero,5)end }

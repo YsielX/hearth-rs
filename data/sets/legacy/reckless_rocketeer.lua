@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_213", name = "Reckless Rocketeer", text = "<b>Charge</b>", set = "LEGACY", type = "minion", cost = 6, attack = 5, health = 2, keywords = { "charge" } }

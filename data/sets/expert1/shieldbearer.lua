@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_405", name = "Shieldbearer", text = "<b>Taunt</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 1, attack = 0, health = 4, tags = { "draenei" }, keywords = { "taunt" } }

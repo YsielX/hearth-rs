@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_626",name="Mass Dispel",text="<b>Silence</b> all enemy minions. Draw a card.",set="EXPERT1",type="spell",class="priest",rarity="rare",spell_school="holy",cost=4,on_play=function(ctx,self)for _,e in ipairs(ctx:enemy_minions(self))do ctx:silence(e)end;ctx:draw(ctx:controller(self),1)end}

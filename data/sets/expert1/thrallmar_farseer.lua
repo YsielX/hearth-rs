@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_021", name = "Thrallmar Farseer", text = "<b>Windfury</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 3, attack = 2, health = 3, keywords = { "windfury" } }

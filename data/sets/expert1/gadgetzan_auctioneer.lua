@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_095",name="Gadgetzan Auctioneer",text="Whenever you cast a spell, draw a card.",set="EXPERT1",type="minion",rarity="rare",cost=7,attack=4,health=4,triggers={{event="spell_cast",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)ctx:draw(ctx:controller(self),1)end}}}

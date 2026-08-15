@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_062",name="Hellfire",text="Deal $3 damage to ALL characters.",set="LEGACY",type="spell",class="warlock",spell_school="fire",cost=3,on_play=function(ctx)ctx:damage_all(ctx:characters(),3)end}

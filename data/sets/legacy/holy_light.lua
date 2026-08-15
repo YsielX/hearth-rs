@@ -1,0 +1,1 @@
+return { api_version=1,id="CS2_089",name="Holy Light",text="Restore #8 Health to your hero.",set="LEGACY",type="spell",class="paladin",spell_school="holy",cost=2,on_play=function(ctx,self)local p=ctx:controller(self);ctx:heal(ctx:player(p).hero,8)end }

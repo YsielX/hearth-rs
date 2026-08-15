@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_041",name="Ancestral Healing",text="Restore a minion\nto full Health and\ngive it <b>Taunt</b>.",set="LEGACY",type="spell",class="shaman",spell_school="nature",cost=0,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:heal(target,ctx:entity(target).max_health);ctx:grant_keyword(target,"taunt")end}

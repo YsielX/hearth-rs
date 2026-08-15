@@ -1,0 +1,1 @@
+return { api_version=1,id="CS2_093",name="Consecration",text="Deal $2 damage to all enemies.",set="LEGACY",type="spell",class="paladin",spell_school="holy",cost=3,on_play=function(ctx,self)ctx:damage_all(ctx:enemy_characters(self),2)end }

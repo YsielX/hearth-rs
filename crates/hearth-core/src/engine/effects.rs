@@ -34,9 +34,11 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::Continue { .. }
             | EffectSpec::CancelEvent { .. }
             | EffectSpec::SetEventAmount { .. }
+            | EffectSpec::MultiplyEventAmount { .. }
             | EffectSpec::SetAttackDefender { .. }
             | EffectSpec::AddAttackCollateral { .. }
             | EffectSpec::SetDamageTarget { .. }
+            | EffectSpec::SetSpellTarget { .. }
             | EffectSpec::SetTradeDraw { .. }
             | EffectSpec::TriggerHook { .. }
             | EffectSpec::DiscoverEntities { .. } => {

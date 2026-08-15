@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_243",name="Dust Devil",text="<b>Windfury</b>. <b>Overload:</b> (2)",set="EXPERT1",type="minion",class="shaman",rarity="common",cost=1,attack=3,health=1,tags={"elemental"},keywords={"windfury","overload"},keyword_params={overload=2}}

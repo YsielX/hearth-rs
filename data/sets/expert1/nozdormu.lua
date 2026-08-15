@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_560",name="Nozdormu",text="Players only have 15 seconds to take their turns.",set="EXPERT1",type="minion",rarity="legendary",cost=9,attack=8,health=8,tags={"dragon"},rules={turn_time_limit_seconds=function(ctx,self,current)if current<=0 then return 15 end return math.min(current,15)end}}

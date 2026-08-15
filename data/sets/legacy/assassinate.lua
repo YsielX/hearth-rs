@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_076",name="Assassinate",text="Destroy an enemy minion.",set="LEGACY",type="spell",class="rogue",cost=4,target_mode="required",targets=function(ctx,self)return ctx:enemy_minions(self)end,on_play=function(ctx,self,target)ctx:destroy(target)end}

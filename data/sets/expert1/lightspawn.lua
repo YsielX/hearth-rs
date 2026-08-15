@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_335",name="Lightspawn",text="This minion's Attack is always equal to its Health.",set="EXPERT1",type="minion",class="priest",rarity="common",cost=3,attack=0,health=4,tags={"elemental"},auras={{active_zones={"board"},attack=function(ctx,self)return ctx:entity(self).health end,targets=function(ctx,self)return{self}end}}}

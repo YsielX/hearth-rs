@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_061",name="Drain Life",text="Deal $2 damage. Restore #2 Health to your hero.",set="LEGACY",type="spell",class="warlock",spell_school="shadow",cost=3,target_mode="required",targets=function(ctx)return ctx:characters()end,on_play=function(ctx,self,target)local p=ctx:controller(self);ctx:damage(target,2);ctx:heal(ctx:player(p).hero,2)end}

@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_011", name="Savage Roar", text="Give your characters +2 Attack this turn.", set="LEGACY", type="spell", class="druid", cost=3, on_play=function(ctx,self) local p=ctx:controller(self); ctx:buff_until_end_of_turn(ctx:player(p).hero,2,0); for _,e in ipairs(ctx:friendly_minions(self)) do ctx:buff_until_end_of_turn(e,2,0) end end }

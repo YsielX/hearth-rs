@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_023", name = "Silvermoon Guardian", text = "<b>Divine Shield</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 4, attack = 3, health = 3, keywords = { "divine_shield" } }

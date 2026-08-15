@@ -100,6 +100,8 @@ return {
 
 Rule functions have signature `(ctx, self, current, other) -> value`. They are read-only; attempting to emit an effect is an error.
 
+Card definitions may declare `rules` with the same signature. `turn_time_limit_seconds(ctx, self, current)` is a generic frontend rule: zero means unlimited, while positive values continue folding across active board sources. The CLI keeps one deadline for the whole interactive turn and submits an ordinary choice or end-turn command on timeout, so replays remain deterministic command streams.
+
 Keyword modules may also declare card-style `triggers`, lifecycle `hooks`, and named `actions`. Contracts prevent display-only keywords:
 
 ```lua
@@ -324,6 +326,7 @@ ctx:destroy(entity)
 ctx:destroy_all(entities)
 ctx:damage_batch({ { entity, amount }, ... })
 ctx:damage_batch_ignoring_spell_damage({ { entity, amount }, ... })
+ctx:damage_batch_from(source, { { entity, amount }, ... })
 ctx:damage_from(source, entity, amount)
 ctx:add_attack_collateral(event_id, entities, amount)
 ctx:force_attack(attacker, defender)
@@ -354,8 +357,10 @@ ctx:freeze(entity)
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
 ctx:set_event_amount(event, amount)
+ctx:multiply_event_amount(event, factor)
 ctx:set_attack_defender(event_id, defender)
 ctx:set_damage_target(event_id, target)
+ctx:set_spell_target(event_id, target)
 ctx:replace_trade_draw(event_id, replacement_entity)
 ctx:set_data(entity, key, value)
 ctx:set_player_data(player, key, value)
@@ -386,7 +391,7 @@ The current hook entity is automatically recorded as the effect source.
 
 `draw_entity` removes the specified original entity from that player's deck and uses the normal cancellable CardDrawn/CardBurned pipeline. `summon_existing` moves an original Graveyard or Removed minion through the full cancellable summon pipeline and restores it if the summon is cancelled or the board fills; `summon_existing_at` additionally preserves a remembered board position. `move_to_hand` transfers an original entity to another player's hand; `shuffle_copy_into_deck` preserves the copied entity state. `summon_with_stats` applies silenciable final-set stats; `summon_with_base_stats` replaces printed base stats, so Silence does not revert scaling tokens such as Jade Golems. `summon_fresh_copy_with_stats` creates an unenchanted template copy with final Attack/Health. `lose_weapon_durability` reduces an equipped weapon and uses the normal cancellable `weapon_destroyed` lifecycle at zero. `add_attack_collateral` adds simultaneous combat damage to a pending attack.
 
-`damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage. `modify_all` applies one stat specification to a frozen group; `modify_batch` accepts per-entity specifications, including a `modifiers` array when each stat needs a different operation. Both support `reset_damage = true`. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
+`damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage, while `damage_batch_from` explicitly identifies the entity dealing the whole batch. `set_spell_target` is valid only while a `spell_targeted` event's trigger effects are still resolving; it replaces the target with a minion that remains on the board, and the spell body is generated afterward against that new target. `modify_all` applies one stat specification to a frozen group; `modify_batch` accepts per-entity specifications, including a `modifiers` array when each stat needs a different operation. Both support `reset_damage = true`. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
 
 `refresh_mana_crystals` fills only the player's existing unlocked permanent crystals. It preserves temporary Mana and both current and pending Overload. `change_controller_until_end_of_turn` records a reversible board-minion control change: Silence immediately returns the minion, transformation makes the current controller permanent, and end of turn returns it or destroys it when the original board is full.
 

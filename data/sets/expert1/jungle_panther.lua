@@ -1,0 +1,1 @@
+return { api_version = 1, id = "EX1_017", name = "Jungle Panther", text = "<b>Stealth</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 3, attack = 4, health = 2, tags = { "beast" }, keywords = { "stealth" } }

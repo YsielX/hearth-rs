@@ -1,0 +1,1 @@
+return { api_version=1, id="CS2_026", name="Frost Nova", text="<b>Freeze</b> all enemy minions.", set="LEGACY", type="spell", class="mage", spell_school="frost", cost=3, on_play=function(ctx,self) for _,e in ipairs(ctx:enemy_minions(self)) do ctx:freeze(e) end end }

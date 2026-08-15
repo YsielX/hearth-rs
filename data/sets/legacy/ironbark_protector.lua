@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_232", name = "Ironbark Protector", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", class = "druid", cost = 8, attack = 8, health = 8, keywords = { "taunt" } }

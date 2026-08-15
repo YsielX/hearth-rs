@@ -754,6 +754,25 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "damage_batch_from",
+        lua.create_function(move |_, (_ctx, damage_source, hits): (Table, u64, Table)| {
+            let hits = hits
+                .sequence_values::<Table>()
+                .map(|hit| {
+                    let hit = hit?;
+                    Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
+                })
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output.borrow_mut().push(EffectSpec::DamageBatch {
+                source: EntityId(damage_source),
+                hits,
+                apply_spell_damage: false,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "heal",
         lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
             output.borrow_mut().push(EffectSpec::Heal {
@@ -1950,6 +1969,24 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
+        "multiply_event_amount",
+        lua.create_function(move |_, (_ctx, event, factor): (Table, Table, i32)| {
+            let timing: String = event.get("timing")?;
+            if timing != "before" {
+                return Err(mlua::Error::runtime(
+                    "multiply_event_amount can only be used by a before trigger",
+                ));
+            }
+            output.borrow_mut().push(EffectSpec::MultiplyEventAmount {
+                source,
+                event: EventId(event.get("event_id")?),
+                factor,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
         "replace_trade_draw",
         lua.create_function(move |_, (_ctx, event, replacement): (Table, u64, u64)| {
             output.borrow_mut().push(EffectSpec::SetTradeDraw {
@@ -2009,6 +2046,18 @@ pub(super) fn build_context(
         "set_damage_target",
         lua.create_function(move |_, (_ctx, event, target): (Table, u64, u64)| {
             output.borrow_mut().push(EffectSpec::SetDamageTarget {
+                source,
+                event: EventId(event),
+                target: EntityId(target),
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "set_spell_target",
+        lua.create_function(move |_, (_ctx, event, target): (Table, u64, u64)| {
+            output.borrow_mut().push(EffectSpec::SetSpellTarget {
                 source,
                 event: EventId(event),
                 target: EntityId(target),

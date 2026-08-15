@@ -48,6 +48,34 @@ impl<R: CardRuntime> Game<R> {
                     ResolutionItem::CommitHeroPower { use_event, target } => {
                         self.commit_hero_power(use_event, target, &mut queue)?;
                     }
+                    ResolutionItem::ResolvePlayedSpell {
+                        target_event,
+                        card_play_id,
+                        cost,
+                        secret,
+                        declared_target,
+                        target_was_friendly_minion,
+                    } => self.resolve_played_spell(
+                        target_event,
+                        card_play_id,
+                        cost,
+                        secret,
+                        declared_target,
+                        target_was_friendly_minion,
+                        &mut queue,
+                    )?,
+                    ResolutionItem::ResolveEffectSpell {
+                        target_event,
+                        generated_by,
+                        secret,
+                        declared_target,
+                    } => self.resolve_effect_spell(
+                        target_event,
+                        generated_by,
+                        secret,
+                        declared_target,
+                        &mut queue,
+                    )?,
                     ResolutionItem::CommitLocationUse(event) => {
                         self.commit_location_use(event, &mut queue)?;
                     }

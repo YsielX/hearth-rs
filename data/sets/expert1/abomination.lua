@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_097",name="Abomination",text="<b>Taunt</b>. <b>Deathrattle:</b> Deal 2\ndamage to ALL characters.",set="EXPERT1",type="minion",rarity="rare",cost=5,attack=4,health=4,tags={"undead"},keywords={"taunt","deathrattle"},on_deathrattle=function(ctx)ctx:damage_all(ctx:characters(),2)end}

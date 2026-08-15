@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_050",name="Coldlight Oracle",text="<b>Battlecry:</b> Each player draws 2 cards.",set="EXPERT1",type="minion",rarity="rare",cost=3,attack=2,health=2,tags={"murloc"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p=ctx:controller(self);ctx:draw(p,2);ctx:draw(ctx:opponent(p),2)end}

@@ -1,0 +1,4 @@
+local card={api_version=1,id="EX1_533",name="Misdirection",text="<b>Secret:</b> When an enemy attacks your hero, instead it attacks another random character.",set="EXPERT1",type="spell",class="hunter",rarity="rare",cost=2,keywords={"secret"}}
+card.triggers={{event="attack",timing="before",active_zones={"secret"},condition=function(ctx,self,e)local p=ctx:controller(self);if e.defender~=ctx:player(p).hero or ctx:controller(e.attacker)==p then return false end;local n=0;for _,x in ipairs(ctx:characters())do if x~=e.attacker and x~=e.defender then n=n+1 end end;return n>0 end,effect=function(ctx,self,e)local r={};for _,x in ipairs(ctx:characters())do if x~=e.attacker and x~=e.defender then r[#r+1]=x end end;ctx:reveal_secret(self);ctx:set_data(self,"misdirect_attack",e.event_id);ctx:random_entity(r,"misdirect_target")end}}
+function card.misdirect_target(ctx,self,target)ctx:set_attack_defender(ctx:get_data(self,"misdirect_attack"),target)end
+return card

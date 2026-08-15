@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_355",name="Blessed Champion",text="Double a minion's Attack.",set="EXPERT1",type="spell",class="paladin",rarity="rare",spell_school="holy",cost=5,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:buff(target,ctx:entity(target).attack,0)end}

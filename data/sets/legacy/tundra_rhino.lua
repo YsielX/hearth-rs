@@ -1,0 +1,2 @@
+local function beast(ctx,e)for _,tag in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags)do if tag=="beast"or tag=="all"then return true end end return false end
+return {api_version=1,id="DS1_178",name="Tundra Rhino",text="Your Beasts have <b>Charge</b>.",set="LEGACY",type="minion",class="hunter",cost=5,attack=2,health=5,tags={"beast"},auras={{active_zones={"board"},keywords={"charge"},targets=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if beast(ctx,e)then r[#r+1]=e end end;return r end}}}

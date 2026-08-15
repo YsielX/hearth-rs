@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_127", name = "Silverback Patriarch", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", cost = 3, attack = 1, health = 4, tags = { "beast" }, keywords = { "taunt" } }

@@ -151,6 +151,8 @@ pub enum GameError {
     EventAttackNotReplaceable(EventId),
     #[error("event {0} is not damage and cannot replace its target")]
     EventDamageNotReplaceable(EventId),
+    #[error("event {0} is not a targeted spell and cannot replace its target")]
+    EventSpellTargetNotReplaceable(EventId),
     #[error("event {0} is not a trade draw and cannot select a replacement")]
     EventTradeDrawNotReplaceable(EventId),
     #[error("event {0} cannot be committed because its reserved entity is invalid")]

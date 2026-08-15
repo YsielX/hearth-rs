@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_014",name="King Mukla",text="<b>Battlecry:</b> Give your opponent 2 Bananas.",set="EXPERT1",type="minion",rarity="legendary",cost=3,attack=5,health=6,tags={"beast"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p=ctx:opponent(ctx:controller(self));ctx:give_card(p,"EX1_014t");ctx:give_card(p,"EX1_014t")end}

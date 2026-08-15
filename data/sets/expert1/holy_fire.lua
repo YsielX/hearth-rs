@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_624",name="Holy Fire",text="Deal $5 damage. Restore #5 Health to your hero.",set="EXPERT1",type="spell",class="priest",rarity="rare",spell_school="holy",cost=6,target_mode="required",targets=function(ctx)return ctx:characters()end,on_play=function(ctx,self,target)local p=ctx:controller(self);ctx:damage(target,5);ctx:heal(ctx:player(p).hero,5)end}

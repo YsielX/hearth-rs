@@ -1,0 +1,2 @@
+local function murloc(ctx,e)for _,t in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags)do if t=="murloc"or t=="all"then return true end end return false end
+return {api_version=1,id="EX1_507",name="Murloc Warleader",text="Your other Murlocs have +2 Attack.",set="EXPERT1",type="minion",rarity="epic",cost=3,attack=3,health=3,tags={"murloc"},auras={{active_zones={"board"},attack=2,targets=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self and murloc(ctx,e)then r[#r+1]=e end end;return r end}}}

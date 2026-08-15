@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_045",name="Ancient Watcher",text="Can't attack.",set="EXPERT1",type="minion",rarity="rare",cost=2,attack=4,health=5,rules={can_attack=function(ctx,self,current)return false end}}

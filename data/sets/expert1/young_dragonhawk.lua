@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_169", name = "Young Dragonhawk", text = "<b>Windfury</b>", set = "EXPERT1", type = "minion", rarity = "common", cost = 1, attack = 1, health = 1, tags = { "beast" }, keywords = { "windfury" } }

@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_057",name="Shadow Bolt",text="Deal $4 damage\nto a minion.",set="LEGACY",type="spell",class="warlock",spell_school="shadow",cost=3,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:damage(target,4)end}

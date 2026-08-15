@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_562",name="Onyxia",text="<b>Battlecry:</b> Summon 1/1 Whelps until your side of the battlefield is full.",set="EXPERT1",type="minion",rarity="legendary",cost=9,attack=8,health=8,tags={"dragon"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p=ctx:controller(self);for _=#ctx:board(p)+1,7 do ctx:summon(p,"EX1_116t")end end}

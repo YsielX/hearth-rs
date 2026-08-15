@@ -1,0 +1,1 @@
+return {api_version=1,id="NEW1_024",name="Captain Greenskin",text="<b>Battlecry:</b> Give your weapon +1/+1.",set="EXPERT1",type="minion",rarity="legendary",cost=5,attack=5,health=4,tags={"pirate"},keywords={"battlecry"},on_battlecry=function(ctx,self)local w=ctx:player(ctx:controller(self)).weapon;if w then ctx:buff(w,1,1)end end}

@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_319",name="Flame Imp",text="<b>Battlecry:</b> Deal 3 damage to your hero.",set="EXPERT1",type="minion",class="warlock",rarity="common",cost=1,attack=3,health=2,tags={"demon"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p=ctx:controller(self);ctx:damage(ctx:player(p).hero,3)end}

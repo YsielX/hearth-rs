@@ -1,0 +1,1 @@
+return { api_version=1,id="CS2_004",name="Power Word: Shield",text="Give a minion +2 Health.\nDraw a card.",set="LEGACY",type="spell",class="priest",spell_school="holy",cost=1,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:buff(target,0,2);ctx:draw(ctx:controller(self),1)end }

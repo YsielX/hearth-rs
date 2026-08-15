@@ -1,0 +1,1 @@
+return { api_version = 1, id = "CS2_142", name = "Kobold Geomancer", text = "<b>Spell Damage +1</b>", set = "LEGACY", type = "minion", cost = 2, attack = 2, health = 2, keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 } }

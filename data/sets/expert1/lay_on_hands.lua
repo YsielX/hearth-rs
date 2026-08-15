@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_354",name="Lay on Hands",text="Restore #8 Health. Draw 3 cards.",set="EXPERT1",type="spell",class="paladin",rarity="epic",spell_school="holy",cost=6,target_mode="required",targets=function(ctx)return ctx:characters()end,on_play=function(ctx,self,target)ctx:heal(target,8);ctx:draw(ctx:controller(self),3)end}

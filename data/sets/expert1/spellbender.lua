@@ -1,0 +1,5 @@
+local card={api_version=1,id="tt_010",name="Spellbender",text="<b>Secret:</b> When an enemy casts a spell on a minion, summon a 1/3 as the new target.",set="EXPERT1",type="spell",class="mage",rarity="epic",cost=3,keywords={"secret"}}
+card.triggers={{event="spell_targeted",timing="after",active_zones={"secret"},condition=function(ctx,self,e)return e.player==ctx:opponent(ctx:controller(self))and ctx:entity(e.target).type=="minion"and #ctx:board(ctx:controller(self))<7 end,effect=function(ctx,self,e)ctx:reveal_secret(self);ctx:set_data(self,"spell_event",e.event_id);for _,x in ipairs(ctx:board(ctx:controller(self)))do ctx:set_data(self,"spellbender_seen_"..x,1)end;ctx:summon(ctx:controller(self),"tt_010a");ctx:continue_with("redirect_spell")end}}
+function card.redirect_spell(ctx,self)for _,e in ipairs(ctx:board(ctx:controller(self)))do if ctx:get_data(self,"spellbender_seen_"..e)==0 and ctx:entity(e).card_id=="tt_010a"then ctx:set_spell_target(ctx:get_data(self,"spell_event"),e);return end end end
+card.tokens={{id="tt_010a",name="Spellbender",text="",set="EXPERT1",type="minion",class="mage",collectible=false,cost=1,attack=1,health=3}}
+return card

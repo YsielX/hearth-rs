@@ -2,6 +2,9 @@ use std::env;
 use std::error::Error;
 use std::io::{self, Write};
 use std::path::PathBuf;
+use std::sync::mpsc::{self, RecvTimeoutError};
+use std::thread;
+use std::time::{Duration, Instant};
 
 use hearth_bot::SimpleBot;
 use hearth_core::{
@@ -122,6 +125,22 @@ struct DeckFile {
 
 fn default_deck_class() -> String {
     "mage".to_owned()
+}
+
+fn turn_time_limit_seconds(game: &Game<LuaCardRuntime>) -> Result<Option<u64>, String> {
+    let mut limit = 0;
+    for player in [PlayerId::ONE, PlayerId::TWO] {
+        for entity in &game.state().player(player).board {
+            limit = game.runtime().keyword_i32_rule(
+                game.state(),
+                *entity,
+                "turn_time_limit_seconds",
+                limit,
+                None,
+            )?;
+        }
+    }
+    Ok((limit > 0).then_some(limit as u64))
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -257,10 +276,29 @@ fn main() -> Result<(), Box<dyn Error>> {
     let initial_viewer = observer_for(&controllers, game.state().input_player());
     print_state(&game, initial_viewer, locale);
 
-    let stdin = io::stdin();
+    let (input_sender, input_receiver) = mpsc::channel::<io::Result<String>>();
+    thread::spawn(move || {
+        let stdin = io::stdin();
+        loop {
+            let mut line = String::new();
+            match stdin.read_line(&mut line) {
+                Ok(0) => break,
+                Ok(_) => {
+                    if input_sender.send(Ok(line)).is_err() {
+                        break;
+                    }
+                }
+                Err(error) => {
+                    let _ = input_sender.send(Err(error));
+                    break;
+                }
+            }
+        }
+    });
     let hotseat = controllers.iter().all(Controller::is_interactive);
     let mut last_interactive_player = hotseat.then_some(game.state().input_player());
     let mut automated_actions = 0usize;
+    let mut turn_deadline: Option<(u32, PlayerId, u64, Instant)> = None;
     loop {
         let input_player = game.state().input_player();
         let viewer = observer_for(&controllers, input_player);
@@ -276,13 +314,32 @@ fn main() -> Result<(), Box<dyn Error>> {
                 )
             );
             io::stdout().flush()?;
-            let mut confirmation = String::new();
-            if stdin.read_line(&mut confirmation)? == 0 {
+            let confirmation = match input_receiver.recv() {
+                Ok(line) => line?,
+                Err(_) => break,
+            };
+            if confirmation.is_empty() {
                 break;
             }
             print!("\x1b[2J\x1b[3J\x1b[H");
             print_state(&game, input_player, locale);
             last_interactive_player = Some(input_player);
+        }
+        let time_limit = turn_time_limit_seconds(&game).map_err(io::Error::other)?;
+        let timer_key = (game.state().turn, input_player, time_limit.unwrap_or(0));
+        if time_limit.is_none() {
+            turn_deadline = None;
+        } else if !turn_deadline
+            .is_some_and(|(turn, player, seconds, _)| (turn, player, seconds) == timer_key)
+        {
+            turn_deadline = time_limit.map(|seconds| {
+                (
+                    game.state().turn,
+                    input_player,
+                    seconds,
+                    Instant::now() + Duration::from_secs(seconds),
+                )
+            });
         }
         if !controllers[input_player.index()].is_interactive() {
             automated_actions = automated_actions.saturating_add(1);
@@ -313,8 +370,48 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         print!("{}> ", input_player);
         io::stdout().flush()?;
-        let mut line = String::new();
-        if stdin.read_line(&mut line)? == 0 {
+        let line = if let Some((_, _, seconds, deadline)) = turn_deadline {
+            match input_receiver.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+                Ok(line) => line?,
+                Err(RecvTimeoutError::Disconnected) => break,
+                Err(RecvTimeoutError::Timeout) => {
+                    println!(
+                        "{}",
+                        lf!(
+                            locale,
+                            "Turn timer expired after {0} seconds.",
+                            "回合计时在 {0} 秒后结束。",
+                            "回合計時在 {0} 秒後結束。",
+                            seconds
+                        )
+                    );
+                    let actions = game
+                        .legal_actions()?
+                        .into_iter()
+                        .filter(|action| !matches!(action, PlayerCommand::Concede))
+                        .collect::<Vec<_>>();
+                    let command = actions
+                        .iter()
+                        .find(|action| matches!(action, PlayerCommand::EndTurn))
+                        .cloned()
+                        .or_else(|| actions.first().cloned())
+                        .ok_or_else(|| io::Error::other("timed turn has no legal action"))?;
+                    game.dispatch(command)?;
+                    print_state(
+                        &game,
+                        observer_for(&controllers, game.state().input_player()),
+                        locale,
+                    );
+                    continue;
+                }
+            }
+        } else {
+            match input_receiver.recv() {
+                Ok(line) => line?,
+                Err(_) => break,
+            }
+        };
+        if line.is_empty() {
             break;
         }
         let words: Vec<_> = line.split_whitespace().collect();
@@ -1776,6 +1873,35 @@ fn print_fuzz_usage() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn nozdormu_exposes_the_generic_fifteen_second_turn_limit() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let mut game = Game::new_unrestricted(
+            LuaCardRuntime::load_dir(root.join("data")).unwrap(),
+            std::iter::repeat_n("EX1_560".to_owned(), 20).collect(),
+            std::iter::repeat_n("CS2_120".to_owned(), 20).collect(),
+            7,
+        )
+        .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        assert_eq!(turn_time_limit_seconds(&game).unwrap(), None);
+        while game.state().active_player != PlayerId::ONE
+            || game.state().player(PlayerId::ONE).max_mana < 9
+        {
+            game.dispatch(PlayerCommand::EndTurn).unwrap();
+        }
+        let nozdormu = game.state().player(PlayerId::ONE).hand[0];
+        game.dispatch(PlayerCommand::PlayCard {
+            card: nozdormu,
+            target: None,
+        })
+        .unwrap();
+        assert_eq!(turn_time_limit_seconds(&game).unwrap(), Some(15));
+    }
 
     #[test]
     fn public_events_render_without_reintroducing_hidden_details() {

@@ -680,6 +680,29 @@ impl LuaCardRuntime {
         other: Option<EntityId>,
     ) -> Result<i32, String> {
         self.instruction_blocks.set(0);
+        let card_id = state
+            .entity(entity)
+            .ok_or_else(|| format!("unknown card rule entity {entity}"))?
+            .card_id
+            .clone();
+        if self.cards.contains_key(&card_id) {
+            value = self.run_card_i32_rule(state, entity, &card_id, rule, value, other)?;
+        }
+        let rule_entity = state.entity(entity).unwrap();
+        if rule_entity.kind == CardKind::Hero && rule_entity.controller == state.active_player {
+            if let Some(weapon) = state.player(rule_entity.controller).weapon {
+                let weapon_card = state.entities[&weapon].card_id.as_str();
+                let module = self.module(weapon_card)?;
+                if module
+                    .get::<Option<bool>>("rules_inherit_to_hero")
+                    .map_err(|error| error.to_string())?
+                    .unwrap_or(false)
+                {
+                    value =
+                        self.run_card_i32_rule(state, entity, weapon_card, rule, value, other)?;
+                }
+            }
+        }
         for keyword in self.active_keyword_ids(state, entity)? {
             let module = self.keyword_module(&keyword)?;
             let Some(rules) = module
@@ -712,6 +735,49 @@ impl LuaCardRuntime {
                     "keyword {keyword} rule {rule} attempted to emit an effect"
                 ));
             }
+        }
+        Ok(value)
+    }
+
+    fn run_card_i32_rule(
+        &self,
+        state: &GameState,
+        entity: EntityId,
+        card_id: &str,
+        rule: &str,
+        value: i32,
+        other: Option<EntityId>,
+    ) -> Result<i32, String> {
+        let card_module = self.module(card_id)?;
+        let Some(rules) = card_module
+            .get::<Option<Table>>("rules")
+            .map_err(|error| error.to_string())?
+        else {
+            return Ok(value);
+        };
+        let Some(function) = rules
+            .get::<Option<Function>>(rule)
+            .map_err(|error| error.to_string())?
+        else {
+            return Ok(value);
+        };
+        let emitted = Rc::new(RefCell::new(Vec::new()));
+        let ctx = build_context(
+            &self.lua,
+            state,
+            entity,
+            emitted.clone(),
+            self.catalog.clone(),
+            self.locale,
+        )
+        .map_err(|error| error.to_string())?;
+        let value = function
+            .call((ctx, entity.0, value, other.map(|id| id.0)))
+            .map_err(|error| format!("card {card_id} rule {rule}: {error}"))?;
+        if !emitted.borrow().is_empty() {
+            return Err(format!(
+                "card {card_id} rule {rule} attempted to emit an effect"
+            ));
         }
         Ok(value)
     }

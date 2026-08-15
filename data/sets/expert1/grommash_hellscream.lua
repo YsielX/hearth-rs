@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_414",name="Grommash Hellscream",text="<b>Charge</b>\nHas +6 Attack while damaged.",set="EXPERT1",type="minion",class="warrior",rarity="legendary",cost=8,attack=4,health=9,keywords={"charge"},auras={{active_zones={"board"},attack=function(ctx,self)return ctx:entity(self).damage>0 and 6 or 0 end,targets=function(ctx,self)return{self}end}}}

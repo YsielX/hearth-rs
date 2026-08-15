@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_007",name="Acolyte of Pain",text="Whenever this minion takes damage, draw a card.",set="EXPERT1",type="minion",rarity="common",cost=3,attack=1,health=4,triggers={{event="damaged",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.target==self and e.amount>0 end,effect=function(ctx,self)ctx:draw(ctx:controller(self),1)end}}}

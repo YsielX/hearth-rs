@@ -1,0 +1,1 @@
+return {api_version=1,module_type="hero_power",id="EX1_625t2",name="Mind Shatter",text="Deal $3 damage.",set="EXPERT1",class="priest",cost=2,target_mode="required",targets=function(ctx)return ctx:characters()end,on_play=function(ctx,self,target)ctx:damage(target,3)end}

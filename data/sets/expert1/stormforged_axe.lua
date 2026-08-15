@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_247",name="Stormforged Axe",text="<b>Overload:</b> (1)",set="EXPERT1",type="weapon",class="shaman",rarity="common",cost=2,attack=2,health=3,keywords={"overload"},keyword_params={overload=1}}

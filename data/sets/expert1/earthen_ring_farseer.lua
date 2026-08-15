@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_117",name="Earthen Ring Farseer",text="<b>Battlecry:</b> Restore #3 Health.",set="EXPERT1",type="minion",rarity="common",cost=3,attack=3,health=3,keywords={"battlecry"},target_mode="required_if_available",targets=function(ctx)return ctx:characters()end,on_battlecry=function(ctx,self,target)if target then ctx:heal(target,3)end end}

@@ -1,0 +1,1 @@
+return { api_version=1,id="CS2_092",name="Blessing of Kings",text="Give a minion +4/+4. <i>(+4 Attack/+4 Health)</i>",set="LEGACY",type="spell",class="paladin",spell_school="holy",cost=4,target_mode="required",targets=function(ctx)return ctx:minions()end,on_play=function(ctx,self,target)ctx:buff(target,4,4)end }

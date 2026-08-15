@@ -1,0 +1,2 @@
+local function murloc(ctx,e)for _,t in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags)do if t=="murloc"or t=="all"then return true end end return false end
+return {api_version=1,id="EX1_509",name="Murloc Tidecaller",text="Whenever you summon a Murloc, gain +1 Attack.",set="EXPERT1",type="minion",rarity="rare",cost=1,attack=1,health=2,tags={"murloc"},triggers={{event="minion_summoned",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)and murloc(ctx,e.entity)end,effect=function(ctx,self)ctx:buff(self,1,0)end}}}

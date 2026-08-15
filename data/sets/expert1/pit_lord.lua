@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_313",name="Pit Lord",text="<b>Battlecry:</b> Deal 5 damage to your hero.",set="EXPERT1",type="minion",class="warlock",rarity="epic",cost=4,attack=5,health=6,tags={"demon"},keywords={"battlecry"},on_battlecry=function(ctx,self)local p=ctx:controller(self);ctx:damage(ctx:player(p).hero,5)end}

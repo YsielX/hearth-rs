@@ -1,0 +1,3 @@
+local card={api_version=1,id="EX1_323",name="Lord Jaraxxus",text="<b>Battlecry:</b> Equip a 3/8 Blood Fury.",set="EXPERT1",type="hero",class="warlock",rarity="legendary",cost=8,health=30,armor=5,hero_power="EX1_tk33",keywords={"battlecry"},on_battlecry=function(ctx,self)ctx:equip_weapon(ctx:controller(self),"EX1_323w")end}
+card.tokens={{id="EX1_323w",name="Blood Fury",text="",set="EXPERT1",type="weapon",class="warlock",collectible=false,cost=3,attack=3,health=8},{id="EX1_tk34",name="Infernal",text="",set="EXPERT1",type="minion",class="warlock",collectible=false,cost=6,attack=6,health=6,tags={"demon"}}}
+return card

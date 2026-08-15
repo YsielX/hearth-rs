@@ -1,0 +1,1 @@
+return {api_version=1,id="EX1_080",name="Secretkeeper",text="Whenever a <b>Secret</b> is played, gain +1/+1.",set="EXPERT1",type="minion",rarity="rare",cost=1,attack=1,health=2,triggers={{event="secret_played",timing="after",active_zones={"board"},effect=function(ctx,self)ctx:buff(self,1,1)end}}}

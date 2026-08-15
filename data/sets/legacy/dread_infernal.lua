@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_064",name="Dread Infernal",text="<b>Battlecry:</b> Deal 1 damage to ALL other characters.",set="LEGACY",type="minion",class="warlock",cost=6,attack=6,health=6,tags={"demon"},keywords={"battlecry"},on_battlecry=function(ctx,self)local r={};for _,e in ipairs(ctx:characters())do if e~=self then r[#r+1]=e end end;ctx:damage_all(r,1)end}

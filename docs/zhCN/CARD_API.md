@@ -83,6 +83,8 @@ return {
 
 关键词也可声明与卡牌相同格式的 `triggers`，并使用全部 `ctx` 效果 API。比如圣盾通过 `damaged/before` 调用 `disable_keyword` 和 `cancel_event`，亡语通过 `entity_died/after` continuation 调用卡牌效果，复生则调用 `summon_fresh_copy`。完整模块见 `data/keywords/`。
 
+卡牌定义也可直接声明同签名的 `rules`。`turn_time_limit_seconds(ctx, self, current)` 是前端消费的通用回合时限规则：`0` 表示不限制，正数由所有在场来源继续折叠。命令行前端为交互玩家维护整回合截止时间，超时后提交普通选择或结束回合命令，因此 replay 仍只记录确定性的玩家命令。
+
 关键词还可在 `hooks` 中实现 `on_play(ctx, self, target)` 或 `on_location_use(ctx, self, target)`，接入卡牌生命周期并输出普通效果。战吼模块利用 `hooks.on_play` 转到卡牌的 `on_battlecry`，连击模块先检查 `ctx:combo_active(self)` 再转到 `on_combo`，压轴模块则在支付当前费用后剩余法力为零时转到 `on_finale`；这是通用模块遍历，不是 Rust 中的关键词分支。未知 lifecycle hook 或非函数值会在加载时被拒绝。
 
 关键词还可声明 `actions`，卡牌以 `card_actions` / `action_targets` /
@@ -320,6 +322,7 @@ ctx:destroy(target)
 ctx:destroy_all(targets)
 ctx:damage_batch({ { target, amount }, ... })
 ctx:damage_batch_ignoring_spell_damage({ { target, amount }, ... })
+ctx:damage_batch_from(source, { { target, amount }, ... })
 ctx:damage_from(source, target, amount)
 ctx:add_attack_collateral(event_id, targets, amount)
 ctx:force_attack(attacker, defender)
@@ -348,8 +351,10 @@ ctx:freeze(target)
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
 ctx:set_event_amount(event, amount)
+ctx:multiply_event_amount(event, factor)
 ctx:set_attack_defender(event_id, defender)
 ctx:set_damage_target(event_id, target)
+ctx:set_spell_target(event_id, target)
 ctx:replace_trade_draw(event_id, replacement_entity)
 ctx:continue_with(hook_name)
 ctx:continue_with_entity(hook_name, entity)
@@ -382,7 +387,7 @@ ctx:increment_player_data(player, key, delta)
 
 `draw_entity` 从指定玩家牌库抽取该原实体，并走可取消的普通 CardDrawn/CardBurned 流程。`summon_existing` 把墓地或移除区的原随从送入完整可取消召唤流程，取消或满场时恢复；`summon_existing_at` 还会使用记录的原战场位置。`move_to_hand` 可把原实体转入指定玩家手牌，`shuffle_copy_into_deck` 会保留被复制实体的状态。`summon_fresh_copy_with_stats` 创建无增益模板副本并最终定值攻血。`lose_weapon_durability` 扣除已装备武器耐久，归零时走普通可取消的 `weapon_destroyed` 生命周期。`add_attack_collateral` 为待结算攻击加入同批战斗伤害。
 
-`damage_batch` 对冻结目标集原子结算不同伤害值，其忽略法术伤害版本不叠加法强。`modify_all` 对冻结目标组应用同一属性规格；`modify_batch` 接受逐实体规格，每个属性操作不同时可传 `modifiers` 数组。两者都支持 `reset_damage = true`。`force_attack` 无需攻击者处于可攻击状态即可发起完整攻击事件；`take_extra_turn` 为指定玩家排入可回放的额外回合。`grant_keyword_until_next_turn` 在该随从控制者的下回合开始时到期，且不依赖来源实体继续存在。
+`damage_batch` 对冻结目标集原子结算不同伤害值，其忽略法术伤害版本不叠加法强；`damage_batch_from` 还可显式指定造成整批伤害的实体。`set_spell_target` 只在 `spell_targeted` 事件的触发效果仍在结算时有效；它把目标改为一个仍在战场上的随从，并让法术正文随后使用新目标。`modify_all` 对冻结目标组应用同一属性规格；`modify_batch` 接受逐实体规格，每个属性操作不同时可传 `modifiers` 数组。两者都支持 `reset_damage = true`。`force_attack` 无需攻击者处于可攻击状态即可发起完整攻击事件；`take_extra_turn` 为指定玩家排入可回放的额外回合。`grant_keyword_until_next_turn` 在该随从控制者的下回合开始时到期，且不依赖来源实体继续存在。
 
 区域查询返回稳定顺序的实体 ID 副本，脚本不能修改 Rust 内部列表。`hand`、`deck` 等接口也允许查询对手隐藏区；Lua 卡牌是服务端可信规则代码，UI 不会直接获得这些结果。需要向玩家公开或选择隐藏信息时，应由卡牌显式构造 `choose_*` 选项。
 

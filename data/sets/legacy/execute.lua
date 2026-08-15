@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_108",name="Execute",text="Destroy a damaged enemy minion.",set="LEGACY",type="spell",class="warrior",cost=1,target_mode="required",targets=function(ctx,self)local r={};for _,e in ipairs(ctx:enemy_minions(self))do if ctx:entity(e).damage>0 then r[#r+1]=e end end;return r end,on_play=function(ctx,self,target)ctx:destroy(target)end}

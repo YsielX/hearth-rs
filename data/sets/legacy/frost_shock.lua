@@ -1,0 +1,1 @@
+return {api_version=1,id="CS2_037",name="Frost Shock",text="Deal $1 damage to an enemy character and <b>Freeze</b> it.",set="LEGACY",type="spell",class="shaman",spell_school="frost",cost=1,target_mode="required",targets=function(ctx,self)return ctx:enemy_characters(self)end,on_play=function(ctx,self,target)ctx:damage(target,1);ctx:freeze(target)end}
