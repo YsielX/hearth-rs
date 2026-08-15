@@ -1,0 +1,14 @@
+[package]
+name = "hearth-fuzz"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "hearth-state-fuzz"
+path = "src/main.rs"
+
+[dependencies]
+hearth-core = { path = "../crates/hearth-core" }
+hearth-script = { path = "../crates/hearth-script" }

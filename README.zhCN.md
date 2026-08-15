@@ -19,6 +19,7 @@ crates/
 ├── hearth-core/           # 状态机、区域、事件队列、确定性 RNG、replay
 ├── hearth-script/         # Lua 沙箱、模块加载、规则钩子与效果桥接
 └── hearth-cli/            # 双人热座命令行
+fuzz/                      # 独立的确定性状态机 Fuzzer
 decks/demo.json            # 官方卡演示牌组
 decks/quest_rogue.json     # Dog 2017 经典洞穴任务贼
 ```
@@ -158,7 +159,15 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 ```
 
-端到端测试会加载真实 Lua 卡包，将每个 Lua 卡牌 ID 与来源快照逐一比对，并验证 68 项关键词目录、set、关键词 Lua 规则、战吼、亡语、奥秘、磁力、锻造、预备、发现、衍生物、随机状态遍历、replay 和 snapshot。
+端到端测试会加载真实 Lua 卡包，将每个 Lua 卡牌 ID 与来源快照逐一比对，并验证 68 项关键词目录、set、关键词 Lua 规则、战吼、亡语、奥秘、磁力、锻造、预备、发现、衍生物、replay 和 snapshot。
+
+## 状态机 Fuzz 测试
+
+确定性状态机 Fuzzer 已独立放在 [`fuzz/`](fuzz/README.md)，普通 `cargo test` 不会启动 fuzz campaign。它会生成职业合法套牌、抽取引擎枚举的合法操作、在每一步校验状态不变量，并将最终状态与 replay 对比：
+
+```bash
+cargo run -p hearth-fuzz --release -- --seeds 100 --steps 180
+```
 
 ## 边界
 

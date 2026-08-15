@@ -85,6 +85,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "hearth-fuzz"
+version = "0.1.0"
+dependencies = [
+ "hearth-core",
+ "hearth-script",
+]
+
+[[package]]
 name = "hearth-script"
 version = "0.1.0"
 dependencies = [

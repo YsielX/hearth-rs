@@ -19,6 +19,7 @@ crates/
 ├── hearth-core/           # State machine, zones, event queue, RNG, replay
 ├── hearth-script/         # Lua sandbox, module loader, rules/effect bridge
 └── hearth-cli/            # Two-player hot-seat CLI
+fuzz/                      # Standalone deterministic state-machine fuzzer
 decks/demo.json            # Mixed-class mechanics showcase
 decks/quest_rogue.json     # Dog's 2017 Caverns Quest Rogue
 ```
@@ -171,7 +172,15 @@ cargo check --workspace
 cargo test --workspace
 ```
 
-End-to-end tests compare every Lua definition with the English source snapshot, require all three official locales, lock the 68-keyword catalog, exercise rules and card actions, perform randomized legal-action walks, and verify replay/snapshot determinism.
+End-to-end tests compare every Lua definition with the English source snapshot, require all three official locales, lock the 68-keyword catalog, exercise rules and card actions, and verify replay/snapshot determinism.
+
+## State-machine fuzzing
+
+The deterministic state-machine fuzzer is isolated under [`fuzz/`](fuzz/README.md), so normal `cargo test` runs do not start fuzz campaigns. It generates class-legal decks, dispatches sampled legal actions, validates state after every step, and compares the final state with replay:
+
+```bash
+cargo run -p hearth-fuzz --release -- --seeds 100 --steps 180
+```
 
 ## Scope
 

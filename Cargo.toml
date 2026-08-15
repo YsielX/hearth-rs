@@ -3,6 +3,7 @@ members = [
     "crates/hearth-core",
     "crates/hearth-script",
     "crates/hearth-cli",
+    "fuzz",
 ]
 resolver = "3"
 
