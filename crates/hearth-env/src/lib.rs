@@ -7,7 +7,8 @@
 use std::path::Path;
 
 use hearth_core::{
-    CardRuntime, EntityId, Game, GameError, GameOutcome, PlayerCommand, PlayerId, Replay,
+    CardDefinition, CardRuntime, EntityId, Game, GameError, GameOutcome, PlayerCommand, PlayerId,
+    Replay,
 };
 use hearth_script::{LuaCardRuntime, ScriptLoadError};
 use serde::{Deserialize, Serialize};
@@ -35,6 +36,15 @@ use history::ViewerMemory;
 use observation::build_observation;
 
 pub const OBSERVATION_SCHEMA_VERSION: u32 = 3;
+
+/// Operator/training metadata. This is deliberately not part of `Decision`,
+/// so a policy cannot mistake implementation source for in-game information.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CardCatalogEntry {
+    pub definition: CardDefinition,
+    pub lua_path: String,
+    pub lua_source: String,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Decision {
@@ -156,9 +166,20 @@ impl HearthEnv {
     }
 
     pub fn reset(&mut self, seed: u64) -> Result<&Decision, EnvError> {
+        self.reset_match(self.match_config.clone(), seed)
+    }
+
+    /// Start a fresh match with different decks while retaining the loaded Lua
+    /// runtime. This is an environment operation, not a game-rule feature.
+    pub fn reset_match(
+        &mut self,
+        match_config: MatchConfig,
+        seed: u64,
+    ) -> Result<&Decision, EnvError> {
         let old_game = self.game.take().ok_or(EnvError::MissingGame)?;
         let runtime = old_game.into_runtime();
-        self.game = Some(build_game(runtime, &self.match_config, seed)?);
+        self.game = Some(build_game(runtime, &match_config, seed)?);
+        self.match_config = match_config;
         self.steps = 0;
         self.truncated = false;
         self.current = None;
@@ -248,6 +269,21 @@ impl HearthEnv {
             .ok_or(EnvError::MissingGame)?
             .runtime()
             .card_ids())
+    }
+
+    pub fn card_catalog(&self) -> Result<Vec<CardCatalogEntry>, EnvError> {
+        Ok(self
+            .game
+            .as_ref()
+            .ok_or(EnvError::MissingGame)?
+            .runtime()
+            .scripted_definitions()
+            .map(|(definition, lua_path, lua_source)| CardCatalogEntry {
+                definition: definition.clone(),
+                lua_path: lua_path.to_owned(),
+                lua_source: lua_source.to_owned(),
+            })
+            .collect())
     }
 
     /// Operator-only reproducibility output. Policies receive `Decision`, not
@@ -499,6 +535,36 @@ mod tests {
         let fresh = HearthEnv::load(data_path(), match_config, 99, 100).unwrap();
         assert_eq!(reset.observation, fresh.decision().unwrap().observation);
         assert_eq!(reset.actions, fresh.decision().unwrap().actions);
+    }
+
+    #[test]
+    fn reset_match_reuses_runtime_with_different_decks() {
+        let mut environment =
+            HearthEnv::load(data_path(), config("CS2_120", "CS2_120"), 1, 100).unwrap();
+        let pack_hash = environment.pack_hash().unwrap().to_owned();
+        let replacement = config("CFM_800", "CFM_800");
+        let reset = environment
+            .reset_match(replacement.clone(), 2)
+            .unwrap()
+            .clone();
+        assert_eq!(environment.pack_hash().unwrap(), pack_hash);
+        let fresh = HearthEnv::load(data_path(), replacement, 2, 100).unwrap();
+        assert_eq!(reset.observation, fresh.decision().unwrap().observation);
+        assert_eq!(reset.actions, fresh.decision().unwrap().actions);
+    }
+
+    #[test]
+    fn training_catalog_keeps_definition_and_portable_lua_source_together() {
+        let environment =
+            HearthEnv::load(data_path(), config("CS2_120", "CS2_120"), 1, 100).unwrap();
+        let catalog = environment.card_catalog().unwrap();
+        let river_crocolisk = catalog
+            .iter()
+            .find(|entry| entry.definition.id == "CS2_120")
+            .unwrap();
+        assert_eq!(river_crocolisk.definition.name, "River Crocolisk");
+        assert!(river_crocolisk.lua_path.ends_with("river_crocolisk.lua"));
+        assert!(river_crocolisk.lua_source.contains("CS2_120"));
     }
 
     #[test]

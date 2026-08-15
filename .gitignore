@@ -1,3 +1,8 @@
 /target/
 *.log
-
+.venv/
+__pycache__/
+*.py[cod]
+/python/hearth_env/_native*.so
+/runs/
+/training-data/

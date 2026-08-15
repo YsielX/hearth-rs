@@ -55,6 +55,16 @@ impl PyHearthEnv {
         to_json(decision)
     }
 
+    fn reset_match_json(&mut self, match_config_json: &str, seed: u64) -> PyResult<String> {
+        let match_config: MatchConfig = serde_json::from_str(match_config_json)
+            .map_err(|error| PyValueError::new_err(error.to_string()))?;
+        let decision = self
+            .inner
+            .reset_match(match_config, seed)
+            .map_err(runtime_error)?;
+        to_json(decision)
+    }
+
     fn step_json(&mut self, decision_id: u64, action_index: usize) -> PyResult<String> {
         let transition = self
             .inner
@@ -72,6 +82,10 @@ impl PyHearthEnv {
 
     fn card_ids(&self) -> PyResult<Vec<String>> {
         self.inner.card_ids().map_err(runtime_error)
+    }
+
+    fn card_catalog_json(&self) -> PyResult<String> {
+        to_json(&self.inner.card_catalog().map_err(runtime_error)?)
     }
 
     fn replay_json(&self) -> PyResult<String> {

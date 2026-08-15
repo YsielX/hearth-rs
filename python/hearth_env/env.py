@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +34,7 @@ class HearthEnv:
             max_steps,
             history_limit,
         )
+        self._match_config = deepcopy(dict(match_config))
         raw = self._native.decision_json()
         self._decision: dict[str, Any] | None = json.loads(raw) if raw else None
 
@@ -48,8 +50,31 @@ class HearthEnv:
     def card_ids(self) -> list[str]:
         return self._native.card_ids()
 
-    def reset(self, *, seed: int) -> dict[str, Any]:
-        self._decision = json.loads(self._native.reset_json(seed))
+    @property
+    def card_catalog(self) -> list[dict[str, Any]]:
+        """Operator-only definitions and Lua source used by feature builders."""
+
+        return json.loads(self._native.card_catalog_json())
+
+    @property
+    def match_config(self) -> dict[str, Any]:
+        return deepcopy(self._match_config)
+
+    def reset(
+        self,
+        *,
+        seed: int,
+        match_config: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        if match_config is None:
+            raw = self._native.reset_json(seed)
+        else:
+            next_config = deepcopy(dict(match_config))
+            raw = self._native.reset_match_json(
+                json.dumps(next_config, separators=(",", ":")), seed
+            )
+            self._match_config = next_config
+        self._decision = json.loads(raw)
         return self._decision
 
     def step(self, action_index: int) -> dict[str, Any]:

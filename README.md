@@ -181,6 +181,14 @@ Controllers receive a player-facing projection and authoritative legal-action me
 
 The baseline [`hearth-bot`](crates/hearth-bot/README.md) prioritizes board lethal, plans currently legal plays to minimize unspent Mana, takes favorable trades, then attacks face. Taunt and other attack restrictions remain authoritative because the Bot selects only from engine-enumerated legal attacks.
 
+## Reinforcement learning
+
+The framework-neutral `hearth-env` adapter exposes player-safe observations,
+structured choices, indexed legal actions, and public-event history. The optional
+Python package adds card/Lua-aware encoders, behavior cloning, Deep Monte Carlo
+self-play, parallel rollout workers, checkpoint leagues, evaluation, and
+new-card checkpoint migration. See the [Chinese training guide](docs/RL_TRAINING.md).
+
 ## Verification
 
 ```bash

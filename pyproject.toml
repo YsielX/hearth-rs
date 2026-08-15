@@ -8,6 +8,16 @@ version = "0.1.0"
 requires-python = ">=3.10"
 description = "Python transport for the hearth-rs reinforcement-learning environment adapter"
 
+[project.optional-dependencies]
+train = [
+  "numpy>=2.1",
+  "torch>=2.4",
+  "typing-extensions>=4.10",
+]
+
+[project.scripts]
+hearth-train = "hearth_env.training.cli:main"
+
 [tool.maturin]
 manifest-path = "crates/hearth-env-py/Cargo.toml"
 python-source = "python"

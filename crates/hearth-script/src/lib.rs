@@ -80,6 +80,8 @@ pub enum ScriptLoadError {
 struct CardScript {
     definition: CardDefinition,
     module: RegistryKey,
+    source_path: Arc<str>,
+    source: Arc<str>,
 }
 
 struct KeywordScript {
@@ -194,8 +196,10 @@ impl LuaCardRuntime {
             update_pack_hash(&mut pack_hash, &[0]);
             update_pack_hash(&mut pack_hash, source.as_bytes());
             update_pack_hash(&mut pack_hash, &[0xff]);
+            let source_path: Arc<str> = Arc::from(relative);
+            let source: Arc<str> = Arc::from(source);
             let module: Table = lua
-                .load(&source)
+                .load(&*source)
                 .set_name(path.to_string_lossy())
                 .eval()
                 .map_err(|source| ScriptLoadError::Lua {
@@ -273,7 +277,14 @@ impl LuaCardRuntime {
                     source,
                 })?
                 .unwrap_or_default();
-            register_card_module(&lua, &mut cards, &path, module)?;
+            register_card_module(
+                &lua,
+                &mut cards,
+                &path,
+                module,
+                source_path.clone(),
+                source.clone(),
+            )?;
             for token in tokens {
                 if token
                     .get::<Option<u32>>("api_version")
@@ -305,7 +316,14 @@ impl LuaCardRuntime {
                             source,
                         })?;
                 }
-                register_card_module(&lua, &mut cards, &path, token)?;
+                register_card_module(
+                    &lua,
+                    &mut cards,
+                    &path,
+                    token,
+                    source_path.clone(),
+                    source.clone(),
+                )?;
             }
         }
         load_locale_catalogs(root, &mut cards, &mut pack_hash)?;
@@ -511,6 +529,19 @@ impl LuaCardRuntime {
 
     pub fn definitions(&self) -> impl Iterator<Item = &CardDefinition> {
         self.cards.values().map(|card| &card.definition)
+    }
+
+    /// Card definitions paired with the portable Lua source that implements
+    /// them. A parent card and its generated tokens intentionally share one
+    /// source unit.
+    pub fn scripted_definitions(&self) -> impl Iterator<Item = (&CardDefinition, &str, &str)> {
+        self.cards.values().map(|card| {
+            (
+                &card.definition,
+                card.source_path.as_ref(),
+                card.source.as_ref(),
+            )
+        })
     }
 
     pub fn keyword_ids(&self) -> impl Iterator<Item = &str> {

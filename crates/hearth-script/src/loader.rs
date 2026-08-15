@@ -102,6 +102,8 @@ pub(super) fn register_card_module(
     cards: &mut BTreeMap<String, CardScript>,
     path: &Path,
     module: Table,
+    source_path: Arc<str>,
+    source: Arc<str>,
 ) -> Result<(), ScriptLoadError> {
     let definition = parse_definition(&module).map_err(|source| ScriptLoadError::Lua {
         path: path.to_owned(),
@@ -119,7 +121,15 @@ pub(super) fn register_card_module(
             source,
         })?;
     if cards
-        .insert(id.clone(), CardScript { definition, module })
+        .insert(
+            id.clone(),
+            CardScript {
+                definition,
+                module,
+                source_path,
+                source,
+            },
+        )
         .is_some()
     {
         return Err(ScriptLoadError::DuplicateCard(id));

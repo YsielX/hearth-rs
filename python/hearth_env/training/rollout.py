@@ -1,0 +1,169 @@
+from __future__ import annotations
+
+import multiprocessing as mp
+import os
+from collections.abc import Sequence
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from typing_extensions import Self
+
+from hearth_env import HearthEnv
+
+from .catalog import CardCatalog
+from .checkpoint import load_checkpoint
+from .policies import HeuristicPolicy, ModelPolicy, Policy, RandomPolicy
+from .tensorize import Tensorizer
+
+
+@dataclass(frozen=True)
+class RolloutJob:
+    match_config: dict[str, Any]
+    seed: int
+    policies: tuple[dict[str, Any], dict[str, Any]]
+
+
+def play_episode(
+    env: HearthEnv,
+    policies: Sequence[Policy],
+    match_config: dict[str, Any],
+    seed: int,
+) -> dict[str, Any]:
+    decision = env.reset(seed=seed, match_config=match_config)
+    steps: list[dict[str, Any]] = []
+    while decision is not None:
+        seat = int(decision["actor_seat"])
+        action_index = policies[seat].choose(decision, match_config["decks"][seat])
+        steps.append({"decision": decision, "action_index": action_index})
+        transition = env.step(action_index)
+        decision = transition["next"]
+    return {
+        "format_version": 1,
+        "observation_schema_version": 3,
+        "pack_hash": env.pack_hash,
+        "seed": seed,
+        "match_config": match_config,
+        "steps": steps,
+        "rewards": transition["rewards"],
+        "outcome": transition.get("outcome"),
+        "terminated": transition["terminated"],
+        "truncated": transition["truncated"],
+    }
+
+
+_WORKER_ENV: HearthEnv | None = None
+_WORKER_CATALOG: CardCatalog | None = None
+_WORKER_MODELS: dict[tuple[str, int], tuple[Any, Tensorizer]] = {}
+
+
+def _worker_init(
+    data_path: str,
+    base_match_config: dict[str, Any],
+    max_steps: int,
+    history_limit: int | None,
+    torch_threads: int,
+    card_hash_dim: int,
+) -> None:
+    global _WORKER_ENV, _WORKER_CATALOG
+    if torch_threads > 0:
+        try:
+            import torch
+
+            torch.set_num_threads(torch_threads)
+        except ImportError:
+            pass
+    _WORKER_ENV = HearthEnv(
+        data_path,
+        base_match_config,
+        seed=os.getpid(),
+        max_steps=max_steps,
+        history_limit=history_limit,
+    )
+    _WORKER_CATALOG = CardCatalog.build(
+        _WORKER_ENV.card_catalog, _WORKER_ENV.pack_hash, hash_dim=card_hash_dim
+    )
+
+
+def _policy(spec: dict[str, Any], seed: int) -> Policy:
+    kind = spec.get("kind", "heuristic")
+    if kind == "heuristic":
+        return HeuristicPolicy(seed, float(spec.get("noise", 0.08)))
+    if kind == "random":
+        return RandomPolicy(seed)
+    if kind != "model":
+        raise ValueError(f"unknown policy kind {kind}")
+    if _WORKER_CATALOG is None:
+        raise RuntimeError("rollout worker is not initialized")
+    path = str(spec["checkpoint"])
+    modified = Path(path).stat().st_mtime_ns
+    key = (path, modified)
+    cached = _WORKER_MODELS.get(key)
+    if cached is None:
+        model, _ = load_checkpoint(path, _WORKER_CATALOG, device="cpu")
+        tensorizer = Tensorizer(_WORKER_CATALOG, model.config)
+        cached = (model, tensorizer)
+        if len(_WORKER_MODELS) >= 4:
+            _WORKER_MODELS.pop(next(iter(_WORKER_MODELS)))
+        _WORKER_MODELS[key] = cached
+    model, tensorizer = cached
+    return ModelPolicy(
+        model,
+        tensorizer,
+        device="cpu",
+        epsilon=float(spec.get("epsilon", 0.0)),
+        seed=seed,
+    )
+
+
+def _worker_play(job: RolloutJob) -> dict[str, Any]:
+    if _WORKER_ENV is None:
+        raise RuntimeError("rollout worker is not initialized")
+    policies = [
+        _policy(spec, job.seed ^ (seat << 32)) for seat, spec in enumerate(job.policies)
+    ]
+    return play_episode(_WORKER_ENV, policies, job.match_config, job.seed)
+
+
+class ParallelCollector:
+    """Persistent OS workers; each worker owns and reuses one Lua runtime."""
+
+    def __init__(
+        self,
+        data_path: str | Path,
+        base_match_config: dict[str, Any],
+        *,
+        workers: int,
+        max_steps: int = 1000,
+        history_limit: int | None = 96,
+        torch_threads: int = 1,
+        card_hash_dim: int = 256,
+    ) -> None:
+        if workers < 1:
+            raise ValueError("workers must be positive")
+        self.executor = ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=mp.get_context("spawn"),
+            initializer=_worker_init,
+            initargs=(
+                str(data_path),
+                base_match_config,
+                max_steps,
+                history_limit,
+                torch_threads,
+                card_hash_dim,
+            ),
+        )
+
+    def collect(self, jobs: Sequence[RolloutJob]) -> list[dict[str, Any]]:
+        return list(self.executor.map(_worker_play, jobs, chunksize=1))
+
+    def close(self) -> None:
+        self.executor.shutdown(wait=True, cancel_futures=True)
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.close()
