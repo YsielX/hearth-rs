@@ -279,6 +279,23 @@ fn lootapalooza_special_cards_use_generic_lua_primitives() {
 }
 
 #[test]
+fn the_darkness_keeps_its_battlecry_owner_when_summon_transforms_it() {
+    let mut game = game_with_decks(mixed(&["LOOT_526", "CS2_120"]), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+
+    let darkness = play(&mut game, PlayerId::ONE, "LOOT_526", None);
+
+    assert_eq!(game.state().entity(darkness).unwrap().card_id, "LOOT_526d");
+    assert_eq!(
+        deck_ids(&game, PlayerId::TWO)
+            .iter()
+            .filter(|card_id| card_id.as_str() == "LOOT_526t")
+            .count(),
+        3
+    );
+}
+
+#[test]
 fn catalog_contains_only_traceable_official_cards() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     let definitions = runtime.definitions().collect::<Vec<_>>();
@@ -1239,6 +1256,74 @@ fn frozen_throne_generated_and_transforming_hero_powers_are_replayable() {
                 entity.card_id == "ICC_828t" && entity.attached_cards.len() == 2
             })
     );
+}
+
+#[test]
+fn zombeast_dispatches_choose_one_from_its_attached_beast_script() {
+    let mut runtime = Some(LuaCardRuntime::load_dir(data_path()).unwrap());
+    let mut discovered = None;
+    for seed in 0..128 {
+        let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
+            runtime.take().unwrap(),
+            repeated("CS2_120"),
+            repeated("CS2_120"),
+            seed,
+            ["ICC_828p".to_owned(), "HERO_08bp".to_owned()],
+            ["hunter".to_owned(), "mage".to_owned()],
+        )
+        .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        advance_to_mana(&mut game, PlayerId::ONE, 2);
+        game.dispatch(PlayerCommand::UseHeroPower { target: None })
+            .unwrap();
+        let robo_cub = game
+            .state()
+            .pending_input
+            .as_ref()
+            .unwrap()
+            .options
+            .iter()
+            .position(|option| option.value == ChoiceValue::Card("GVG_030".to_owned()));
+        if let Some(index) = robo_cub {
+            discovered = Some((game, index));
+            break;
+        }
+        runtime = Some(game.into_runtime());
+    }
+    let (mut game, robo_cub) = discovered.expect("Robo Cub was not offered in 128 discoveries");
+
+    game.dispatch(PlayerCommand::Choose { index: robo_cub })
+        .unwrap();
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    let zombeast = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .copied()
+        .find(|entity| game.state().entities[entity].card_id == "ICC_828t")
+        .unwrap();
+    assert!(
+        game.state().entities[&zombeast]
+            .attached_cards
+            .contains(&"GVG_030".to_owned())
+    );
+
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    game.dispatch(PlayerCommand::PlayCard {
+        card: zombeast,
+        target: None,
+    })
+    .unwrap();
+    assert_eq!(
+        game.state().pending_input.as_ref().unwrap().prompt,
+        "Choose One"
+    );
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    assert!(game.state().player(PlayerId::ONE).board.contains(&zombeast));
 }
 
 #[test]

@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import time
+from collections.abc import Iterable, Iterator
 from pathlib import Path
+from typing import Any
 
 from hearth_env import HearthEnv
 
@@ -95,6 +97,14 @@ def command_collect_bc(args: argparse.Namespace) -> None:
         for index in range(args.episodes)
     ]
     started = time.monotonic()
+    decisions = 0
+
+    def counted(episodes: Iterable[dict[str, Any]]) -> Iterator[dict[str, Any]]:
+        nonlocal decisions
+        for episode in episodes:
+            decisions += len(episode["steps"])
+            yield episode
+
     if args.workers > 0:
         with ParallelCollector(
             args.data,
@@ -104,9 +114,14 @@ def command_collect_bc(args: argparse.Namespace) -> None:
             history_limit=args.history_limit,
             card_hash_dim=catalog.hash_dim,
         ) as collector:
-            episodes = collector.collect(jobs)
+            written = write_episodes(
+                args.output,
+                counted(
+                    collector.iter_collect(jobs, progress_every=max(len(jobs) // 20, 1))
+                ),
+            )
     else:
-        episodes = [
+        episodes = (
             play_episode(
                 env,
                 [
@@ -117,12 +132,11 @@ def command_collect_bc(args: argparse.Namespace) -> None:
                 job.seed,
             )
             for job in jobs
-        ]
-    write_episodes(args.output, episodes)
+        )
+        written = write_episodes(args.output, counted(episodes))
     elapsed = time.monotonic() - started
-    decisions = sum(len(episode["steps"]) for episode in episodes)
     print(
-        f"wrote {len(episodes)} episodes / {decisions} decisions to {args.output} "
+        f"wrote {written} episodes / {decisions} decisions to {args.output} "
         f"in {elapsed:.1f}s ({decisions / max(elapsed, 1e-6):.1f} decisions/s)"
     )
 
@@ -250,9 +264,12 @@ def command_pipeline(args: argparse.Namespace) -> None:
             history_limit=args.history_limit,
             card_hash_dim=catalog.hash_dim,
         ) as collector:
-            episodes = collector.collect(jobs)
+            write_episodes(
+                demonstrations,
+                collector.iter_collect(jobs, progress_every=max(len(jobs) // 20, 1)),
+            )
     else:
-        episodes = [
+        episodes = (
             play_episode(
                 env,
                 [
@@ -263,8 +280,8 @@ def command_pipeline(args: argparse.Namespace) -> None:
                 job.seed,
             )
             for job in jobs
-        ]
-    write_episodes(demonstrations, episodes)
+        )
+        write_episodes(demonstrations, episodes)
     config = _train_config(args)
     config.bc_epochs = args.bc_epochs
     model_config = ModelConfig(

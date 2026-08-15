@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import multiprocessing as mp
 import os
-from collections.abc import Sequence
-from concurrent.futures import ProcessPoolExecutor
+from collections.abc import Iterator, Sequence
+from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -142,6 +142,7 @@ class ParallelCollector:
     ) -> None:
         if workers < 1:
             raise ValueError("workers must be positive")
+        self.workers = workers
         self.executor = ProcessPoolExecutor(
             max_workers=workers,
             mp_context=mp.get_context("spawn"),
@@ -156,8 +157,61 @@ class ParallelCollector:
             ),
         )
 
-    def collect(self, jobs: Sequence[RolloutJob]) -> list[dict[str, Any]]:
-        return list(self.executor.map(_worker_play, jobs, chunksize=1))
+    def collect(
+        self, jobs: Sequence[RolloutJob], *, progress_every: int = 0
+    ) -> list[dict[str, Any]]:
+        return list(self.iter_collect(jobs, progress_every=progress_every))
+
+    def iter_collect(
+        self, jobs: Sequence[RolloutJob], *, progress_every: int = 0
+    ) -> Iterator[dict[str, Any]]:
+        """Yield episodes in job order with bounded in-flight results."""
+
+        pending_jobs = iter(enumerate(jobs))
+        futures: dict[Any, tuple[int, RolloutJob]] = {}
+        ready: dict[int, dict[str, Any]] = {}
+        in_flight_limit = self.workers * 2
+
+        def submit_next() -> bool:
+            try:
+                index, job = next(pending_jobs)
+            except StopIteration:
+                return False
+            futures[self.executor.submit(_worker_play, job)] = (index, job)
+            return True
+
+        for _ in range(min(len(jobs), in_flight_limit)):
+            submit_next()
+
+        completed = 0
+        next_index = 0
+        while futures or ready:
+            if next_index in ready:
+                episode = ready.pop(next_index)
+                next_index += 1
+                completed += 1
+                while len(futures) + len(ready) < in_flight_limit and submit_next():
+                    pass
+                if progress_every > 0 and (
+                    completed % progress_every == 0 or completed == len(jobs)
+                ):
+                    print(f"rollout progress={completed}/{len(jobs)}", flush=True)
+                yield episode
+                continue
+
+            done, _ = wait(futures, return_when=FIRST_COMPLETED)
+            for future in done:
+                index, job = futures.pop(future)
+                try:
+                    ready[index] = future.result()
+                except Exception as error:
+                    classes = job.match_config.get("classes", ["?", "?"])
+                    raise RuntimeError(
+                        f"rollout failed: seed={job.seed}, classes={classes}, "
+                        f"job_index={index}"
+                    ) from error
+            while len(futures) + len(ready) < in_flight_limit and submit_next():
+                pass
 
     def close(self) -> None:
         self.executor.shutdown(wait=True, cancel_futures=True)

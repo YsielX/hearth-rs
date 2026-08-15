@@ -699,12 +699,11 @@ impl<R: CardRuntime> Game<R> {
                     return Ok(false);
                 }
                 let max = self.state.player(player).board.len();
-                if position.is_some_and(|position| position > max) {
-                    return Err(GameError::InvalidBoardPosition {
-                        position: position.unwrap(),
-                        max,
-                    });
-                }
+                // Effects may carry a position remembered before an atomic
+                // death batch removed several minions. Preserve the intended
+                // relative placement by clamping to the current board edge;
+                // player-command positions are still validated strictly.
+                let position = position.map(|position| position.min(max));
                 let definition_kind = self
                     .runtime
                     .definition(&card_id)

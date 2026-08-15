@@ -118,6 +118,27 @@ fn tgt_catalog_is_the_exact_132_card_collectible_set() {
 }
 
 #[test]
+fn dark_bargain_clamps_a_deathrattle_position_after_simultaneous_deaths() {
+    let mut game = game(mixed(&["CS2_120", "FP1_002"]), repeated("AT_025"));
+    wait_for_hand(&mut game, PlayerId::ONE, "CS2_120");
+    wait_for_hand(&mut game, PlayerId::ONE, "FP1_002");
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "CS2_120", None);
+    play(&mut game, PlayerId::ONE, "FP1_002", None);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "AT_025", None);
+
+    let board = &game.state().player(PlayerId::ONE).board;
+    assert_eq!(board.len(), 2);
+    assert!(
+        board
+            .iter()
+            .all(|entity| game.state().entity(*entity).unwrap().card_id == "FP1_002t")
+    );
+}
+
+#[test]
 fn astral_communion_discards_the_hand_fills_mana_and_gives_excess_mana_at_ten() {
     let mut ramp = game(repeated("AT_043"), repeated("CS2_120"));
     advance_to_mana(&mut ramp, PlayerId::ONE, 5);

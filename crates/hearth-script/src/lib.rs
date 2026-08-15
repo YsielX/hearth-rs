@@ -886,6 +886,55 @@ impl LuaCardRuntime {
         Ok(output)
     }
 
+    fn bind_unique_keyword_continuation_owners(
+        &self,
+        state: &GameState,
+        source: EntityId,
+        effects: &mut [EffectSpec],
+    ) -> Result<(), String> {
+        let entity = state
+            .entity(source)
+            .ok_or_else(|| format!("unknown keyword continuation source entity {source}"))?;
+        for effect in effects {
+            let EffectSpec::Continue {
+                hook,
+                continuation_owner,
+                ..
+            } = effect
+            else {
+                continue;
+            };
+            if continuation_owner.is_some() {
+                continue;
+            }
+
+            let mut candidates = Vec::new();
+            if !entity.silenced {
+                candidates.push(entity.card_id.clone());
+            }
+            candidates.extend(entity.attached_cards.iter().cloned());
+            if let Some(attachments) = entity.hook_attachments.get(hook) {
+                candidates.extend(attachments.iter().cloned());
+            }
+
+            let mut owners = Vec::new();
+            for card_id in candidates {
+                let module = self.module(&card_id)?;
+                if module
+                    .get::<Option<Function>>(hook.as_str())
+                    .map_err(|error| error.to_string())?
+                    .is_some()
+                {
+                    owners.push(card_id);
+                }
+            }
+            if owners.len() == 1 {
+                *continuation_owner = owners.pop();
+            }
+        }
+        Ok(())
+    }
+
     fn action_target_mode(module: &Table, action: &str) -> Result<TargetMode, String> {
         let Some(modes) = module
             .get::<Option<Table>>("action_target_modes")
@@ -1272,6 +1321,7 @@ impl CardRuntime for LuaCardRuntime {
                 output.extend(effects.borrow_mut().drain(..));
             }
         }
+        self.bind_unique_keyword_continuation_owners(state, source, &mut output)?;
         let module = self.module(&entity.card_id)?;
         if let Some(effects) = module
             .get::<Option<Table>>("action_effects")
@@ -1293,9 +1343,10 @@ impl CardRuntime for LuaCardRuntime {
             function
                 .call::<()>((ctx, source.0, spent, target.map(|id| id.0)))
                 .map_err(|error| format!("card action {action}: {error}"))?;
-            output.extend(emitted.borrow_mut().drain(..));
+            let mut generated = emitted.borrow_mut().drain(..).collect::<Vec<_>>();
+            bind_continuation_owner(&mut generated, &entity.card_id);
+            output.extend(generated);
         }
-        bind_continuation_owner(&mut output, &entity.card_id);
         Ok(output)
     }
 
@@ -1316,8 +1367,15 @@ impl CardRuntime for LuaCardRuntime {
         if let Some(function) = function {
             output.extend(self.invoke_effect_hook(state, source, function, target)?);
         }
-        output.extend(self.invoke_keyword_effect_hooks(state, source, "on_play", target)?);
         bind_continuation_owner(&mut output, &entity.card_id);
+        let mut keyword_effects =
+            self.invoke_keyword_effect_hooks(state, source, "on_play", target)?;
+        // Keyword modules are generic dispatchers. Resolve an unambiguous
+        // handler now so a summon trigger cannot transform the host before the
+        // continuation runs. Keep multi-handler dispatches unowned so every
+        // attached implementation still executes.
+        self.bind_unique_keyword_continuation_owners(state, source, &mut keyword_effects)?;
+        output.extend(keyword_effects);
         Ok(output)
     }
 
@@ -1338,13 +1396,11 @@ impl CardRuntime for LuaCardRuntime {
         if let Some(function) = function {
             output.extend(self.invoke_effect_hook(state, source, function, target)?);
         }
-        output.extend(self.invoke_keyword_effect_hooks(
-            state,
-            source,
-            "on_location_use",
-            target,
-        )?);
         bind_continuation_owner(&mut output, &entity.card_id);
+        let mut keyword_effects =
+            self.invoke_keyword_effect_hooks(state, source, "on_location_use", target)?;
+        self.bind_unique_keyword_continuation_owners(state, source, &mut keyword_effects)?;
+        output.extend(keyword_effects);
         Ok(output)
     }
 
@@ -1383,10 +1439,9 @@ impl CardRuntime for LuaCardRuntime {
         }
         for keyword in self.active_keyword_ids(state, listener)? {
             let module = self.keyword_module(&keyword)?;
-            // Keyword modules dispatch lifecycle hooks to the card and every
-            // hook attachment on the host. Do not freeze these generic
-            // dispatches to the host's current card module.
-            output.extend(self.invoke_triggers(state, listener, event, module)?);
+            let mut generated = self.invoke_triggers(state, listener, event, module)?;
+            self.bind_unique_keyword_continuation_owners(state, listener, &mut generated)?;
+            output.extend(generated);
         }
         Ok(output)
     }
