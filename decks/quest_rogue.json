@@ -3,6 +3,11 @@
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "source": "https://blizzardwatch.com/2017/04/17/playing-hearthstones-cavern-rogue/",
+  "format": "year_of_the_mammoth_standard",
+  "era_cutoff": "UNGORO",
+  "archetype": "quest",
+  "strategy": "combo",
+  "bc_eligible": false,
   "cards": [
     "EX1_613",
     "EX1_145", "EX1_145",

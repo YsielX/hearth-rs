@@ -1,0 +1,187 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warrior): No Pain, No Gain",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-warrior-no-pain-no-gain/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Warrior): No Pain, No Gain",
+  "source_cards": [
+    {
+      "name": "Animated Berserker",
+      "count": 2
+    },
+    {
+      "name": "Blood To Ichor",
+      "count": 1
+    },
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Slam",
+      "count": 1
+    },
+    {
+      "name": "Battle Rage",
+      "count": 1
+    },
+    {
+      "name": "Cruel Taskmaster",
+      "count": 1
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Sleep with the Fishes",
+      "count": 1
+    },
+    {
+      "name": "Frothing Berserker",
+      "count": 2
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Val’kyr Soulclaimer",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Bloodhoof Brave",
+      "count": 2
+    },
+    {
+      "name": "Brawl",
+      "count": 1
+    },
+    {
+      "name": "Death Revenant",
+      "count": 1
+    },
+    {
+      "name": "Grommash Hellscream",
+      "count": 1
+    },
+    {
+      "name": "Rotface",
+      "count": 1
+    },
+    {
+      "name": "Scourgelord Garrosh",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Night Howler",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.36666666666666664,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Cruel Taskmaster",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Sleep with the Fishes",
+      "replacement_id": "CFM_716"
+    },
+    {
+      "source": "Grommash Hellscream",
+      "replacement": "Rotface",
+      "replacement_id": "ICC_405"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "ICC_238",
+    "ICC_238",
+    "OG_314",
+    "GVG_052",
+    "GVG_052",
+    "OG_314",
+    "EX1_606",
+    "OG_149",
+    "CS2_106",
+    "CS2_106",
+    "CFM_716",
+    "BRM_019",
+    "BRM_019",
+    "OG_149",
+    "OG_149",
+    "ICC_408",
+    "ICC_408",
+    "ICC_064",
+    "ICC_064",
+    "OG_218",
+    "OG_218",
+    "CFM_716",
+    "ICC_450",
+    "ICC_405",
+    "ICC_405",
+    "ICC_834",
+    "EX1_096",
+    "EX1_096",
+    "ICC_031",
+    "ICC_031"
+  ]
+}

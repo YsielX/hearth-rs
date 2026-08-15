@@ -1,0 +1,217 @@
+{
+  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Highlander Priest",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "highlander",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/disguisedtoasts-kft-highlander-priest/",
+  "source_collection": "kft_deck_index",
+  "source_name": "DisguisedToast’s KFT Highlander Priest",
+  "source_cards": [
+    {
+      "name": "Silence",
+      "count": 1
+    },
+    {
+      "name": "Northshire Cleric",
+      "count": 1
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 1
+    },
+    {
+      "name": "Power Word: Shield",
+      "count": 1
+    },
+    {
+      "name": "Radiant Elemental",
+      "count": 1
+    },
+    {
+      "name": "Shadow Visions",
+      "count": 1
+    },
+    {
+      "name": "Shadow Word: Death",
+      "count": 1
+    },
+    {
+      "name": "Shadow Word: Pain",
+      "count": 1
+    },
+    {
+      "name": "Spirit Lash",
+      "count": 1
+    },
+    {
+      "name": "Curious Glimmerroot",
+      "count": 1
+    },
+    {
+      "name": "Holy Nova",
+      "count": 1
+    },
+    {
+      "name": "Kabal Talonpriest",
+      "count": 1
+    },
+    {
+      "name": "Eternal Servitude",
+      "count": 1
+    },
+    {
+      "name": "Kazakus",
+      "count": 1
+    },
+    {
+      "name": "Lyra the Sunshard",
+      "count": 1
+    },
+    {
+      "name": "Priest of the Feast",
+      "count": 1
+    },
+    {
+      "name": "Dragonfire Potion",
+      "count": 1
+    },
+    {
+      "name": "Raza the Chained",
+      "count": 1
+    },
+    {
+      "name": "Prophet Velen",
+      "count": 1
+    },
+    {
+      "name": "Shadowreaper Anduin",
+      "count": 1
+    },
+    {
+      "name": "Obsidian Statue",
+      "count": 1
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Doomsayer",
+      "count": 1
+    },
+    {
+      "name": "Loot Hoarder",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 1
+    },
+    {
+      "name": "Tar Creeper",
+      "count": 1
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "Harrison Jones",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Shadow Word: Death",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Potion of Madness",
+      "replacement_id": "CFM_603"
+    },
+    {
+      "source": "Holy Nova",
+      "replacement": "Excavated Evil",
+      "replacement_id": "LOE_111"
+    },
+    {
+      "source": "Prophet Velen",
+      "replacement": "Confessor Paletress",
+      "replacement_id": "AT_018"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Harrison Jones",
+      "replacement": "Gluttonous Ooze",
+      "replacement_id": "UNG_946"
+    }
+  ],
+  "cards": [
+    "EX1_332",
+    "UNG_032",
+    "CFM_603",
+    "CFM_626",
+    "UNG_034",
+    "UNG_029",
+    "LOE_104",
+    "CFM_603",
+    "ICC_802",
+    "UNG_035",
+    "LOE_111",
+    "CFM_626",
+    "ICC_213",
+    "CFM_621",
+    "UNG_963",
+    "KAR_035",
+    "CFM_662",
+    "CFM_020",
+    "AT_018",
+    "ICC_830",
+    "ICC_214",
+    "EX1_012",
+    "GVG_076",
+    "EX1_096",
+    "EX1_096",
+    "UNG_928",
+    "KAR_114",
+    "UNG_946",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Hunter): The Eternal Hunt",
+  "class": "hunter",
+  "hero_power": "HERO_05bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-hunter-eternal-hunt/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Hunter): The Eternal Hunt",
+  "source_cards": [
+    {
+      "name": "Play Dead",
+      "count": 2
+    },
+    {
+      "name": "Terrorscale Stalker",
+      "count": 2
+    },
+    {
+      "name": "Toxic Arrow",
+      "count": 2
+    },
+    {
+      "name": "Deadly Shot",
+      "count": 2
+    },
+    {
+      "name": "Stitched Tracker",
+      "count": 2
+    },
+    {
+      "name": "Corpse Widow",
+      "count": 2
+    },
+    {
+      "name": "Deathstalker Rexxar",
+      "count": 1
+    },
+    {
+      "name": "Savannah Highmane",
+      "count": 2
+    },
+    {
+      "name": "Abominable Bowman",
+      "count": 2
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Devilsaur Egg",
+      "count": 2
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "Defender of Argus",
+      "count": 2
+    },
+    {
+      "name": "Meat Wagon",
+      "count": 2
+    },
+    {
+      "name": "Spiritsinger Umbra",
+      "count": 1
+    },
+    {
+      "name": "Validated Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Deadly Shot",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Deadly Shot",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Savannah Highmane",
+      "replacement": "Infested Wolf",
+      "replacement_id": "OG_216"
+    },
+    {
+      "source": "Savannah Highmane",
+      "replacement": "Infested Wolf",
+      "replacement_id": "OG_216"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    }
+  ],
+  "cards": [
+    "ICC_052",
+    "ICC_052",
+    "UNG_800",
+    "UNG_800",
+    "ICC_049",
+    "ICC_049",
+    "UNG_910",
+    "UNG_910",
+    "ICC_415",
+    "ICC_415",
+    "ICC_243",
+    "ICC_243",
+    "ICC_828",
+    "OG_216",
+    "OG_216",
+    "ICC_825",
+    "ICC_825",
+    "CFM_120",
+    "CFM_120",
+    "UNG_083",
+    "UNG_083",
+    "ICC_854",
+    "OG_174",
+    "OG_174",
+    "ICC_812",
+    "ICC_812",
+    "UNG_900",
+    "OG_200",
+    "OG_200",
+    "OG_133"
+  ]
+}

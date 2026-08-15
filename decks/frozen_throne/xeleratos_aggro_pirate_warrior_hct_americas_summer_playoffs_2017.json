@@ -1,0 +1,211 @@
+{
+  "name": "KFT 2017 runtime-adapted: Xelerato’s Aggro Pirate Warrior – HCT Americas Summer Playoffs 2017",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "pirate",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/xeleratos-aggro-pirate-warrior-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Xelerato’s Aggro Pirate Warrior – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "N’Zoth’s First Mate",
+      "count": 2
+    },
+    {
+      "name": "Upgrade!",
+      "count": 2
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Heroic Strike",
+      "count": 2
+    },
+    {
+      "name": "Bloodsail Cultist",
+      "count": 2
+    },
+    {
+      "name": "Frothing Berserker",
+      "count": 2
+    },
+    {
+      "name": "Kor’kron Elite",
+      "count": 2
+    },
+    {
+      "name": "Arcanite Reaper",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Southsea Deckhand",
+      "count": 2
+    },
+    {
+      "name": "Bloodsail Raider",
+      "count": 2
+    },
+    {
+      "name": "Southsea Captain",
+      "count": 2
+    },
+    {
+      "name": "Dread Corsair",
+      "count": 2
+    },
+    {
+      "name": "Spellbreaker",
+      "count": 2
+    },
+    {
+      "name": "Bittertide Hydra",
+      "count": 2
+    },
+    {
+      "name": "Captain Greenskin",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.6333333333333333,
+  "substitutions": [
+    {
+      "source": "Upgrade!",
+      "replacement": "Bloodsail Cultist",
+      "replacement_id": "OG_315"
+    },
+    {
+      "source": "Upgrade!",
+      "replacement": "Bloodsail Cultist",
+      "replacement_id": "OG_315"
+    },
+    {
+      "source": "Heroic Strike",
+      "replacement": "Bash",
+      "replacement_id": "AT_064"
+    },
+    {
+      "source": "Heroic Strike",
+      "replacement": "Bash",
+      "replacement_id": "AT_064"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Kor’kron Elite",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    },
+    {
+      "source": "Kor’kron Elite",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    },
+    {
+      "source": "Arcanite Reaper",
+      "replacement": "Fool's Bane",
+      "replacement_id": "KAR_028"
+    },
+    {
+      "source": "Arcanite Reaper",
+      "replacement": "Fool's Bane",
+      "replacement_id": "KAR_028"
+    },
+    {
+      "source": "Bloodsail Raider",
+      "replacement": "Naga Corsair",
+      "replacement_id": "CFM_651"
+    },
+    {
+      "source": "Bloodsail Raider",
+      "replacement": "Naga Corsair",
+      "replacement_id": "CFM_651"
+    },
+    {
+      "source": "Southsea Captain",
+      "replacement": "Phantom Freebooter",
+      "replacement_id": "ICC_018"
+    },
+    {
+      "source": "Southsea Captain",
+      "replacement": "Phantom Freebooter",
+      "replacement_id": "ICC_018"
+    },
+    {
+      "source": "Dread Corsair",
+      "replacement": "Blackwater Pirate",
+      "replacement_id": "OG_322"
+    },
+    {
+      "source": "Dread Corsair",
+      "replacement": "Blackwater Pirate",
+      "replacement_id": "OG_322"
+    },
+    {
+      "source": "Spellbreaker",
+      "replacement": "Wailing Soul",
+      "replacement_id": "FP1_016"
+    },
+    {
+      "source": "Spellbreaker",
+      "replacement": "Wailing Soul",
+      "replacement_id": "FP1_016"
+    },
+    {
+      "source": "Captain Greenskin",
+      "replacement": "Skycap'n Kragg",
+      "replacement_id": "AT_070"
+    }
+  ],
+  "cards": [
+    "OG_312",
+    "OG_312",
+    "OG_315",
+    "OG_315",
+    "CS2_106",
+    "CS2_106",
+    "AT_064",
+    "AT_064",
+    "OG_315",
+    "OG_315",
+    "BRM_019",
+    "BRM_019",
+    "AT_087",
+    "AT_087",
+    "KAR_028",
+    "KAR_028",
+    "CFM_637",
+    "CS2_146",
+    "CS2_146",
+    "CFM_651",
+    "CFM_651",
+    "ICC_018",
+    "ICC_018",
+    "OG_322",
+    "OG_322",
+    "FP1_016",
+    "FP1_016",
+    "UNG_087",
+    "UNG_087",
+    "AT_070"
+  ]
+}

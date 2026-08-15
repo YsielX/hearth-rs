@@ -1,0 +1,198 @@
+{
+  "name": "KFT 2017 runtime-adapted: Squid’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "nzoth_deathrattle",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/squids-nzoth-warrior-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Squid’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Slam",
+      "count": 1
+    },
+    {
+      "name": "Whirlwind",
+      "count": 2
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Battle Rage",
+      "count": 2
+    },
+    {
+      "name": "Dead Man’s Hand",
+      "count": 1
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Shield Block",
+      "count": 2
+    },
+    {
+      "name": "Sleep with the Fishes",
+      "count": 2
+    },
+    {
+      "name": "Mountainfire Armor",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Brawl",
+      "count": 1
+    },
+    {
+      "name": "Direhorn Hatchling",
+      "count": 2
+    },
+    {
+      "name": "Scourgelord Garrosh",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Harrison Jones",
+      "count": 1
+    },
+    {
+      "name": "Cairne Bloodhoof",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4666666666666667,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Bouncing Blade",
+      "replacement_id": "GVG_050"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Harrison Jones",
+      "replacement": "Gluttonous Ooze",
+      "replacement_id": "UNG_946"
+    },
+    {
+      "source": "Cairne Bloodhoof",
+      "replacement": "Infested Tauren",
+      "replacement_id": "OG_249"
+    }
+  ],
+  "cards": [
+    "GVG_052",
+    "GVG_052",
+    "OG_314",
+    "OG_149",
+    "OG_149",
+    "CFM_756",
+    "CFM_756",
+    "EX1_606",
+    "EX1_606",
+    "ICC_091",
+    "CS2_106",
+    "CS2_106",
+    "EX1_606",
+    "EX1_606",
+    "CFM_716",
+    "CFM_716",
+    "ICC_062",
+    "ICC_062",
+    "ICC_064",
+    "ICC_064",
+    "GVG_050",
+    "UNG_957",
+    "UNG_957",
+    "ICC_834",
+    "EX1_096",
+    "EX1_096",
+    "UNG_946",
+    "UNG_946",
+    "OG_249",
+    "OG_133"
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "name": "KFT 2017 runtime-adapted: Frozen Throne Divine Shield Aggro Paladin Deck List Guide – Theorycraft",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "aggro",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/divine-shield-aggro-paladin-deck-list-guide-standard/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Frozen Throne Divine Shield Aggro Paladin Deck List Guide – Theorycraft",
+  "source_cards": [
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "Dark Conviction",
+      "count": 2
+    },
+    {
+      "name": "Aldor Peacekeeper",
+      "count": 2
+    },
+    {
+      "name": "Divine Favor",
+      "count": 1
+    },
+    {
+      "name": "Rallying Blade",
+      "count": 2
+    },
+    {
+      "name": "Wickerflame Burnbristle",
+      "count": 1
+    },
+    {
+      "name": "Blessing of Kings",
+      "count": 2
+    },
+    {
+      "name": "Truesilver Champion",
+      "count": 2
+    },
+    {
+      "name": "Bolvar, Fireblood",
+      "count": 1
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 2
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Argent Squire",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Corpsetaker",
+      "count": 2
+    },
+    {
+      "name": "Dread Corsair",
+      "count": 2
+    },
+    {
+      "name": "Leeroy Jenkins",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3333333333333333,
+  "substitutions": [
+    {
+      "source": "Aldor Peacekeeper",
+      "replacement": "Keeper of Uldaman",
+      "replacement_id": "LOE_017"
+    },
+    {
+      "source": "Aldor Peacekeeper",
+      "replacement": "Keeper of Uldaman",
+      "replacement_id": "LOE_017"
+    },
+    {
+      "source": "Divine Favor",
+      "replacement": "Small-Time Recruits",
+      "replacement_id": "CFM_905"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Coghammer",
+      "replacement_id": "GVG_059"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Coghammer",
+      "replacement_id": "GVG_059"
+    },
+    {
+      "source": "Dread Corsair",
+      "replacement": "Blackwater Pirate",
+      "replacement_id": "OG_322"
+    },
+    {
+      "source": "Dread Corsair",
+      "replacement": "Blackwater Pirate",
+      "replacement_id": "OG_322"
+    },
+    {
+      "source": "Leeroy Jenkins",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    }
+  ],
+  "cards": [
+    "ICC_038",
+    "ICC_038",
+    "ICC_039",
+    "ICC_039",
+    "LOE_017",
+    "LOE_017",
+    "CFM_905",
+    "OG_222",
+    "OG_222",
+    "CFM_815",
+    "AT_074",
+    "AT_074",
+    "GVG_059",
+    "GVG_059",
+    "ICC_858",
+    "UNG_952",
+    "UNG_952",
+    "UNG_015",
+    "EX1_008",
+    "EX1_008",
+    "CFM_637",
+    "EX1_162",
+    "EX1_162",
+    "UNG_072",
+    "UNG_072",
+    "ICC_912",
+    "ICC_912",
+    "OG_322",
+    "OG_322",
+    "AT_087"
+  ]
+}

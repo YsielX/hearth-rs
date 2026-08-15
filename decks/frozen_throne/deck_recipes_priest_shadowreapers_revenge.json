@@ -1,0 +1,194 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Priest): Shadowreaper’s Revenge",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-priest-shadowreapers-revenge/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Priest): Shadowreaper’s Revenge",
+  "source_cards": [
+    {
+      "name": "Circle of Healing",
+      "count": 2
+    },
+    {
+      "name": "Northshire Cleric",
+      "count": 2
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 2
+    },
+    {
+      "name": "Power Word: Shield",
+      "count": 2
+    },
+    {
+      "name": "Mind Blast",
+      "count": 2
+    },
+    {
+      "name": "Radiant Elemental",
+      "count": 2
+    },
+    {
+      "name": "Shadow Visions",
+      "count": 2
+    },
+    {
+      "name": "Shadow Word: Pain",
+      "count": 2
+    },
+    {
+      "name": "Spirit Lash",
+      "count": 2
+    },
+    {
+      "name": "Holy Nova",
+      "count": 1
+    },
+    {
+      "name": "Eternal Servitude",
+      "count": 2
+    },
+    {
+      "name": "Lyra the Sunshard",
+      "count": 1
+    },
+    {
+      "name": "Dragonfire Potion",
+      "count": 1
+    },
+    {
+      "name": "Prophet Velen",
+      "count": 1
+    },
+    {
+      "name": "Shadowreaper Anduin",
+      "count": 1
+    },
+    {
+      "name": "Tainted Zealot",
+      "count": 2
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 2
+    },
+    {
+      "name": "Prince Taldaram",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4666666666666667,
+  "substitutions": [
+    {
+      "source": "Circle of Healing",
+      "replacement": "Binding Heal",
+      "replacement_id": "UNG_030"
+    },
+    {
+      "source": "Circle of Healing",
+      "replacement": "Binding Heal",
+      "replacement_id": "UNG_030"
+    },
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Mind Blast",
+      "replacement": "Shadowbomber",
+      "replacement_id": "GVG_009"
+    },
+    {
+      "source": "Mind Blast",
+      "replacement": "Shadowbomber",
+      "replacement_id": "GVG_009"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Holy Nova",
+      "replacement": "Excavated Evil",
+      "replacement_id": "LOE_111"
+    },
+    {
+      "source": "Prophet Velen",
+      "replacement": "Confessor Paletress",
+      "replacement_id": "AT_018"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    }
+  ],
+  "cards": [
+    "UNG_030",
+    "UNG_030",
+    "UNG_032",
+    "UNG_032",
+    "CFM_603",
+    "CFM_603",
+    "CFM_626",
+    "CFM_626",
+    "GVG_009",
+    "GVG_009",
+    "UNG_034",
+    "UNG_034",
+    "UNG_029",
+    "UNG_029",
+    "LOE_104",
+    "LOE_104",
+    "ICC_802",
+    "ICC_802",
+    "LOE_111",
+    "ICC_213",
+    "ICC_213",
+    "UNG_963",
+    "CFM_662",
+    "AT_018",
+    "ICC_830",
+    "ICC_913",
+    "ICC_913",
+    "GVG_076",
+    "GVG_076",
+    "ICC_852"
+  ]
+}

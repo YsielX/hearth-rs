@@ -1,0 +1,169 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Paladin): Primordial Blessings",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-paladin-primordial-blessings/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Paladin): Primordial Blessings",
+  "source_cards": [
+    {
+      "name": "Adaptation",
+      "count": 2
+    },
+    {
+      "name": "Blessing of Wisdom",
+      "count": 1
+    },
+    {
+      "name": "Divine Strength",
+      "count": 2
+    },
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "The Last Kaleidosaur",
+      "count": 1
+    },
+    {
+      "name": "Dark Conviction",
+      "count": 2
+    },
+    {
+      "name": "Desperate Stand",
+      "count": 2
+    },
+    {
+      "name": "Hydrologist",
+      "count": 2
+    },
+    {
+      "name": "Primalfin Champion",
+      "count": 2
+    },
+    {
+      "name": "Silvermoon Portal",
+      "count": 1
+    },
+    {
+      "name": "Wickerflame Burnbristle",
+      "count": 1
+    },
+    {
+      "name": "Blessing of Kings",
+      "count": 2
+    },
+    {
+      "name": "Truesilver Champion",
+      "count": 2
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 2
+    },
+    {
+      "name": "Dinosize",
+      "count": 1
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 2
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "The Voraxx",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Blessing of Wisdom",
+      "replacement": "Solemn Vigil",
+      "replacement_id": "BRM_001"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Rallying Blade",
+      "replacement_id": "OG_222"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Rallying Blade",
+      "replacement_id": "OG_222"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "UNG_961",
+    "UNG_961",
+    "BRM_001",
+    "OG_223",
+    "OG_223",
+    "ICC_038",
+    "ICC_038",
+    "UNG_954",
+    "ICC_039",
+    "ICC_039",
+    "ICC_244",
+    "ICC_244",
+    "UNG_011",
+    "UNG_011",
+    "UNG_953",
+    "UNG_953",
+    "KAR_077",
+    "CFM_815",
+    "AT_074",
+    "AT_074",
+    "OG_222",
+    "OG_222",
+    "UNG_952",
+    "UNG_952",
+    "UNG_004",
+    "ICC_913",
+    "ICC_913",
+    "EX1_096",
+    "EX1_096",
+    "UNG_843"
+  ]
+}

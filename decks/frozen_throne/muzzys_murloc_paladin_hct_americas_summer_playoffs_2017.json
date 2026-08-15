@@ -1,0 +1,176 @@
+{
+  "name": "KFT 2017 runtime-adapted: Muzzy’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "murloc",
+  "strategy": "midrange",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/muzzys-murloc-paladin-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Muzzy’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "Vilefin Inquisitor",
+      "count": 2
+    },
+    {
+      "name": "Rallying Blade",
+      "count": 1
+    },
+    {
+      "name": "Wickerflame Burnbristle",
+      "count": 1
+    },
+    {
+      "name": "Blessing of Kings",
+      "count": 2
+    },
+    {
+      "name": "Truesilver Champion",
+      "count": 1
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 1
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Tirion Fordring",
+      "count": 1
+    },
+    {
+      "name": "Murloc Tidecaller",
+      "count": 2
+    },
+    {
+      "name": "Golakka Crawler",
+      "count": 2
+    },
+    {
+      "name": "Rockpool Hunter",
+      "count": 2
+    },
+    {
+      "name": "Murloc Warleader",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 1
+    },
+    {
+      "name": "Corpsetaker",
+      "count": 2
+    },
+    {
+      "name": "Gentle Megasaur",
+      "count": 2
+    },
+    {
+      "name": "Cobalt Scalebane",
+      "count": 1
+    },
+    {
+      "name": "Finja, the Flying Star",
+      "count": 1
+    },
+    {
+      "name": "The Curator",
+      "count": 1
+    },
+    {
+      "name": "Bonemare",
+      "count": 1
+    },
+    {
+      "name": "Stormwatcher",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Rallying Blade",
+      "replacement_id": "OG_222"
+    },
+    {
+      "source": "Tirion Fordring",
+      "replacement": "Ragnaros, Lightlord",
+      "replacement_id": "OG_229"
+    },
+    {
+      "source": "Murloc Tidecaller",
+      "replacement": "Murloc Tinyfin",
+      "replacement_id": "LOEA10_3"
+    },
+    {
+      "source": "Murloc Tidecaller",
+      "replacement": "Murloc Tinyfin",
+      "replacement_id": "LOEA10_3"
+    },
+    {
+      "source": "Murloc Warleader",
+      "replacement": "Gentle Megasaur",
+      "replacement_id": "UNG_089"
+    },
+    {
+      "source": "Murloc Warleader",
+      "replacement": "Gentle Megasaur",
+      "replacement_id": "UNG_089"
+    }
+  ],
+  "cards": [
+    "ICC_038",
+    "ICC_038",
+    "OG_006",
+    "OG_006",
+    "OG_222",
+    "CFM_815",
+    "AT_074",
+    "AT_074",
+    "OG_222",
+    "UNG_952",
+    "UNG_015",
+    "OG_229",
+    "LOEA10_3",
+    "LOEA10_3",
+    "UNG_807",
+    "UNG_807",
+    "UNG_073",
+    "UNG_073",
+    "UNG_089",
+    "UNG_089",
+    "UNG_072",
+    "ICC_912",
+    "ICC_912",
+    "UNG_089",
+    "UNG_089",
+    "ICC_029",
+    "CFM_344",
+    "KAR_061",
+    "ICC_705",
+    "UNG_813"
+  ]
+}

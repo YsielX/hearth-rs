@@ -1,0 +1,165 @@
+{
+  "name": "KFT 2017 runtime-adapted: Freohr’s Midrange Jade Shaman – HCT Americas Summer Playoffs 2017",
+  "class": "shaman",
+  "hero_power": "HERO_02bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "jade_midrange",
+  "strategy": "midrange",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/freohrs-midrange-jade-shaman-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Freohr’s Midrange Jade Shaman – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Devolve",
+      "count": 2
+    },
+    {
+      "name": "Flametongue Totem",
+      "count": 2
+    },
+    {
+      "name": "Jade Claws",
+      "count": 2
+    },
+    {
+      "name": "Maelstrom Portal",
+      "count": 2
+    },
+    {
+      "name": "Jade Lightning",
+      "count": 2
+    },
+    {
+      "name": "Mana Tide Totem",
+      "count": 2
+    },
+    {
+      "name": "Bloodlust",
+      "count": 2
+    },
+    {
+      "name": "Aya Blackpaw",
+      "count": 1
+    },
+    {
+      "name": "Thing from Below",
+      "count": 2
+    },
+    {
+      "name": "Al’Akir the Windlord",
+      "count": 1
+    },
+    {
+      "name": "Argent Squire",
+      "count": 2
+    },
+    {
+      "name": "Bloodsail Corsair",
+      "count": 2
+    },
+    {
+      "name": "Fire Fly",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 1
+    },
+    {
+      "name": "Corpsetaker",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Flametongue Totem",
+      "replacement": "Dire Wolf Alpha",
+      "replacement_id": "EX1_162"
+    },
+    {
+      "source": "Flametongue Totem",
+      "replacement": "Dire Wolf Alpha",
+      "replacement_id": "EX1_162"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Bloodlust",
+      "replacement": "Everyfin is Awesome",
+      "replacement_id": "LOE_113"
+    },
+    {
+      "source": "Bloodlust",
+      "replacement": "Everyfin is Awesome",
+      "replacement_id": "LOE_113"
+    },
+    {
+      "source": "Al’Akir the Windlord",
+      "replacement": "Windfury Harpy",
+      "replacement_id": "EX1_033"
+    },
+    {
+      "source": "Bloodsail Corsair",
+      "replacement": "Small-Time Buccaneer",
+      "replacement_id": "CFM_325"
+    },
+    {
+      "source": "Bloodsail Corsair",
+      "replacement": "Small-Time Buccaneer",
+      "replacement_id": "CFM_325"
+    }
+  ],
+  "cards": [
+    "CFM_696",
+    "CFM_696",
+    "EX1_162",
+    "EX1_162",
+    "CFM_717",
+    "CFM_717",
+    "KAR_073",
+    "KAR_073",
+    "CFM_707",
+    "CFM_707",
+    "EX1_096",
+    "EX1_096",
+    "LOE_113",
+    "LOE_113",
+    "CFM_902",
+    "OG_028",
+    "OG_028",
+    "EX1_033",
+    "EX1_008",
+    "EX1_008",
+    "CFM_325",
+    "CFM_325",
+    "UNG_809",
+    "UNG_809",
+    "CFM_637",
+    "UNG_072",
+    "ICC_912",
+    "ICC_912",
+    "ICC_705",
+    "ICC_705"
+  ]
+}

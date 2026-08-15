@@ -1,0 +1,150 @@
+{
+  "name": "KFT 2017 runtime-adapted: Monsanto’s Quest Druid – HCT Americas Summer Playoffs 2017",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "quest",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/monsantos-quest-druid-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Monsanto’s Quest Druid – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Jungle Giants",
+      "count": 1
+    },
+    {
+      "name": "Earthen Scales",
+      "count": 2
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Elder Longneck",
+      "count": 2
+    },
+    {
+      "name": "Mire Keeper",
+      "count": 2
+    },
+    {
+      "name": "Shellshifter",
+      "count": 2
+    },
+    {
+      "name": "Fatespinner",
+      "count": 2
+    },
+    {
+      "name": "Menagerie Warden",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Dark Arakkoa",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 2
+    },
+    {
+      "name": "Stranglethorn Tiger",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 2
+    },
+    {
+      "name": "Sated Threshadon",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Stranglethorn Tiger",
+      "replacement": "Sabretooth Stalker",
+      "replacement_id": "UNG_812"
+    },
+    {
+      "source": "Stranglethorn Tiger",
+      "replacement": "Sabretooth Stalker",
+      "replacement_id": "UNG_812"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "UNG_116",
+    "UNG_108",
+    "UNG_108",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "UNG_109",
+    "UNG_109",
+    "OG_202",
+    "OG_202",
+    "UNG_101",
+    "UNG_101",
+    "ICC_047",
+    "ICC_047",
+    "KAR_065",
+    "KAR_065",
+    "CFM_811",
+    "CFM_811",
+    "OG_293",
+    "ICC_085",
+    "ICC_085",
+    "UNG_812",
+    "UNG_812",
+    "ICC_705",
+    "ICC_705",
+    "UNG_010",
+    "ICC_314"
+  ]
+}

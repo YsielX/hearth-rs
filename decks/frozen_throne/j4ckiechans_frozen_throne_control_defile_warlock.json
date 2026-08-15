@@ -1,0 +1,186 @@
+{
+  "name": "KFT 2017 runtime-adapted: J4CKIECHAN’s Frozen Throne Control Defile Warlock",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "control",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/j4ckiechans-frozen-throne-control-defile-warlock/",
+  "source_collection": "kft_deck_index",
+  "source_name": "J4CKIECHAN’s Frozen Throne Control Defile Warlock",
+  "source_cards": [
+    {
+      "name": "Mortal Coil",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Defile",
+      "count": 2
+    },
+    {
+      "name": "Drain Soul",
+      "count": 2
+    },
+    {
+      "name": "Hellfire",
+      "count": 2
+    },
+    {
+      "name": "Shadow Bolt",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 2
+    },
+    {
+      "name": "Despicable Dreadlord",
+      "count": 2
+    },
+    {
+      "name": "Dread Infernal",
+      "count": 2
+    },
+    {
+      "name": "Abyssal Enforcer",
+      "count": 2
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Tainted Zealot",
+      "count": 2
+    },
+    {
+      "name": "Earthen Ring Farseer",
+      "count": 2
+    },
+    {
+      "name": "Happy Ghoul",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4666666666666667,
+  "substitutions": [
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Shadow Bolt",
+      "replacement": "Demonwrath",
+      "replacement_id": "BRM_005"
+    },
+    {
+      "source": "Shadow Bolt",
+      "replacement": "Demonwrath",
+      "replacement_id": "BRM_005"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Dread Infernal",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Dread Infernal",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    }
+  ],
+  "cards": [
+    "GVG_015",
+    "GVG_015",
+    "OG_241",
+    "OG_241",
+    "ICC_041",
+    "ICC_041",
+    "ICC_055",
+    "ICC_055",
+    "CFM_094",
+    "CFM_094",
+    "BRM_005",
+    "BRM_005",
+    "CFM_608",
+    "CFM_608",
+    "ICC_075",
+    "ICC_075",
+    "AT_020",
+    "AT_020",
+    "CFM_751",
+    "CFM_751",
+    "ICC_831",
+    "CFM_120",
+    "CFM_120",
+    "ICC_913",
+    "ICC_913",
+    "CFM_654",
+    "CFM_654",
+    "ICC_700",
+    "ICC_700",
+    "ICC_314"
+  ]
+}

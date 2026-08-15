@@ -1,0 +1,189 @@
+{
+  "name": "KFT 2017 runtime-adapted: DPacman’s Control Paladin – HCT Americas Summer Playoffs 2017",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "control",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/dpacmans-control-paladin-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "DPacman’s Control Paladin – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Equality",
+      "count": 2
+    },
+    {
+      "name": "Hydrologist",
+      "count": 2
+    },
+    {
+      "name": "Aldor Peacekeeper",
+      "count": 2
+    },
+    {
+      "name": "Consecration",
+      "count": 2
+    },
+    {
+      "name": "Wickerflame Burnbristle",
+      "count": 1
+    },
+    {
+      "name": "Truesilver Champion",
+      "count": 2
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 2
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Ragnaros, Lightlord",
+      "count": 1
+    },
+    {
+      "name": "Tirion Fordring",
+      "count": 1
+    },
+    {
+      "name": "Uther of the Ebon Blade",
+      "count": 1
+    },
+    {
+      "name": "Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "Golakka Crawler",
+      "count": 2
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Corpsetaker",
+      "count": 2
+    },
+    {
+      "name": "The Curator",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.43333333333333335,
+  "substitutions": [
+    {
+      "source": "Equality",
+      "replacement": "Enter the Coliseum",
+      "replacement_id": "AT_078"
+    },
+    {
+      "source": "Equality",
+      "replacement": "Enter the Coliseum",
+      "replacement_id": "AT_078"
+    },
+    {
+      "source": "Aldor Peacekeeper",
+      "replacement": "Keeper of Uldaman",
+      "replacement_id": "LOE_017"
+    },
+    {
+      "source": "Aldor Peacekeeper",
+      "replacement": "Keeper of Uldaman",
+      "replacement_id": "LOE_017"
+    },
+    {
+      "source": "Consecration",
+      "replacement": "Light's Sorrow",
+      "replacement_id": "ICC_071"
+    },
+    {
+      "source": "Consecration",
+      "replacement": "Light's Sorrow",
+      "replacement_id": "ICC_071"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Rallying Blade",
+      "replacement_id": "OG_222"
+    },
+    {
+      "source": "Truesilver Champion",
+      "replacement": "Rallying Blade",
+      "replacement_id": "OG_222"
+    },
+    {
+      "source": "Tirion Fordring",
+      "replacement": "Sneed's Old Shredder",
+      "replacement_id": "GVG_114"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    }
+  ],
+  "cards": [
+    "AT_078",
+    "AT_078",
+    "UNG_011",
+    "UNG_011",
+    "LOE_017",
+    "LOE_017",
+    "ICC_071",
+    "ICC_071",
+    "CFM_815",
+    "OG_222",
+    "OG_222",
+    "UNG_952",
+    "UNG_952",
+    "UNG_015",
+    "OG_229",
+    "GVG_114",
+    "ICC_829",
+    "GVG_076",
+    "GVG_076",
+    "UNG_807",
+    "UNG_807",
+    "ICC_913",
+    "ICC_913",
+    "UNG_072",
+    "UNG_072",
+    "ICC_912",
+    "ICC_912",
+    "KAR_061",
+    "UNG_848",
+    "UNG_848"
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "name": "KFT 2017 runtime-adapted: Dog’s Frozen Throne Discard Quest Warlock",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "quest",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/dogs-frozen-throne-discard-quest-warlock/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Dog’s Frozen Throne Discard Quest Warlock",
+  "source_cards": [
+    {
+      "name": "Lakkari Sacrifice",
+      "count": 1
+    },
+    {
+      "name": "Soulfire",
+      "count": 2
+    },
+    {
+      "name": "Clutchmother Zavas",
+      "count": 1
+    },
+    {
+      "name": "Darkshire Librarian",
+      "count": 2
+    },
+    {
+      "name": "Defile",
+      "count": 1
+    },
+    {
+      "name": "Malchezaar’s Imp",
+      "count": 2
+    },
+    {
+      "name": "Howlfiend",
+      "count": 2
+    },
+    {
+      "name": "Silverware Golem",
+      "count": 2
+    },
+    {
+      "name": "Lakkari Felhound",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 2
+    },
+    {
+      "name": "Blood-Queen Lana’thel",
+      "count": 1
+    },
+    {
+      "name": "Doomguard",
+      "count": 2
+    },
+    {
+      "name": "Lord Jaraxxus",
+      "count": 1
+    },
+    {
+      "name": "Twisting Nether",
+      "count": 2
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Acidic Swamp Ooze",
+      "count": 1
+    },
+    {
+      "name": "Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "Deathwing",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.43333333333333335,
+  "substitutions": [
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Lord Jaraxxus",
+      "replacement": "Bloodreaver Gul'dan",
+      "replacement_id": "ICC_831"
+    },
+    {
+      "source": "Twisting Nether",
+      "replacement": "DOOM!",
+      "replacement_id": "OG_239"
+    },
+    {
+      "source": "Twisting Nether",
+      "replacement": "DOOM!",
+      "replacement_id": "OG_239"
+    },
+    {
+      "source": "Acidic Swamp Ooze",
+      "replacement": "Gluttonous Ooze",
+      "replacement_id": "UNG_946"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Deathwing",
+      "replacement": "Deathwing, Dragonlord",
+      "replacement_id": "OG_317"
+    }
+  ],
+  "cards": [
+    "UNG_829",
+    "GVG_015",
+    "GVG_015",
+    "UNG_836",
+    "OG_109",
+    "OG_109",
+    "ICC_041",
+    "KAR_089",
+    "KAR_089",
+    "ICC_218",
+    "ICC_218",
+    "KAR_205",
+    "KAR_205",
+    "UNG_833",
+    "UNG_833",
+    "CFM_608",
+    "CFM_608",
+    "ICC_841",
+    "AT_020",
+    "AT_020",
+    "ICC_831",
+    "OG_239",
+    "OG_239",
+    "ICC_831",
+    "CFM_120",
+    "CFM_120",
+    "UNG_946",
+    "GVG_076",
+    "GVG_076",
+    "OG_317"
+  ]
+}

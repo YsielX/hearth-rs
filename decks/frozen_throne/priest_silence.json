@@ -1,0 +1,196 @@
+{
+  "name": "KFT 2017 runtime-adapted: Monsanto’s Silence Priest – HCT Americas Summer Playoffs 2017",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "silence",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/monsantos-silence-priest-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Monsanto’s Silence Priest – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Circle of Healing",
+      "count": 2
+    },
+    {
+      "name": "Silence",
+      "count": 2
+    },
+    {
+      "name": "Inner Fire",
+      "count": 2
+    },
+    {
+      "name": "Northshire Cleric",
+      "count": 2
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 2
+    },
+    {
+      "name": "Power Word: Shield",
+      "count": 2
+    },
+    {
+      "name": "Divine Spirit",
+      "count": 2
+    },
+    {
+      "name": "Purify",
+      "count": 2
+    },
+    {
+      "name": "Radiant Elemental",
+      "count": 2
+    },
+    {
+      "name": "Shadow Visions",
+      "count": 2
+    },
+    {
+      "name": "Kabal Talonpriest",
+      "count": 1
+    },
+    {
+      "name": "Lyra the Sunshard",
+      "count": 1
+    },
+    {
+      "name": "Ancient Watcher",
+      "count": 2
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 2
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Humongous Razorleaf",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.5333333333333333,
+  "substitutions": [
+    {
+      "source": "Circle of Healing",
+      "replacement": "Binding Heal",
+      "replacement_id": "UNG_030"
+    },
+    {
+      "source": "Circle of Healing",
+      "replacement": "Binding Heal",
+      "replacement_id": "UNG_030"
+    },
+    {
+      "source": "Inner Fire",
+      "replacement": "Confuse",
+      "replacement_id": "AT_016"
+    },
+    {
+      "source": "Inner Fire",
+      "replacement": "Confuse",
+      "replacement_id": "AT_016"
+    },
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Divine Spirit",
+      "replacement": "Power Word: Glory",
+      "replacement_id": "AT_013"
+    },
+    {
+      "source": "Divine Spirit",
+      "replacement": "Power Word: Glory",
+      "replacement_id": "AT_013"
+    },
+    {
+      "source": "Ancient Watcher",
+      "replacement": "Eerie Statue",
+      "replacement_id": "LOE_107"
+    },
+    {
+      "source": "Ancient Watcher",
+      "replacement": "Eerie Statue",
+      "replacement_id": "LOE_107"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "UNG_030",
+    "UNG_030",
+    "EX1_332",
+    "EX1_332",
+    "AT_016",
+    "AT_016",
+    "UNG_032",
+    "UNG_032",
+    "CFM_603",
+    "CFM_603",
+    "CFM_626",
+    "CFM_626",
+    "AT_013",
+    "AT_013",
+    "KAR_013",
+    "KAR_013",
+    "UNG_034",
+    "UNG_034",
+    "UNG_029",
+    "UNG_029",
+    "CFM_626",
+    "UNG_963",
+    "LOE_107",
+    "LOE_107",
+    "ICC_913",
+    "ICC_913",
+    "EX1_096",
+    "EX1_096",
+    "UNG_844",
+    "UNG_844"
+  ]
+}

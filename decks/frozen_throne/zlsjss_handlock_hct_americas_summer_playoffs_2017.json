@@ -1,0 +1,209 @@
+{
+  "name": "KFT 2017 runtime-adapted: Zlsjs’s Handlock – HCT Americas Summer Playoffs 2017",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "handlock",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/zlsjss-handlock-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Zlsjs’s Handlock – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Mortal Coil",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Defile",
+      "count": 2
+    },
+    {
+      "name": "Hellfire",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 2
+    },
+    {
+      "name": "Despicable Dreadlord",
+      "count": 2
+    },
+    {
+      "name": "Abyssal Enforcer",
+      "count": 2
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "Golakka Crawler",
+      "count": 1
+    },
+    {
+      "name": "Tainted Zealot",
+      "count": 1
+    },
+    {
+      "name": "Earthen Ring Farseer",
+      "count": 2
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Faceless Shambler",
+      "count": 1
+    },
+    {
+      "name": "Spellbreaker",
+      "count": 1
+    },
+    {
+      "name": "Twilight Drake",
+      "count": 2
+    },
+    {
+      "name": "Mountain Giant",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.5666666666666667,
+  "substitutions": [
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Spellbreaker",
+      "replacement": "Wailing Soul",
+      "replacement_id": "FP1_016"
+    },
+    {
+      "source": "Twilight Drake",
+      "replacement": "Midnight Drake",
+      "replacement_id": "OG_320"
+    },
+    {
+      "source": "Twilight Drake",
+      "replacement": "Midnight Drake",
+      "replacement_id": "OG_320"
+    },
+    {
+      "source": "Mountain Giant",
+      "replacement": "Frost Giant",
+      "replacement_id": "AT_120"
+    },
+    {
+      "source": "Mountain Giant",
+      "replacement": "Frost Giant",
+      "replacement_id": "AT_120"
+    }
+  ],
+  "cards": [
+    "GVG_015",
+    "GVG_015",
+    "OG_241",
+    "OG_241",
+    "ICC_041",
+    "ICC_041",
+    "CFM_094",
+    "CFM_094",
+    "CFM_608",
+    "CFM_608",
+    "ICC_075",
+    "ICC_075",
+    "CFM_751",
+    "CFM_751",
+    "ICC_831",
+    "CFM_120",
+    "CFM_120",
+    "GVG_076",
+    "GVG_076",
+    "UNG_807",
+    "ICC_913",
+    "CFM_654",
+    "CFM_654",
+    "UNG_946",
+    "OG_174",
+    "FP1_016",
+    "OG_320",
+    "OG_320",
+    "AT_120",
+    "AT_120"
+  ]
+}

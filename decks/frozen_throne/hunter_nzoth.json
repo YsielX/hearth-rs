@@ -1,0 +1,170 @@
+{
+  "name": "KFT 2017 runtime-adapted: Ant’s KFT N’Zoth Deathstalker Hunter",
+  "class": "hunter",
+  "hero_power": "HERO_05bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "nzoth_deathrattle",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/ants-kft-nzoth-deathstalker-hunter/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Ant’s KFT N’Zoth Deathstalker Hunter",
+  "source_cards": [
+    {
+      "name": "Alleycat",
+      "count": 2
+    },
+    {
+      "name": "Fiery Bat",
+      "count": 2
+    },
+    {
+      "name": "Crackling Razormaw",
+      "count": 2
+    },
+    {
+      "name": "Kindly Grandmother",
+      "count": 2
+    },
+    {
+      "name": "Eaglehorn Bow",
+      "count": 2
+    },
+    {
+      "name": "Kill Command",
+      "count": 2
+    },
+    {
+      "name": "Rat Pack",
+      "count": 2
+    },
+    {
+      "name": "Stitched Tracker",
+      "count": 2
+    },
+    {
+      "name": "Unleash the Hounds",
+      "count": 2
+    },
+    {
+      "name": "Houndmaster",
+      "count": 2
+    },
+    {
+      "name": "Corpse Widow",
+      "count": 2
+    },
+    {
+      "name": "Deathstalker Rexxar",
+      "count": 1
+    },
+    {
+      "name": "Savannah Highmane",
+      "count": 2
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 2
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3333333333333333,
+  "substitutions": [
+    {
+      "source": "Eaglehorn Bow",
+      "replacement": "Glaivezooka",
+      "replacement_id": "GVG_043"
+    },
+    {
+      "source": "Eaglehorn Bow",
+      "replacement": "Glaivezooka",
+      "replacement_id": "GVG_043"
+    },
+    {
+      "source": "Kill Command",
+      "replacement": "Quick Shot",
+      "replacement_id": "BRM_013"
+    },
+    {
+      "source": "Kill Command",
+      "replacement": "Quick Shot",
+      "replacement_id": "BRM_013"
+    },
+    {
+      "source": "Unleash the Hounds",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Unleash the Hounds",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Houndmaster",
+      "replacement": "Menagerie Magician",
+      "replacement_id": "KAR_702"
+    },
+    {
+      "source": "Houndmaster",
+      "replacement": "Menagerie Magician",
+      "replacement_id": "KAR_702"
+    },
+    {
+      "source": "Savannah Highmane",
+      "replacement": "Infested Wolf",
+      "replacement_id": "OG_216"
+    },
+    {
+      "source": "Savannah Highmane",
+      "replacement": "Infested Wolf",
+      "replacement_id": "OG_216"
+    }
+  ],
+  "cards": [
+    "CFM_315",
+    "CFM_315",
+    "OG_179",
+    "OG_179",
+    "UNG_915",
+    "UNG_915",
+    "KAR_005",
+    "KAR_005",
+    "GVG_043",
+    "GVG_043",
+    "BRM_013",
+    "BRM_013",
+    "CFM_316",
+    "CFM_316",
+    "ICC_415",
+    "ICC_415",
+    "UNG_910",
+    "UNG_910",
+    "KAR_702",
+    "KAR_702",
+    "ICC_243",
+    "ICC_243",
+    "ICC_828",
+    "OG_216",
+    "OG_216",
+    "EX1_162",
+    "EX1_162",
+    "ICC_854",
+    "KAR_114",
+    "OG_133"
+  ]
+}

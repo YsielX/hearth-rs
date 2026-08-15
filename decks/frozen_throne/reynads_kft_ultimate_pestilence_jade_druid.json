@@ -1,0 +1,158 @@
+{
+  "name": "KFT 2017 runtime-adapted: Reynad’s KFT Ultimate Pestilence Jade Druid",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "jade",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/reynads-kft-ultimate-pestilence-jade-druid/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Reynad’s KFT Ultimate Pestilence Jade Druid",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Jade Idol",
+      "count": 2
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Feral Rage",
+      "count": 2
+    },
+    {
+      "name": "Jade Blossom",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Fandral Staghelm",
+      "count": 1
+    },
+    {
+      "name": "Jade Spirit",
+      "count": 2
+    },
+    {
+      "name": "Jade Behemoth",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Aya Blackpaw",
+      "count": 1
+    },
+    {
+      "name": "Spreading Plague",
+      "count": 2
+    },
+    {
+      "name": "Malfurion the Pestilent",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 1
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    },
+    {
+      "name": "Yogg-Saron, Hope’s End",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "CFM_602",
+    "CFM_602",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "OG_047",
+    "OG_047",
+    "CFM_713",
+    "CFM_713",
+    "FP1_019",
+    "FP1_019",
+    "OG_044",
+    "CFM_715",
+    "CFM_715",
+    "CFM_343",
+    "CFM_343",
+    "CFM_811",
+    "CFM_811",
+    "CFM_902",
+    "ICC_054",
+    "ICC_054",
+    "ICC_832",
+    "ICC_085",
+    "UNG_946",
+    "UNG_848",
+    "ICC_314",
+    "OG_134"
+  ]
+}

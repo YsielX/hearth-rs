@@ -1,0 +1,146 @@
+{
+  "name": "KFT 2017 runtime-adapted: Feno’s KTF Aggro Token Druid",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "aggro_token",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/fenos-ktf-aggro-token-druid/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Feno’s KTF Aggro Token Druid",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Enchanted Raven",
+      "count": 2
+    },
+    {
+      "name": "Mark of the Lotus",
+      "count": 2
+    },
+    {
+      "name": "Druid of the Swarm",
+      "count": 2
+    },
+    {
+      "name": "Mark of Y’Shaarj",
+      "count": 2
+    },
+    {
+      "name": "Power of the Wild",
+      "count": 2
+    },
+    {
+      "name": "Crypt Lord",
+      "count": 2
+    },
+    {
+      "name": "Savage Roar",
+      "count": 2
+    },
+    {
+      "name": "Living Mana",
+      "count": 2
+    },
+    {
+      "name": "Bloodsail Corsair",
+      "count": 2
+    },
+    {
+      "name": "Fire Fly",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 1
+    },
+    {
+      "name": "Vicious Fledgling",
+      "count": 2
+    },
+    {
+      "name": "Grim Necromancer",
+      "count": 2
+    },
+    {
+      "name": "Bittertide Hydra",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Power of the Wild",
+      "replacement": "Evolving Spores",
+      "replacement_id": "UNG_103"
+    },
+    {
+      "source": "Power of the Wild",
+      "replacement": "Evolving Spores",
+      "replacement_id": "UNG_103"
+    },
+    {
+      "source": "Savage Roar",
+      "replacement": "Living Mana",
+      "replacement_id": "UNG_111"
+    },
+    {
+      "source": "Savage Roar",
+      "replacement": "Living Mana",
+      "replacement_id": "UNG_111"
+    },
+    {
+      "source": "Bloodsail Corsair",
+      "replacement": "Small-Time Buccaneer",
+      "replacement_id": "CFM_325"
+    },
+    {
+      "source": "Bloodsail Corsair",
+      "replacement": "Small-Time Buccaneer",
+      "replacement_id": "CFM_325"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "KAR_300",
+    "KAR_300",
+    "CFM_614",
+    "CFM_614",
+    "ICC_051",
+    "ICC_051",
+    "OG_048",
+    "OG_048",
+    "UNG_103",
+    "UNG_103",
+    "ICC_808",
+    "ICC_808",
+    "UNG_111",
+    "UNG_111",
+    "UNG_111",
+    "UNG_111",
+    "CFM_325",
+    "CFM_325",
+    "UNG_809",
+    "UNG_809",
+    "CFM_637",
+    "EX1_162",
+    "UNG_075",
+    "UNG_075",
+    "ICC_026",
+    "ICC_026",
+    "UNG_087",
+    "UNG_087"
+  ]
+}

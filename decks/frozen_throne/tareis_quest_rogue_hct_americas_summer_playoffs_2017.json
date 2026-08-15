@@ -1,0 +1,135 @@
+{
+  "name": "KFT 2017 runtime-adapted: Tarei’s Quest Rogue – HCT Americas Summer Playoffs 2017",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "quest",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/tareis-quest-rogue-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Tarei’s Quest Rogue – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Preparation",
+      "count": 2
+    },
+    {
+      "name": "Shadowstep",
+      "count": 2
+    },
+    {
+      "name": "The Caverns Below",
+      "count": 1
+    },
+    {
+      "name": "Gadgetzan Ferryman",
+      "count": 2
+    },
+    {
+      "name": "Mimic Pod",
+      "count": 2
+    },
+    {
+      "name": "Vanish",
+      "count": 2
+    },
+    {
+      "name": "Valeera the Hollow",
+      "count": 1
+    },
+    {
+      "name": "Fire Fly",
+      "count": 2
+    },
+    {
+      "name": "Glacial Shard",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Southsea Deckhand",
+      "count": 2
+    },
+    {
+      "name": "Stonetusk Boar",
+      "count": 2
+    },
+    {
+      "name": "Bilefin Tidehunter",
+      "count": 2
+    },
+    {
+      "name": "Novice Engineer",
+      "count": 2
+    },
+    {
+      "name": "Youthful Brewmaster",
+      "count": 2
+    },
+    {
+      "name": "Coldlight Oracle",
+      "count": 1
+    },
+    {
+      "name": "Igneous Elemental",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.1,
+  "substitutions": [
+    {
+      "source": "Vanish",
+      "replacement": "Sabotage",
+      "replacement_id": "GVG_047"
+    },
+    {
+      "source": "Vanish",
+      "replacement": "Sabotage",
+      "replacement_id": "GVG_047"
+    },
+    {
+      "source": "Coldlight Oracle",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "EX1_145",
+    "EX1_145",
+    "EX1_144",
+    "EX1_144",
+    "UNG_067",
+    "CFM_693",
+    "CFM_693",
+    "UNG_060",
+    "UNG_060",
+    "GVG_047",
+    "GVG_047",
+    "ICC_827",
+    "UNG_809",
+    "UNG_809",
+    "UNG_205",
+    "UNG_205",
+    "CFM_637",
+    "CS2_146",
+    "CS2_146",
+    "CS2_171",
+    "CS2_171",
+    "OG_156",
+    "OG_156",
+    "EX1_015",
+    "EX1_015",
+    "EX1_049",
+    "EX1_049",
+    "EX1_096",
+    "UNG_845",
+    "UNG_845"
+  ]
+}

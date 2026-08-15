@@ -1,0 +1,172 @@
+{
+  "name": "KFT 2017 runtime-adapted: TwoBiers’ KFT Discard Warlock Zoo",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "discard",
+  "strategy": "aggro",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/twobiers-kft-discard-warlock-zoo/",
+  "source_collection": "kft_deck_index",
+  "source_name": "TwoBiers’ KFT Discard Warlock Zoo",
+  "source_cards": [
+    {
+      "name": "Flame Imp",
+      "count": 2
+    },
+    {
+      "name": "Possessed Villager",
+      "count": 2
+    },
+    {
+      "name": "Soulfire",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Darkshire Librarian",
+      "count": 2
+    },
+    {
+      "name": "Malchezaar’s Imp",
+      "count": 2
+    },
+    {
+      "name": "Ravenous Pterrordax",
+      "count": 2
+    },
+    {
+      "name": "Silverware Golem",
+      "count": 2
+    },
+    {
+      "name": "Doomguard",
+      "count": 2
+    },
+    {
+      "name": "Acherus Veteran",
+      "count": 2
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 2
+    },
+    {
+      "name": "Fallen Sun Cleric",
+      "count": 2
+    },
+    {
+      "name": "Devilsaur Egg",
+      "count": 2
+    },
+    {
+      "name": "Defender of Argus",
+      "count": 2
+    },
+    {
+      "name": "Sea Giant",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4,
+  "substitutions": [
+    {
+      "source": "Flame Imp",
+      "replacement": "Flame Juggler",
+      "replacement_id": "AT_094"
+    },
+    {
+      "source": "Flame Imp",
+      "replacement": "Flame Juggler",
+      "replacement_id": "AT_094"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Mistress of Mixtures",
+      "replacement_id": "CFM_120"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Mistress of Mixtures",
+      "replacement_id": "CFM_120"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Lakkari Felhound",
+      "replacement_id": "UNG_833"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Lakkari Felhound",
+      "replacement_id": "UNG_833"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Sea Giant",
+      "replacement": "Frost Giant",
+      "replacement_id": "AT_120"
+    },
+    {
+      "source": "Sea Giant",
+      "replacement": "Frost Giant",
+      "replacement_id": "AT_120"
+    }
+  ],
+  "cards": [
+    "AT_094",
+    "AT_094",
+    "OG_241",
+    "OG_241",
+    "GVG_015",
+    "GVG_015",
+    "CFM_120",
+    "CFM_120",
+    "OG_109",
+    "OG_109",
+    "KAR_089",
+    "KAR_089",
+    "UNG_047",
+    "UNG_047",
+    "KAR_205",
+    "KAR_205",
+    "UNG_833",
+    "UNG_833",
+    "ICC_092",
+    "ICC_092",
+    "EX1_162",
+    "EX1_162",
+    "ICC_094",
+    "ICC_094",
+    "UNG_083",
+    "UNG_083",
+    "OG_174",
+    "OG_174",
+    "AT_120",
+    "AT_120"
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warlock): Merciless Sacrifice",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-warlock-merciless-sacrifice/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Warlock): Merciless Sacrifice",
+  "source_cards": [
+    {
+      "name": "Possessed Villager",
+      "count": 2
+    },
+    {
+      "name": "Sanguine Reveler",
+      "count": 2
+    },
+    {
+      "name": "Ravenous Pterrordax",
+      "count": 2
+    },
+    {
+      "name": "Unwilling Sacrifice",
+      "count": 2
+    },
+    {
+      "name": "Acherus Veteran",
+      "count": 2
+    },
+    {
+      "name": "Runic Egg",
+      "count": 2
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 2
+    },
+    {
+      "name": "Fallen Sun Cleric",
+      "count": 2
+    },
+    {
+      "name": "Knife Juggler",
+      "count": 2
+    },
+    {
+      "name": "Devilsaur Egg",
+      "count": 2
+    },
+    {
+      "name": "Vryghoul",
+      "count": 2
+    },
+    {
+      "name": "Defender of Argus",
+      "count": 2
+    },
+    {
+      "name": "Meat Wagon",
+      "count": 2
+    },
+    {
+      "name": "Validated Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.06666666666666667,
+  "substitutions": [
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    }
+  ],
+  "cards": [
+    "OG_241",
+    "OG_241",
+    "ICC_903",
+    "ICC_903",
+    "UNG_047",
+    "UNG_047",
+    "ICC_469",
+    "ICC_469",
+    "ICC_092",
+    "ICC_092",
+    "KAR_029",
+    "KAR_029",
+    "EX1_162",
+    "EX1_162",
+    "ICC_094",
+    "ICC_094",
+    "NEW1_019",
+    "NEW1_019",
+    "UNG_083",
+    "UNG_083",
+    "ICC_067",
+    "ICC_067",
+    "OG_174",
+    "OG_174",
+    "ICC_812",
+    "ICC_812",
+    "OG_200",
+    "OG_200",
+    "ICC_705",
+    "ICC_705"
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "name": "KFT 2017 runtime-adapted: StrifeCro’s KFT Midrange Death Knight Divine Shield Paladin",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "divine_shield",
+  "strategy": "midrange",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/strifecros-kft-midrange-death-knight-divine-shield-paladin/",
+  "source_collection": "kft_deck_index",
+  "source_name": "StrifeCro’s KFT Midrange Death Knight Divine Shield Paladin",
+  "source_cards": [
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "Smuggler’s Run",
+      "count": 2
+    },
+    {
+      "name": "Consecration",
+      "count": 2
+    },
+    {
+      "name": "Grimestreet Smuggler",
+      "count": 2
+    },
+    {
+      "name": "Rallying Blade",
+      "count": 2
+    },
+    {
+      "name": "Wickerflame Burnbristle",
+      "count": 1
+    },
+    {
+      "name": "Arrogant Crusader",
+      "count": 2
+    },
+    {
+      "name": "Chillblade Champion",
+      "count": 2
+    },
+    {
+      "name": "Grimestreet Enforcer",
+      "count": 2
+    },
+    {
+      "name": "Bolvar, Fireblood",
+      "count": 1
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 2
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Tirion Fordring",
+      "count": 1
+    },
+    {
+      "name": "Uther of the Ebon Blade",
+      "count": 1
+    },
+    {
+      "name": "Prince Keleseth",
+      "count": 1
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Corpsetaker",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.1,
+  "substitutions": [
+    {
+      "source": "Consecration",
+      "replacement": "Light's Sorrow",
+      "replacement_id": "ICC_071"
+    },
+    {
+      "source": "Consecration",
+      "replacement": "Light's Sorrow",
+      "replacement_id": "ICC_071"
+    },
+    {
+      "source": "Tirion Fordring",
+      "replacement": "Ragnaros, Lightlord",
+      "replacement_id": "OG_229"
+    }
+  ],
+  "cards": [
+    "ICC_038",
+    "ICC_038",
+    "CFM_305",
+    "CFM_305",
+    "ICC_071",
+    "ICC_071",
+    "CFM_853",
+    "CFM_853",
+    "OG_222",
+    "OG_222",
+    "CFM_815",
+    "ICC_034",
+    "ICC_034",
+    "ICC_820",
+    "ICC_820",
+    "CFM_639",
+    "CFM_639",
+    "ICC_858",
+    "UNG_952",
+    "UNG_952",
+    "UNG_015",
+    "OG_229",
+    "ICC_829",
+    "ICC_851",
+    "UNG_072",
+    "UNG_072",
+    "ICC_912",
+    "ICC_912",
+    "ICC_705",
+    "ICC_314"
+  ]
+}

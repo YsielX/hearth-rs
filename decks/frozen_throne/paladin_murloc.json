@@ -1,0 +1,155 @@
+{
+  "name": "KFT 2017 runtime-adapted: Noblord’s Frozen Throne Midrange Murloc Paladin",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "murloc",
+  "strategy": "midrange",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/noblords-frozen-throne-midrange-murloc-paladin/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Noblord’s Frozen Throne Midrange Murloc Paladin",
+  "source_cards": [
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "Vilefin Inquisitor",
+      "count": 2
+    },
+    {
+      "name": "Hydrologist",
+      "count": 2
+    },
+    {
+      "name": "Rallying Blade",
+      "count": 2
+    },
+    {
+      "name": "Blessing of Kings",
+      "count": 2
+    },
+    {
+      "name": "Spikeridged Steed",
+      "count": 2
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Tirion Fordring",
+      "count": 1
+    },
+    {
+      "name": "Murloc Tidecaller",
+      "count": 2
+    },
+    {
+      "name": "Rockpool Hunter",
+      "count": 2
+    },
+    {
+      "name": "Murloc Warleader",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Gentle Megasaur",
+      "count": 2
+    },
+    {
+      "name": "Finja, the Flying Star",
+      "count": 1
+    },
+    {
+      "name": "Skelemancer",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.23333333333333334,
+  "substitutions": [
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Tirion Fordring",
+      "replacement": "Wickerflame Burnbristle",
+      "replacement_id": "CFM_815"
+    },
+    {
+      "source": "Murloc Tidecaller",
+      "replacement": "Murloc Tinyfin",
+      "replacement_id": "LOEA10_3"
+    },
+    {
+      "source": "Murloc Tidecaller",
+      "replacement": "Murloc Tinyfin",
+      "replacement_id": "LOEA10_3"
+    },
+    {
+      "source": "Murloc Warleader",
+      "replacement": "Gentle Megasaur",
+      "replacement_id": "UNG_089"
+    },
+    {
+      "source": "Murloc Warleader",
+      "replacement": "Gentle Megasaur",
+      "replacement_id": "UNG_089"
+    }
+  ],
+  "cards": [
+    "ICC_038",
+    "ICC_038",
+    "OG_006",
+    "OG_006",
+    "UNG_011",
+    "UNG_011",
+    "OG_222",
+    "OG_222",
+    "AT_074",
+    "AT_074",
+    "UNG_952",
+    "UNG_952",
+    "UNG_015",
+    "CFM_815",
+    "LOEA10_3",
+    "LOEA10_3",
+    "UNG_073",
+    "UNG_073",
+    "UNG_089",
+    "UNG_089",
+    "UNG_072",
+    "UNG_072",
+    "UNG_089",
+    "UNG_089",
+    "CFM_344",
+    "ICC_019",
+    "ICC_019",
+    "ICC_705",
+    "ICC_705",
+    "ICC_314"
+  ]
+}

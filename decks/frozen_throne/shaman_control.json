@@ -1,0 +1,161 @@
+{
+  "name": "KFT 2017 runtime-adapted: Frodan’s Frozen Throne Snowfury Concede Shaman",
+  "class": "shaman",
+  "hero_power": "HERO_02bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "control",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/frodans-frozen-throne-snowfury-concede-shaman/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Frodan’s Frozen Throne Snowfury Concede Shaman",
+  "source_cards": [
+    {
+      "name": "Ancestral Spirit",
+      "count": 2
+    },
+    {
+      "name": "Devolve",
+      "count": 2
+    },
+    {
+      "name": "Maelstrom Portal",
+      "count": 2
+    },
+    {
+      "name": "Spirit Echo",
+      "count": 2
+    },
+    {
+      "name": "Drakkari Defender",
+      "count": 2
+    },
+    {
+      "name": "Far Sight",
+      "count": 2
+    },
+    {
+      "name": "Hex",
+      "count": 2
+    },
+    {
+      "name": "Lightning Storm",
+      "count": 1
+    },
+    {
+      "name": "Mana Tide Totem",
+      "count": 2
+    },
+    {
+      "name": "Earth Elemental",
+      "count": 2
+    },
+    {
+      "name": "Volcano",
+      "count": 2
+    },
+    {
+      "name": "Thing from Below",
+      "count": 2
+    },
+    {
+      "name": "Kalimos, Primal Lord",
+      "count": 1
+    },
+    {
+      "name": "Snowfury Giant",
+      "count": 2
+    },
+    {
+      "name": "Tar Creeper",
+      "count": 2
+    },
+    {
+      "name": "Servant of Kalimos",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Ancestral Spirit",
+      "replacement": "Ancestral Knowledge",
+      "replacement_id": "AT_053"
+    },
+    {
+      "source": "Ancestral Spirit",
+      "replacement": "Ancestral Knowledge",
+      "replacement_id": "AT_053"
+    },
+    {
+      "source": "Far Sight",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Far Sight",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Lightning Storm",
+      "replacement": "Elemental Destruction",
+      "replacement_id": "AT_051"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Novice Engineer",
+      "replacement_id": "EX1_015"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Novice Engineer",
+      "replacement_id": "EX1_015"
+    }
+  ],
+  "cards": [
+    "AT_053",
+    "AT_053",
+    "CFM_696",
+    "CFM_696",
+    "KAR_073",
+    "KAR_073",
+    "UNG_956",
+    "UNG_956",
+    "ICC_081",
+    "ICC_081",
+    "EX1_096",
+    "EX1_096",
+    "EX1_005",
+    "EX1_005",
+    "AT_051",
+    "EX1_015",
+    "EX1_015",
+    "EX1_250",
+    "EX1_250",
+    "UNG_025",
+    "UNG_025",
+    "OG_028",
+    "OG_028",
+    "UNG_211",
+    "ICC_090",
+    "ICC_090",
+    "UNG_928",
+    "UNG_928",
+    "UNG_816",
+    "UNG_816"
+  ]
+}

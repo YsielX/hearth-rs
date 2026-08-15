@@ -1,0 +1,146 @@
+{
+  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Moorabi Freeze Shaman",
+  "class": "shaman",
+  "hero_power": "HERO_02bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "freeze",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/disguisedtoasts-kft-moorabi-freeze-shaman/",
+  "source_collection": "kft_deck_index",
+  "source_name": "DisguisedToast’s KFT Moorabi Freeze Shaman",
+  "source_cards": [
+    {
+      "name": "Frost Shock",
+      "count": 2
+    },
+    {
+      "name": "Ancestral Spirit",
+      "count": 2
+    },
+    {
+      "name": "Brrrloc",
+      "count": 2
+    },
+    {
+      "name": "Cryostasis",
+      "count": 2
+    },
+    {
+      "name": "Jade Claws",
+      "count": 2
+    },
+    {
+      "name": "Spirit Echo",
+      "count": 1
+    },
+    {
+      "name": "Drakkari Defender",
+      "count": 2
+    },
+    {
+      "name": "Hex",
+      "count": 2
+    },
+    {
+      "name": "Ice Breaker",
+      "count": 2
+    },
+    {
+      "name": "Jade Lightning",
+      "count": 2
+    },
+    {
+      "name": "Avalanche",
+      "count": 2
+    },
+    {
+      "name": "Voodoo Hexxer",
+      "count": 2
+    },
+    {
+      "name": "Moorabi",
+      "count": 1
+    },
+    {
+      "name": "Thing from Below",
+      "count": 2
+    },
+    {
+      "name": "Glacial Shard",
+      "count": 2
+    },
+    {
+      "name": "Hyldnir Frostrider",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Frost Shock",
+      "replacement": "Glacial Shard",
+      "replacement_id": "UNG_205"
+    },
+    {
+      "source": "Frost Shock",
+      "replacement": "Glacial Shard",
+      "replacement_id": "UNG_205"
+    },
+    {
+      "source": "Ancestral Spirit",
+      "replacement": "Ancestral Knowledge",
+      "replacement_id": "AT_053"
+    },
+    {
+      "source": "Ancestral Spirit",
+      "replacement": "Ancestral Knowledge",
+      "replacement_id": "AT_053"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Devolve",
+      "replacement_id": "CFM_696"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Devolve",
+      "replacement_id": "CFM_696"
+    }
+  ],
+  "cards": [
+    "UNG_205",
+    "UNG_205",
+    "AT_053",
+    "AT_053",
+    "ICC_058",
+    "ICC_058",
+    "ICC_056",
+    "ICC_056",
+    "CFM_717",
+    "CFM_717",
+    "UNG_956",
+    "ICC_081",
+    "ICC_081",
+    "CFM_696",
+    "CFM_696",
+    "ICC_236",
+    "ICC_236",
+    "CFM_707",
+    "CFM_707",
+    "ICC_078",
+    "ICC_078",
+    "ICC_088",
+    "ICC_088",
+    "ICC_289",
+    "OG_028",
+    "OG_028",
+    "UNG_205",
+    "UNG_205",
+    "ICC_855",
+    "ICC_855"
+  ]
+}

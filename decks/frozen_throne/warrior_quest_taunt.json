@@ -1,0 +1,164 @@
+{
+  "name": "KFT 2017 runtime-adapted: Amaz’s Frozen Throne Quest Taunt Warrior",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "quest_taunt",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/amazs-frozen-throne-quest-taunt-warrior/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Amaz’s Frozen Throne Quest Taunt Warrior",
+  "source_cards": [
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Fire Plume’s Heart",
+      "count": 1
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Cornered Sentry",
+      "count": 2
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Forge of Souls",
+      "count": 1
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Bloodhoof Brave",
+      "count": 2
+    },
+    {
+      "name": "Alley Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Brawl",
+      "count": 2
+    },
+    {
+      "name": "Direhorn Hatchling",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "The Curator",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Sleep with the Fishes",
+      "replacement_id": "CFM_716"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Sleep with the Fishes",
+      "replacement_id": "CFM_716"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "GVG_052",
+    "GVG_052",
+    "UNG_934",
+    "CFM_756",
+    "CFM_756",
+    "UNG_926",
+    "UNG_926",
+    "CS2_106",
+    "CS2_106",
+    "ICC_281",
+    "OG_149",
+    "OG_149",
+    "ICC_064",
+    "ICC_064",
+    "OG_218",
+    "OG_218",
+    "CFM_756",
+    "CFM_756",
+    "CFM_716",
+    "CFM_716",
+    "UNG_957",
+    "EX1_096",
+    "EX1_096",
+    "UNG_072",
+    "UNG_072",
+    "ICC_854",
+    "KAR_061",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

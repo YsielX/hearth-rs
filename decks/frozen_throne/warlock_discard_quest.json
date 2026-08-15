@@ -1,0 +1,170 @@
+{
+  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Death Knight Discard Questlock",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "discard_quest",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/disguisedtoasts-kft-death-knight-discard-questlock/",
+  "source_collection": "kft_deck_index",
+  "source_name": "DisguisedToast’s KFT Death Knight Discard Questlock",
+  "source_cards": [
+    {
+      "name": "Lakkari Sacrifice",
+      "count": 1
+    },
+    {
+      "name": "Mortal Coil",
+      "count": 2
+    },
+    {
+      "name": "Soulfire",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Clutchmother Zavas",
+      "count": 1
+    },
+    {
+      "name": "Darkshire Librarian",
+      "count": 2
+    },
+    {
+      "name": "Defile",
+      "count": 2
+    },
+    {
+      "name": "Malchezaar’s Imp",
+      "count": 2
+    },
+    {
+      "name": "Howlfiend",
+      "count": 2
+    },
+    {
+      "name": "Silverware Golem",
+      "count": 2
+    },
+    {
+      "name": "Bloodbloom",
+      "count": 2
+    },
+    {
+      "name": "Lakkari Felhound",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 2
+    },
+    {
+      "name": "Blood-Queen Lana’thel",
+      "count": 1
+    },
+    {
+      "name": "Doomguard",
+      "count": 2
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "DOOM!",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3333333333333333,
+  "substitutions": [
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Fist of Jaraxxus",
+      "replacement_id": "AT_022"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Fist of Jaraxxus",
+      "replacement_id": "AT_022"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    }
+  ],
+  "cards": [
+    "UNG_829",
+    "GVG_015",
+    "GVG_015",
+    "AT_022",
+    "AT_022",
+    "OG_241",
+    "OG_241",
+    "UNG_836",
+    "OG_109",
+    "OG_109",
+    "ICC_041",
+    "ICC_041",
+    "KAR_089",
+    "KAR_089",
+    "ICC_218",
+    "ICC_218",
+    "KAR_205",
+    "KAR_205",
+    "UNG_832",
+    "UNG_832",
+    "UNG_833",
+    "UNG_833",
+    "CFM_608",
+    "CFM_608",
+    "ICC_841",
+    "AT_020",
+    "AT_020",
+    "ICC_831",
+    "OG_239",
+    "OG_239"
+  ]
+}

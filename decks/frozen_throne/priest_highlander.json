@@ -1,0 +1,207 @@
+{
+  "name": "KFT 2017 runtime-adapted: TicTac’s KFT Shadowreaper Kazakus Highlander Priest",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "highlander",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/tictacs-kft-shadowreaper-kazakus-highlander-priest/",
+  "source_collection": "kft_deck_index",
+  "source_name": "TicTac’s KFT Shadowreaper Kazakus Highlander Priest",
+  "source_cards": [
+    {
+      "name": "Crystalline Oracle",
+      "count": 1
+    },
+    {
+      "name": "Northshire Cleric",
+      "count": 1
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 1
+    },
+    {
+      "name": "Power Word: Shield",
+      "count": 1
+    },
+    {
+      "name": "Radiant Elemental",
+      "count": 1
+    },
+    {
+      "name": "Shadow Visions",
+      "count": 1
+    },
+    {
+      "name": "Shadow Word: Death",
+      "count": 1
+    },
+    {
+      "name": "Shadow Word: Pain",
+      "count": 1
+    },
+    {
+      "name": "Spirit Lash",
+      "count": 1
+    },
+    {
+      "name": "Holy Nova",
+      "count": 1
+    },
+    {
+      "name": "Tortollan Shellraiser",
+      "count": 1
+    },
+    {
+      "name": "Eternal Servitude",
+      "count": 1
+    },
+    {
+      "name": "Greater Healing Potion",
+      "count": 1
+    },
+    {
+      "name": "Kazakus",
+      "count": 1
+    },
+    {
+      "name": "Priest of the Feast",
+      "count": 1
+    },
+    {
+      "name": "Dragonfire Potion",
+      "count": 1
+    },
+    {
+      "name": "Raza the Chained",
+      "count": 1
+    },
+    {
+      "name": "Cabal Shadow Priest",
+      "count": 1
+    },
+    {
+      "name": "Embrace Darkness",
+      "count": 1
+    },
+    {
+      "name": "Shadowreaper Anduin",
+      "count": 1
+    },
+    {
+      "name": "Obsidian Statue",
+      "count": 1
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Happy Ghoul",
+      "count": 1
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 1
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "Elise the Trailblazer",
+      "count": 1
+    },
+    {
+      "name": "Cairne Bloodhoof",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.23333333333333334,
+  "substitutions": [
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Shadow Word: Death",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Potion of Madness",
+      "replacement_id": "CFM_603"
+    },
+    {
+      "source": "Holy Nova",
+      "replacement": "Excavated Evil",
+      "replacement_id": "LOE_111"
+    },
+    {
+      "source": "Cabal Shadow Priest",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Cairne Bloodhoof",
+      "replacement": "Infested Tauren",
+      "replacement_id": "OG_249"
+    }
+  ],
+  "cards": [
+    "UNG_032",
+    "UNG_032",
+    "CFM_603",
+    "CFM_626",
+    "UNG_034",
+    "UNG_029",
+    "LOE_104",
+    "CFM_603",
+    "ICC_802",
+    "LOE_111",
+    "UNG_037",
+    "ICC_213",
+    "CFM_604",
+    "CFM_621",
+    "KAR_035",
+    "CFM_662",
+    "CFM_020",
+    "CFM_626",
+    "ICC_849",
+    "ICC_830",
+    "ICC_214",
+    "EX1_012",
+    "UNG_946",
+    "ICC_700",
+    "UNG_072",
+    "KAR_114",
+    "UNG_851",
+    "OG_249",
+    "ICC_314",
+    "OG_133"
+  ]
+}

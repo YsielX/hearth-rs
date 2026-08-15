@@ -1,0 +1,185 @@
+{
+  "name": "KFT 2017 runtime-adapted: Sintolol’s Frozen Throne Blood Warriors Garrosh Warrior",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/sintolols-frozen-throne-blood-warriors-garrosh-warrior-august-2017-season-41/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Sintolol’s Frozen Throne Blood Warriors Garrosh Warrior",
+  "source_cards": [
+    {
+      "name": "Inner Rage",
+      "count": 2
+    },
+    {
+      "name": "Animated Berserker",
+      "count": 2
+    },
+    {
+      "name": "Blood To Ichor",
+      "count": 2
+    },
+    {
+      "name": "Slam",
+      "count": 2
+    },
+    {
+      "name": "Whirlwind",
+      "count": 1
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Battle Rage",
+      "count": 2
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Blood Warriors",
+      "count": 2
+    },
+    {
+      "name": "Frothing Berserker",
+      "count": 2
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Bloodhoof Brave",
+      "count": 2
+    },
+    {
+      "name": "Rotface",
+      "count": 1
+    },
+    {
+      "name": "Scourgelord Garrosh",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.43333333333333335,
+  "substitutions": [
+    {
+      "source": "Inner Rage",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Inner Rage",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Revenge",
+      "replacement_id": "BRM_015"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Revenge",
+      "replacement_id": "BRM_015"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "OG_314",
+    "OG_314",
+    "ICC_238",
+    "ICC_238",
+    "OG_314",
+    "OG_314",
+    "BRM_015",
+    "BRM_015",
+    "OG_149",
+    "CFM_756",
+    "CFM_756",
+    "EX1_606",
+    "EX1_606",
+    "CS2_106",
+    "CS2_106",
+    "OG_276",
+    "OG_276",
+    "BRM_019",
+    "BRM_019",
+    "OG_149",
+    "OG_149",
+    "ICC_064",
+    "ICC_064",
+    "OG_218",
+    "OG_218",
+    "ICC_405",
+    "ICC_834",
+    "EX1_096",
+    "EX1_096",
+    "ICC_314"
+  ]
+}

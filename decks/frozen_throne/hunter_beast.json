@@ -1,0 +1,171 @@
+{
+  "name": "KFT 2017 runtime-adapted: J4CKIECHAN’s Frozen Throne Penguin Beast Hunter",
+  "class": "hunter",
+  "hero_power": "HERO_05bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "beast",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/j4ckiechans-frozen-throne-penguin-beast-hunter-august-2017-season-40/",
+  "source_collection": "kft_deck_index",
+  "source_name": "J4CKIECHAN’s Frozen Throne Penguin Beast Hunter",
+  "source_cards": [
+    {
+      "name": "Stampede",
+      "count": 2
+    },
+    {
+      "name": "Alleycat",
+      "count": 2
+    },
+    {
+      "name": "Jeweled Macaw",
+      "count": 2
+    },
+    {
+      "name": "Timber Wolf",
+      "count": 1
+    },
+    {
+      "name": "Crackling Razormaw",
+      "count": 2
+    },
+    {
+      "name": "Kindly Grandmother",
+      "count": 2
+    },
+    {
+      "name": "Scavenging Hyena",
+      "count": 2
+    },
+    {
+      "name": "Animal Companion",
+      "count": 2
+    },
+    {
+      "name": "Infest",
+      "count": 1
+    },
+    {
+      "name": "Kill Command",
+      "count": 2
+    },
+    {
+      "name": "Rat Pack",
+      "count": 2
+    },
+    {
+      "name": "Unleash the Hounds",
+      "count": 2
+    },
+    {
+      "name": "Houndmaster",
+      "count": 2
+    },
+    {
+      "name": "Snowflipper Penguin",
+      "count": 2
+    },
+    {
+      "name": "Dire Wolf Alpha",
+      "count": 2
+    },
+    {
+      "name": "Golakka Crawler",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.36666666666666664,
+  "substitutions": [
+    {
+      "source": "Timber Wolf",
+      "replacement": "Dire Wolf Alpha",
+      "replacement_id": "EX1_162"
+    },
+    {
+      "source": "Scavenging Hyena",
+      "replacement": "Trogg Beastrager",
+      "replacement_id": "CFM_338"
+    },
+    {
+      "source": "Scavenging Hyena",
+      "replacement": "Trogg Beastrager",
+      "replacement_id": "CFM_338"
+    },
+    {
+      "source": "Animal Companion",
+      "replacement": "Rat Pack",
+      "replacement_id": "CFM_316"
+    },
+    {
+      "source": "Animal Companion",
+      "replacement": "Rat Pack",
+      "replacement_id": "CFM_316"
+    },
+    {
+      "source": "Kill Command",
+      "replacement": "Quick Shot",
+      "replacement_id": "BRM_013"
+    },
+    {
+      "source": "Kill Command",
+      "replacement": "Quick Shot",
+      "replacement_id": "BRM_013"
+    },
+    {
+      "source": "Unleash the Hounds",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Unleash the Hounds",
+      "replacement": "Grievous Bite",
+      "replacement_id": "UNG_910"
+    },
+    {
+      "source": "Houndmaster",
+      "replacement": "Menagerie Magician",
+      "replacement_id": "KAR_702"
+    },
+    {
+      "source": "Houndmaster",
+      "replacement": "Menagerie Magician",
+      "replacement_id": "KAR_702"
+    }
+  ],
+  "cards": [
+    "UNG_916",
+    "UNG_916",
+    "CFM_315",
+    "CFM_315",
+    "UNG_912",
+    "UNG_912",
+    "EX1_162",
+    "UNG_915",
+    "UNG_915",
+    "KAR_005",
+    "KAR_005",
+    "CFM_338",
+    "CFM_338",
+    "CFM_316",
+    "CFM_316",
+    "OG_045",
+    "BRM_013",
+    "BRM_013",
+    "CFM_316",
+    "CFM_316",
+    "UNG_910",
+    "UNG_910",
+    "KAR_702",
+    "KAR_702",
+    "ICC_023",
+    "ICC_023",
+    "EX1_162",
+    "EX1_162",
+    "UNG_807",
+    "UNG_807"
+  ]
+}

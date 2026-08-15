@@ -1,0 +1,199 @@
+{
+  "name": "KFT 2017 runtime-adapted: Dog’s KFT Death Knight Blood Warriors",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "blood",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/dogs-kft-death-knight-blood-warriors/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Dog’s KFT Death Knight Blood Warriors",
+  "source_cards": [
+    {
+      "name": "Blood To Ichor",
+      "count": 2
+    },
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Slam",
+      "count": 2
+    },
+    {
+      "name": "Whirlwind",
+      "count": 2
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Battle Rage",
+      "count": 2
+    },
+    {
+      "name": "Commanding Shout",
+      "count": 2
+    },
+    {
+      "name": "Dead Man’s Hand",
+      "count": 2
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 1
+    },
+    {
+      "name": "Public Defender",
+      "count": 1
+    },
+    {
+      "name": "Shield Block",
+      "count": 2
+    },
+    {
+      "name": "Sleep with the Fishes",
+      "count": 2
+    },
+    {
+      "name": "Blood Warriors",
+      "count": 1
+    },
+    {
+      "name": "Blood Razor",
+      "count": 1
+    },
+    {
+      "name": "Scourgelord Garrosh",
+      "count": 1
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Arcane Giant",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.5,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Revenge",
+      "replacement_id": "BRM_015"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Revenge",
+      "replacement_id": "BRM_015"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Commanding Shout",
+      "replacement": "Sudden Genesis",
+      "replacement_id": "UNG_927"
+    },
+    {
+      "source": "Commanding Shout",
+      "replacement": "Sudden Genesis",
+      "replacement_id": "UNG_927"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "OG_314",
+    "OG_314",
+    "GVG_052",
+    "GVG_052",
+    "BRM_015",
+    "BRM_015",
+    "OG_149",
+    "OG_149",
+    "CFM_756",
+    "CFM_756",
+    "EX1_606",
+    "EX1_606",
+    "UNG_927",
+    "UNG_927",
+    "ICC_091",
+    "ICC_091",
+    "CS2_106",
+    "CFM_300",
+    "EX1_606",
+    "EX1_606",
+    "CFM_716",
+    "CFM_716",
+    "OG_276",
+    "ICC_064",
+    "ICC_834",
+    "ICC_913",
+    "EX1_096",
+    "EX1_096",
+    "KAR_711",
+    "KAR_711"
+  ]
+}

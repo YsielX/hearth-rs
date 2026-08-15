@@ -1,0 +1,184 @@
+{
+  "name": "KFT 2017 runtime-adapted: Abar’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "control",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/abars-frozen-throne-bloodreaver-guldan-control-warlock/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Abar’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
+  "source_cards": [
+    {
+      "name": "Mortal Coil",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Defile",
+      "count": 2
+    },
+    {
+      "name": "Hellfire",
+      "count": 1
+    },
+    {
+      "name": "Blastcrystal Potion",
+      "count": 1
+    },
+    {
+      "name": "Bloodbloom",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 2
+    },
+    {
+      "name": "Despicable Dreadlord",
+      "count": 2
+    },
+    {
+      "name": "Abyssal Enforcer",
+      "count": 2
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "DOOM!",
+      "count": 2
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Voodoo Doctor",
+      "count": 2
+    },
+    {
+      "name": "Earthen Ring Farseer",
+      "count": 1
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Happy Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Twilight Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4,
+  "substitutions": [
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Unwilling Sacrifice",
+      "replacement_id": "ICC_469"
+    },
+    {
+      "source": "Voodoo Doctor",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Voodoo Doctor",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Refreshment Vendor",
+      "replacement_id": "AT_111"
+    },
+    {
+      "source": "Twilight Drake",
+      "replacement": "Midnight Drake",
+      "replacement_id": "OG_320"
+    },
+    {
+      "source": "Twilight Drake",
+      "replacement": "Midnight Drake",
+      "replacement_id": "OG_320"
+    }
+  ],
+  "cards": [
+    "GVG_015",
+    "GVG_015",
+    "OG_241",
+    "OG_241",
+    "ICC_041",
+    "ICC_041",
+    "CFM_094",
+    "CFM_608",
+    "UNG_832",
+    "UNG_832",
+    "CFM_608",
+    "ICC_469",
+    "ICC_075",
+    "ICC_075",
+    "CFM_751",
+    "CFM_751",
+    "ICC_831",
+    "OG_239",
+    "OG_239",
+    "CFM_120",
+    "CFM_120",
+    "CFM_654",
+    "CFM_654",
+    "AT_111",
+    "UNG_946",
+    "ICC_700",
+    "ICC_700",
+    "OG_320",
+    "OG_320",
+    "ICC_314"
+  ]
+}

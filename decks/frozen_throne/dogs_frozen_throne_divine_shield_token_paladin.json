@@ -1,0 +1,154 @@
+{
+  "name": "KFT 2017 runtime-adapted: Dog’s Frozen Throne Divine Shield Token Paladin",
+  "class": "paladin",
+  "hero_power": "HERO_04bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "token",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/dogs-frozen-throne-divine-shield-token-paladin/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Dog’s Frozen Throne Divine Shield Token Paladin",
+  "source_cards": [
+    {
+      "name": "Blessing of Might",
+      "count": 2
+    },
+    {
+      "name": "Light’s Justice",
+      "count": 1
+    },
+    {
+      "name": "Lost in the Jungle",
+      "count": 2
+    },
+    {
+      "name": "Righteous Protector",
+      "count": 2
+    },
+    {
+      "name": "Selfless Hero",
+      "count": 2
+    },
+    {
+      "name": "Hydrologist",
+      "count": 2
+    },
+    {
+      "name": "Divine Favor",
+      "count": 2
+    },
+    {
+      "name": "Rallying Blade",
+      "count": 2
+    },
+    {
+      "name": "Small-Time Recruits",
+      "count": 1
+    },
+    {
+      "name": "Steward of Darkshire",
+      "count": 2
+    },
+    {
+      "name": "Blessing of Kings",
+      "count": 1
+    },
+    {
+      "name": "Sunkeeper Tarim",
+      "count": 1
+    },
+    {
+      "name": "Acherus Veteran",
+      "count": 2
+    },
+    {
+      "name": "Argent Squire",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Southsea Deckhand",
+      "count": 2
+    },
+    {
+      "name": "Knife Juggler",
+      "count": 2
+    },
+    {
+      "name": "Blood Knight",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Blessing of Might",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Blessing of Might",
+      "replacement": "Seal of Champions",
+      "replacement_id": "AT_074"
+    },
+    {
+      "source": "Divine Favor",
+      "replacement": "Small-Time Recruits",
+      "replacement_id": "CFM_905"
+    },
+    {
+      "source": "Divine Favor",
+      "replacement": "Small-Time Recruits",
+      "replacement_id": "CFM_905"
+    },
+    {
+      "source": "Blessing of Kings",
+      "replacement": "Spikeridged Steed",
+      "replacement_id": "UNG_952"
+    },
+    {
+      "source": "Blood Knight",
+      "replacement": "Darkspeaker",
+      "replacement_id": "OG_102"
+    }
+  ],
+  "cards": [
+    "AT_074",
+    "AT_074",
+    "CS2_091",
+    "UNG_960",
+    "UNG_960",
+    "ICC_038",
+    "ICC_038",
+    "OG_221",
+    "OG_221",
+    "UNG_011",
+    "UNG_011",
+    "CFM_905",
+    "CFM_905",
+    "OG_222",
+    "OG_222",
+    "CFM_905",
+    "OG_310",
+    "OG_310",
+    "UNG_952",
+    "UNG_015",
+    "ICC_092",
+    "ICC_092",
+    "EX1_008",
+    "EX1_008",
+    "CFM_637",
+    "CS2_146",
+    "CS2_146",
+    "NEW1_019",
+    "NEW1_019",
+    "OG_102"
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "name": "KFT 2017 runtime-adapted: Frozen Throne Tempo N’Zoth Rogue Deck List Guide – Theorycraft",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "nzoth_deathrattle",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/tempo-nzoth-rogue-deck-list-guide-standard/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Frozen Throne Tempo N’Zoth Rogue Deck List Guide – Theorycraft",
+  "source_cards": [
+    {
+      "name": "Backstab",
+      "count": 2
+    },
+    {
+      "name": "Preparation",
+      "count": 2
+    },
+    {
+      "name": "Spore Hallucination",
+      "count": 1
+    },
+    {
+      "name": "Swashburglar",
+      "count": 2
+    },
+    {
+      "name": "Eviscerate",
+      "count": 2
+    },
+    {
+      "name": "Fan of Knives",
+      "count": 1
+    },
+    {
+      "name": "Mimic Pod",
+      "count": 1
+    },
+    {
+      "name": "Razorpetal Lasher",
+      "count": 2
+    },
+    {
+      "name": "Undercity Huckster",
+      "count": 2
+    },
+    {
+      "name": "SI:7 Agent",
+      "count": 1
+    },
+    {
+      "name": "Sherazin, Corpse Flower",
+      "count": 1
+    },
+    {
+      "name": "Xaril, Poisoned Mind",
+      "count": 1
+    },
+    {
+      "name": "Ethereal Peddler",
+      "count": 2
+    },
+    {
+      "name": "Vilespine Slayer",
+      "count": 2
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "Gadgetzan Auctioneer",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.06666666666666667,
+  "substitutions": [
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Mimic Pod",
+      "replacement_id": "UNG_060"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Red Mana Wyrm",
+      "replacement_id": "CFM_060"
+    }
+  ],
+  "cards": [
+    "CS2_072",
+    "CS2_072",
+    "EX1_145",
+    "EX1_145",
+    "UNG_856",
+    "KAR_069",
+    "KAR_069",
+    "EX1_124",
+    "EX1_124",
+    "EX1_129",
+    "UNG_060",
+    "UNG_058",
+    "UNG_058",
+    "OG_330",
+    "OG_330",
+    "EX1_134",
+    "UNG_065",
+    "OG_080",
+    "KAR_070",
+    "KAR_070",
+    "UNG_064",
+    "UNG_064",
+    "CFM_637",
+    "EX1_012",
+    "ICC_854",
+    "KAR_114",
+    "UNG_060",
+    "CFM_060",
+    "ICC_314",
+    "OG_133"
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warrior): Guarding the Shard",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-warrior-guarding-shard/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Warrior): Guarding the Shard",
+  "source_cards": [
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Fire Plume’s Heart",
+      "count": 1
+    },
+    {
+      "name": "Slam",
+      "count": 1
+    },
+    {
+      "name": "Armorsmith",
+      "count": 1
+    },
+    {
+      "name": "Battle Rage",
+      "count": 1
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Sleep with the Fishes",
+      "count": 2
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Bloodhoof Brave",
+      "count": 2
+    },
+    {
+      "name": "Alley Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Brawl",
+      "count": 1
+    },
+    {
+      "name": "Direhorn Hatchling",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Saronite Chain Gang",
+      "count": 2
+    },
+    {
+      "name": "The Curator",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Bouncing Blade",
+      "replacement_id": "GVG_050"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "GVG_052",
+    "GVG_052",
+    "UNG_934",
+    "OG_314",
+    "CFM_756",
+    "EX1_606",
+    "CS2_106",
+    "CS2_106",
+    "CFM_716",
+    "CFM_716",
+    "OG_149",
+    "OG_149",
+    "ICC_064",
+    "ICC_064",
+    "OG_218",
+    "OG_218",
+    "CFM_756",
+    "CFM_756",
+    "GVG_050",
+    "UNG_957",
+    "EX1_096",
+    "EX1_096",
+    "UNG_072",
+    "UNG_072",
+    "ICC_466",
+    "ICC_466",
+    "KAR_061",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

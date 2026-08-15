@@ -1,0 +1,165 @@
+{
+  "name": "KFT 2017 runtime-adapted: Frozen Throne Token Shaman Deck List Guide – Theorycraft",
+  "class": "shaman",
+  "hero_power": "HERO_02bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "token",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/token-shaman-deck-list-guide-standard/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Frozen Throne Token Shaman Deck List Guide – Theorycraft",
+  "source_cards": [
+    {
+      "name": "Evolve",
+      "count": 2
+    },
+    {
+      "name": "Devolve",
+      "count": 1
+    },
+    {
+      "name": "Flametongue Totem",
+      "count": 2
+    },
+    {
+      "name": "Jade Claws",
+      "count": 2
+    },
+    {
+      "name": "Primalfin Totem",
+      "count": 2
+    },
+    {
+      "name": "Hex",
+      "count": 2
+    },
+    {
+      "name": "Jade Lightning",
+      "count": 2
+    },
+    {
+      "name": "Lightning Storm",
+      "count": 1
+    },
+    {
+      "name": "Mana Tide Totem",
+      "count": 2
+    },
+    {
+      "name": "Master of Evolution",
+      "count": 2
+    },
+    {
+      "name": "Bloodlust",
+      "count": 2
+    },
+    {
+      "name": "Thrall, Deathseer",
+      "count": 1
+    },
+    {
+      "name": "Thing from Below",
+      "count": 2
+    },
+    {
+      "name": "Fire Fly",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Rattling Rascal",
+      "count": 1
+    },
+    {
+      "name": "Doppelgangster",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Flametongue Totem",
+      "replacement": "Dire Wolf Alpha",
+      "replacement_id": "EX1_162"
+    },
+    {
+      "source": "Flametongue Totem",
+      "replacement": "Dire Wolf Alpha",
+      "replacement_id": "EX1_162"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Devolve",
+      "replacement_id": "CFM_696"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Lightning Storm",
+      "replacement": "Maelstrom Portal",
+      "replacement_id": "KAR_073"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Bloodlust",
+      "replacement": "Everyfin is Awesome",
+      "replacement_id": "LOE_113"
+    },
+    {
+      "source": "Bloodlust",
+      "replacement": "Everyfin is Awesome",
+      "replacement_id": "LOE_113"
+    }
+  ],
+  "cards": [
+    "OG_027",
+    "OG_027",
+    "CFM_696",
+    "EX1_162",
+    "EX1_162",
+    "CFM_717",
+    "CFM_717",
+    "UNG_201",
+    "UNG_201",
+    "CFM_696",
+    "EX1_005",
+    "CFM_707",
+    "CFM_707",
+    "KAR_073",
+    "EX1_096",
+    "EX1_096",
+    "OG_328",
+    "OG_328",
+    "LOE_113",
+    "LOE_113",
+    "ICC_481",
+    "OG_028",
+    "OG_028",
+    "UNG_809",
+    "UNG_809",
+    "UNG_072",
+    "UNG_072",
+    "ICC_025",
+    "CFM_668",
+    "CFM_668"
+  ]
+}

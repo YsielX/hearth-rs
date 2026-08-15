@@ -1,0 +1,123 @@
+{
+  "name": "KFT 2017: Deck Recipes (Rogue): Jades of Death",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "jade",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-rogue-jades-death/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Rogue): Jades of Death",
+  "source_cards": [
+    {
+      "name": "Backstab",
+      "count": 2
+    },
+    {
+      "name": "Jade Swarmer",
+      "count": 2
+    },
+    {
+      "name": "Eviscerate",
+      "count": 2
+    },
+    {
+      "name": "Jade Shuriken",
+      "count": 2
+    },
+    {
+      "name": "Roll the Bones",
+      "count": 2
+    },
+    {
+      "name": "Undercity Huckster",
+      "count": 2
+    },
+    {
+      "name": "Plague Scientist",
+      "count": 2
+    },
+    {
+      "name": "Shadowblade",
+      "count": 2
+    },
+    {
+      "name": "Bone Baron",
+      "count": 2
+    },
+    {
+      "name": "Vilespine Slayer",
+      "count": 2
+    },
+    {
+      "name": "Aya Blackpaw",
+      "count": 1
+    },
+    {
+      "name": "Valeera the Hollow",
+      "count": 1
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 2
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Loot Hoarder",
+      "count": 2
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "Spiritsinger Umbra",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
+  "cards": [
+    "CS2_072",
+    "CS2_072",
+    "CFM_691",
+    "CFM_691",
+    "EX1_124",
+    "EX1_124",
+    "CFM_690",
+    "CFM_690",
+    "ICC_201",
+    "ICC_201",
+    "OG_330",
+    "OG_330",
+    "ICC_809",
+    "ICC_809",
+    "ICC_850",
+    "ICC_850",
+    "ICC_065",
+    "ICC_065",
+    "UNG_064",
+    "UNG_064",
+    "CFM_902",
+    "ICC_827",
+    "CFM_120",
+    "CFM_120",
+    "EX1_012",
+    "EX1_096",
+    "EX1_096",
+    "ICC_854",
+    "UNG_900",
+    "OG_133"
+  ]
+}

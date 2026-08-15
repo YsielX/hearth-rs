@@ -1,0 +1,167 @@
+{
+  "name": "KFT 2017 runtime-adapted: CelticGuard’s Big Priest – HCT Americas Summer Playoffs 2017",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/celticguards-big-priest-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "CelticGuard’s Big Priest – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Silence",
+      "count": 1
+    },
+    {
+      "name": "Holy Smite",
+      "count": 1
+    },
+    {
+      "name": "Pint-Size Potion",
+      "count": 2
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 2
+    },
+    {
+      "name": "Shadow Visions",
+      "count": 2
+    },
+    {
+      "name": "Shadow Word: Death",
+      "count": 2
+    },
+    {
+      "name": "Shadow Word: Pain",
+      "count": 2
+    },
+    {
+      "name": "Thoughtsteal",
+      "count": 1
+    },
+    {
+      "name": "Eternal Servitude",
+      "count": 2
+    },
+    {
+      "name": "Greater Healing Potion",
+      "count": 1
+    },
+    {
+      "name": "Shadow Word: Horror",
+      "count": 2
+    },
+    {
+      "name": "Dragonfire Potion",
+      "count": 2
+    },
+    {
+      "name": "Free From Amber",
+      "count": 1
+    },
+    {
+      "name": "Shadow Essence",
+      "count": 2
+    },
+    {
+      "name": "Shadowreaper Anduin",
+      "count": 1
+    },
+    {
+      "name": "Obsidian Statue",
+      "count": 2
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    },
+    {
+      "name": "Ysera",
+      "count": 1
+    },
+    {
+      "name": "Y’Shaarj, Rage Unbound",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.23333333333333334,
+  "substitutions": [
+    {
+      "source": "Holy Smite",
+      "replacement": "Potion of Madness",
+      "replacement_id": "CFM_603"
+    },
+    {
+      "source": "Shadow Word: Death",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Shadow Word: Death",
+      "replacement": "Entomb",
+      "replacement_id": "LOE_104"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Excavated Evil",
+      "replacement_id": "LOE_111"
+    },
+    {
+      "source": "Shadow Word: Pain",
+      "replacement": "Excavated Evil",
+      "replacement_id": "LOE_111"
+    },
+    {
+      "source": "Thoughtsteal",
+      "replacement": "Curious Glimmerroot",
+      "replacement_id": "UNG_035"
+    },
+    {
+      "source": "Ysera",
+      "replacement": "Nefarian",
+      "replacement_id": "BRM_030"
+    }
+  ],
+  "cards": [
+    "EX1_332",
+    "CFM_603",
+    "CFM_661",
+    "CFM_661",
+    "CFM_603",
+    "CFM_603",
+    "UNG_029",
+    "UNG_029",
+    "LOE_104",
+    "LOE_104",
+    "LOE_111",
+    "LOE_111",
+    "UNG_035",
+    "ICC_213",
+    "ICC_213",
+    "CFM_604",
+    "OG_100",
+    "OG_100",
+    "CFM_662",
+    "CFM_662",
+    "UNG_854",
+    "ICC_235",
+    "ICC_235",
+    "ICC_830",
+    "ICC_214",
+    "ICC_214",
+    "KAR_114",
+    "ICC_314",
+    "BRM_030",
+    "OG_042"
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "name": "KFT 2017 runtime-adapted: Ryzen’s KFT Lilian Voss Miracle Rogue",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "miracle",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/ryzens-kft-lilian-voss-miracle-rogue/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Ryzen’s KFT Lilian Voss Miracle Rogue",
+  "source_cards": [
+    {
+      "name": "Backstab",
+      "count": 2
+    },
+    {
+      "name": "Counterfeit Coin",
+      "count": 2
+    },
+    {
+      "name": "Preparation",
+      "count": 2
+    },
+    {
+      "name": "Cold Blood",
+      "count": 2
+    },
+    {
+      "name": "Spore Hallucination",
+      "count": 2
+    },
+    {
+      "name": "Eviscerate",
+      "count": 2
+    },
+    {
+      "name": "Fan of Knives",
+      "count": 2
+    },
+    {
+      "name": "Razorpetal Lasher",
+      "count": 2
+    },
+    {
+      "name": "Edwin VanCleef",
+      "count": 1
+    },
+    {
+      "name": "SI:7 Agent",
+      "count": 2
+    },
+    {
+      "name": "Lilian Voss",
+      "count": 1
+    },
+    {
+      "name": "Sherazin, Corpse Flower",
+      "count": 1
+    },
+    {
+      "name": "Vilespine Slayer",
+      "count": 2
+    },
+    {
+      "name": "Valeera the Hollow",
+      "count": 1
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Tainted Zealot",
+      "count": 2
+    },
+    {
+      "name": "Leeroy Jenkins",
+      "count": 1
+    },
+    {
+      "name": "Gadgetzan Auctioneer",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.16666666666666666,
+  "substitutions": [
+    {
+      "source": "Cold Blood",
+      "replacement": "Tinker's Sharpsword Oil",
+      "replacement_id": "GVG_022"
+    },
+    {
+      "source": "Cold Blood",
+      "replacement": "Tinker's Sharpsword Oil",
+      "replacement_id": "GVG_022"
+    },
+    {
+      "source": "Leeroy Jenkins",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Mimic Pod",
+      "replacement_id": "UNG_060"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Mimic Pod",
+      "replacement_id": "UNG_060"
+    }
+  ],
+  "cards": [
+    "CS2_072",
+    "CS2_072",
+    "CFM_630",
+    "CFM_630",
+    "EX1_145",
+    "EX1_145",
+    "GVG_022",
+    "GVG_022",
+    "UNG_856",
+    "UNG_856",
+    "EX1_124",
+    "EX1_124",
+    "EX1_129",
+    "EX1_129",
+    "UNG_058",
+    "UNG_058",
+    "EX1_613",
+    "EX1_134",
+    "EX1_134",
+    "ICC_811",
+    "UNG_065",
+    "UNG_064",
+    "UNG_064",
+    "ICC_827",
+    "EX1_012",
+    "ICC_913",
+    "ICC_913",
+    "AT_087",
+    "UNG_060",
+    "UNG_060"
+  ]
+}

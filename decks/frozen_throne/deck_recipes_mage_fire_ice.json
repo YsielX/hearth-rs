@@ -1,0 +1,150 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Mage): Fire and Ice",
+  "class": "mage",
+  "hero_power": "HERO_08bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-mage-fire-ice/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Mage): Fire and Ice",
+  "source_cards": [
+    {
+      "name": "Frostbolt",
+      "count": 2
+    },
+    {
+      "name": "Ice Walker",
+      "count": 2
+    },
+    {
+      "name": "Primordial Glyph",
+      "count": 2
+    },
+    {
+      "name": "Pyros",
+      "count": 1
+    },
+    {
+      "name": "Shatter",
+      "count": 2
+    },
+    {
+      "name": "Shimmering Tempest",
+      "count": 1
+    },
+    {
+      "name": "Arcane Intellect",
+      "count": 2
+    },
+    {
+      "name": "Coldwraith",
+      "count": 2
+    },
+    {
+      "name": "Steam Surger",
+      "count": 2
+    },
+    {
+      "name": "Water Elemental",
+      "count": 2
+    },
+    {
+      "name": "Blizzard",
+      "count": 2
+    },
+    {
+      "name": "Sindragosa",
+      "count": 1
+    },
+    {
+      "name": "Frost Lich Jaina",
+      "count": 1
+    },
+    {
+      "name": "Fire Fly",
+      "count": 2
+    },
+    {
+      "name": "Glacial Shard",
+      "count": 2
+    },
+    {
+      "name": "Servant of Kalimos",
+      "count": 2
+    },
+    {
+      "name": "Blazecaller",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Arcane Intellect",
+      "replacement": "Cabalist's Tome",
+      "replacement_id": "OG_090"
+    },
+    {
+      "source": "Arcane Intellect",
+      "replacement": "Cabalist's Tome",
+      "replacement_id": "OG_090"
+    },
+    {
+      "source": "Water Elemental",
+      "replacement": "Fire Plume Phoenix",
+      "replacement_id": "UNG_084"
+    },
+    {
+      "source": "Water Elemental",
+      "replacement": "Fire Plume Phoenix",
+      "replacement_id": "UNG_084"
+    },
+    {
+      "source": "Blizzard",
+      "replacement": "Meteor",
+      "replacement_id": "UNG_955"
+    },
+    {
+      "source": "Blizzard",
+      "replacement": "Meteor",
+      "replacement_id": "UNG_955"
+    }
+  ],
+  "cards": [
+    "CS2_024",
+    "CS2_024",
+    "ICC_068",
+    "ICC_068",
+    "UNG_941",
+    "UNG_941",
+    "UNG_027",
+    "OG_081",
+    "OG_081",
+    "UNG_846",
+    "OG_090",
+    "OG_090",
+    "ICC_252",
+    "ICC_252",
+    "UNG_021",
+    "UNG_021",
+    "UNG_084",
+    "UNG_084",
+    "UNG_955",
+    "UNG_955",
+    "ICC_838",
+    "ICC_833",
+    "UNG_809",
+    "UNG_809",
+    "UNG_205",
+    "UNG_205",
+    "UNG_816",
+    "UNG_816",
+    "UNG_847",
+    "UNG_847"
+  ]
+}

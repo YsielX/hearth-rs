@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from copy import deepcopy
@@ -10,6 +11,7 @@ from hearth_env import HearthEnv
 from hearth_env.training.catalog import CardCatalog
 from hearth_env.training.checkpoint import load_checkpoint, save_checkpoint
 from hearth_env.training.config import ModelConfig, TrainConfig
+from hearth_env.training.decks import SET_ORDER, Deck, DeckPool, match_config
 from hearth_env.training.learn import train_batch
 from hearth_env.training.model import HearthQNetwork
 from hearth_env.training.tensorize import Tensorizer, collate
@@ -92,6 +94,71 @@ class TrainingTest(unittest.TestCase):
             self.assertEqual(payload["migration"]["new_cards"], 1)
             new_row = restored.card_id_embedding.weight[expanded.index("TEST_NEW_CARD")]
             self.assertEqual(int(torch.count_nonzero(new_row).item()), 0)
+
+    def test_frozen_throne_deck_corpus_is_runnable(self) -> None:
+        paths = sorted((ROOT / "decks/frozen_throne").glob("*.json"))
+        self.assertEqual(len(paths), 354)
+        decks = [Deck.from_file(path) for path in paths]
+        self.assertEqual({deck.card_class for deck in decks}, set(DEFAULT_CLASSES))
+        self.assertGreaterEqual(sum(deck.bc_eligible for deck in decks), 25)
+        env = HearthEnv(
+            ROOT / "data", match_config(decks[0], decks[0]), seed=1, history_limit=16
+        )
+
+        for path, deck in zip(paths, decks, strict=True):
+            self.assertEqual(len(deck.cards), 30, path.name)
+            value = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                sum(card["count"] for card in value["source_cards"]), 30, path.name
+            )
+            decision = env.reset(
+                seed=1,
+                match_config=match_config(deck, deck),
+            )
+            self.assertTrue(decision["actions"], path.name)
+
+    def test_frozen_throne_pool_does_not_sample_future_cards(self) -> None:
+        decks = [
+            Deck.from_file(path)
+            for path in sorted((ROOT / "decks/frozen_throne").glob("*.json"))
+        ]
+        pool = DeckPool(
+            self.catalog,
+            decks,
+            seed=9,
+            curated_probability=0.0,
+            perturb_probability=0.0,
+        )
+        allowed = set(SET_ORDER[: SET_ORDER.index("ICECROWN") + 1])
+        for _ in range(100):
+            deck = pool.sample()
+            self.assertIn(deck.card_class, DEFAULT_CLASSES)
+            self.assertTrue(
+                all(
+                    self.catalog.entries[card_id]["definition"]["set"] in allowed
+                    for card_id in deck.cards
+                )
+            )
+
+        mixed_pool = DeckPool(self.catalog, decks, seed=10)
+        env = HearthEnv(
+            ROOT / "data", match_config(decks[0], decks[1]), seed=1, history_limit=8
+        )
+        for seed in range(30):
+            env.reset(seed=seed, match_config=mixed_pool.sample_match())
+
+
+DEFAULT_CLASSES = (
+    "druid",
+    "hunter",
+    "mage",
+    "paladin",
+    "priest",
+    "rogue",
+    "shaman",
+    "warlock",
+    "warrior",
+)
 
 
 if __name__ == "__main__":

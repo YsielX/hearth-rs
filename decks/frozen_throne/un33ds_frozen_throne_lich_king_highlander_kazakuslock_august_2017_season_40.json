@@ -1,0 +1,242 @@
+{
+  "name": "KFT 2017 runtime-adapted: Updated: Un33d’s Frozen Throne Lich King Highlander Kazakuslock",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "highlander",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/un33ds-frozen-throne-lich-king-highlander-kazakuslock-august-2017-season-40/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Updated: Un33d’s Frozen Throne Lich King Highlander Kazakuslock",
+  "source_cards": [
+    {
+      "name": "Mortal Coil",
+      "count": 1
+    },
+    {
+      "name": "Voidwalker",
+      "count": 1
+    },
+    {
+      "name": "Corrupting Mist",
+      "count": 1
+    },
+    {
+      "name": "Defile",
+      "count": 1
+    },
+    {
+      "name": "Hellfire",
+      "count": 1
+    },
+    {
+      "name": "Shadow Bolt",
+      "count": 1
+    },
+    {
+      "name": "Blastcrystal Potion",
+      "count": 1
+    },
+    {
+      "name": "Kazakus",
+      "count": 1
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 1
+    },
+    {
+      "name": "Despicable Dreadlord",
+      "count": 1
+    },
+    {
+      "name": "Doomguard",
+      "count": 1
+    },
+    {
+      "name": "Tar Lurker",
+      "count": 1
+    },
+    {
+      "name": "Abyssal Enforcer",
+      "count": 1
+    },
+    {
+      "name": "Twisting Nether",
+      "count": 1
+    },
+    {
+      "name": "Krul the Unshackled",
+      "count": 1
+    },
+    {
+      "name": "Bloodreaver Gul’dan",
+      "count": 1
+    },
+    {
+      "name": "Bloodsail Corsair",
+      "count": 1
+    },
+    {
+      "name": "Mistress of Mixtures",
+      "count": 1
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Doomsayer",
+      "count": 1
+    },
+    {
+      "name": "Earthen Ring Farseer",
+      "count": 1
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Tar Creeper",
+      "count": 1
+    },
+    {
+      "name": "Defender of Argus",
+      "count": 1
+    },
+    {
+      "name": "Spellbreaker",
+      "count": 1
+    },
+    {
+      "name": "The Black Knight",
+      "count": 1
+    },
+    {
+      "name": "Twilight Drake",
+      "count": 1
+    },
+    {
+      "name": "Elise the Trailblazer",
+      "count": 1
+    },
+    {
+      "name": "Bonemare",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.4666666666666667,
+  "substitutions": [
+    {
+      "source": "Mortal Coil",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Possessed Villager",
+      "replacement_id": "OG_241"
+    },
+    {
+      "source": "Hellfire",
+      "replacement": "Felfire Potion",
+      "replacement_id": "CFM_094"
+    },
+    {
+      "source": "Shadow Bolt",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Lakkari Felhound",
+      "replacement_id": "UNG_833"
+    },
+    {
+      "source": "Twisting Nether",
+      "replacement": "DOOM!",
+      "replacement_id": "OG_239"
+    },
+    {
+      "source": "Bloodsail Corsair",
+      "replacement": "Small-Time Buccaneer",
+      "replacement_id": "CFM_325"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Earthen Ring Farseer",
+      "replacement": "Friendly Bartender",
+      "replacement_id": "CFM_654"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Spellbreaker",
+      "replacement": "Wailing Soul",
+      "replacement_id": "FP1_016"
+    },
+    {
+      "source": "The Black Knight",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Twilight Drake",
+      "replacement": "Midnight Drake",
+      "replacement_id": "OG_320"
+    }
+  ],
+  "cards": [
+    "GVG_015",
+    "OG_241",
+    "UNG_831",
+    "ICC_041",
+    "CFM_094",
+    "GVG_015",
+    "CFM_608",
+    "CFM_621",
+    "CFM_608",
+    "ICC_075",
+    "UNG_833",
+    "UNG_049",
+    "CFM_751",
+    "OG_239",
+    "CFM_750",
+    "ICC_831",
+    "CFM_325",
+    "CFM_120",
+    "CFM_637",
+    "GVG_076",
+    "CFM_654",
+    "UNG_946",
+    "UNG_928",
+    "OG_174",
+    "FP1_016",
+    "EX1_005",
+    "OG_320",
+    "UNG_851",
+    "ICC_705",
+    "ICC_314"
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "name": "KFT 2017 runtime-adapted: Noxious’ KFT Wild Randuin Wrynn Reno Priest",
+  "class": "priest",
+  "hero_power": "HERO_09bp",
+  "format": "wild_through_icecrown",
+  "source_format": "wild_through_icecrown",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/noxious-kft-wild-randuin-wrynn-reno-priest/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Noxious’ KFT Wild Randuin Wrynn Reno Priest",
+  "source_cards": [
+    {
+      "name": "Crystalline Oracle",
+      "count": 1
+    },
+    {
+      "name": "Northshire Cleric",
+      "count": 1
+    },
+    {
+      "name": "Potion of Madness",
+      "count": 1
+    },
+    {
+      "name": "Power Word: Shield",
+      "count": 1
+    },
+    {
+      "name": "Kabal Courier",
+      "count": 1
+    },
+    {
+      "name": "Shadow Ascendant",
+      "count": 1
+    },
+    {
+      "name": "Thoughtsteal",
+      "count": 1
+    },
+    {
+      "name": "Curious Glimmerroot",
+      "count": 1
+    },
+    {
+      "name": "Eternal Servitude",
+      "count": 1
+    },
+    {
+      "name": "Greater Healing Potion",
+      "count": 1
+    },
+    {
+      "name": "Kazakus",
+      "count": 1
+    },
+    {
+      "name": "Devour Mind",
+      "count": 1
+    },
+    {
+      "name": "Dragonfire Potion",
+      "count": 1
+    },
+    {
+      "name": "Raza the Chained",
+      "count": 1
+    },
+    {
+      "name": "Lightbomb",
+      "count": 1
+    },
+    {
+      "name": "Archbishop Benedictus",
+      "count": 1
+    },
+    {
+      "name": "Confessor Paletress",
+      "count": 1
+    },
+    {
+      "name": "Shadow Essence",
+      "count": 1
+    },
+    {
+      "name": "Shadowreaper Anduin",
+      "count": 1
+    },
+    {
+      "name": "Obsidian Statue",
+      "count": 1
+    },
+    {
+      "name": "Jeweled Scarab",
+      "count": 1
+    },
+    {
+      "name": "Mad Bomber",
+      "count": 1
+    },
+    {
+      "name": "Wild Pyromancer",
+      "count": 1
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "Barnes",
+      "count": 1
+    },
+    {
+      "name": "Mind Control Tech",
+      "count": 1
+    },
+    {
+      "name": "Reno Jackson",
+      "count": 1
+    },
+    {
+      "name": "Sylvanas Windrunner",
+      "count": 1
+    },
+    {
+      "name": "Ragnaros the Firelord",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Northshire Cleric",
+      "replacement": "Crystalline Oracle",
+      "replacement_id": "UNG_032"
+    },
+    {
+      "source": "Power Word: Shield",
+      "replacement": "Kabal Talonpriest",
+      "replacement_id": "CFM_626"
+    },
+    {
+      "source": "Thoughtsteal",
+      "replacement": "Curious Glimmerroot",
+      "replacement_id": "UNG_035"
+    },
+    {
+      "source": "Mad Bomber",
+      "replacement": "Flame Juggler",
+      "replacement_id": "AT_094"
+    },
+    {
+      "source": "Wild Pyromancer",
+      "replacement": "Tainted Zealot",
+      "replacement_id": "ICC_913"
+    },
+    {
+      "source": "Mind Control Tech",
+      "replacement": "Dirty Rat",
+      "replacement_id": "CFM_790"
+    },
+    {
+      "source": "Sylvanas Windrunner",
+      "replacement": "Sneed's Old Shredder",
+      "replacement_id": "GVG_114"
+    },
+    {
+      "source": "Ragnaros the Firelord",
+      "replacement": "Nefarian",
+      "replacement_id": "BRM_030"
+    }
+  ],
+  "cards": [
+    "UNG_032",
+    "UNG_032",
+    "CFM_603",
+    "CFM_626",
+    "CFM_649",
+    "ICC_210",
+    "UNG_035",
+    "UNG_035",
+    "ICC_213",
+    "CFM_604",
+    "CFM_621",
+    "ICC_207",
+    "CFM_662",
+    "CFM_020",
+    "GVG_008",
+    "ICC_215",
+    "AT_018",
+    "ICC_235",
+    "ICC_830",
+    "ICC_214",
+    "LOE_029",
+    "AT_094",
+    "ICC_913",
+    "ICC_854",
+    "KAR_114",
+    "CFM_790",
+    "LOE_011",
+    "GVG_114",
+    "BRM_030",
+    "ICC_314"
+  ]
+}

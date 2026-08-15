@@ -1,0 +1,178 @@
+{
+  "name": "KFT 2017 runtime-adapted: ESOGloktaF2P’s Quest Warrior – HCT Americas Summer Playoffs 2017",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "quest",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/esogloktaf2ps-quest-warrior-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "ESOGloktaF2P’s Quest Warrior – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Fire Plume’s Heart",
+      "count": 1
+    },
+    {
+      "name": "Whirlwind",
+      "count": 1
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Battle Rage",
+      "count": 1
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Sleep with the Fishes",
+      "count": 2
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 1
+    },
+    {
+      "name": "Alley Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Brawl",
+      "count": 2
+    },
+    {
+      "name": "Direhorn Hatchling",
+      "count": 1
+    },
+    {
+      "name": "Dirty Rat",
+      "count": 2
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Tar Creeper",
+      "count": 1
+    },
+    {
+      "name": "The Curator",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3333333333333333,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Whirlwind",
+      "replacement": "Ravaging Ghoul",
+      "replacement_id": "OG_149"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Bouncing Blade",
+      "replacement_id": "GVG_050"
+    },
+    {
+      "source": "Brawl",
+      "replacement": "Bouncing Blade",
+      "replacement_id": "GVG_050"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    }
+  ],
+  "cards": [
+    "GVG_052",
+    "GVG_052",
+    "UNG_934",
+    "OG_149",
+    "CFM_756",
+    "CFM_756",
+    "EX1_606",
+    "CS2_106",
+    "CS2_106",
+    "CFM_716",
+    "CFM_716",
+    "OG_149",
+    "OG_149",
+    "ICC_064",
+    "CFM_756",
+    "CFM_756",
+    "GVG_050",
+    "GVG_050",
+    "UNG_957",
+    "CFM_790",
+    "CFM_790",
+    "EX1_096",
+    "EX1_096",
+    "UNG_072",
+    "UNG_072",
+    "UNG_928",
+    "KAR_061",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

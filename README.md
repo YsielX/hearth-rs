@@ -23,6 +23,7 @@ crates/
 └── hearth-fuzz/           # State-machine fuzzing library (no binary)
 decks/demo.json            # Mixed-class mechanics showcase
 decks/quest_rogue.json     # Dog's 2017 Caverns Quest Rogue
+decks/frozen_throne/       # 354 sourced 2017 decks plus runnable adaptations
 ```
 
 Rust owns state that scripts must not mutate directly: entity identity, zone containers, mana payment, combat and damage commits, death checkpoints, the resolution queue, pending input, deterministic randomness, transaction rollback, snapshots, and replay.

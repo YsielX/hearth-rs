@@ -1,0 +1,148 @@
+{
+  "name": "KFT 2017 runtime-adapted: Mryagut’s Frozen Throne Valeera the Hollow Miracle Rogue",
+  "class": "rogue",
+  "hero_power": "HERO_03bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "miracle",
+  "strategy": "combo",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/mryaguts-frozen-throne-valeera-hollow-miracle-rogue/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Mryagut’s Frozen Throne Valeera the Hollow Miracle Rogue",
+  "source_cards": [
+    {
+      "name": "Backstab",
+      "count": 2
+    },
+    {
+      "name": "Counterfeit Coin",
+      "count": 2
+    },
+    {
+      "name": "Preparation",
+      "count": 2
+    },
+    {
+      "name": "Spore Hallucination",
+      "count": 2
+    },
+    {
+      "name": "Swashburglar",
+      "count": 2
+    },
+    {
+      "name": "Eviscerate",
+      "count": 2
+    },
+    {
+      "name": "Fan of Knives",
+      "count": 2
+    },
+    {
+      "name": "Mimic Pod",
+      "count": 1
+    },
+    {
+      "name": "Razorpetal Lasher",
+      "count": 1
+    },
+    {
+      "name": "Edwin VanCleef",
+      "count": 1
+    },
+    {
+      "name": "Shadowblade",
+      "count": 1
+    },
+    {
+      "name": "Vilespine Slayer",
+      "count": 2
+    },
+    {
+      "name": "Valeera the Hollow",
+      "count": 1
+    },
+    {
+      "name": "Patches the Pirate",
+      "count": 1
+    },
+    {
+      "name": "Bloodmage Thalnos",
+      "count": 1
+    },
+    {
+      "name": "Questing Adventurer",
+      "count": 2
+    },
+    {
+      "name": "Prince Valanar",
+      "count": 1
+    },
+    {
+      "name": "Gadgetzan Auctioneer",
+      "count": 2
+    },
+    {
+      "name": "Arcane Giant",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.13333333333333333,
+  "substitutions": [
+    {
+      "source": "Questing Adventurer",
+      "replacement": "Red Mana Wyrm",
+      "replacement_id": "CFM_060"
+    },
+    {
+      "source": "Questing Adventurer",
+      "replacement": "Red Mana Wyrm",
+      "replacement_id": "CFM_060"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Mimic Pod",
+      "replacement_id": "UNG_060"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Violet Teacher",
+      "replacement_id": "NEW1_026"
+    }
+  ],
+  "cards": [
+    "CS2_072",
+    "CS2_072",
+    "CFM_630",
+    "CFM_630",
+    "EX1_145",
+    "EX1_145",
+    "UNG_856",
+    "UNG_856",
+    "KAR_069",
+    "KAR_069",
+    "EX1_124",
+    "EX1_124",
+    "EX1_129",
+    "EX1_129",
+    "UNG_060",
+    "UNG_058",
+    "EX1_613",
+    "ICC_850",
+    "UNG_064",
+    "UNG_064",
+    "ICC_827",
+    "CFM_637",
+    "EX1_012",
+    "CFM_060",
+    "CFM_060",
+    "ICC_853",
+    "UNG_060",
+    "NEW1_026",
+    "KAR_711",
+    "KAR_711"
+  ]
+}

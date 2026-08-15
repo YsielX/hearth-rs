@@ -1,0 +1,200 @@
+{
+  "name": "KFT 2017 runtime-adapted: Reynad’s Frozen Throne Scourgelord Garrosh Tempo Warrior",
+  "class": "warrior",
+  "hero_power": "HERO_01bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "tempo",
+  "strategy": "tempo",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/reynads-frozen-throne-scourgelord-garrosh-tempo-warrior/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Reynad’s Frozen Throne Scourgelord Garrosh Tempo Warrior",
+  "source_cards": [
+    {
+      "name": "Animated Berserker",
+      "count": 2
+    },
+    {
+      "name": "Execute",
+      "count": 2
+    },
+    {
+      "name": "Slam",
+      "count": 2
+    },
+    {
+      "name": "Armorsmith",
+      "count": 2
+    },
+    {
+      "name": "Battle Rage",
+      "count": 2
+    },
+    {
+      "name": "Fiery War Axe",
+      "count": 2
+    },
+    {
+      "name": "Forge of Souls",
+      "count": 2
+    },
+    {
+      "name": "Frothing Berserker",
+      "count": 2
+    },
+    {
+      "name": "Ravaging Ghoul",
+      "count": 2
+    },
+    {
+      "name": "Val’kyr Soulclaimer",
+      "count": 2
+    },
+    {
+      "name": "Blood Razor",
+      "count": 2
+    },
+    {
+      "name": "Kor’kron Elite",
+      "count": 2
+    },
+    {
+      "name": "Grommash Hellscream",
+      "count": 1
+    },
+    {
+      "name": "Scourgelord Garrosh",
+      "count": 1
+    },
+    {
+      "name": "Acolyte of Pain",
+      "count": 2
+    },
+    {
+      "name": "Cairne Bloodhoof",
+      "count": 1
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.5333333333333333,
+  "substitutions": [
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Execute",
+      "replacement": "Crush",
+      "replacement_id": "GVG_052"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Slam",
+      "replacement": "Blood To Ichor",
+      "replacement_id": "OG_314"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Armorsmith",
+      "replacement": "Alley Armorsmith",
+      "replacement_id": "CFM_756"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Battle Rage",
+      "replacement": "Shield Block",
+      "replacement_id": "EX1_606"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Frothing Berserker",
+      "replacement": "Grim Patron",
+      "replacement_id": "BRM_019"
+    },
+    {
+      "source": "Kor’kron Elite",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    },
+    {
+      "source": "Kor’kron Elite",
+      "replacement": "Argent Horserider",
+      "replacement_id": "AT_087"
+    },
+    {
+      "source": "Grommash Hellscream",
+      "replacement": "Rotface",
+      "replacement_id": "ICC_405"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Acolyte of Pain",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Cairne Bloodhoof",
+      "replacement": "Infested Tauren",
+      "replacement_id": "OG_249"
+    }
+  ],
+  "cards": [
+    "ICC_238",
+    "ICC_238",
+    "GVG_052",
+    "GVG_052",
+    "OG_314",
+    "OG_314",
+    "CFM_756",
+    "CFM_756",
+    "EX1_606",
+    "EX1_606",
+    "CS2_106",
+    "CS2_106",
+    "ICC_281",
+    "ICC_281",
+    "BRM_019",
+    "BRM_019",
+    "OG_149",
+    "OG_149",
+    "ICC_408",
+    "ICC_408",
+    "ICC_064",
+    "ICC_064",
+    "AT_087",
+    "AT_087",
+    "ICC_405",
+    "ICC_834",
+    "EX1_096",
+    "EX1_096",
+    "OG_249",
+    "ICC_314"
+  ]
+}

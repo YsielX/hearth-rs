@@ -1,0 +1,169 @@
+{
+  "name": "KFT 2017 runtime-adapted: Pinche’s Jade Druid – HCT Americas Summer Playoffs 2017",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "jade",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/pinches-jade-druid-hct-americas-summer-playoffs-2017/",
+  "source_collection": "hct_americas_summer_playoffs_2017",
+  "source_name": "Pinche’s Jade Druid – HCT Americas Summer Playoffs 2017",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Jade Idol",
+      "count": 2
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Jade Blossom",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Fandral Staghelm",
+      "count": 1
+    },
+    {
+      "name": "Jade Spirit",
+      "count": 2
+    },
+    {
+      "name": "Jade Behemoth",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Aya Blackpaw",
+      "count": 1
+    },
+    {
+      "name": "Spreading Plague",
+      "count": 2
+    },
+    {
+      "name": "Malfurion the Pestilent",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 2
+    },
+    {
+      "name": "Doomsayer",
+      "count": 2
+    },
+    {
+      "name": "Gluttonous Ooze",
+      "count": 1
+    },
+    {
+      "name": "Spellbreaker",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Doomsayer",
+      "replacement": "Explosive Sheep",
+      "replacement_id": "GVG_076"
+    },
+    {
+      "source": "Spellbreaker",
+      "replacement": "Wailing Soul",
+      "replacement_id": "FP1_016"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "CFM_602",
+    "CFM_602",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "CFM_713",
+    "CFM_713",
+    "FP1_019",
+    "FP1_019",
+    "OG_044",
+    "CFM_715",
+    "CFM_715",
+    "CFM_343",
+    "CFM_343",
+    "CFM_811",
+    "CFM_811",
+    "CFM_902",
+    "ICC_054",
+    "ICC_054",
+    "ICC_832",
+    "ICC_085",
+    "ICC_085",
+    "GVG_076",
+    "GVG_076",
+    "UNG_946",
+    "FP1_016",
+    "UNG_848"
+  ]
+}

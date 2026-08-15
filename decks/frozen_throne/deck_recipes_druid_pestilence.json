@@ -1,0 +1,150 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Druid): Pestilence",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-druid-pestilence/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Druid): Pestilence",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Druid of the Swarm",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Crypt Lord",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Strongshell Scavenger",
+      "count": 2
+    },
+    {
+      "name": "Webweave",
+      "count": 2
+    },
+    {
+      "name": "Druid of the Claw",
+      "count": 2
+    },
+    {
+      "name": "Spreading Plague",
+      "count": 2
+    },
+    {
+      "name": "Malfurion the Pestilent",
+      "count": 1
+    },
+    {
+      "name": "Hadronox",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 1
+    },
+    {
+      "name": "Dirty Rat",
+      "count": 2
+    },
+    {
+      "name": "Stonehill Defender",
+      "count": 2
+    },
+    {
+      "name": "Saronite Chain Gang",
+      "count": 2
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Druid of the Claw",
+      "replacement": "Druid of the Saber",
+      "replacement_id": "AT_042"
+    },
+    {
+      "source": "Druid of the Claw",
+      "replacement": "Druid of the Saber",
+      "replacement_id": "AT_042"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "ICC_051",
+    "ICC_051",
+    "AT_037",
+    "AT_037",
+    "ICC_808",
+    "ICC_808",
+    "FP1_019",
+    "FP1_019",
+    "ICC_807",
+    "ICC_807",
+    "ICC_050",
+    "ICC_050",
+    "AT_042",
+    "AT_042",
+    "ICC_054",
+    "ICC_054",
+    "ICC_832",
+    "ICC_835",
+    "ICC_085",
+    "CFM_790",
+    "CFM_790",
+    "UNG_072",
+    "UNG_072",
+    "ICC_466",
+    "ICC_466",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

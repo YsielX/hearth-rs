@@ -1,0 +1,160 @@
+{
+  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Jaina Elemental Mage",
+  "class": "mage",
+  "hero_power": "HERO_08bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "elemental",
+  "strategy": "midrange",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/disguisedtoasts-kft-jaina-elemental-mage/",
+  "source_collection": "kft_deck_index",
+  "source_name": "DisguisedToast’s KFT Jaina Elemental Mage",
+  "source_cards": [
+    {
+      "name": "Babbling Book",
+      "count": 2
+    },
+    {
+      "name": "Mana Wyrm",
+      "count": 2
+    },
+    {
+      "name": "Arcanologist",
+      "count": 2
+    },
+    {
+      "name": "Frostbolt",
+      "count": 2
+    },
+    {
+      "name": "Medivh’s Valet",
+      "count": 2
+    },
+    {
+      "name": "Primordial Glyph",
+      "count": 2
+    },
+    {
+      "name": "Pyros",
+      "count": 1
+    },
+    {
+      "name": "Arcane Intellect",
+      "count": 2
+    },
+    {
+      "name": "Counterspell",
+      "count": 1
+    },
+    {
+      "name": "Ice Block",
+      "count": 2
+    },
+    {
+      "name": "Volcanic Potion",
+      "count": 1
+    },
+    {
+      "name": "Fireball",
+      "count": 2
+    },
+    {
+      "name": "Water Elemental",
+      "count": 2
+    },
+    {
+      "name": "Firelands Portal",
+      "count": 2
+    },
+    {
+      "name": "Frost Lich Jaina",
+      "count": 1
+    },
+    {
+      "name": "Tar Creeper",
+      "count": 2
+    },
+    {
+      "name": "Servant of Kalimos",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Mana Wyrm",
+      "replacement": "Arcane Anomaly",
+      "replacement_id": "KAR_036"
+    },
+    {
+      "source": "Mana Wyrm",
+      "replacement": "Arcane Anomaly",
+      "replacement_id": "KAR_036"
+    },
+    {
+      "source": "Arcane Intellect",
+      "replacement": "Cabalist's Tome",
+      "replacement_id": "OG_090"
+    },
+    {
+      "source": "Arcane Intellect",
+      "replacement": "Cabalist's Tome",
+      "replacement_id": "OG_090"
+    },
+    {
+      "source": "Ice Block",
+      "replacement": "Counterspell",
+      "replacement_id": "EX1_287"
+    },
+    {
+      "source": "Ice Block",
+      "replacement": "Potion of Polymorph",
+      "replacement_id": "CFM_620"
+    },
+    {
+      "source": "Water Elemental",
+      "replacement": "Fire Plume Phoenix",
+      "replacement_id": "UNG_084"
+    },
+    {
+      "source": "Water Elemental",
+      "replacement": "Fire Plume Phoenix",
+      "replacement_id": "UNG_084"
+    }
+  ],
+  "cards": [
+    "KAR_009",
+    "KAR_009",
+    "KAR_036",
+    "KAR_036",
+    "UNG_020",
+    "UNG_020",
+    "CS2_024",
+    "CS2_024",
+    "KAR_092",
+    "KAR_092",
+    "UNG_941",
+    "UNG_941",
+    "UNG_027",
+    "OG_090",
+    "OG_090",
+    "EX1_287",
+    "EX1_287",
+    "CFM_620",
+    "CFM_065",
+    "CS2_029",
+    "CS2_029",
+    "UNG_084",
+    "UNG_084",
+    "KAR_076",
+    "KAR_076",
+    "ICC_833",
+    "UNG_928",
+    "UNG_928",
+    "UNG_816",
+    "UNG_816"
+  ]
+}

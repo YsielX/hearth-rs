@@ -22,9 +22,25 @@ from .rollout import ParallelCollector, RolloutJob, play_episode
 from .tensorize import Tensorizer
 from .trajectory import write_episodes
 
+ROOT = Path(__file__).parents[3]
+
+
+def _default_deck_paths() -> list[str]:
+    frozen_throne = sorted((ROOT / "decks/frozen_throne").glob("*.json"))
+    return [str(path) for path in frozen_throne] + [
+        str(ROOT / "decks/quest_rogue.json")
+    ]
+
 
 def _decks(paths: list[str]) -> list[Deck]:
     return [Deck.from_file(path) for path in paths]
+
+
+def _bc_decks(decks: list[Deck]) -> list[Deck]:
+    eligible = [deck for deck in decks if deck.bc_eligible]
+    if not eligible:
+        raise ValueError("no decks are marked bc_eligible for heuristic collection")
+    return eligible
 
 
 def _env_and_catalog(
@@ -87,7 +103,9 @@ def command_catalog(args: argparse.Namespace) -> None:
 def command_collect_bc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
-    pool = DeckPool(catalog, decks, seed=args.seed)
+    demonstrations = _bc_decks(decks)
+    print(f"deck pool: {len(decks)} total, {len(demonstrations)} heuristic-compatible")
+    pool = DeckPool(catalog, demonstrations, seed=args.seed)
     jobs = [
         RolloutJob(
             pool.sample_match(),
@@ -244,12 +262,18 @@ def command_pipeline(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
     pool = DeckPool(catalog, decks, seed=args.seed)
+    demonstration_decks = _bc_decks(decks)
+    demonstration_pool = DeckPool(catalog, demonstration_decks, seed=args.seed)
+    print(
+        f"deck pool: {len(decks)} total, "
+        f"{len(demonstration_decks)} heuristic-compatible"
+    )
     run_dir = Path(args.run_dir)
     demonstrations = run_dir / "bc" / "heuristic.jsonl.gz"
     bc_checkpoint = run_dir / "bc" / "model.pt"
     jobs = [
         RolloutJob(
-            pool.sample_match(),
+            demonstration_pool.sample_match(),
             args.seed + index,
             ({"kind": "heuristic", "noise": args.noise},) * 2,
         )
@@ -377,7 +401,7 @@ def parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = parser().parse_args()
     if not args.deck:
-        args.deck = ["decks/demo.json", "decks/quest_rogue.json"]
+        args.deck = _default_deck_paths()
     args.function(args)
 
 

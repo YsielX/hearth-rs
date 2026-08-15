@@ -1,0 +1,161 @@
+{
+  "name": "KFT 2017 runtime-adapted: Kripp’s KFT Warlock Zoo",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "zoo",
+  "strategy": "aggro",
+  "bc_eligible": true,
+  "source": "https://www.hearthstonetopdecks.com/decks/kripps-kft-warlock-zoo/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Kripp’s KFT Warlock Zoo",
+  "source_cards": [
+    {
+      "name": "Flame Imp",
+      "count": 2
+    },
+    {
+      "name": "Possessed Villager",
+      "count": 2
+    },
+    {
+      "name": "Voidwalker",
+      "count": 2
+    },
+    {
+      "name": "Darkshire Councilman",
+      "count": 2
+    },
+    {
+      "name": "Ravenous Pterrordax",
+      "count": 2
+    },
+    {
+      "name": "Abusive Sergeant",
+      "count": 2
+    },
+    {
+      "name": "Acherus Veteran",
+      "count": 2
+    },
+    {
+      "name": "Argent Squire",
+      "count": 2
+    },
+    {
+      "name": "Prince Keleseth",
+      "count": 1
+    },
+    {
+      "name": "Blood Knight",
+      "count": 1
+    },
+    {
+      "name": "Deathspeaker",
+      "count": 2
+    },
+    {
+      "name": "Devilsaur Egg",
+      "count": 2
+    },
+    {
+      "name": "Defender of Argus",
+      "count": 2
+    },
+    {
+      "name": "Saronite Chain Gang",
+      "count": 2
+    },
+    {
+      "name": "Skelemancer",
+      "count": 2
+    },
+    {
+      "name": "Bonemare",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Flame Imp",
+      "replacement": "Flame Juggler",
+      "replacement_id": "AT_094"
+    },
+    {
+      "source": "Flame Imp",
+      "replacement": "Flame Juggler",
+      "replacement_id": "AT_094"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Mistress of Mixtures",
+      "replacement_id": "CFM_120"
+    },
+    {
+      "source": "Voidwalker",
+      "replacement": "Mistress of Mixtures",
+      "replacement_id": "CFM_120"
+    },
+    {
+      "source": "Abusive Sergeant",
+      "replacement": "Acherus Veteran",
+      "replacement_id": "ICC_092"
+    },
+    {
+      "source": "Abusive Sergeant",
+      "replacement": "Acherus Veteran",
+      "replacement_id": "ICC_092"
+    },
+    {
+      "source": "Blood Knight",
+      "replacement": "Darkspeaker",
+      "replacement_id": "OG_102"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    },
+    {
+      "source": "Defender of Argus",
+      "replacement": "Faceless Shambler",
+      "replacement_id": "OG_174"
+    }
+  ],
+  "cards": [
+    "AT_094",
+    "AT_094",
+    "OG_241",
+    "OG_241",
+    "CFM_120",
+    "CFM_120",
+    "OG_113",
+    "OG_113",
+    "UNG_047",
+    "UNG_047",
+    "ICC_092",
+    "ICC_092",
+    "ICC_092",
+    "ICC_092",
+    "EX1_008",
+    "EX1_008",
+    "ICC_851",
+    "OG_102",
+    "ICC_467",
+    "ICC_467",
+    "UNG_083",
+    "UNG_083",
+    "OG_174",
+    "OG_174",
+    "ICC_466",
+    "ICC_466",
+    "ICC_019",
+    "ICC_019",
+    "ICC_705",
+    "ICC_705"
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Shaman): Remorseless Winter",
+  "class": "shaman",
+  "hero_power": "HERO_02bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-shaman-remorseless-winter/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Shaman): Remorseless Winter",
+  "source_cards": [
+    {
+      "name": "Brrrloc",
+      "count": 2
+    },
+    {
+      "name": "Cryostasis",
+      "count": 2
+    },
+    {
+      "name": "Devolve",
+      "count": 1
+    },
+    {
+      "name": "Maelstrom Portal",
+      "count": 1
+    },
+    {
+      "name": "Drakkari Defender",
+      "count": 2
+    },
+    {
+      "name": "Hex",
+      "count": 2
+    },
+    {
+      "name": "Ice Breaker",
+      "count": 2
+    },
+    {
+      "name": "Lightning Storm",
+      "count": 1
+    },
+    {
+      "name": "Mana Tide Totem",
+      "count": 1
+    },
+    {
+      "name": "Avalanche",
+      "count": 2
+    },
+    {
+      "name": "Jinyu Waterspeaker",
+      "count": 2
+    },
+    {
+      "name": "Volcano",
+      "count": 1
+    },
+    {
+      "name": "Voodoo Hexxer",
+      "count": 2
+    },
+    {
+      "name": "Moorabi",
+      "count": 1
+    },
+    {
+      "name": "Snowfury Giant",
+      "count": 2
+    },
+    {
+      "name": "Glacial Shard",
+      "count": 2
+    },
+    {
+      "name": "Hyldnir Frostrider",
+      "count": 2
+    },
+    {
+      "name": "Frost Elemental",
+      "count": 2
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Hex",
+      "replacement": "Devolve",
+      "replacement_id": "CFM_696"
+    },
+    {
+      "source": "Hex",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Lightning Storm",
+      "replacement": "Maelstrom Portal",
+      "replacement_id": "KAR_073"
+    },
+    {
+      "source": "Mana Tide Totem",
+      "replacement": "Loot Hoarder",
+      "replacement_id": "EX1_096"
+    },
+    {
+      "source": "Frost Elemental",
+      "replacement": "Frozen Crusher",
+      "replacement_id": "UNG_079"
+    },
+    {
+      "source": "Frost Elemental",
+      "replacement": "Frozen Crusher",
+      "replacement_id": "UNG_079"
+    }
+  ],
+  "cards": [
+    "ICC_058",
+    "ICC_058",
+    "ICC_056",
+    "ICC_056",
+    "CFM_696",
+    "KAR_073",
+    "ICC_081",
+    "ICC_081",
+    "CFM_696",
+    "EX1_005",
+    "ICC_236",
+    "ICC_236",
+    "KAR_073",
+    "EX1_096",
+    "ICC_078",
+    "ICC_078",
+    "CFM_061",
+    "CFM_061",
+    "UNG_025",
+    "ICC_088",
+    "ICC_088",
+    "ICC_289",
+    "ICC_090",
+    "ICC_090",
+    "UNG_205",
+    "UNG_205",
+    "ICC_855",
+    "ICC_855",
+    "UNG_079",
+    "UNG_079"
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warlock): Feed the Void",
+  "class": "warlock",
+  "hero_power": "HERO_07bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-warlock-feed-void/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Warlock): Feed the Void",
+  "source_cards": [
+    {
+      "name": "Lakkari Sacrifice",
+      "count": 1
+    },
+    {
+      "name": "Soulfire",
+      "count": 2
+    },
+    {
+      "name": "Chittering Tunneler",
+      "count": 2
+    },
+    {
+      "name": "Clutchmother Zavas",
+      "count": 1
+    },
+    {
+      "name": "Darkshire Librarian",
+      "count": 2
+    },
+    {
+      "name": "Malchezaar’s Imp",
+      "count": 2
+    },
+    {
+      "name": "Howlfiend",
+      "count": 2
+    },
+    {
+      "name": "Silverware Golem",
+      "count": 2
+    },
+    {
+      "name": "Unwilling Sacrifice",
+      "count": 2
+    },
+    {
+      "name": "Bloodbloom",
+      "count": 1
+    },
+    {
+      "name": "Lakkari Felhound",
+      "count": 2
+    },
+    {
+      "name": "Siphon Soul",
+      "count": 1
+    },
+    {
+      "name": "Blood-Queen Lana’thel",
+      "count": 1
+    },
+    {
+      "name": "Cruel Dinomancer",
+      "count": 2
+    },
+    {
+      "name": "Despicable Dreadlord",
+      "count": 2
+    },
+    {
+      "name": "Doomguard",
+      "count": 2
+    },
+    {
+      "name": "Felfire Potion",
+      "count": 1
+    },
+    {
+      "name": "DOOM!",
+      "count": 1
+    },
+    {
+      "name": "Deathwing",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.2,
+  "substitutions": [
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Soulfire",
+      "replacement": "Darkbomb",
+      "replacement_id": "GVG_015"
+    },
+    {
+      "source": "Siphon Soul",
+      "replacement": "Blastcrystal Potion",
+      "replacement_id": "CFM_608"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Doomguard",
+      "replacement": "Fearsome Doomguard",
+      "replacement_id": "AT_020"
+    },
+    {
+      "source": "Deathwing",
+      "replacement": "Deathwing, Dragonlord",
+      "replacement_id": "OG_317"
+    }
+  ],
+  "cards": [
+    "UNG_829",
+    "GVG_015",
+    "GVG_015",
+    "UNG_835",
+    "UNG_835",
+    "UNG_836",
+    "OG_109",
+    "OG_109",
+    "KAR_089",
+    "KAR_089",
+    "ICC_218",
+    "ICC_218",
+    "KAR_205",
+    "KAR_205",
+    "ICC_469",
+    "ICC_469",
+    "UNG_832",
+    "UNG_833",
+    "UNG_833",
+    "CFM_608",
+    "ICC_841",
+    "UNG_830",
+    "UNG_830",
+    "ICC_075",
+    "ICC_075",
+    "AT_020",
+    "AT_020",
+    "CFM_094",
+    "OG_239",
+    "OG_317"
+  ]
+}

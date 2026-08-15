@@ -1,0 +1,182 @@
+{
+  "name": "KFT 2017 runtime-adapted: weghuz’s Frozen Throne Ultimate N’Zoth Deathrattle Druid",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "nzoth_deathrattle",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/weghuzs-frozen-throne-ultimate-nzoth-deathrattle-druid/",
+  "source_collection": "kft_deck_index",
+  "source_name": "weghuz’s Frozen Throne Ultimate N’Zoth Deathrattle Druid",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Earthen Scales",
+      "count": 2
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Fandral Staghelm",
+      "count": 1
+    },
+    {
+      "name": "Mire Keeper",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Druid of the Claw",
+      "count": 2
+    },
+    {
+      "name": "Spreading Plague",
+      "count": 2
+    },
+    {
+      "name": "Malfurion the Pestilent",
+      "count": 1
+    },
+    {
+      "name": "Hadronox",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 1
+    },
+    {
+      "name": "Prince Taldaram",
+      "count": 1
+    },
+    {
+      "name": "Arfus",
+      "count": 1
+    },
+    {
+      "name": "The Black Knight",
+      "count": 1
+    },
+    {
+      "name": "Cairne Bloodhoof",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    },
+    {
+      "name": "N’Zoth, The Corruptor",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3333333333333333,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Druid of the Claw",
+      "replacement": "Druid of the Saber",
+      "replacement_id": "AT_042"
+    },
+    {
+      "source": "Druid of the Claw",
+      "replacement": "Druid of the Saber",
+      "replacement_id": "AT_042"
+    },
+    {
+      "source": "The Black Knight",
+      "replacement": "Big Game Hunter",
+      "replacement_id": "EX1_005"
+    },
+    {
+      "source": "Cairne Bloodhoof",
+      "replacement": "Infested Tauren",
+      "replacement_id": "OG_249"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "UNG_108",
+    "UNG_108",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "FP1_019",
+    "FP1_019",
+    "OG_044",
+    "OG_202",
+    "OG_202",
+    "CFM_811",
+    "CFM_811",
+    "AT_042",
+    "AT_042",
+    "ICC_054",
+    "ICC_054",
+    "ICC_832",
+    "ICC_835",
+    "ICC_085",
+    "ICC_852",
+    "ICC_854",
+    "EX1_005",
+    "OG_249",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314",
+    "OG_133"
+  ]
+}

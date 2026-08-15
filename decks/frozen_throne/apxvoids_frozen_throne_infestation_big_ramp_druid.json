@@ -1,0 +1,169 @@
+{
+  "name": "KFT 2017 runtime-adapted: Apxvoid’s Frozen Throne Infestation Big Ramp Druid",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "ramp",
+  "strategy": "control",
+  "bc_eligible": false,
+  "source": "https://www.hearthstonetopdecks.com/decks/apxvoids-frozen-throne-infestation-big-ramp-druid/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Apxvoid’s Frozen Throne Infestation Big Ramp Druid",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Earthen Scales",
+      "count": 1
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Feral Rage",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Fandral Staghelm",
+      "count": 1
+    },
+    {
+      "name": "Mire Keeper",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Druid of the Claw",
+      "count": 1
+    },
+    {
+      "name": "Moonglade Portal",
+      "count": 2
+    },
+    {
+      "name": "Ancient of War",
+      "count": 2
+    },
+    {
+      "name": "Malfurion the Pestilent",
+      "count": 1
+    },
+    {
+      "name": "Ultimate Infestation",
+      "count": 2
+    },
+    {
+      "name": "Bright-Eyed Scout",
+      "count": 2
+    },
+    {
+      "name": "Medivh, the Guardian",
+      "count": 1
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 2
+    },
+    {
+      "name": "The Lich King",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.3,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Druid of the Claw",
+      "replacement": "Druid of the Saber",
+      "replacement_id": "AT_042"
+    },
+    {
+      "source": "Ancient of War",
+      "replacement": "Ancient of Blossoms",
+      "replacement_id": "CFM_854"
+    },
+    {
+      "source": "Ancient of War",
+      "replacement": "Ancient of Blossoms",
+      "replacement_id": "CFM_854"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "UNG_108",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "OG_047",
+    "OG_047",
+    "FP1_019",
+    "FP1_019",
+    "OG_044",
+    "OG_202",
+    "OG_202",
+    "CFM_811",
+    "CFM_811",
+    "AT_042",
+    "KAR_075",
+    "KAR_075",
+    "CFM_854",
+    "CFM_854",
+    "ICC_832",
+    "ICC_085",
+    "ICC_085",
+    "UNG_113",
+    "UNG_113",
+    "KAR_097",
+    "UNG_848",
+    "UNG_848",
+    "ICC_314"
+  ]
+}

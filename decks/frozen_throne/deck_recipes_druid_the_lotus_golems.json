@@ -1,0 +1,164 @@
+{
+  "name": "KFT 2017 runtime-adapted: Deck Recipes (Druid): The Lotus’ Golems",
+  "class": "druid",
+  "hero_power": "HERO_06bp",
+  "format": "wild_through_icecrown",
+  "source_format": "year_of_the_mammoth_standard",
+  "era_cutoff": "ICECROWN",
+  "archetype": "other",
+  "strategy": "midrange",
+  "bc_eligible": false,
+  "source": "http://www.hearthstonetopdecks.com/decks/deck-recipes-druid-the-lotus-golems/",
+  "source_collection": "kft_deck_index",
+  "source_name": "Deck Recipes (Druid): The Lotus’ Golems",
+  "source_cards": [
+    {
+      "name": "Innervate",
+      "count": 2
+    },
+    {
+      "name": "Jade Idol",
+      "count": 2
+    },
+    {
+      "name": "Earthen Scales",
+      "count": 2
+    },
+    {
+      "name": "Wild Growth",
+      "count": 2
+    },
+    {
+      "name": "Wrath",
+      "count": 2
+    },
+    {
+      "name": "Crypt Lord",
+      "count": 1
+    },
+    {
+      "name": "Feral Rage",
+      "count": 2
+    },
+    {
+      "name": "Jade Blossom",
+      "count": 2
+    },
+    {
+      "name": "Swipe",
+      "count": 2
+    },
+    {
+      "name": "Fandral Staghelm",
+      "count": 1
+    },
+    {
+      "name": "Jade Spirit",
+      "count": 2
+    },
+    {
+      "name": "Jade Behemoth",
+      "count": 2
+    },
+    {
+      "name": "Nourish",
+      "count": 2
+    },
+    {
+      "name": "Webweave",
+      "count": 1
+    },
+    {
+      "name": "Aya Blackpaw",
+      "count": 1
+    },
+    {
+      "name": "Gadgetzan Auctioneer",
+      "count": 2
+    },
+    {
+      "name": "Primordial Drake",
+      "count": 1
+    },
+    {
+      "name": "Yogg-Saron, Hope’s End",
+      "count": 1
+    }
+  ],
+  "adapted": true,
+  "adaptation_ratio": 0.26666666666666666,
+  "substitutions": [
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Wrath",
+      "replacement": "Living Roots",
+      "replacement_id": "AT_037"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Swipe",
+      "replacement": "Poison Seeds",
+      "replacement_id": "FP1_019"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Nourish",
+      "replacement": "Lunar Visions",
+      "replacement_id": "CFM_811"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Red Mana Wyrm",
+      "replacement_id": "CFM_060"
+    },
+    {
+      "source": "Gadgetzan Auctioneer",
+      "replacement": "Red Mana Wyrm",
+      "replacement_id": "CFM_060"
+    }
+  ],
+  "cards": [
+    "EX1_169",
+    "EX1_169",
+    "CFM_602",
+    "CFM_602",
+    "UNG_108",
+    "UNG_108",
+    "CS2_013",
+    "CS2_013",
+    "AT_037",
+    "AT_037",
+    "ICC_808",
+    "OG_047",
+    "OG_047",
+    "CFM_713",
+    "CFM_713",
+    "FP1_019",
+    "FP1_019",
+    "OG_044",
+    "CFM_715",
+    "CFM_715",
+    "CFM_343",
+    "CFM_343",
+    "CFM_811",
+    "CFM_811",
+    "ICC_050",
+    "CFM_902",
+    "CFM_060",
+    "CFM_060",
+    "UNG_848",
+    "OG_134"
+  ]
+}
