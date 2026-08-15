@@ -24,12 +24,14 @@ class HearthEnv:
         *,
         seed: int = 0,
         max_steps: int = 1000,
+        history_limit: int | None = None,
     ) -> None:
         self._native = _NativeHearthEnv(
             str(data_path),
             json.dumps(dict(match_config), separators=(",", ":")),
             seed,
             max_steps,
+            history_limit,
         )
         raw = self._native.decision_json()
         self._decision: dict[str, Any] | None = json.loads(raw) if raw else None

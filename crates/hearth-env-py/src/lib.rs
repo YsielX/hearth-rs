@@ -1,4 +1,4 @@
-use hearth_env::{HearthEnv as RustHearthEnv, MatchConfig};
+use hearth_env::{EnvConfig, HearthEnv as RustHearthEnv, MatchConfig};
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
@@ -23,17 +23,26 @@ struct PyHearthEnv {
 #[pymethods]
 impl PyHearthEnv {
     #[new]
-    #[pyo3(signature = (data_path, match_config_json, seed=0, max_steps=1000))]
+    #[pyo3(signature = (data_path, match_config_json, seed=0, max_steps=1000, history_limit=None))]
     fn new(
         data_path: &str,
         match_config_json: &str,
         seed: u64,
         max_steps: usize,
+        history_limit: Option<usize>,
     ) -> PyResult<Self> {
         let match_config: MatchConfig = serde_json::from_str(match_config_json)
             .map_err(|error| PyValueError::new_err(error.to_string()))?;
-        let inner =
-            RustHearthEnv::load(data_path, match_config, seed, max_steps).map_err(runtime_error)?;
+        let inner = RustHearthEnv::load_configured(
+            data_path,
+            match_config,
+            seed,
+            EnvConfig {
+                max_steps,
+                history_limit,
+            },
+        )
+        .map_err(runtime_error)?;
         Ok(Self { inner })
     }
 

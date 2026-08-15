@@ -4,7 +4,9 @@
 game. It contains environment mechanics, not learning code:
 
 - perspective-normalized player observations;
-- policy-local entity references instead of authoritative `EntityId` values;
+- episode-stable, policy-local entity references instead of authoritative
+  `EntityId` values;
+- a normalized public-event history with optional observation windows;
 - structured, indexed legal actions;
 - decision tokens that reject stale action indices;
 - deterministic reset while reusing the loaded Lua runtime;
@@ -24,10 +26,13 @@ The engine owns rules, deterministic randomness, legal-action validation,
 replay, and the information-safe `PlayerView` / `PlayerController` protocol.
 `PlayerView::history` is a chronological, viewer-specific `PublicEvent` stream;
 the aggregate card histories in this adapter are derived from that stream, not
-from private engine caches. This adapter owns episode lifecycle, perspective
-normalization, policy-local entity references, indexed actions, rewards, and
-time-limit truncation. Tensor layouts, history windows, batching, vector
-workers, self-play matchmaking, and learning code belong above this crate.
+from private engine caches. This adapter incrementally converts that stream to
+perspective-normalized events, assigns public cursors with no hidden core-log
+gaps, and can expose only the latest `history_limit` events while keeping the
+derived aggregates complete. It also owns episode lifecycle, stable local
+entity references, indexed actions, rewards, and time-limit truncation. Tensor
+layouts, batching, vector workers, self-play matchmaking, and learning code
+belong above this crate.
 
 `max_steps = 0` disables adapter truncation. A terminal game returns seat-order
 rewards (`[P1, P2]`); a time-limit truncation returns zero rewards and does not
@@ -46,6 +51,7 @@ env = HearthEnv(
     "data",
     {"decks": [deck, deck], "unrestricted": True},
     seed=7,
+    history_limit=128,  # omit for the complete public event stream
 )
 
 decision = env.decision

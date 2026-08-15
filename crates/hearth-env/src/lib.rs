@@ -4,188 +4,37 @@
 //! layouts, rewards, episode truncation, or action indices. This crate owns
 //! those concerns and never exposes authoritative entity IDs to a policy.
 
-use std::collections::BTreeMap;
 use std::path::Path;
 
 use hearth_core::{
-    CardKind, CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameError, GameOutcome, LegalAction,
-    PlayerCommand, PlayerId, PlayerView, PublicEvent, Replay,
+    CardRuntime, EntityId, Game, GameError, GameOutcome, PlayerCommand, PlayerId, Replay,
 };
 use hearth_script::{LuaCardRuntime, ScriptLoadError};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-pub const OBSERVATION_SCHEMA_VERSION: u32 = 1;
+mod action;
+mod config;
+mod entity_refs;
+mod history;
+mod observation;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct MatchConfig {
-    pub decks: [Vec<String>; 2],
-    #[serde(default = "default_hero_powers")]
-    pub hero_powers: [String; 2],
-    #[serde(default = "default_classes")]
-    pub classes: [String; 2],
-    #[serde(default)]
-    pub unrestricted: bool,
-}
+pub use action::{ActionKind, ActionObservation};
+pub use config::{EnvConfig, MatchConfig};
+pub use history::{
+    EventEntityObservation, EventEntityRole, EventKind, EventObservation, EventRecordObservation,
+    EventWindow, OutcomeObservation, PublicHistory,
+};
+pub use observation::{
+    ChoiceObservation, DecisionPhase, EntityArea, EntityObservation, EntityRef, Observation,
+    PlayerObservation, RelativePlayer,
+};
 
-fn default_hero_powers() -> [String; 2] {
-    [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()]
-}
+use action::encode_action;
+use history::ViewerMemory;
+use observation::build_observation;
 
-fn default_classes() -> [String; 2] {
-    ["mage".to_owned(), "mage".to_owned()]
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum RelativePlayer {
-    SelfPlayer,
-    Opponent,
-}
-
-impl RelativePlayer {
-    fn from_player(player: PlayerId, viewer: PlayerId) -> Self {
-        if player == viewer {
-            Self::SelfPlayer
-        } else {
-            Self::Opponent
-        }
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum DecisionPhase {
-    Mulligan,
-    Choice,
-    Main,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct EntityRef(pub u16);
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum EntityArea {
-    Hero,
-    HeroPower,
-    Weapon,
-    Board,
-    Hand,
-    Secret,
-    PublicObjective,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct EntityObservation {
-    pub entity: EntityRef,
-    pub card_id: String,
-    pub kind: CardKind,
-    pub owner: RelativePlayer,
-    pub controller: RelativePlayer,
-    pub area: EntityArea,
-    pub position: u8,
-    pub attack: i32,
-    pub max_health: i32,
-    pub damage: i32,
-    pub armor: i32,
-    pub cost: u8,
-    pub spell_damage: i32,
-    pub exhausted: bool,
-    pub frozen: bool,
-    pub attacks_this_turn: u8,
-    pub location_cooldown: u8,
-    pub keywords: Vec<String>,
-    pub silenced: bool,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct PublicHistory {
-    pub cards_played: Vec<String>,
-    pub spells_cast: Vec<String>,
-    pub minions_played: Vec<String>,
-    pub weapons_played: Vec<String>,
-    pub locations_played: Vec<String>,
-    pub discarded_cards: Vec<String>,
-    pub minions_died: Vec<String>,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct PlayerObservation {
-    pub class: String,
-    pub hero: EntityRef,
-    pub hero_power: EntityRef,
-    pub weapon: Option<EntityRef>,
-    pub board: Vec<EntityRef>,
-    /// Empty for the opponent.
-    pub hand: Vec<EntityRef>,
-    /// Ordinary Secret identities are present only for the observing player.
-    pub secrets: Vec<EntityRef>,
-    pub public_objectives: Vec<EntityRef>,
-    pub deck_size: u8,
-    pub hand_size: u8,
-    pub secrets_count: u8,
-    pub mana: u8,
-    pub max_mana: u8,
-    pub temporary_mana: u8,
-    pub overload_pending: u8,
-    pub overloaded_mana: u8,
-    pub fatigue: u32,
-    pub hero_power_used: bool,
-    pub hero_power_uses_this_turn: u8,
-    pub cards_played_this_turn: u32,
-    pub history: PublicHistory,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ChoiceObservation {
-    pub prompt: String,
-    pub options: Vec<String>,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Observation {
-    pub schema_version: u32,
-    /// Physical seat is metadata, never an input for ownership decisions.
-    pub seat: u8,
-    pub turn: u32,
-    pub active_player: RelativePlayer,
-    pub phase: DecisionPhase,
-    pub self_player: PlayerObservation,
-    pub opponent: PlayerObservation,
-    pub entities: Vec<EntityObservation>,
-    pub mulligan_eligible: Vec<EntityRef>,
-    pub pending_choice: Option<ChoiceObservation>,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ActionKind {
-    Mulligan,
-    PlayCard,
-    PlayCardAt,
-    TradeCard,
-    UseCardAction,
-    Attack,
-    UseHeroPower,
-    UseLocation,
-    EndTurn,
-    Concede,
-    Choose,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ActionObservation {
-    /// Index accepted by `HearthEnv::step` for this decision only.
-    pub index: u32,
-    pub kind: ActionKind,
-    pub sources: Vec<EntityRef>,
-    pub target: Option<EntityRef>,
-    pub board_position: Option<u8>,
-    pub mana_cost: u8,
-    pub card_action: Option<String>,
-    pub choice_index: Option<u16>,
-}
+pub const OBSERVATION_SCHEMA_VERSION: u32 = 2;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Decision {
@@ -220,8 +69,12 @@ pub enum EnvError {
     InvalidActionIndex { index: usize, actions: usize },
     #[error("legal action refers to entity {0} that is absent from the player's view")]
     HiddenActionEntity(EntityId),
-    #[error("player view contains too many visible entities")]
-    TooManyVisibleEntities,
+    #[error("an episode contains too many observed entities")]
+    TooManyObservedEntities,
+    #[error("a public event value is too large for the observation schema")]
+    PublicEventValueTooLarge,
+    #[error("public history rewound from {processed} processed events to {available}")]
+    PublicHistoryRewound { processed: usize, available: usize },
     #[error("environment has no active game")]
     MissingGame,
 }
@@ -234,7 +87,8 @@ struct CachedDecision {
 pub struct HearthEnv {
     game: Option<Game<LuaCardRuntime>>,
     match_config: MatchConfig,
-    max_steps: usize,
+    env_config: EnvConfig,
+    viewers: [ViewerMemory; 2],
     steps: usize,
     next_decision_id: u64,
     current: Option<CachedDecision>,
@@ -248,8 +102,22 @@ impl HearthEnv {
         seed: u64,
         max_steps: usize,
     ) -> Result<Self, EnvError> {
+        Self::load_configured(
+            data_path,
+            match_config,
+            seed,
+            EnvConfig::with_max_steps(max_steps),
+        )
+    }
+
+    pub fn load_configured(
+        data_path: impl AsRef<Path>,
+        match_config: MatchConfig,
+        seed: u64,
+        env_config: EnvConfig,
+    ) -> Result<Self, EnvError> {
         let runtime = LuaCardRuntime::load_dir(data_path)?;
-        Self::with_runtime(runtime, match_config, seed, max_steps)
+        Self::with_runtime_configured(runtime, match_config, seed, env_config)
     }
 
     pub fn with_runtime(
@@ -258,11 +126,26 @@ impl HearthEnv {
         seed: u64,
         max_steps: usize,
     ) -> Result<Self, EnvError> {
+        Self::with_runtime_configured(
+            runtime,
+            match_config,
+            seed,
+            EnvConfig::with_max_steps(max_steps),
+        )
+    }
+
+    pub fn with_runtime_configured(
+        runtime: LuaCardRuntime,
+        match_config: MatchConfig,
+        seed: u64,
+        env_config: EnvConfig,
+    ) -> Result<Self, EnvError> {
         let game = build_game(runtime, &match_config, seed)?;
         let mut environment = Self {
             game: Some(game),
             match_config,
-            max_steps,
+            env_config,
+            viewers: std::array::from_fn(|_| ViewerMemory::default()),
             steps: 0,
             next_decision_id: 1,
             current: None,
@@ -279,6 +162,7 @@ impl HearthEnv {
         self.steps = 0;
         self.truncated = false;
         self.current = None;
+        self.viewers = std::array::from_fn(|_| ViewerMemory::default());
         self.refresh_decision()?;
         self.decision().ok_or(EnvError::MissingGame)
     }
@@ -329,7 +213,8 @@ impl HearthEnv {
             .state()
             .outcome;
         let terminated = outcome.is_some();
-        self.truncated = !terminated && self.max_steps > 0 && self.steps >= self.max_steps;
+        self.truncated =
+            !terminated && self.env_config.max_steps > 0 && self.steps >= self.env_config.max_steps;
         let rewards = rewards(outcome);
         if !terminated && !self.truncated {
             self.refresh_decision()?;
@@ -373,19 +258,26 @@ impl HearthEnv {
     }
 
     fn refresh_decision(&mut self) -> Result<(), EnvError> {
-        let game = self.game.as_ref().ok_or(EnvError::MissingGame)?;
-        if game.state().outcome.is_some() || self.truncated {
-            self.current = None;
-            return Ok(());
-        }
-        let actor = game.state().input_player();
-        let view = game.state().player_view(actor);
-        let legal = game.legal_action_options()?;
-        let (observation, refs) = build_observation(&view)?;
+        let (actor, view, legal) = {
+            let game = self.game.as_ref().ok_or(EnvError::MissingGame)?;
+            if game.state().outcome.is_some() || self.truncated {
+                self.current = None;
+                return Ok(());
+            }
+            let actor = game.state().input_player();
+            (
+                actor,
+                game.state().player_view(actor),
+                game.legal_action_options()?,
+            )
+        };
+        let memory = &mut self.viewers[actor.index()];
+        memory.sync(&view)?;
+        let observation = build_observation(&view, memory, self.env_config.history_limit)?;
         let actions = legal
             .iter()
             .enumerate()
-            .map(|(index, action)| encode_action(index, action, &refs, &view))
+            .map(|(index, action)| encode_action(index, action, &memory.refs, &view))
             .collect::<Result<Vec<_>, _>>()?;
         let commands = legal.into_iter().map(|action| action.command).collect();
         let id = self.next_decision_id;
@@ -438,298 +330,14 @@ fn rewards(outcome: Option<GameOutcome>) -> [f32; 2] {
     }
 }
 
-struct RefTable {
-    by_authoritative: BTreeMap<EntityId, EntityRef>,
-}
-
-fn build_observation(view: &PlayerView) -> Result<(Observation, RefTable), EnvError> {
-    let self_id = view.viewer;
-    let opponent_id = self_id.opponent();
-    let mut entities = Vec::new();
-    let mut refs = BTreeMap::new();
-
-    let mut add =
-        |id: EntityId, area: EntityArea, position: usize| -> Result<EntityRef, EnvError> {
-            if let Some(existing) = refs.get(&id) {
-                return Ok(*existing);
-            }
-            let reference = EntityRef(
-                u16::try_from(entities.len()).map_err(|_| EnvError::TooManyVisibleEntities)?,
-            );
-            let entity = view.entity(id).ok_or(EnvError::HiddenActionEntity(id))?;
-            entities.push(EntityObservation {
-                entity: reference,
-                card_id: entity.card_id.clone(),
-                kind: entity.kind,
-                owner: RelativePlayer::from_player(entity.owner, self_id),
-                controller: RelativePlayer::from_player(entity.controller, self_id),
-                area,
-                position: u8::try_from(position).map_err(|_| EnvError::TooManyVisibleEntities)?,
-                attack: entity.attack,
-                max_health: entity.max_health,
-                damage: entity.damage,
-                armor: entity.armor,
-                cost: entity.cost,
-                spell_damage: entity.spell_damage,
-                exhausted: entity.exhausted,
-                frozen: entity.frozen,
-                attacks_this_turn: entity.attacks_this_turn,
-                location_cooldown: entity.location_cooldown,
-                keywords: entity.keywords.clone(),
-                silenced: entity.silenced,
-            });
-            refs.insert(id, reference);
-            Ok(reference)
-        };
-
-    for player_id in [self_id, opponent_id] {
-        let player = view.player(player_id);
-        add(player.hero, EntityArea::Hero, 0)?;
-        add(player.hero_power, EntityArea::HeroPower, 0)?;
-        if let Some(weapon) = player.weapon {
-            add(weapon, EntityArea::Weapon, 0)?;
-        }
-        for (position, entity) in player.board.iter().copied().enumerate() {
-            add(entity, EntityArea::Board, position)?;
-        }
-        for (position, entity) in player.public_objectives.iter().copied().enumerate() {
-            add(entity, EntityArea::PublicObjective, position)?;
-        }
-    }
-    for (position, entity) in view.player(self_id).hand.iter().copied().enumerate() {
-        add(entity, EntityArea::Hand, position)?;
-    }
-    for (position, entity) in view.player(self_id).secrets.iter().copied().enumerate() {
-        add(entity, EntityArea::Secret, position)?;
-    }
-    drop(add);
-
-    let histories = derive_public_histories(view);
-
-    let player_observation = |player_id: PlayerId| -> Result<PlayerObservation, EnvError> {
-        let player = view.player(player_id);
-        let map = |id: EntityId| {
-            refs.get(&id)
-                .copied()
-                .ok_or(EnvError::HiddenActionEntity(id))
-        };
-        Ok(PlayerObservation {
-            class: player.class.clone(),
-            hero: map(player.hero)?,
-            hero_power: map(player.hero_power)?,
-            weapon: player.weapon.map(map).transpose()?,
-            board: player
-                .board
-                .iter()
-                .copied()
-                .map(map)
-                .collect::<Result<_, _>>()?,
-            hand: player
-                .hand
-                .iter()
-                .copied()
-                .map(map)
-                .collect::<Result<_, _>>()?,
-            secrets: player
-                .secrets
-                .iter()
-                .copied()
-                .filter(|entity| !player.public_objectives.contains(entity))
-                .map(map)
-                .collect::<Result<_, _>>()?,
-            public_objectives: player
-                .public_objectives
-                .iter()
-                .copied()
-                .map(map)
-                .collect::<Result<_, _>>()?,
-            deck_size: player.deck_size.min(usize::from(u8::MAX)) as u8,
-            hand_size: player.hand_size.min(usize::from(u8::MAX)) as u8,
-            secrets_count: player.secrets_count.min(usize::from(u8::MAX)) as u8,
-            mana: player.mana,
-            max_mana: player.max_mana,
-            temporary_mana: player.temporary_mana,
-            overload_pending: player.overload_pending,
-            overloaded_mana: player.overloaded_mana,
-            fatigue: player.fatigue,
-            hero_power_used: player.hero_power_used,
-            hero_power_uses_this_turn: player.hero_power_uses_this_turn,
-            cards_played_this_turn: player.cards_played_this_turn,
-            history: histories[player_id.index()].clone(),
-        })
-    };
-
-    let phase = if !view.mulligan_eligible.is_empty() {
-        DecisionPhase::Mulligan
-    } else if view.pending_input.is_some() {
-        DecisionPhase::Choice
-    } else {
-        DecisionPhase::Main
-    };
-    let mulligan_eligible = view
-        .mulligan_eligible
-        .iter()
-        .map(|entity| {
-            refs.get(entity)
-                .copied()
-                .ok_or(EnvError::HiddenActionEntity(*entity))
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-    let observation = Observation {
-        schema_version: OBSERVATION_SCHEMA_VERSION,
-        seat: self_id.0,
-        turn: view.turn,
-        active_player: RelativePlayer::from_player(view.active_player, self_id),
-        phase,
-        self_player: player_observation(self_id)?,
-        opponent: player_observation(opponent_id)?,
-        entities,
-        mulligan_eligible,
-        pending_choice: view.pending_input.as_ref().map(|input| ChoiceObservation {
-            prompt: input.prompt.clone(),
-            options: input.options.clone(),
-        }),
-    };
-    Ok((
-        observation,
-        RefTable {
-            by_authoritative: refs,
-        },
-    ))
-}
-
-fn derive_public_histories(view: &PlayerView) -> [PublicHistory; 2] {
-    let mut histories: [PublicHistory; 2] = std::array::from_fn(|_| PublicHistory {
-        cards_played: Vec::new(),
-        spells_cast: Vec::new(),
-        minions_played: Vec::new(),
-        weapons_played: Vec::new(),
-        locations_played: Vec::new(),
-        discarded_cards: Vec::new(),
-        minions_died: Vec::new(),
-    });
-    for record in view.history.iter() {
-        match &record.event {
-            PublicEvent::CardPlayed { player, card, .. }
-            | PublicEvent::CardCountered { player, card } => {
-                histories[player.index()]
-                    .cards_played
-                    .push(card.card_id.clone());
-            }
-            PublicEvent::SpellCast { player, spell, .. } => histories[player.index()]
-                .spells_cast
-                .push(spell.card_id.clone()),
-            PublicEvent::MinionPlayed { player, minion } => histories[player.index()]
-                .minions_played
-                .push(minion.card_id.clone()),
-            PublicEvent::WeaponPlayed { player, weapon } => histories[player.index()]
-                .weapons_played
-                .push(weapon.card_id.clone()),
-            PublicEvent::LocationPlayed { player, location } => histories[player.index()]
-                .locations_played
-                .push(location.card_id.clone()),
-            PublicEvent::CardDiscarded { player, card, .. } => histories[player.index()]
-                .discarded_cards
-                .push(card.card_id.clone()),
-            PublicEvent::EntityDied { player, entity, .. } => histories[player.index()]
-                .minions_died
-                .push(entity.card_id.clone()),
-            _ => {}
-        }
-    }
-    histories
-}
-
-fn encode_action(
-    index: usize,
-    action: &LegalAction,
-    refs: &RefTable,
-    view: &PlayerView,
-) -> Result<ActionObservation, EnvError> {
-    let map = |entity: EntityId| {
-        refs.by_authoritative
-            .get(&entity)
-            .copied()
-            .ok_or(EnvError::HiddenActionEntity(entity))
-    };
-    let mut encoded = ActionObservation {
-        index: u32::try_from(index).map_err(|_| EnvError::TooManyVisibleEntities)?,
-        kind: ActionKind::EndTurn,
-        sources: Vec::new(),
-        target: None,
-        board_position: None,
-        mana_cost: action.mana_cost,
-        card_action: None,
-        choice_index: None,
-    };
-    match &action.command {
-        PlayerCommand::Mulligan { replace } => {
-            encoded.kind = ActionKind::Mulligan;
-            encoded.sources = replace.iter().copied().map(map).collect::<Result<_, _>>()?;
-        }
-        PlayerCommand::PlayCard { card, target } => {
-            encoded.kind = ActionKind::PlayCard;
-            encoded.sources.push(map(*card)?);
-            encoded.target = target.map(map).transpose()?;
-        }
-        PlayerCommand::PlayCardAt {
-            card,
-            target,
-            position,
-        } => {
-            encoded.kind = ActionKind::PlayCardAt;
-            encoded.sources.push(map(*card)?);
-            encoded.target = target.map(map).transpose()?;
-            encoded.board_position =
-                Some(u8::try_from(*position).map_err(|_| EnvError::TooManyVisibleEntities)?);
-        }
-        PlayerCommand::TradeCard { card } => {
-            encoded.kind = ActionKind::TradeCard;
-            encoded.sources.push(map(*card)?);
-        }
-        PlayerCommand::UseCardAction {
-            card,
-            action,
-            target,
-        } => {
-            encoded.kind = ActionKind::UseCardAction;
-            encoded.sources.push(map(*card)?);
-            encoded.target = target.map(map).transpose()?;
-            encoded.card_action = Some(action.clone());
-        }
-        PlayerCommand::Attack { attacker, defender } => {
-            encoded.kind = ActionKind::Attack;
-            encoded.sources.push(map(*attacker)?);
-            encoded.target = Some(map(*defender)?);
-        }
-        PlayerCommand::UseHeroPower { target } => {
-            encoded.kind = ActionKind::UseHeroPower;
-            encoded
-                .sources
-                .push(map(view.player(view.viewer).hero_power)?);
-            encoded.target = target.map(map).transpose()?;
-        }
-        PlayerCommand::UseLocation { location, target } => {
-            encoded.kind = ActionKind::UseLocation;
-            encoded.sources.push(map(*location)?);
-            encoded.target = target.map(map).transpose()?;
-        }
-        PlayerCommand::EndTurn => encoded.kind = ActionKind::EndTurn,
-        PlayerCommand::Concede => encoded.kind = ActionKind::Concede,
-        PlayerCommand::Choose { index } => {
-            encoded.kind = ActionKind::Choose;
-            encoded.choice_index =
-                Some(u16::try_from(*index).map_err(|_| EnvError::TooManyVisibleEntities)?);
-        }
-    }
-    Ok(encoded)
-}
-
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
 
+    use hearth_core::PublicEvent;
+
     use super::*;
+    use crate::config::{default_classes, default_hero_powers};
 
     fn data_path() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data")
@@ -757,6 +365,16 @@ mod tests {
         }
     }
 
+    fn action_index(decision: &Decision, kind: ActionKind) -> usize {
+        decision
+            .actions
+            .iter()
+            .position(|action| {
+                action.kind == kind && (kind != ActionKind::Mulligan || action.sources.is_empty())
+            })
+            .unwrap()
+    }
+
     #[test]
     fn observation_and_actions_contain_no_authoritative_entity_ids() {
         let environment =
@@ -768,6 +386,68 @@ mod tests {
         assert!(json.to_string().find("rng_seed").is_none());
         assert!(json.to_string().find("random_counter").is_none());
         assert!(json.to_string().find("command").is_none());
+        assert!(json.to_string().find("sequence").is_none());
+        assert_eq!(decision.observation.schema_version, 2);
+    }
+
+    #[test]
+    fn entity_references_are_stable_for_the_whole_episode() {
+        let mut environment =
+            HearthEnv::load(data_path(), config("CS2_120", "CS2_120"), 11, 100).unwrap();
+        let first = environment.decision().unwrap().clone();
+        let hero = first.observation.self_player.hero;
+        let opening_hand = first.observation.self_player.hand.clone();
+        assert!(!opening_hand.is_empty());
+        assert!(first.observation.history.events.iter().any(|record| {
+            record.event.kind == EventKind::CardDrawn
+                && record.event.player == Some(RelativePlayer::SelfPlayer)
+                && record.event.entities.iter().any(|entity| {
+                    entity.role == EventEntityRole::Card && opening_hand.contains(&entity.entity)
+                })
+        }));
+
+        let keep = action_index(&first, ActionKind::Mulligan);
+        let second = environment.step(first.id, keep).unwrap().next.unwrap();
+        let keep = action_index(&second, ActionKind::Mulligan);
+        let third = environment.step(second.id, keep).unwrap().next.unwrap();
+
+        assert_eq!(third.observation.self_player.hero, hero);
+        assert!(
+            opening_hand
+                .iter()
+                .all(|entity| third.observation.self_player.hand.contains(entity))
+        );
+        let cursors = third
+            .observation
+            .history
+            .events
+            .iter()
+            .map(|record| record.cursor)
+            .collect::<Vec<_>>();
+        assert!(cursors.windows(2).all(|pair| pair[0] + 1 == pair[1]));
+    }
+
+    #[test]
+    fn history_window_has_explicit_cursors() {
+        let environment = HearthEnv::load_configured(
+            data_path(),
+            config("CS2_120", "CS2_120"),
+            5,
+            EnvConfig {
+                max_steps: 100,
+                history_limit: Some(2),
+            },
+        )
+        .unwrap();
+        let history = &environment.decision().unwrap().observation.history;
+        assert_eq!(history.events.len(), 2);
+        assert!(history.has_earlier_events);
+        assert_eq!(
+            history.start_cursor + history.events.len() as u64,
+            history.next_cursor
+        );
+        assert_eq!(history.events.first().unwrap().cursor, history.start_cursor);
+        assert!(history.next_cursor > 2);
     }
 
     #[test]
@@ -806,8 +486,8 @@ mod tests {
 
     #[test]
     fn reset_reuses_runtime_and_starts_a_fresh_episode() {
-        let mut environment =
-            HearthEnv::load(data_path(), config("CS2_120", "CS2_120"), 1, 100).unwrap();
+        let match_config = config("CS2_120", "CS2_120");
+        let mut environment = HearthEnv::load(data_path(), match_config.clone(), 1, 100).unwrap();
         let pack_hash = environment.pack_hash().unwrap().to_owned();
         let first_id = environment.decision().unwrap().id;
         environment.step(first_id, 0).unwrap();
@@ -816,6 +496,9 @@ mod tests {
         assert_eq!(environment.pack_hash().unwrap(), pack_hash);
         assert_eq!(reset.actor_seat, PlayerId::ONE.0);
         assert_eq!(reset.observation.phase, DecisionPhase::Mulligan);
+        let fresh = HearthEnv::load(data_path(), match_config, 99, 100).unwrap();
+        assert_eq!(reset.observation, fresh.decision().unwrap().observation);
+        assert_eq!(reset.actions, fresh.decision().unwrap().actions);
     }
 
     #[test]
@@ -888,8 +571,16 @@ mod tests {
 
     #[test]
     fn aggregate_histories_are_derived_from_the_public_event_stream() {
-        let mut environment =
-            HearthEnv::load(data_path(), config("CS2_120", "CS2_120"), 3, 100).unwrap();
+        let mut environment = HearthEnv::load_configured(
+            data_path(),
+            config("CS2_120", "CS2_120"),
+            3,
+            EnvConfig {
+                max_steps: 100,
+                history_limit: Some(1),
+            },
+        )
+        .unwrap();
         for expected in [
             ActionKind::Mulligan,
             ActionKind::Mulligan,
@@ -923,6 +614,8 @@ mod tests {
             next.observation.self_player.history.minions_played,
             ["CS2_120"]
         );
+        assert_eq!(next.observation.history.events.len(), 1);
+        assert!(next.observation.history.has_earlier_events);
         let core_view = environment
             .game
             .as_ref()
