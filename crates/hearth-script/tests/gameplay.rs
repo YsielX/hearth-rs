@@ -28,7 +28,7 @@ fn game(deck_one: &str, deck_two: &str) -> Game<LuaCardRuntime> {
 }
 
 fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCardRuntime> {
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,
@@ -43,7 +43,7 @@ fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCard
 }
 
 fn game_with_locale(card: &str, locale: Locale) -> Game<LuaCardRuntime> {
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir_with_locale(data_path(), locale).unwrap(),
         repeated(card),
         repeated("CS2_120"),
@@ -62,7 +62,7 @@ fn game_with_classes(
     deck_two: Vec<String>,
     classes: [&str; 2],
 ) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,
@@ -84,7 +84,7 @@ fn game_with_hero_powers(
     hero_powers: [&str; 2],
     classes: [&str; 2],
 ) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,
@@ -557,6 +557,33 @@ fn catalog_contains_only_traceable_official_cards() {
 }
 
 #[test]
+fn core_game_construction_rejects_off_class_decks() {
+    let valid = Game::new(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        mixed(&["CS2_029", "CS2_120"]),
+        repeated("CS2_120"),
+        101,
+    );
+    assert!(valid.is_ok(), "Mage and Neutral cards should be legal");
+
+    let invalid = Game::new(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        repeated("EX1_238"),
+        repeated("CS2_120"),
+        103,
+    );
+    assert!(matches!(
+        invalid,
+        Err(GameError::InvalidDeckClassCard {
+            player: PlayerId::ONE,
+            class,
+            card,
+            ..
+        }) if class == "mage" && card == "EX1_238"
+    ));
+}
+
+#[test]
 fn keyword_catalog_matches_the_constructed_hearthstone_glossary() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     let mut actual = runtime
@@ -745,7 +772,7 @@ fn forge_prepare_state_machine_walks_preserve_invariants() {
         .map(str::to_owned)
         .collect::<Vec<_>>();
     for seed in 100_u64..108 {
-        let mut game = Game::new(
+        let mut game = Game::new_unrestricted(
             LuaCardRuntime::load_dir(data_path()).unwrap(),
             deck.clone(),
             deck.clone(),
@@ -1475,7 +1502,7 @@ fn shadowstep_returns_a_minion_and_applies_cost_after_hidden_zone_reset() {
 fn patches_recruits_only_when_still_in_the_deck() {
     let mut deck = vec!["CFM_637".to_owned()];
     deck.extend(std::iter::repeat_n("KAR_069".to_owned(), 19));
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck,
         repeated("CS2_120"),
@@ -1805,7 +1832,7 @@ fn quest_rogue_legal_action_walks_preserve_all_state_invariants() {
         .collect::<Vec<_>>();
 
     for seed in 0_u64..16 {
-        let mut game = Game::new_with_hero_powers_and_classes(
+        let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
             LuaCardRuntime::load_dir(data_path()).unwrap(),
             deck.clone(),
             deck.clone(),

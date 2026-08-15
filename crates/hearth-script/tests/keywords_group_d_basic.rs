@@ -12,7 +12,7 @@ fn repeated(card: &str) -> Vec<String> {
 }
 
 fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCardRuntime> {
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,
@@ -138,7 +138,7 @@ fn start_of_game_prince_malchezaar_adds_five_unique_legendary_minions() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     let mut deck = vec!["KAR_096".to_owned()];
     deck.extend(std::iter::repeat_n("CS2_120".to_owned(), 19));
-    let game = Game::new(runtime, deck, repeated("CS2_120"), 91).unwrap();
+    let game = Game::new_unrestricted(runtime, deck, repeated("CS2_120"), 91).unwrap();
     let player = game.state().player(PlayerId::ONE);
     assert_eq!(player.deck.len() + player.hand.len(), 25);
 

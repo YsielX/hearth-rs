@@ -17,7 +17,7 @@ fn game(deck_one: &str, deck_two: &str) -> Game<LuaCardRuntime> {
 }
 
 fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCardRuntime> {
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,
@@ -32,7 +32,7 @@ fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCard
 }
 
 fn game_with_hero_power(deck: &str, hero_power: &str) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         repeated(deck),
         repeated("CS2_120"),

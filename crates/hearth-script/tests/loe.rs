@@ -29,7 +29,7 @@ fn game_with_runtime(
     one: Vec<String>,
     two: Vec<String>,
 ) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         runtime,
         one,
         two,

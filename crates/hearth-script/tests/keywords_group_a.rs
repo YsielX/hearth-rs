@@ -18,7 +18,7 @@ fn mixed(first: &str, second: &str) -> Vec<String> {
 }
 
 fn game_with_decks(deck_one: Vec<String>, deck_two: Vec<String>) -> Game<LuaCardRuntime> {
-    let mut game = Game::new(
+    let mut game = Game::new_unrestricted(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         deck_one,
         deck_two,

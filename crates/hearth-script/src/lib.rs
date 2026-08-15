@@ -7,8 +7,8 @@ use std::sync::Arc;
 
 use hearth_core::{
     AuraSpec, CardActionSpec, CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy,
-    ChoiceValue, EffectDuration, EffectSpec, EntityId, EntityStatModification, EventId,
-    EventTiming, GameEvent, GameOutcome, GameState, Locale, LocalizedCardText,
+    ChoiceValue, DeckAllowance, EffectDuration, EffectSpec, EntityId, EntityStatModification,
+    EventId, EventTiming, GameEvent, GameOutcome, GameState, Locale, LocalizedCardText,
     MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES, MAX_CHOICE_VALUE_STRING_BYTES,
     ModifierOperation, PlayerId, ScriptEvent, Stat, StatModifier, TargetMode, Zone, ZonePlacement,
 };
@@ -84,14 +84,6 @@ struct CardScript {
 
 struct KeywordScript {
     module: RegistryKey,
-}
-
-/// A generic deck-building permission declared by a card's Lua module.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct DeckAllowance {
-    pub class: String,
-    pub set: String,
-    pub excluded_keywords: Vec<String>,
 }
 
 /// Sandboxed Lua-backed card catalog and hook dispatcher.
@@ -526,43 +518,9 @@ impl LuaCardRuntime {
     }
 
     pub fn deck_allowances(&self, card_id: &str) -> Result<Vec<DeckAllowance>, String> {
-        let module = self.module(card_id)?;
-        let Some(rules) = module
-            .get::<Option<Table>>("deck_allowances")
-            .map_err(|error| error.to_string())?
-        else {
-            return Ok(Vec::new());
-        };
-        let mut result = Vec::new();
-        for rule in rules.sequence_values::<Table>() {
-            let rule = rule.map_err(|error| error.to_string())?;
-            let class = rule
-                .get::<String>("class")
-                .map_err(|error| error.to_string())?;
-            let set = rule
-                .get::<String>("set")
-                .map_err(|error| error.to_string())?;
-            if class.trim().is_empty() || set.trim().is_empty() {
-                return Err(format!(
-                    "card {card_id} has an empty deck allowance class or set"
-                ));
-            }
-            let mut excluded_keywords = Vec::new();
-            if let Some(excluded) = rule
-                .get::<Option<Table>>("excluded_keywords")
-                .map_err(|error| error.to_string())?
-            {
-                for keyword in excluded.sequence_values::<String>() {
-                    excluded_keywords.push(keyword.map_err(|error| error.to_string())?);
-                }
-            }
-            result.push(DeckAllowance {
-                class,
-                set,
-                excluded_keywords,
-            });
-        }
-        Ok(result)
+        self.definition(card_id)
+            .map(|definition| definition.deck_allowances.clone())
+            .ok_or_else(|| format!("unknown card {card_id}"))
     }
 
     fn module(&self, card_id: &str) -> Result<Table, String> {
@@ -1802,10 +1760,26 @@ mod tests {
             }"#,
         )
         .unwrap();
+        std::fs::write(
+            root.join("support.lua"),
+            r#"return {
+                api_version = 1, id = "NEUTRAL_FILLER", name = "Neutral Filler",
+                set = "TEST", type = "minion", cost = 1, attack = 1, health = 1,
+                tokens = {
+                    { id = "GUEST_CARD", name = "Guest Card", set = "GUEST_SET",
+                      type = "minion", class = "guest", collectible = true,
+                      cost = 1, attack = 1, health = 1 },
+                    { id = "TEST_HP", name = "Test Power", set = "TEST",
+                      type = "hero_power", collectible = false, cost = 2 },
+                    { id = "GAME_005", name = "The Coin", set = "CORE",
+                      type = "spell", collectible = false, cost = 0 },
+                },
+            }"#,
+        )
+        .unwrap();
 
         let runtime = LuaCardRuntime::load_dir(&root).unwrap();
         let allowances = runtime.deck_allowances("DECK_GUEST").unwrap();
-        std::fs::remove_dir_all(&root).unwrap();
         assert_eq!(
             allowances,
             vec![DeckAllowance {
@@ -1814,6 +1788,39 @@ mod tests {
                 excluded_keywords: vec!["deck_guest".to_owned()],
             }]
         );
+        let allowed_deck = ["DECK_GUEST", "GUEST_CARD"]
+            .into_iter()
+            .cycle()
+            .take(20)
+            .map(str::to_owned)
+            .collect();
+        let neutral_deck = std::iter::repeat_n("NEUTRAL_FILLER".to_owned(), 20).collect();
+        assert!(
+            hearth_core::Game::new_with_hero_powers_and_classes(
+                runtime,
+                allowed_deck,
+                neutral_deck,
+                1,
+                ["TEST_HP".to_owned(), "TEST_HP".to_owned()],
+                ["host".to_owned(), "host".to_owned()],
+            )
+            .is_ok()
+        );
+
+        let invalid = hearth_core::Game::new_with_hero_powers_and_classes(
+            LuaCardRuntime::load_dir(&root).unwrap(),
+            std::iter::repeat_n("GUEST_CARD".to_owned(), 20).collect(),
+            std::iter::repeat_n("NEUTRAL_FILLER".to_owned(), 20).collect(),
+            1,
+            ["TEST_HP".to_owned(), "TEST_HP".to_owned()],
+            ["host".to_owned(), "host".to_owned()],
+        );
+        assert!(matches!(
+            invalid,
+            Err(hearth_core::GameError::InvalidDeckClassCard { card, .. })
+                if card == "GUEST_CARD"
+        ));
+        std::fs::remove_dir_all(&root).unwrap();
     }
 
     #[test]

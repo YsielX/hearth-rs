@@ -16,6 +16,22 @@ impl<R: CardRuntime> Game<R> {
         )
     }
 
+    pub fn new_unrestricted(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+    ) -> Result<Self, GameError> {
+        Self::new_unrestricted_with_hero_powers_and_classes(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()],
+            ["mage".to_owned(), "mage".to_owned()],
+        )
+    }
+
     pub fn new_with_hero_powers(
         runtime: R,
         deck_one: Vec<String>,
@@ -40,6 +56,47 @@ impl<R: CardRuntime> Game<R> {
         seed: u64,
         hero_powers: [String; 2],
         classes: [String; 2],
+    ) -> Result<Self, GameError> {
+        Self::new_with_deck_class_enforcement(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            hero_powers,
+            classes,
+            [true, true],
+        )
+    }
+
+    /// Constructs a mechanics sandbox whose decks may intentionally mix
+    /// classes. Normal games should use the enforcing constructors above.
+    pub fn new_unrestricted_with_hero_powers_and_classes(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+    ) -> Result<Self, GameError> {
+        Self::new_with_deck_class_enforcement(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            hero_powers,
+            classes,
+            [false, false],
+        )
+    }
+
+    fn new_with_deck_class_enforcement(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+        enforce_deck_classes: [bool; 2],
     ) -> Result<Self, GameError> {
         for (player, deck) in [
             (PlayerId::ONE, deck_one.as_slice()),
@@ -143,6 +200,7 @@ impl<R: CardRuntime> Game<R> {
             initial_decks,
             initial_hero_powers,
             initial_classes,
+            enforce_deck_classes,
             command_history: Vec::new(),
         };
         for player in [PlayerId::ONE, PlayerId::TWO] {
@@ -193,13 +251,14 @@ impl<R: CardRuntime> Game<R> {
                 loaded: runtime.pack_hash().to_owned(),
             });
         }
-        let mut game = Self::new_with_hero_powers_and_classes(
+        let mut game = Self::new_with_deck_class_enforcement(
             runtime,
             replay.decks[0].clone(),
             replay.decks[1].clone(),
             replay.seed,
             replay.hero_powers.clone(),
             replay.classes.clone(),
+            replay.enforce_deck_classes,
         )?;
         for (index, command) in replay.commands.iter().cloned().enumerate() {
             game.dispatch(command)
@@ -227,6 +286,7 @@ impl<R: CardRuntime> Game<R> {
             decks: self.initial_decks.clone(),
             hero_powers: self.initial_hero_powers.clone(),
             classes: self.initial_classes.clone(),
+            enforce_deck_classes: self.enforce_deck_classes,
             commands: self.command_history.clone(),
         }
     }

@@ -400,6 +400,27 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
         .map(|values| values.pairs::<String, i64>().collect())
         .transpose()?
         .unwrap_or_default();
+    let deck_allowances = module
+        .get::<Option<Table>>("deck_allowances")?
+        .map(|values| {
+            values
+                .sequence_values::<Table>()
+                .map(|value| {
+                    let value = value?;
+                    Ok(DeckAllowance {
+                        class: value.get("class")?,
+                        set: value.get("set")?,
+                        excluded_keywords: value
+                            .get::<Option<Table>>("excluded_keywords")?
+                            .map(|keywords| keywords.sequence_values::<String>().collect())
+                            .transpose()?
+                            .unwrap_or_default(),
+                    })
+                })
+                .collect::<mlua::Result<Vec<_>>>()
+        })
+        .transpose()?
+        .unwrap_or_default();
     let legacy_requires_target = module
         .get::<Option<bool>>("requires_target")?
         .unwrap_or(false);
@@ -431,6 +452,7 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
             .map(|values| values.sequence_values::<String>().collect())
             .transpose()?
             .unwrap_or_default(),
+        deck_allowances,
         rarity: module.get::<Option<String>>("rarity")?,
         tags: module
             .get::<Option<Table>>("tags")?
@@ -467,6 +489,16 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
     {
         return Err(mlua::Error::runtime(format!(
             "card {} has an empty multi-class entry",
+            definition.id
+        )));
+    }
+    if definition
+        .deck_allowances
+        .iter()
+        .any(|allowance| allowance.class.trim().is_empty() || allowance.set.trim().is_empty())
+    {
+        return Err(mlua::Error::runtime(format!(
+            "card {} has an empty deck allowance class or set",
             definition.id
         )));
     }

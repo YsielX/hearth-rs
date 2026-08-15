@@ -280,6 +280,16 @@ pub struct SpellCastRecord {
     pub target_was_friendly_minion: bool,
 }
 
+/// A card-pack-defined permission for including otherwise off-class cards in
+/// a constructed deck, such as a Tourist's destination class and set.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DeckAllowance {
+    pub class: String,
+    pub set: String,
+    #[serde(default)]
+    pub excluded_keywords: Vec<String>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CardDefinition {
     pub id: CardId,
@@ -298,6 +308,9 @@ pub struct CardDefinition {
     /// replace Neutral's usual all-class eligibility.
     #[serde(default)]
     pub classes: Vec<String>,
+    /// Cross-class construction permissions contributed by this card.
+    #[serde(default)]
+    pub deck_allowances: Vec<DeckAllowance>,
     /// Printed rarity, normalized to lowercase for generation pool filters.
     #[serde(default)]
     pub rarity: Option<String>,
@@ -811,7 +824,13 @@ pub struct Replay {
     pub decks: [Vec<CardId>; 2],
     pub hero_powers: [CardId; 2],
     pub classes: [String; 2],
+    #[serde(default = "default_deck_class_enforcement")]
+    pub enforce_deck_classes: [bool; 2],
     pub commands: Vec<PlayerCommand>,
+}
+
+fn default_deck_class_enforcement() -> [bool; 2] {
+    [true, true]
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

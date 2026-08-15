@@ -143,15 +143,27 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .hero_power
                 .unwrap_or_else(|| DEFAULT_HERO_POWER.to_owned()),
         ];
+        let unrestricted = deck_one.unrestricted || deck_two.unrestricted;
         let classes = [deck_one.class, deck_two.class];
-        Game::new_with_hero_powers_and_classes(
-            runtime,
-            deck_one.cards,
-            deck_two.cards,
-            options.seed,
-            hero_powers,
-            classes,
-        )?
+        if unrestricted {
+            Game::new_unrestricted_with_hero_powers_and_classes(
+                runtime,
+                deck_one.cards,
+                deck_two.cards,
+                options.seed,
+                hero_powers,
+                classes,
+            )?
+        } else {
+            Game::new_with_hero_powers_and_classes(
+                runtime,
+                deck_one.cards,
+                deck_two.cards,
+                options.seed,
+                hero_powers,
+                classes,
+            )?
+        }
     };
     print_help(locale);
     print_state(&game, locale);

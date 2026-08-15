@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use hearth_core::{CardKind, Game, PlayerCommand};
+use hearth_core::{CardKind, DEFAULT_HERO_POWER, Game, PlayerCommand};
 use hearth_script::LuaCardRuntime;
 
 fn data_path() -> PathBuf {
@@ -20,6 +20,32 @@ fn catalog_deck(pool: &[String], state: &mut u64) -> Vec<String> {
         .collect()
 }
 
+fn class_pool(runtime: &LuaCardRuntime, class: &str) -> Vec<String> {
+    let mut pool = runtime
+        .definitions()
+        .filter(|card| {
+            let class_eligible = if card.classes.is_empty() {
+                card.class == "neutral" || card.class == class
+            } else {
+                card.classes.iter().any(|candidate| candidate == class)
+            };
+            card.collectible
+                && class_eligible
+                && matches!(
+                    card.kind,
+                    CardKind::Hero
+                        | CardKind::Minion
+                        | CardKind::Spell
+                        | CardKind::Weapon
+                        | CardKind::Location
+                )
+        })
+        .map(|card| card.id.clone())
+        .collect::<Vec<_>>();
+    pool.sort();
+    pool
+}
+
 #[test]
 fn randomized_full_catalog_legal_action_walks_are_executable_and_replayable() {
     let seed_count = std::env::var("HEARTH_STATE_MACHINE_SEEDS")
@@ -30,30 +56,41 @@ fn randomized_full_catalog_legal_action_walks_are_executable_and_replayable() {
         .ok()
         .and_then(|value| value.parse().ok())
         .unwrap_or(0_u64);
+    const CLASSES: [&str; 11] = [
+        "death_knight",
+        "demon_hunter",
+        "druid",
+        "hunter",
+        "mage",
+        "paladin",
+        "priest",
+        "rogue",
+        "shaman",
+        "warlock",
+        "warrior",
+    ];
     for seed in start_seed..start_seed.saturating_add(seed_count) {
         let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
-        let mut pool = runtime
-            .definitions()
-            .filter(|card| {
-                card.collectible
-                    && matches!(
-                        card.kind,
-                        CardKind::Hero
-                            | CardKind::Minion
-                            | CardKind::Spell
-                            | CardKind::Weapon
-                            | CardKind::Location
-                    )
-            })
-            .map(|card| card.id.clone())
-            .collect::<Vec<_>>();
-        pool.sort();
-        assert!(!pool.is_empty());
-
         let mut random = seed ^ 0xa076_1d64_78bd_642f;
-        let one = catalog_deck(&pool, &mut random);
-        let two = catalog_deck(&pool, &mut random);
-        let mut game = Game::new(runtime, one, two, seed).unwrap();
+        let classes = [
+            CLASSES[next_random(&mut random) as usize % CLASSES.len()].to_owned(),
+            CLASSES[next_random(&mut random) as usize % CLASSES.len()].to_owned(),
+        ];
+        let pool_one = class_pool(&runtime, &classes[0]);
+        let pool_two = class_pool(&runtime, &classes[1]);
+        assert!(!pool_one.is_empty());
+        assert!(!pool_two.is_empty());
+        let one = catalog_deck(&pool_one, &mut random);
+        let two = catalog_deck(&pool_two, &mut random);
+        let mut game = Game::new_with_hero_powers_and_classes(
+            runtime,
+            one,
+            two,
+            seed,
+            [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()],
+            classes,
+        )
+        .unwrap();
 
         for step in 0..180 {
             if game.state().outcome.is_some() {

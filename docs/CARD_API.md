@@ -511,7 +511,10 @@ deck_allowances = {
 },
 ```
 
-Normal CLI decks allow their class, Neutral cards, and matching allowances. A mechanics-only sandbox deck may explicitly set `"unrestricted": true` in its deck JSON.
+Normal `Game::new*` construction and CLI decks allow their class, Neutral cards,
+multi-class cards that include their class, and matching allowances. Mechanics-only
+tests may explicitly use `Game::new_unrestricted*`; a CLI sandbox deck may set
+`"unrestricted": true` in its deck JSON.
 
 ## Script rules
 

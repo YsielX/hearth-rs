@@ -20,7 +20,7 @@ fn game_with_runtime(
     seed: u64,
     classes: [&str; 2],
 ) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         runtime,
         one,
         two,

@@ -6,6 +6,9 @@ impl<R: CardRuntime> Game<R> {
         player: PlayerId,
         cards: Vec<String>,
     ) -> Result<(), GameError> {
+        if self.enforce_deck_classes[player.index()] {
+            self.validate_deck_classes(player, &cards)?;
+        }
         self.state.player_mut(player).starting_deck = cards.clone();
         let mut entities = Vec::new();
         for card in cards {
@@ -35,6 +38,57 @@ impl<R: CardRuntime> Game<R> {
         }
         entities.shuffle(&mut self.rng);
         self.state.player_mut(player).deck = entities.into();
+        Ok(())
+    }
+
+    fn validate_deck_classes(&self, player: PlayerId, cards: &[String]) -> Result<(), GameError> {
+        let class = &self.state.player(player).class;
+        let definitions = cards
+            .iter()
+            .map(|card| {
+                self.runtime
+                    .definition(card)
+                    .ok_or_else(|| GameError::UnknownCard(card.clone()))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        let allowances = definitions
+            .iter()
+            .flat_map(|definition| definition.deck_allowances.iter())
+            .collect::<Vec<_>>();
+        for definition in definitions {
+            let own_class = if definition.classes.is_empty() {
+                definition.class.eq_ignore_ascii_case("neutral")
+                    || definition.class.eq_ignore_ascii_case(class)
+            } else {
+                definition
+                    .classes
+                    .iter()
+                    .any(|eligible| eligible.eq_ignore_ascii_case(class))
+            };
+            let allowed_by_deck = allowances.iter().any(|allowance| {
+                definition.class.eq_ignore_ascii_case(&allowance.class)
+                    && definition.set.eq_ignore_ascii_case(&allowance.set)
+                    && allowance.excluded_keywords.iter().all(|excluded| {
+                        !definition
+                            .keywords
+                            .iter()
+                            .any(|keyword| keyword == excluded)
+                    })
+            });
+            if !own_class && !allowed_by_deck {
+                let card_class = if definition.classes.is_empty() {
+                    definition.class.clone()
+                } else {
+                    definition.classes.join(",")
+                };
+                return Err(GameError::InvalidDeckClassCard {
+                    player,
+                    class: class.clone(),
+                    card: definition.id.clone(),
+                    card_class,
+                });
+            }
+        }
         Ok(())
     }
 

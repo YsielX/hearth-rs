@@ -50,6 +50,13 @@ pub enum GameError {
     DeckTooLarge { player: PlayerId, cards: usize },
     #[error("{player} deck contains non-collectible or non-deck card {card}")]
     InvalidDeckCard { player: PlayerId, card: String },
+    #[error("{player} {class} deck cannot include {card} ({card_class})")]
+    InvalidDeckClassCard {
+        player: PlayerId,
+        class: String,
+        card: String,
+        card_class: String,
+    },
     #[error("card {0} is not a hero power")]
     InvalidHeroPower(String),
     #[error("card {0} is not a hero")]
@@ -173,6 +180,7 @@ pub struct Game<R> {
     initial_decks: [Vec<String>; 2],
     initial_hero_powers: [String; 2],
     initial_classes: [String; 2],
+    enforce_deck_classes: [bool; 2],
     command_history: Vec<PlayerCommand>,
 }
 

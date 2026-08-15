@@ -29,7 +29,7 @@ fn game_with(
     classes: [&str; 2],
     seed: u64,
 ) -> Game<LuaCardRuntime> {
-    let mut game = Game::new_with_hero_powers_and_classes(
+    let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
         one,
         two,

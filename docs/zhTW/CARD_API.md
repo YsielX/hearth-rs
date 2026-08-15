@@ -561,7 +561,7 @@ return {
 }
 ```
 
-`class` 是 1 到 64 位元組的玩家職業標識，省略時為 `mage`。它進入 `PlayerState`、replay 和 snapshot，可由 Lua 透過 `ctx:player(player).class` 查詢。目前牌組載入器尚不限制混合職業卡，職業主要用於發現池和後續職業規則。
+`class` 是 1 到 64 位元組的玩家職業標識，省略時為 `mage`。它進入 `PlayerState`、replay 和 snapshot，可由 Lua 透過 `ctx:player(player).class` 查詢。一般 `Game::new*` 建局會限制牌組只能包含本職業、中立、包含本職業的多職業卡，以及 Tourist 等卡牌宣告許可的跨職業卡；規則測試必須明確使用 `Game::new_unrestricted*` 才能混合職業。
 
 `hero_power_used` 支援 before/after。費用與本回合次數會在 before 之前預留；取消事件會保留這些消耗，但不釋出 after，也不執行英雄技能 `on_play`。
 
