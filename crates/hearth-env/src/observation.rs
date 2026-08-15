@@ -1,8 +1,11 @@
 use std::collections::BTreeSet;
 
-use hearth_core::{CardKind, EntityId, PlayerId, PlayerView};
+use hearth_core::{
+    CardKind, ChoiceOptionValueView, EntityId, PendingInputView, PlayerId, PlayerView,
+};
 use serde::{Deserialize, Serialize};
 
+use crate::entity_refs::EpisodeRefs;
 use crate::history::{EventWindow, PublicHistory, ViewerMemory};
 use crate::{EnvError, OBSERVATION_SCHEMA_VERSION};
 
@@ -97,9 +100,23 @@ pub struct PlayerObservation {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ChoiceOptionValueObservation {
+    Entity { entity: EntityRef, card_id: String },
+    Card { card_id: String },
+    Opaque,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ChoiceOptionObservation {
+    pub label: String,
+    pub value: ChoiceOptionValueObservation,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ChoiceObservation {
     pub prompt: String,
-    pub options: Vec<String>,
+    pub options: Vec<ChoiceOptionObservation>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -116,6 +133,36 @@ pub struct Observation {
     pub history: EventWindow,
     pub mulligan_eligible: Vec<EntityRef>,
     pub pending_choice: Option<ChoiceObservation>,
+}
+
+fn encode_choice(
+    input: &PendingInputView,
+    refs: &mut EpisodeRefs,
+) -> Result<ChoiceObservation, EnvError> {
+    let options = input
+        .options
+        .iter()
+        .map(|option| {
+            let value = match &option.value {
+                ChoiceOptionValueView::Entity(entity) => ChoiceOptionValueObservation::Entity {
+                    entity: refs.observe_public(entity)?,
+                    card_id: entity.card_id.clone(),
+                },
+                ChoiceOptionValueView::Card(card_id) => ChoiceOptionValueObservation::Card {
+                    card_id: card_id.clone(),
+                },
+                ChoiceOptionValueView::Opaque => ChoiceOptionValueObservation::Opaque,
+            };
+            Ok(ChoiceOptionObservation {
+                label: option.label.clone(),
+                value,
+            })
+        })
+        .collect::<Result<Vec<_>, EnvError>>()?;
+    Ok(ChoiceObservation {
+        prompt: input.prompt.clone(),
+        options,
+    })
 }
 
 pub(crate) fn build_observation(
@@ -183,6 +230,12 @@ pub(crate) fn build_observation(
         add(entity, EntityArea::Secret, position)?;
     }
     drop(add);
+
+    let pending_choice = view
+        .pending_input
+        .as_ref()
+        .map(|input| encode_choice(input, refs))
+        .transpose()?;
 
     let player_observation = |player_id: PlayerId| -> Result<PlayerObservation, EnvError> {
         let player = view.player(player_id);
@@ -256,10 +309,57 @@ pub(crate) fn build_observation(
         entities,
         history,
         mulligan_eligible,
-        pending_choice: view.pending_input.as_ref().map(|input| ChoiceObservation {
-            prompt: input.prompt.clone(),
-            options: input.options.clone(),
-        }),
+        pending_choice,
     };
     Ok(observation)
+}
+
+#[cfg(test)]
+mod tests {
+    use hearth_core::{
+        ChoiceOptionValueView, ChoiceOptionView, EntityId, PendingInputView, PublicEntity,
+    };
+
+    use super::*;
+
+    #[test]
+    fn choice_encoding_preserves_public_structure_and_hides_payloads() {
+        let input = PendingInputView {
+            prompt: "Choose".to_owned(),
+            options: vec![
+                ChoiceOptionView {
+                    label: "Entity".to_owned(),
+                    value: ChoiceOptionValueView::Entity(PublicEntity {
+                        id: EntityId(99),
+                        card_id: "ENTITY_CARD".to_owned(),
+                    }),
+                },
+                ChoiceOptionView {
+                    label: "Card".to_owned(),
+                    value: ChoiceOptionValueView::Card("CARD".to_owned()),
+                },
+                ChoiceOptionView {
+                    label: "Secret payload".to_owned(),
+                    value: ChoiceOptionValueView::Opaque,
+                },
+            ],
+        };
+        let choice = encode_choice(&input, &mut EpisodeRefs::default()).unwrap();
+        assert_eq!(choice.prompt, "Choose");
+        assert!(matches!(
+            &choice.options[0].value,
+            ChoiceOptionValueObservation::Entity {
+                entity: EntityRef(0),
+                card_id
+            } if card_id == "ENTITY_CARD"
+        ));
+        assert!(matches!(
+            &choice.options[1].value,
+            ChoiceOptionValueObservation::Card { card_id } if card_id == "CARD"
+        ));
+        assert_eq!(
+            choice.options[2].value,
+            ChoiceOptionValueObservation::Opaque
+        );
+    }
 }

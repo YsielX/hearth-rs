@@ -10,4 +10,7 @@ pub use engine::{DEFAULT_COIN, DEFAULT_HERO_POWER, Game, GameError};
 pub use model::*;
 pub use public_event::{PublicEntity, PublicEvent, PublicEventRecord};
 pub use runtime::CardRuntime;
-pub use view::{EntityView, PendingInputView, PlayerStateView, PlayerView};
+pub use view::{
+    ChoiceOptionValueView, ChoiceOptionView, EntityView, PendingInputView, PlayerStateView,
+    PlayerView,
+};

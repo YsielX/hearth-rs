@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
 use hearth_core::{
-    CardKind, CardRuntime, ChoiceValue, DEFAULT_HERO_POWER, Game, GameError, GameEvent, Locale,
-    PlayerCommand, PlayerId, PublicEvent, Zone,
+    CardKind, CardRuntime, ChoiceOptionValueView, ChoiceValue, DEFAULT_HERO_POWER, Game, GameError,
+    GameEvent, Locale, PlayerCommand, PlayerId, PublicEvent, Zone,
 };
 use hearth_script::LuaCardRuntime;
 
@@ -2389,6 +2389,22 @@ fn auctioneer_jaxon_replaces_trade_draw_entirely_from_lua() {
         })
         .collect::<std::collections::BTreeSet<_>>();
     assert_eq!(option_card_ids.len(), option_count);
+    let public_choice = game
+        .state()
+        .player_view(PlayerId::ONE)
+        .pending_input
+        .unwrap();
+    assert_eq!(public_choice.options.len(), option_count);
+    assert!(public_choice.options.iter().all(|option| {
+        option.to_string() == option.label
+            && matches!(option.value, ChoiceOptionValueView::Entity(_))
+    }));
+    assert!(
+        public_choice
+            .options
+            .iter()
+            .all(|option| !option.label.contains('['))
+    );
     let (choice_index, selected) = pending
         .options
         .iter()

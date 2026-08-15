@@ -1087,6 +1087,10 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
             println!();
             return;
         }
+        let public_choice = state
+            .player_view(viewer)
+            .pending_input
+            .expect("the choosing player must receive its public choice view");
         println!(
             "{}",
             lf!(
@@ -1095,11 +1099,11 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
                 "等待 {}：{}",
                 "等待 {}：{}",
                 pending.player,
-                pending.prompt
+                public_choice.prompt
             )
         );
-        for (index, option) in pending.options.iter().enumerate() {
-            println!("   ({index}) {}", option.label);
+        for (index, option) in public_choice.options.iter().enumerate() {
+            println!("   ({index}) {option}");
         }
     }
     println!();

@@ -1,8 +1,10 @@
 use std::collections::BTreeMap;
+use std::fmt;
 use std::sync::Arc;
 
 use crate::{
-    CardId, CardKind, Entity, EntityId, GameOutcome, GameState, PlayerId, PublicEventRecord, Zone,
+    CardId, CardKind, ChoiceValue, Entity, EntityId, GameOutcome, GameState, PlayerId,
+    PublicEntity, PublicEventRecord, Zone,
 };
 
 /// An entity projection containing only information visible to one player.
@@ -91,9 +93,32 @@ pub struct PlayerStateView {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ChoiceOptionValueView {
+    /// An entity explicitly revealed by this choice, including choices from a
+    /// normally hidden zone such as Dredge.
+    Entity(PublicEntity),
+    /// A card definition explicitly offered by this choice, such as Discover.
+    Card(CardId),
+    /// The internal continuation payload is deliberately not player-visible.
+    Opaque,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ChoiceOptionView {
+    pub label: String,
+    pub value: ChoiceOptionValueView,
+}
+
+impl fmt::Display for ChoiceOptionView {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(&self.label)
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PendingInputView {
     pub prompt: String,
-    pub options: Vec<String>,
+    pub options: Vec<ChoiceOptionView>,
 }
 
 /// A stable player-facing projection. It intentionally contains no deck order,
@@ -213,7 +238,30 @@ impl GameState {
                 options: pending
                     .options
                     .iter()
-                    .map(|option| option.label.clone())
+                    .map(|option| ChoiceOptionView {
+                        label: option.label.clone(),
+                        value: match &option.value {
+                            ChoiceValue::Entity(entity_id) => self
+                                .entity(*entity_id)
+                                .map(|entity| {
+                                    ChoiceOptionValueView::Entity(PublicEntity {
+                                        id: *entity_id,
+                                        card_id: entity.card_id.clone(),
+                                    })
+                                })
+                                .unwrap_or(ChoiceOptionValueView::Opaque),
+                            ChoiceValue::Card(card_id) => {
+                                ChoiceOptionValueView::Card(card_id.clone())
+                            }
+                            ChoiceValue::Number(_)
+                            | ChoiceValue::Integer(_)
+                            | ChoiceValue::Nil
+                            | ChoiceValue::Boolean(_)
+                            | ChoiceValue::Text(_)
+                            | ChoiceValue::List(_)
+                            | ChoiceValue::Object(_) => ChoiceOptionValueView::Opaque,
+                        },
+                    })
                     .collect(),
             });
         PlayerView {

@@ -61,4 +61,6 @@ transition = env.step(decision["actions"][0]["index"])
 Action indices are valid only for the decision that contains them. The Python
 facade supplies the corresponding decision token automatically; the Rust API
 requires both values explicitly so stale actions fail rather than controlling
-a later state accidentally.
+a later state accidentally. Choice options are structured as public card or
+entity references when that identity is explicitly offered to the player;
+arbitrary script continuation payloads remain opaque.

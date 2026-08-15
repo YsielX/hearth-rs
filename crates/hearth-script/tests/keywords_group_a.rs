@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 
-use hearth_core::{ChoiceValue, Game, GameError, GameEvent, PlayerCommand, PlayerId, Zone};
+use hearth_core::{
+    ChoiceOptionValueView, ChoiceValue, Game, GameError, GameEvent, PlayerCommand, PlayerId, Zone,
+};
 use hearth_script::LuaCardRuntime;
 
 fn data_path() -> PathBuf {
@@ -92,6 +94,14 @@ fn adapt_offers_three_adaptations_and_applies_the_chosen_effect() {
         ChoiceValue::Card(card_id) => card_id.clone(),
         other => panic!("unexpected Adapt choice: {other:?}"),
     };
+    let public_choice = game
+        .state()
+        .player_view(PlayerId::ONE)
+        .pending_input
+        .unwrap();
+    assert!(public_choice.options.iter().all(|option| {
+        matches!(&option.value, ChoiceOptionValueView::Card(card_id) if !card_id.is_empty())
+    }));
     game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
 
     let adapted = game.state().entity(squire).unwrap();

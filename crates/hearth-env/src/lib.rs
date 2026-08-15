@@ -26,15 +26,15 @@ pub use history::{
     EventWindow, OutcomeObservation, PublicHistory,
 };
 pub use observation::{
-    ChoiceObservation, DecisionPhase, EntityArea, EntityObservation, EntityRef, Observation,
-    PlayerObservation, RelativePlayer,
+    ChoiceObservation, ChoiceOptionObservation, ChoiceOptionValueObservation, DecisionPhase,
+    EntityArea, EntityObservation, EntityRef, Observation, PlayerObservation, RelativePlayer,
 };
 
 use action::encode_action;
 use history::ViewerMemory;
 use observation::build_observation;
 
-pub const OBSERVATION_SCHEMA_VERSION: u32 = 2;
+pub const OBSERVATION_SCHEMA_VERSION: u32 = 3;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Decision {
@@ -387,7 +387,7 @@ mod tests {
         assert!(json.to_string().find("random_counter").is_none());
         assert!(json.to_string().find("command").is_none());
         assert!(json.to_string().find("sequence").is_none());
-        assert_eq!(decision.observation.schema_version, 2);
+        assert_eq!(decision.observation.schema_version, 3);
     }
 
     #[test]

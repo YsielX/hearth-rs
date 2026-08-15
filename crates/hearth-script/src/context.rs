@@ -2317,7 +2317,7 @@ pub(super) fn build_context(
                         mlua::Error::runtime(format!("choice references unknown entity {id}"))
                     })?;
                     options.push(ChoiceOption {
-                        label: format!("{} [{}]", entity.name, id),
+                        label: entity.name.clone(),
                         value: ChoiceValue::Entity(id),
                     });
                 }

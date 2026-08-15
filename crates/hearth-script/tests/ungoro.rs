@@ -3,7 +3,8 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use hearth_core::{
-    ChoiceValue, DEFAULT_HERO_POWER, EntityId, Game, GameEvent, PlayerCommand, PlayerId, Zone,
+    ChoiceOptionValueView, ChoiceValue, DEFAULT_HERO_POWER, EntityId, Game, GameEvent,
+    PlayerCommand, PlayerId, Zone,
 };
 use hearth_script::LuaCardRuntime;
 
@@ -465,6 +466,17 @@ fn glimmerroot_uses_the_opponents_starting_deck_after_current_cards_are_removed(
             .filter(|option| matches!(option.value, ChoiceValue::Number(1)))
             .count(),
         1
+    );
+    let public_choice = game
+        .state()
+        .player_view(PlayerId::ONE)
+        .pending_input
+        .unwrap();
+    assert!(
+        public_choice
+            .options
+            .iter()
+            .all(|option| option.value == ChoiceOptionValueView::Opaque)
     );
     game.dispatch(PlayerCommand::Choose { index: correct })
         .unwrap();

@@ -286,7 +286,7 @@ impl<R: CardRuntime> Game<R> {
                     .map(|entity| {
                         let entity_state = self.state.entity(*entity).unwrap();
                         ChoiceOption {
-                            label: format!("{} [{}]", entity_state.name, entity),
+                            label: entity_state.name.clone(),
                             value: crate::ChoiceValue::Entity(*entity),
                         }
                     })
