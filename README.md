@@ -18,9 +18,9 @@ data/
 crates/
 ├── hearth-core/           # State machine, zones, event queue, RNG, replay
 ├── hearth-script/         # Lua sandbox, module loader, rules/effect bridge
-├── hearth-cli/            # Interactive/Bot/Fuzzer game runner and fuzz command
+├── hearth-cli/            # `play` and `fuzz` commands
 ├── hearth-bot/            # Non-cheating deterministic baseline Bot
-└── hearth-fuzz/           # Standalone deterministic state-machine fuzzer
+└── hearth-fuzz/           # State-machine fuzzing library (no binary)
 decks/demo.json            # Mixed-class mechanics showcase
 decks/quest_rogue.json     # Dog's 2017 Caverns Quest Rogue
 ```
@@ -46,9 +46,9 @@ English is the default everywhere:
 The CLI accepts `enUS`, `zhCN`, and `zhTW`. It localizes card names/text, command help, state labels, event messages, errors, and Lua choice prompts. A deck name is user-authored metadata and is always displayed exactly as its single `name` value.
 
 ```bash
-cargo run -p hearth-cli -- --locale enUS
-cargo run -p hearth-cli -- --locale zhCN
-cargo run -p hearth-cli -- --locale zhTW
+cargo run -p hearth-cli -- play --locale enUS
+cargo run -p hearth-cli -- play --locale zhCN
+cargo run -p hearth-cli -- play --locale zhTW
 ```
 
 Lua card definitions may localize a dynamic prompt without storing locale state:
@@ -126,7 +126,7 @@ Restart the process and the recursive loader discovers it. As long as the effect
 Rust 1.88 or newer is required. Lua 5.4 is built through `mlua`'s `vendored` feature.
 
 ```bash
-cargo run -p hearth-cli -- \
+cargo run -p hearth-cli -- play \
   --deck-one decks/demo.json \
   --deck-two decks/demo.json \
   --seed 42
@@ -135,7 +135,7 @@ cargo run -p hearth-cli -- \
 Run the historical Quest Rogue mirror:
 
 ```bash
-cargo run -p hearth-cli -- \
+cargo run -p hearth-cli -- play \
   --deck-one decks/quest_rogue.json \
   --deck-two decks/quest_rogue.json \
   --locale enUS \
@@ -170,7 +170,7 @@ Normal deck files enforce class/Neutral legality. Tourist cards declare generic 
 Each player slot independently accepts `interactive`, `bot`, or `fuzzer`:
 
 ```bash
-cargo run -p hearth-cli --release -- \
+cargo run -p hearth-cli --release -- play \
   --deck-one decks/quest_rogue.json \
   --deck-two decks/quest_rogue.json \
   --player-one interactive \
@@ -193,13 +193,11 @@ End-to-end tests compare every Lua definition with the English source snapshot, 
 
 ## State-machine fuzzing
 
-The deterministic state-machine fuzzer is isolated under [`crates/hearth-fuzz/`](crates/hearth-fuzz/README.md), so normal `cargo test` runs do not start fuzz campaigns. It generates class-legal decks, dispatches sampled legal actions, validates state after every step, and compares the final state with replay. Run it through the main CLI:
+The deterministic state-machine fuzzer is implemented in the [`hearth-fuzz` library](crates/hearth-fuzz/README.md) and exposed only through the `hearth-cli` subcommand, while normal `cargo test` runs do not start fuzz campaigns. It generates class-legal decks, dispatches sampled legal actions, validates state after every step, and compares the final state with replay:
 
 ```bash
 cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ```
-
-The dedicated `hearth-state-fuzz` binary remains available through `cargo run -p hearth-fuzz --release -- ...`; both entry points share the same implementation.
 
 ## Scope
 

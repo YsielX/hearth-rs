@@ -16,7 +16,7 @@ An advantageous trade must kill the defender and either preserve the attacker or
 Run a Bot mirror:
 
 ```bash
-cargo run -p hearth-cli --release -- \
+cargo run -p hearth-cli --release -- play \
   --deck-one decks/quest_rogue.json \
   --deck-two decks/quest_rogue.json \
   --player-one bot \

@@ -552,10 +552,29 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn parse_options() -> Result<Option<CliInvocation>, Box<dyn Error>> {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut args = env::args().skip(1).peekable();
-    if args.peek().is_some_and(|argument| argument == "fuzz") {
-        args.next();
-        return parse_fuzz_options(&root, args);
+    let Some(command) = args.next() else {
+        print_usage();
+        return Ok(None);
+    };
+    match command.as_str() {
+        "play" => parse_play_options(&root, args),
+        "fuzz" => parse_fuzz_options(&root, args),
+        "--help" | "-h" => {
+            print_usage();
+            Ok(None)
+        }
+        value => Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("unknown subcommand {value}; use --help for usage"),
+        )
+        .into()),
     }
+}
+
+fn parse_play_options(
+    root: &std::path::Path,
+    mut args: impl Iterator<Item = String>,
+) -> Result<Option<CliInvocation>, Box<dyn Error>> {
     let default_deck = root.join("decks/demo.json");
     let mut options = CliOptions {
         data: root.join("data"),
@@ -629,7 +648,7 @@ fn parse_options() -> Result<Option<CliInvocation>, Box<dyn Error>> {
         .into());
     }
     if show_help {
-        print_usage(options.locale);
+        print_play_usage(options.locale);
         return Ok(None);
     }
     Ok(Some(CliInvocation::Play(options)))
@@ -1713,14 +1732,26 @@ fn print_help(locale: Locale) {
     );
 }
 
-fn print_usage(locale: Locale) {
+fn print_usage() {
+    println!(
+        "Usage: hearth-cli <COMMAND> [OPTIONS]\n\
+         \n\
+         Commands:\n\
+           play  run an interactive, bot, or fuzzer-controlled game\n\
+           fuzz  run deterministic state-machine fuzzing\n\
+         \n\
+         Run `hearth-cli <COMMAND> --help` for command-specific options."
+    );
+}
+
+fn print_play_usage(locale: Locale) {
     println!(
         "{}",
         lt!(
             locale,
-            "Usage: hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n       hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]",
-            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n      hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]",
-            "用法：hearth-cli [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]\n      hearth-cli fuzz [--data DIR] [--start-seed N] [--seeds N] [--steps N]"
+            "Usage: hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]",
+            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]",
+            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]"
         )
     );
 }

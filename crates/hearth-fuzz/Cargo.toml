@@ -5,10 +5,6 @@ edition.workspace = true
 license.workspace = true
 publish = false
 
-[[bin]]
-name = "hearth-state-fuzz"
-path = "src/main.rs"
-
 [dependencies]
 hearth-core = { path = "../hearth-core" }
 hearth-script = { path = "../hearth-script" }

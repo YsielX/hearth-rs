@@ -18,9 +18,9 @@ data/
 crates/
 ├── hearth-core/           # 狀態機、區域、事件佇列、確定性 RNG、replay
 ├── hearth-script/         # Lua 沙箱、模組載入、規則鉤子與效果橋接
-├── hearth-cli/            # 互動/Bot/Fuzzer 對局執行器和 fuzz 子命令
+├── hearth-cli/            # `play` 和 `fuzz` 子命令
 ├── hearth-bot/            # 不讀取隱藏資訊的確定性基礎 Bot
-└── hearth-fuzz/           # 獨立的確定性狀態機 Fuzzer
+└── hearth-fuzz/           # 狀態機 Fuzzer 函式庫（無獨立二進位）
 decks/demo.json            # 官方卡演示牌組
 decks/quest_rogue.json     # Dog 2017 經典洞穴任務賊
 ```
@@ -40,8 +40,8 @@ Lua 負責卡牌語義和關鍵詞語義：目標選擇、戰吼、亡語、奧�
 CLI 的 `--locale` 接受 `enUS`、`zhCN` 和 `zhTW`，未指定時預設英文。它會切換卡牌名稱、正文、幫助、狀態標籤、事件、錯誤以及 Lua 動態選項提示；命令本身保持穩定的英文關鍵字，便於 replay 和指令碼複用。牌組名是使用者隨意填寫的後設資料，始終原樣顯示唯一的 `name` 值，不參與 locale。
 
 ```bash
-cargo run -p hearth-cli -- --locale zhTW
-cargo run -p hearth-cli -- --locale enUS
+cargo run -p hearth-cli -- play --locale zhTW
+cargo run -p hearth-cli -- play --locale enUS
 ```
 
 卡牌 Lua 中的英文名稱和正文是預設後備值。正式卡包透過官方 ID 從 `data/locales/<locale>.json` 合併顯示文字，缺少任一支援語言會被測試拒絕。動態提示使用 `ctx:localize(enUS, zhCN, zhTW)`。
@@ -111,7 +111,7 @@ return {
 需要 Rust 1.88 或更新版本。Lua 5.4 由 `mlua` 的 `vendored` 功能構建。
 
 ```bash
-cargo run -p hearth-cli -- \
+cargo run -p hearth-cli -- play \
   --deck-one decks/demo.json \
   --deck-two decks/demo.json \
   --seed 42
@@ -120,7 +120,7 @@ cargo run -p hearth-cli -- \
 執行經典洞穴任務賊對局：
 
 ```bash
-cargo run -p hearth-cli -- \
+cargo run -p hearth-cli -- play \
   --deck-one decks/quest_rogue.json \
   --deck-two decks/quest_rogue.json \
   --locale zhCN \
@@ -157,7 +157,7 @@ snapshot <檔案>             儲存狀態快照
 兩個玩家位置都可以獨立選擇 `interactive`、`bot` 或 `fuzzer`：
 
 ```bash
-cargo run -p hearth-cli --release -- \
+cargo run -p hearth-cli --release -- play \
   --deck-one decks/quest_rogue.json \
   --deck-two decks/quest_rogue.json \
   --player-one interactive \
@@ -180,13 +180,11 @@ cargo test --workspace
 
 ## 狀態機 Fuzz 測試
 
-確定性狀態機 Fuzzer 已獨立放在 [`crates/hearth-fuzz/`](crates/hearth-fuzz/README.md)，普通 `cargo test` 不會啟動 fuzz campaign。它會產生職業合法牌組、抽取引擎列舉的合法操作、在每一步校驗狀態不變量，並將最終狀態與 replay 比對。可以直接透過主 CLI 執行：
+確定性狀態機 Fuzzer 實作在 [`hearth-fuzz` 函式庫](crates/hearth-fuzz/README.md)中，並且只透過 `hearth-cli` 子命令提供；普通 `cargo test` 不會啟動 fuzz campaign。它會產生職業合法牌組、抽取引擎列舉的合法操作、在每一步校驗狀態不變量，並將最終狀態與 replay 比對：
 
 ```bash
 cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ```
-
-也可以透過 `cargo run -p hearth-fuzz --release -- ...` 執行專用二進位；兩個入口共用同一份實作。
 
 ## 邊界
 
