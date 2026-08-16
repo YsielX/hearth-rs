@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: TwoBiers’ KFT Discard Warlock Zoo",
+  "name": "KFT 2017: TwoBiers’ KFT Discard Warlock Zoo",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -73,79 +73,18 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Flame Imp",
-      "replacement": "Flame Juggler",
-      "replacement_id": "AT_094"
-    },
-    {
-      "source": "Flame Imp",
-      "replacement": "Flame Juggler",
-      "replacement_id": "AT_094"
-    },
-    {
-      "source": "Soulfire",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Soulfire",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Mistress of Mixtures",
-      "replacement_id": "CFM_120"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Mistress of Mixtures",
-      "replacement_id": "CFM_120"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Lakkari Felhound",
-      "replacement_id": "UNG_833"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Lakkari Felhound",
-      "replacement_id": "UNG_833"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Sea Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    },
-    {
-      "source": "Sea Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "AT_094",
-    "AT_094",
+    "EX1_319",
+    "EX1_319",
     "OG_241",
     "OG_241",
-    "GVG_015",
-    "GVG_015",
-    "CFM_120",
-    "CFM_120",
+    "EX1_308",
+    "EX1_308",
+    "CS2_065",
+    "CS2_065",
     "OG_109",
     "OG_109",
     "KAR_089",
@@ -154,8 +93,8 @@
     "UNG_047",
     "KAR_205",
     "KAR_205",
-    "UNG_833",
-    "UNG_833",
+    "EX1_310",
+    "EX1_310",
     "ICC_092",
     "ICC_092",
     "EX1_162",
@@ -164,9 +103,9 @@
     "ICC_094",
     "UNG_083",
     "UNG_083",
-    "OG_174",
-    "OG_174",
-    "AT_120",
-    "AT_120"
+    "EX1_093",
+    "EX1_093",
+    "EX1_586",
+    "EX1_586"
   ]
 }

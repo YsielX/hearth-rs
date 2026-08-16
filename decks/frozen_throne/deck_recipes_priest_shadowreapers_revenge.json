@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Priest): Shadowreaper’s Revenge",
+  "name": "KFT 2017: Deck Recipes (Priest): Shadowreaper’s Revenge",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -85,110 +85,39 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Circle of Healing",
-      "replacement": "Binding Heal",
-      "replacement_id": "UNG_030"
-    },
-    {
-      "source": "Circle of Healing",
-      "replacement": "Binding Heal",
-      "replacement_id": "UNG_030"
-    },
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Mind Blast",
-      "replacement": "Shadowbomber",
-      "replacement_id": "GVG_009"
-    },
-    {
-      "source": "Mind Blast",
-      "replacement": "Shadowbomber",
-      "replacement_id": "GVG_009"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Holy Nova",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Prophet Velen",
-      "replacement": "Confessor Paletress",
-      "replacement_id": "AT_018"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "UNG_030",
-    "UNG_030",
-    "UNG_032",
-    "UNG_032",
+    "EX1_621",
+    "EX1_621",
+    "CS2_235",
+    "CS2_235",
     "CFM_603",
     "CFM_603",
-    "CFM_626",
-    "CFM_626",
-    "GVG_009",
-    "GVG_009",
+    "CS2_004",
+    "CS2_004",
+    "DS1_233",
+    "DS1_233",
     "UNG_034",
     "UNG_034",
     "UNG_029",
     "UNG_029",
-    "LOE_104",
-    "LOE_104",
+    "CS2_234",
+    "CS2_234",
     "ICC_802",
     "ICC_802",
-    "LOE_111",
+    "CS1_112",
     "ICC_213",
     "ICC_213",
     "UNG_963",
     "CFM_662",
-    "AT_018",
+    "EX1_350",
     "ICC_830",
     "ICC_913",
     "ICC_913",
-    "GVG_076",
-    "GVG_076",
+    "NEW1_020",
+    "NEW1_020",
     "ICC_852"
   ]
 }

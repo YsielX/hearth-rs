@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Reynad’s KFT Death Knight Control Paladin",
+  "name": "KFT 2017: Reynad’s KFT Death Knight Control Paladin",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -89,96 +89,35 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Equality",
-      "replacement": "Enter the Coliseum",
-      "replacement_id": "AT_078"
-    },
-    {
-      "source": "Equality",
-      "replacement": "Enter the Coliseum",
-      "replacement_id": "AT_078"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Rallying Blade",
-      "replacement_id": "OG_222"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Rallying Blade",
-      "replacement_id": "OG_222"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Sneed's Old Shredder",
-      "replacement_id": "GVG_114"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "AT_078",
-    "AT_078",
+    "EX1_619",
+    "EX1_619",
     "UNG_011",
     "UNG_011",
-    "LOE_017",
-    "ICC_071",
-    "ICC_071",
+    "EX1_382",
+    "CS2_093",
+    "CS2_093",
     "CFM_815",
     "ICC_820",
     "KAR_057",
     "KAR_057",
-    "OG_222",
-    "OG_222",
+    "CS2_097",
+    "CS2_097",
     "UNG_952",
     "UNG_952",
     "ICC_245",
     "ICC_245",
     "UNG_015",
     "OG_229",
-    "GVG_114",
+    "EX1_383",
     "ICC_829",
-    "GVG_076",
-    "GVG_076",
-    "ICC_913",
-    "ICC_913",
+    "NEW1_021",
+    "NEW1_021",
+    "NEW1_020",
+    "NEW1_020",
     "UNG_072",
     "UNG_072",
     "ICC_912",

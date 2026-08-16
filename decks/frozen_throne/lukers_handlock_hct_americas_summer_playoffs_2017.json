@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Luker’s Handlock – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Luker’s Handlock – HCT Americas Summer Playoffs 2017",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -85,106 +85,20 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5666666666666667,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Mountain Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    },
-    {
-      "source": "Mountain Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "GVG_015",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "CS2_065",
+    "CS2_065",
     "ICC_041",
     "ICC_041",
-    "CFM_094",
-    "CFM_094",
-    "CFM_608",
-    "CFM_608",
+    "CS2_062",
+    "CS2_062",
+    "EX1_309",
+    "EX1_309",
     "ICC_075",
     "ICC_075",
     "CFM_751",
@@ -192,18 +106,18 @@
     "ICC_831",
     "CFM_120",
     "CFM_120",
-    "GVG_076",
-    "GVG_076",
+    "NEW1_021",
+    "NEW1_021",
     "UNG_807",
     "ICC_913",
-    "CFM_654",
-    "CFM_654",
+    "CS2_117",
+    "CS2_117",
     "UNG_946",
     "OG_174",
-    "FP1_016",
-    "OG_320",
-    "OG_320",
-    "AT_120",
-    "AT_120"
+    "EX1_048",
+    "EX1_043",
+    "EX1_043",
+    "EX1_105",
+    "EX1_105"
   ]
 }

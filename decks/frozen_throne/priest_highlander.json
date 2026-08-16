@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: TicTac’s KFT Shadowreaper Kazakus Highlander Priest",
+  "name": "KFT 2017: TicTac’s KFT Shadowreaper Kazakus Highlander Priest",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -133,56 +133,20 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.23333333333333334,
-  "substitutions": [
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Holy Nova",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Cabal Shadow Priest",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Cairne Bloodhoof",
-      "replacement": "Infested Tauren",
-      "replacement_id": "OG_249"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_032",
-    "UNG_032",
+    "CS2_235",
     "CFM_603",
-    "CFM_626",
+    "CS2_004",
     "UNG_034",
     "UNG_029",
-    "LOE_104",
-    "CFM_603",
+    "EX1_622",
+    "CS2_234",
     "ICC_802",
-    "LOE_111",
+    "CS1_112",
     "UNG_037",
     "ICC_213",
     "CFM_604",
@@ -190,7 +154,7 @@
     "KAR_035",
     "CFM_662",
     "CFM_020",
-    "CFM_626",
+    "EX1_091",
     "ICC_849",
     "ICC_830",
     "ICC_214",
@@ -200,7 +164,7 @@
     "UNG_072",
     "KAR_114",
     "UNG_851",
-    "OG_249",
+    "EX1_110",
     "ICC_314",
     "OG_133"
   ]

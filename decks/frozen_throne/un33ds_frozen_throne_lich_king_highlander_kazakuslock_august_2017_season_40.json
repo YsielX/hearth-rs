@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Updated: Un33d’s Frozen Throne Lich King Highlander Kazakuslock",
+  "name": "KFT 2017: Updated: Un33d’s Frozen Throne Lich King Highlander Kazakuslock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -133,108 +133,37 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Shadow Bolt",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Lakkari Felhound",
-      "replacement_id": "UNG_833"
-    },
-    {
-      "source": "Twisting Nether",
-      "replacement": "DOOM!",
-      "replacement_id": "OG_239"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    },
-    {
-      "source": "The Black Knight",
-      "replacement": "Big Game Hunter",
-      "replacement_id": "EX1_005"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "OG_241",
+    "EX1_302",
+    "CS2_065",
     "UNG_831",
     "ICC_041",
-    "CFM_094",
-    "GVG_015",
+    "CS2_062",
+    "CS2_057",
     "CFM_608",
     "CFM_621",
-    "CFM_608",
+    "EX1_309",
     "ICC_075",
-    "UNG_833",
+    "EX1_310",
     "UNG_049",
     "CFM_751",
-    "OG_239",
+    "EX1_312",
     "CFM_750",
     "ICC_831",
-    "CFM_325",
+    "NEW1_025",
     "CFM_120",
     "CFM_637",
-    "GVG_076",
-    "CFM_654",
+    "NEW1_021",
+    "CS2_117",
     "UNG_946",
     "UNG_928",
-    "OG_174",
-    "FP1_016",
-    "EX1_005",
-    "OG_320",
+    "EX1_093",
+    "EX1_048",
+    "EX1_002",
+    "EX1_043",
     "UNG_851",
     "ICC_705",
     "ICC_314"

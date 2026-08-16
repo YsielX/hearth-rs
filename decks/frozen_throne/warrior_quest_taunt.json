@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Amaz’s Frozen Throne Quest Taunt Warrior",
+  "name": "KFT 2017: Amaz’s Frozen Throne Quest Taunt Warrior",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -85,56 +85,15 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.26666666666666666,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Sleep with the Fishes",
-      "replacement_id": "CFM_716"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Sleep with the Fishes",
-      "replacement_id": "CFM_716"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_052",
-    "GVG_052",
+    "CS2_108",
+    "CS2_108",
     "UNG_934",
-    "CFM_756",
-    "CFM_756",
+    "EX1_402",
+    "EX1_402",
     "UNG_926",
     "UNG_926",
     "CS2_106",
@@ -148,11 +107,11 @@
     "OG_218",
     "CFM_756",
     "CFM_756",
-    "CFM_716",
-    "CFM_716",
+    "EX1_407",
+    "EX1_407",
     "UNG_957",
-    "EX1_096",
-    "EX1_096",
+    "EX1_007",
+    "EX1_007",
     "UNG_072",
     "UNG_072",
     "ICC_854",

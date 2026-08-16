@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: weghuz’s Frozen Throne Ultimate N’Zoth Deathrattle Druid",
+  "name": "KFT 2017: weghuz’s Frozen Throne Ultimate N’Zoth Deathrattle Druid",
   "class": "druid",
   "hero_power": "HERO_06bp",
   "format": "wild_through_icecrown",
@@ -93,60 +93,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Druid of the Claw",
-      "replacement": "Druid of the Saber",
-      "replacement_id": "AT_042"
-    },
-    {
-      "source": "Druid of the Claw",
-      "replacement": "Druid of the Saber",
-      "replacement_id": "AT_042"
-    },
-    {
-      "source": "The Black Knight",
-      "replacement": "Big Game Hunter",
-      "replacement_id": "EX1_005"
-    },
-    {
-      "source": "Cairne Bloodhoof",
-      "replacement": "Infested Tauren",
-      "replacement_id": "OG_249"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_169",
     "EX1_169",
@@ -154,17 +103,17 @@
     "UNG_108",
     "CS2_013",
     "CS2_013",
-    "AT_037",
-    "AT_037",
-    "FP1_019",
-    "FP1_019",
+    "EX1_154",
+    "EX1_154",
+    "CS2_012",
+    "CS2_012",
     "OG_044",
     "OG_202",
     "OG_202",
-    "CFM_811",
-    "CFM_811",
-    "AT_042",
-    "AT_042",
+    "EX1_164",
+    "EX1_164",
+    "EX1_165",
+    "EX1_165",
     "ICC_054",
     "ICC_054",
     "ICC_832",
@@ -172,8 +121,8 @@
     "ICC_085",
     "ICC_852",
     "ICC_854",
-    "EX1_005",
-    "OG_249",
+    "EX1_002",
+    "EX1_110",
     "UNG_848",
     "UNG_848",
     "ICC_314",

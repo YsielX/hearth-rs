@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Aznpatrickh’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Aznpatrickh’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -81,70 +81,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Divine Favor",
-      "replacement": "Small-Time Recruits",
-      "replacement_id": "CFM_905"
-    },
-    {
-      "source": "Divine Favor",
-      "replacement": "Small-Time Recruits",
-      "replacement_id": "CFM_905"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Bluegill Warrior",
-      "replacement": "Bilefin Tidehunter",
-      "replacement_id": "OG_156"
-    },
-    {
-      "source": "Crazed Alchemist",
-      "replacement": "Kooky Chemist",
-      "replacement_id": "CFM_063"
-    },
-    {
-      "source": "Coldlight Seer",
-      "replacement": "Primalfin Lookout",
-      "replacement_id": "UNG_937"
-    },
-    {
-      "source": "Coldlight Seer",
-      "replacement": "Primalfin Lookout",
-      "replacement_id": "UNG_937"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CFM_650",
     "CFM_650",
@@ -154,25 +93,25 @@
     "OG_006",
     "UNG_011",
     "UNG_011",
-    "CFM_905",
-    "CFM_905",
+    "EX1_349",
+    "EX1_349",
     "OG_222",
     "OG_222",
-    "AT_074",
-    "AT_074",
+    "CS2_092",
+    "CS2_092",
     "UNG_952",
     "UNG_952",
     "UNG_015",
-    "LOEA10_3",
-    "LOEA10_3",
-    "OG_156",
-    "CFM_063",
+    "EX1_509",
+    "EX1_509",
+    "CS2_173",
+    "EX1_059",
     "UNG_073",
     "UNG_073",
-    "UNG_937",
-    "UNG_937",
-    "UNG_089",
-    "UNG_089",
+    "EX1_103",
+    "EX1_103",
+    "EX1_507",
+    "EX1_507",
     "UNG_089",
     "UNG_089",
     "CFM_344"

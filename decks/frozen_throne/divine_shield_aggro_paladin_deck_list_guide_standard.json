@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Frozen Throne Divine Shield Aggro Paladin Deck List Guide – Theorycraft",
+  "name": "KFT 2017: Frozen Throne Divine Shield Aggro Paladin Deck List Guide – Theorycraft",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -85,75 +85,24 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Divine Favor",
-      "replacement": "Small-Time Recruits",
-      "replacement_id": "CFM_905"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Coghammer",
-      "replacement_id": "GVG_059"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Coghammer",
-      "replacement_id": "GVG_059"
-    },
-    {
-      "source": "Dread Corsair",
-      "replacement": "Blackwater Pirate",
-      "replacement_id": "OG_322"
-    },
-    {
-      "source": "Dread Corsair",
-      "replacement": "Blackwater Pirate",
-      "replacement_id": "OG_322"
-    },
-    {
-      "source": "Leeroy Jenkins",
-      "replacement": "Argent Horserider",
-      "replacement_id": "AT_087"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_038",
     "ICC_038",
     "ICC_039",
     "ICC_039",
-    "LOE_017",
-    "LOE_017",
-    "CFM_905",
+    "EX1_382",
+    "EX1_382",
+    "EX1_349",
     "OG_222",
     "OG_222",
     "CFM_815",
-    "AT_074",
-    "AT_074",
-    "GVG_059",
-    "GVG_059",
+    "CS2_092",
+    "CS2_092",
+    "CS2_097",
+    "CS2_097",
     "ICC_858",
     "UNG_952",
     "UNG_952",
@@ -167,8 +116,8 @@
     "UNG_072",
     "ICC_912",
     "ICC_912",
-    "OG_322",
-    "OG_322",
-    "AT_087"
+    "NEW1_022",
+    "NEW1_022",
+    "EX1_116"
   ]
 }

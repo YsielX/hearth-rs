@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: J4CKIECHAN’s Frozen Throne Control Defile Warlock",
+  "name": "KFT 2017: J4CKIECHAN’s Frozen Throne Control Defile Warlock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -77,99 +77,28 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Shadow Bolt",
-      "replacement": "Demonwrath",
-      "replacement_id": "BRM_005"
-    },
-    {
-      "source": "Shadow Bolt",
-      "replacement": "Demonwrath",
-      "replacement_id": "BRM_005"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Dread Infernal",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    },
-    {
-      "source": "Dread Infernal",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "GVG_015",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "CS2_065",
+    "CS2_065",
     "ICC_041",
     "ICC_041",
     "ICC_055",
     "ICC_055",
-    "CFM_094",
-    "CFM_094",
-    "BRM_005",
-    "BRM_005",
-    "CFM_608",
-    "CFM_608",
+    "CS2_062",
+    "CS2_062",
+    "CS2_057",
+    "CS2_057",
+    "EX1_309",
+    "EX1_309",
     "ICC_075",
     "ICC_075",
-    "AT_020",
-    "AT_020",
+    "CS2_064",
+    "CS2_064",
     "CFM_751",
     "CFM_751",
     "ICC_831",
@@ -177,8 +106,8 @@
     "CFM_120",
     "ICC_913",
     "ICC_913",
-    "CFM_654",
-    "CFM_654",
+    "CS2_117",
+    "CS2_117",
     "ICC_700",
     "ICC_700",
     "ICC_314"

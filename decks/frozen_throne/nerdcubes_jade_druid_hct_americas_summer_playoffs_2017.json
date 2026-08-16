@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Nerdcube’s Jade Druid – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Nerdcube’s Jade Druid – HCT Americas Summer Playoffs 2017",
   "class": "druid",
   "hero_power": "HERO_06bp",
   "format": "wild_through_icecrown",
@@ -85,55 +85,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_169",
     "EX1_169",
@@ -141,29 +95,29 @@
     "CFM_602",
     "CS2_013",
     "CS2_013",
-    "AT_037",
-    "AT_037",
+    "EX1_154",
+    "EX1_154",
     "CFM_713",
     "CFM_713",
-    "FP1_019",
+    "CS2_012",
     "OG_044",
     "CFM_715",
     "CFM_715",
     "CFM_343",
     "CFM_343",
-    "CFM_811",
-    "CFM_811",
+    "EX1_164",
+    "EX1_164",
     "CFM_902",
     "ICC_054",
     "ICC_054",
     "ICC_832",
     "ICC_085",
     "ICC_085",
-    "GVG_076",
-    "GVG_076",
+    "NEW1_021",
+    "NEW1_021",
     "UNG_946",
-    "FP1_016",
-    "FP1_016",
+    "EX1_048",
+    "EX1_048",
     "UNG_848"
   ]
 }

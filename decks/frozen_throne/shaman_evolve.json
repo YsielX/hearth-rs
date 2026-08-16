@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Ant’s Frozen Throne Deathseer Evolve Shaman",
+  "name": "KFT 2017: Ant’s Frozen Throne Deathseer Evolve Shaman",
   "class": "shaman",
   "hero_power": "HERO_02bp",
   "format": "wild_through_icecrown",
@@ -89,51 +89,15 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.23333333333333334,
-  "substitutions": [
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Bloodlust",
-      "replacement": "Everyfin is Awesome",
-      "replacement_id": "LOE_113"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_027",
     "OG_027",
     "CFM_696",
-    "EX1_162",
-    "EX1_162",
+    "EX1_565",
+    "EX1_565",
     "CFM_717",
     "CFM_717",
     "KAR_073",
@@ -142,15 +106,15 @@
     "UNG_201",
     "CFM_707",
     "CFM_707",
-    "EX1_096",
-    "EX1_096",
-    "LOE_113",
+    "EX1_575",
+    "EX1_575",
+    "CS2_046",
     "ICC_481",
     "CFM_902",
     "OG_028",
     "OG_028",
-    "CFM_325",
-    "CFM_325",
+    "NEW1_025",
+    "NEW1_025",
     "UNG_809",
     "UNG_809",
     "CFM_637",

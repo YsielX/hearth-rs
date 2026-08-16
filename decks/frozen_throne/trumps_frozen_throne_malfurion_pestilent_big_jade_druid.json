@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Trump’s Frozen Throne Malfurion the Pestilent Big Jade Druid",
+  "name": "KFT 2017: Trump’s Frozen Throne Malfurion the Pestilent Big Jade Druid",
   "class": "druid",
   "hero_power": "HERO_06bp",
   "format": "wild_through_icecrown",
@@ -81,40 +81,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_169",
     "EX1_169",
@@ -122,19 +91,19 @@
     "CFM_602",
     "CS2_013",
     "CS2_013",
-    "AT_037",
-    "AT_037",
+    "EX1_154",
+    "EX1_154",
     "CFM_713",
     "CFM_713",
-    "FP1_019",
-    "FP1_019",
+    "CS2_012",
+    "CS2_012",
     "OG_044",
     "OG_202",
     "OG_202",
     "CFM_343",
     "CFM_343",
-    "CFM_811",
-    "CFM_811",
+    "EX1_164",
+    "EX1_164",
     "CFM_902",
     "ICC_054",
     "ICC_054",

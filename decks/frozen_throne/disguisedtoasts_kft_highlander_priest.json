@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Highlander Priest",
+  "name": "KFT 2017: DisguisedToast’s KFT Highlander Priest",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -133,67 +133,21 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Holy Nova",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Prophet Velen",
-      "replacement": "Confessor Paletress",
-      "replacement_id": "AT_018"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Harrison Jones",
-      "replacement": "Gluttonous Ooze",
-      "replacement_id": "UNG_946"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_332",
-    "UNG_032",
+    "CS2_235",
     "CFM_603",
-    "CFM_626",
+    "CS2_004",
     "UNG_034",
     "UNG_029",
-    "LOE_104",
-    "CFM_603",
+    "EX1_622",
+    "CS2_234",
     "ICC_802",
     "UNG_035",
-    "LOE_111",
+    "CS1_112",
     "CFM_626",
     "ICC_213",
     "CFM_621",
@@ -201,16 +155,16 @@
     "KAR_035",
     "CFM_662",
     "CFM_020",
-    "AT_018",
+    "EX1_350",
     "ICC_830",
     "ICC_214",
     "EX1_012",
-    "GVG_076",
+    "NEW1_021",
     "EX1_096",
-    "EX1_096",
+    "EX1_007",
     "UNG_928",
     "KAR_114",
-    "UNG_946",
+    "EX1_558",
     "UNG_848",
     "ICC_314"
   ]

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Frozen Throne Blood Warriors Deck List Guide – Theorycraft",
+  "name": "KFT 2017: Frozen Throne Blood Warriors Deck List Guide – Theorycraft",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -85,99 +85,23 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Commanding Shout",
-      "replacement": "Sudden Genesis",
-      "replacement_id": "UNG_927"
-    },
-    {
-      "source": "Commanding Shout",
-      "replacement": "Sudden Genesis",
-      "replacement_id": "UNG_927"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_314",
     "OG_314",
-    "GVG_052",
-    "BRM_015",
-    "BRM_015",
-    "OG_149",
-    "OG_149",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
-    "EX1_606",
-    "UNG_927",
-    "UNG_927",
+    "CS2_108",
+    "EX1_391",
+    "EX1_391",
+    "EX1_400",
+    "EX1_400",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
+    "EX1_392",
+    "NEW1_036",
+    "NEW1_036",
     "ICC_091",
     "ICC_091",
     "CS2_106",
@@ -189,10 +113,10 @@
     "ICC_064",
     "UNG_927",
     "ICC_834",
-    "ICC_913",
-    "ICC_913",
-    "EX1_096",
-    "EX1_096",
+    "NEW1_020",
+    "NEW1_020",
+    "EX1_007",
+    "EX1_007",
     "KAR_711",
     "KAR_711"
   ]

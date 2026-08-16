@@ -7806,6 +7806,24 @@
     "type": "SPELL"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 172,
+    "flavor": "这个把戏的重点是别把冰枪弄断。否则，“冰渣术”可就没这么厉害了。",
+    "id": "CS2_031",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "冰枪术",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>冻结</b>一个角色，如果该角色已被<b>冻结</b>，则改为对其造成$4点伤害。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Romain De Santi",
     "cardClass": "MAGE",
     "collectible": true,
@@ -10571,6 +10589,30 @@
     "type": "MINION"
   },
   {
+    "artist": "Glenn Rane",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1721,
+    "elite": true,
+    "flavor": "没有人比女王更渴望真正地死去。",
+    "health": 5,
+    "id": "EX1_016",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "希尔瓦娜斯·风行者",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>亡语：</b>随机夺取一个敌方随从的控制权。",
+    "type": "MINION"
+  },
+  {
     "artist": "Jaemin Kim",
     "attack": 4,
     "cardClass": "NEUTRAL",
@@ -11522,6 +11564,24 @@
     "type": "SPELL"
   },
   {
+    "artist": "Steve Hui",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 990,
+    "flavor": "潜行者们能够隐藏除了他们表情之外的一切东西。你不能阻止他们表达执行暗杀后的兴奋感觉。",
+    "id": "EX1_128",
+    "name": "隐藏",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "STEALTH"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "直到你的下个回合，使所有友方随从获得<b>潜行</b>。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Andrew Robinson",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -12423,6 +12483,31 @@
     "type": "MINION"
   },
   {
+    "artist": "Ben Zhang",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 825,
+    "flavor": "它们本来应该是宝蓝色或是蔚蓝色，但这几个颜色显得有点太耀眼了。",
+    "health": 5,
+    "id": "EX1_284",
+    "mechanics": [
+      "BATTLECRY",
+      "SPELLPOWER"
+    ],
+    "name": "碧蓝幼龙",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellDamage": 1,
+    "text": "<b>法术伤害+1</b>，<b>战吼：</b>抽一张牌。",
+    "type": "MINION"
+  },
+  {
     "artist": "Jason Chan",
     "cardClass": "MAGE",
     "collectible": true,
@@ -12499,6 +12584,32 @@
     "spellSchool": "FROST",
     "text": "<b>奥秘：</b>当你的英雄将要承受致命伤害时，防止这些伤害，并使其在本回合中<b>免疫</b>。",
     "type": "SPELL"
+  },
+  {
+    "artist": "Greg Staples",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 374,
+    "elite": true,
+    "flavor": "拉格纳罗斯是由黑铁矮人召唤出来的，而这些矮人最终也成为了炎魔之王的奴隶。所以召唤拉格纳罗斯往往得不到你想要的结果。",
+    "hasDiamondSkin": true,
+    "health": 8,
+    "id": "EX1_298",
+    "mechanics": [
+      "CANT_ATTACK",
+      "TRIGGER_VISUAL"
+    ],
+    "name": "炎魔之王拉格纳罗斯",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "无法攻击。在你的回合结束时，随机对一个敌人造成8点伤害。",
+    "type": "MINION"
   },
   {
     "artist": "John Polidora",
@@ -12713,6 +12824,21 @@
     "set": "EXPERT1",
     "text": "你的随从牌的法力值消耗减少（2）点，但不能少于（1）点。",
     "type": "MINION"
+  },
+  {
+    "artist": "Tom Baxa",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 846,
+    "flavor": "别让那个随从知道他死后的样子。那惨象无可言状。",
+    "id": "EX1_316",
+    "name": "力量的代价",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "使一个友方随从获得+4/+4，该随从会在回合结束时死亡。死得很惨。",
+    "type": "SPELL"
   },
   {
     "artist": "Raven Mimura",

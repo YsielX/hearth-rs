@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Abar’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
+  "name": "KFT 2017: Abar’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -85,83 +85,22 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Unwilling Sacrifice",
-      "replacement_id": "ICC_469"
-    },
-    {
-      "source": "Voodoo Doctor",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Voodoo Doctor",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Refreshment Vendor",
-      "replacement_id": "AT_111"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "GVG_015",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "CS2_065",
+    "CS2_065",
     "ICC_041",
     "ICC_041",
-    "CFM_094",
+    "CS2_062",
     "CFM_608",
     "UNG_832",
     "UNG_832",
-    "CFM_608",
-    "ICC_469",
+    "EX1_309",
+    "EX1_309",
     "ICC_075",
     "ICC_075",
     "CFM_751",
@@ -171,14 +110,14 @@
     "OG_239",
     "CFM_120",
     "CFM_120",
-    "CFM_654",
-    "CFM_654",
-    "AT_111",
+    "EX1_011",
+    "EX1_011",
+    "CS2_117",
     "UNG_946",
     "ICC_700",
     "ICC_700",
-    "OG_320",
-    "OG_320",
+    "EX1_043",
+    "EX1_043",
     "ICC_314"
   ]
 }

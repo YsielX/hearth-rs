@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Monsanto’s Quest Rogue – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Monsanto’s Quest Rogue – HCT Americas Summer Playoffs 2017",
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "format": "wild_through_icecrown",
@@ -81,30 +81,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.13333333333333333,
-  "substitutions": [
-    {
-      "source": "Vanish",
-      "replacement": "Sabotage",
-      "replacement_id": "GVG_047"
-    },
-    {
-      "source": "Vanish",
-      "replacement": "Sabotage",
-      "replacement_id": "GVG_047"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Coldlight Oracle",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_145",
     "EX1_145",
@@ -115,8 +94,8 @@
     "CFM_693",
     "UNG_060",
     "UNG_060",
-    "GVG_047",
-    "GVG_047",
+    "NEW1_004",
+    "NEW1_004",
     "UNG_809",
     "UNG_809",
     "UNG_205",
@@ -128,12 +107,12 @@
     "CS2_171",
     "OG_156",
     "OG_156",
-    "GVG_076",
+    "NEW1_021",
     "EX1_015",
     "EX1_015",
     "EX1_049",
     "EX1_049",
-    "EX1_096",
+    "EX1_050",
     "UNG_845",
     "UNG_845"
   ]

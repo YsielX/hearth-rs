@@ -2070,6 +2070,11 @@
     "text": "Deal $6 damage."
   },
   {
+    "id": "CS2_031",
+    "name": "Ice Lance",
+    "text": "<b>Freeze</b> a character. If it was already <b>Frozen</b>, deal $4 damage instead."
+  },
+  {
     "id": "CS2_032",
     "name": "Flamestrike",
     "text": "Deal $5 damage to all enemy minions."
@@ -2815,6 +2820,11 @@
     "text": "<b>Battlecry:</b> Draw a card."
   },
   {
+    "id": "EX1_016",
+    "name": "Sylvanas Windrunner",
+    "text": "<b>Deathrattle:</b> Take\ncontrol of a random\nenemy minion."
+  },
+  {
     "id": "EX1_017",
     "name": "Jungle Panther",
     "text": "<b>Stealth</b>"
@@ -3043,6 +3053,11 @@
     "id": "EX1_126",
     "name": "Betrayal",
     "text": "Force an enemy minion to deal its damage to the minions next to it."
+  },
+  {
+    "id": "EX1_128",
+    "name": "Conceal",
+    "text": "Give your minions <b>Stealth</b> until your next turn."
   },
   {
     "id": "EX1_129",
@@ -3285,6 +3300,11 @@
     "text": "<b>Battlecry:</b> <b>Freeze</b> a character."
   },
   {
+    "id": "EX1_284",
+    "name": "Azure Drake",
+    "text": "<b>Spell Damage +1</b>\n<b>Battlecry:</b> Draw a card."
+  },
+  {
     "id": "EX1_287",
     "name": "Counterspell",
     "text": "<b>Secret:</b> When your opponent casts a spell, <b>Counter</b> it."
@@ -3303,6 +3323,11 @@
     "id": "EX1_295",
     "name": "Ice Block",
     "text": "<b>Secret:</b> When your hero takes fatal damage, prevent it and become <b>Immune</b> this turn."
+  },
+  {
+    "id": "EX1_298",
+    "name": "Ragnaros the Firelord",
+    "text": "Can't attack. At the end of your turn, deal 8 damage to a random enemy."
   },
   {
     "id": "EX1_301",
@@ -3358,6 +3383,11 @@
     "id": "EX1_315",
     "name": "Summoning Portal",
     "text": "Your minions cost (2) less, but not less than (1)."
+  },
+  {
+    "id": "EX1_316",
+    "name": "Power Overwhelming",
+    "text": "Give a friendly minion +4/+4 until end of turn. Then, it dies. Horribly."
   },
   {
     "id": "EX1_317",

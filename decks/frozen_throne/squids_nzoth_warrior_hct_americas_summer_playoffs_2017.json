@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Squid’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Squid’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -89,90 +89,19 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Blood To Ichor",
-      "replacement_id": "OG_314"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Harrison Jones",
-      "replacement": "Gluttonous Ooze",
-      "replacement_id": "UNG_946"
-    },
-    {
-      "source": "Cairne Bloodhoof",
-      "replacement": "Infested Tauren",
-      "replacement_id": "OG_249"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_052",
-    "GVG_052",
-    "OG_314",
-    "OG_149",
-    "OG_149",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
-    "EX1_606",
+    "CS2_108",
+    "CS2_108",
+    "EX1_391",
+    "EX1_400",
+    "EX1_400",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
+    "EX1_392",
     "ICC_091",
     "CS2_106",
     "CS2_106",
@@ -184,15 +113,15 @@
     "ICC_062",
     "ICC_064",
     "ICC_064",
-    "GVG_050",
+    "EX1_407",
     "UNG_957",
     "UNG_957",
     "ICC_834",
-    "EX1_096",
-    "EX1_096",
+    "EX1_007",
+    "EX1_007",
     "UNG_946",
-    "UNG_946",
-    "OG_249",
+    "EX1_558",
+    "EX1_110",
     "OG_133"
   ]
 }

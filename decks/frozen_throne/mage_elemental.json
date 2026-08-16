@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Jaina Elemental Mage",
+  "name": "KFT 2017: DisguisedToast’s KFT Jaina Elemental Mage",
   "class": "mage",
   "hero_power": "HERO_08bp",
   "format": "wild_through_icecrown",
@@ -81,55 +81,14 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.26666666666666666,
-  "substitutions": [
-    {
-      "source": "Mana Wyrm",
-      "replacement": "Arcane Anomaly",
-      "replacement_id": "KAR_036"
-    },
-    {
-      "source": "Mana Wyrm",
-      "replacement": "Arcane Anomaly",
-      "replacement_id": "KAR_036"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Counterspell",
-      "replacement_id": "EX1_287"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Potion of Polymorph",
-      "replacement_id": "CFM_620"
-    },
-    {
-      "source": "Water Elemental",
-      "replacement": "Fire Plume Phoenix",
-      "replacement_id": "UNG_084"
-    },
-    {
-      "source": "Water Elemental",
-      "replacement": "Fire Plume Phoenix",
-      "replacement_id": "UNG_084"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "KAR_009",
     "KAR_009",
-    "KAR_036",
-    "KAR_036",
+    "NEW1_012",
+    "NEW1_012",
     "UNG_020",
     "UNG_020",
     "CS2_024",
@@ -139,16 +98,16 @@
     "UNG_941",
     "UNG_941",
     "UNG_027",
-    "OG_090",
-    "OG_090",
+    "CS2_023",
+    "CS2_023",
     "EX1_287",
-    "EX1_287",
-    "CFM_620",
+    "EX1_295",
+    "EX1_295",
     "CFM_065",
     "CS2_029",
     "CS2_029",
-    "UNG_084",
-    "UNG_084",
+    "CS2_033",
+    "CS2_033",
     "KAR_076",
     "KAR_076",
     "ICC_833",

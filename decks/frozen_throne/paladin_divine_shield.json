@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: StrifeCro’s KFT Midrange Death Knight Divine Shield Paladin",
+  "name": "KFT 2017: StrifeCro’s KFT Midrange Death Knight Divine Shield Paladin",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -89,32 +89,16 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.1,
-  "substitutions": [
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Ragnaros, Lightlord",
-      "replacement_id": "OG_229"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_038",
     "ICC_038",
     "CFM_305",
     "CFM_305",
-    "ICC_071",
-    "ICC_071",
+    "CS2_093",
+    "CS2_093",
     "CFM_853",
     "CFM_853",
     "OG_222",
@@ -130,7 +114,7 @@
     "UNG_952",
     "UNG_952",
     "UNG_015",
-    "OG_229",
+    "EX1_383",
     "ICC_829",
     "ICC_851",
     "UNG_072",

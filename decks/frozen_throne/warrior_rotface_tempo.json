@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Mitsuhide’s KFT Rotface Tempo Warrior",
+  "name": "KFT 2017: Mitsuhide’s KFT Rotface Tempo Warrior",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -81,119 +81,38 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5333333333333333,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Frothing Berserker",
-      "replacement": "Grim Patron",
-      "replacement_id": "BRM_019"
-    },
-    {
-      "source": "Frothing Berserker",
-      "replacement": "Grim Patron",
-      "replacement_id": "BRM_019"
-    },
-    {
-      "source": "Kor’kron Elite",
-      "replacement": "Argent Horserider",
-      "replacement_id": "AT_087"
-    },
-    {
-      "source": "Kor’kron Elite",
-      "replacement": "Argent Horserider",
-      "replacement_id": "AT_087"
-    },
-    {
-      "source": "Grommash Hellscream",
-      "replacement": "Rotface",
-      "replacement_id": "ICC_405"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Cairne Bloodhoof",
-      "replacement": "Infested Tauren",
-      "replacement_id": "OG_249"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_314",
     "OG_314",
-    "GVG_052",
-    "GVG_052",
-    "BRM_015",
-    "BRM_015",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
-    "EX1_606",
+    "CS2_108",
+    "CS2_108",
+    "EX1_391",
+    "EX1_391",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
+    "EX1_392",
     "CS2_106",
     "CS2_106",
     "ICC_281",
-    "BRM_019",
-    "BRM_019",
+    "EX1_604",
+    "EX1_604",
     "OG_149",
     "OG_149",
     "ICC_064",
     "ICC_064",
     "OG_218",
     "OG_218",
-    "AT_087",
-    "AT_087",
+    "NEW1_011",
+    "NEW1_011",
+    "EX1_414",
     "ICC_405",
-    "ICC_405",
-    "EX1_096",
-    "EX1_096",
-    "OG_249",
+    "EX1_007",
+    "EX1_007",
+    "EX1_110",
     "ICC_705",
     "ICC_705"
   ]

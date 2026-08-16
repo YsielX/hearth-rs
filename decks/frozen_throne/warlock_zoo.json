@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Kripp’s KFT Warlock Zoo",
+  "name": "KFT 2017: Kripp’s KFT Warlock Zoo",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -77,80 +77,34 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Flame Imp",
-      "replacement": "Flame Juggler",
-      "replacement_id": "AT_094"
-    },
-    {
-      "source": "Flame Imp",
-      "replacement": "Flame Juggler",
-      "replacement_id": "AT_094"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Mistress of Mixtures",
-      "replacement_id": "CFM_120"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Mistress of Mixtures",
-      "replacement_id": "CFM_120"
-    },
-    {
-      "source": "Abusive Sergeant",
-      "replacement": "Acherus Veteran",
-      "replacement_id": "ICC_092"
-    },
-    {
-      "source": "Abusive Sergeant",
-      "replacement": "Acherus Veteran",
-      "replacement_id": "ICC_092"
-    },
-    {
-      "source": "Blood Knight",
-      "replacement": "Darkspeaker",
-      "replacement_id": "OG_102"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "AT_094",
-    "AT_094",
+    "EX1_319",
+    "EX1_319",
     "OG_241",
     "OG_241",
-    "CFM_120",
-    "CFM_120",
+    "CS2_065",
+    "CS2_065",
     "OG_113",
     "OG_113",
     "UNG_047",
     "UNG_047",
-    "ICC_092",
-    "ICC_092",
+    "CS2_188",
+    "CS2_188",
     "ICC_092",
     "ICC_092",
     "EX1_008",
     "EX1_008",
     "ICC_851",
-    "OG_102",
+    "EX1_590",
     "ICC_467",
     "ICC_467",
     "UNG_083",
     "UNG_083",
-    "OG_174",
-    "OG_174",
+    "EX1_093",
+    "EX1_093",
     "ICC_466",
     "ICC_466",
     "ICC_019",

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Paladin): Primordial Blessings",
+  "name": "KFT 2017: Deck Recipes (Paladin): Primordial Blessings",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -85,59 +85,13 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Blessing of Wisdom",
-      "replacement": "Solemn Vigil",
-      "replacement_id": "BRM_001"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Rallying Blade",
-      "replacement_id": "OG_222"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Rallying Blade",
-      "replacement_id": "OG_222"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_961",
     "UNG_961",
-    "BRM_001",
+    "EX1_363",
     "OG_223",
     "OG_223",
     "ICC_038",
@@ -153,17 +107,17 @@
     "UNG_953",
     "KAR_077",
     "CFM_815",
-    "AT_074",
-    "AT_074",
-    "OG_222",
-    "OG_222",
+    "CS2_092",
+    "CS2_092",
+    "CS2_097",
+    "CS2_097",
     "UNG_952",
     "UNG_952",
     "UNG_004",
-    "ICC_913",
-    "ICC_913",
-    "EX1_096",
-    "EX1_096",
+    "NEW1_020",
+    "NEW1_020",
+    "EX1_007",
+    "EX1_007",
     "UNG_843"
   ]
 }

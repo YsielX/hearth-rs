@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Justsaiyan’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Justsaiyan’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -85,45 +85,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.23333333333333334,
-  "substitutions": [
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Coghammer",
-      "replacement_id": "GVG_059"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Wickerflame Burnbristle",
-      "replacement_id": "CFM_815"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_038",
     "ICC_038",
@@ -131,22 +95,22 @@
     "OG_006",
     "UNG_011",
     "UNG_011",
-    "LOE_017",
+    "EX1_382",
     "OG_222",
     "OG_222",
-    "GVG_059",
+    "CS2_097",
     "UNG_952",
     "UNG_952",
     "UNG_015",
-    "CFM_815",
-    "LOEA10_3",
-    "LOEA10_3",
+    "EX1_383",
+    "EX1_509",
+    "EX1_509",
     "UNG_807",
     "UNG_807",
     "UNG_073",
     "UNG_073",
-    "UNG_089",
-    "UNG_089",
+    "EX1_507",
+    "EX1_507",
     "UNG_072",
     "UNG_072",
     "UNG_089",

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Updated: Zalae’s Frozen Throne Token Druid",
+  "name": "KFT 2017: Updated: Zalae’s Frozen Throne Token Druid",
   "class": "druid",
   "hero_power": "HERO_06bp",
   "format": "wild_through_icecrown",
@@ -77,40 +77,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Power of the Wild",
-      "replacement": "Evolving Spores",
-      "replacement_id": "UNG_103"
-    },
-    {
-      "source": "Power of the Wild",
-      "replacement": "Evolving Spores",
-      "replacement_id": "UNG_103"
-    },
-    {
-      "source": "Savage Roar",
-      "replacement": "Living Mana",
-      "replacement_id": "UNG_111"
-    },
-    {
-      "source": "Savage Roar",
-      "replacement": "Living Mana",
-      "replacement_id": "UNG_111"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_169",
     "EX1_169",
@@ -122,18 +91,18 @@
     "ICC_051",
     "OG_048",
     "OG_048",
-    "UNG_103",
-    "UNG_103",
+    "EX1_160",
+    "EX1_160",
     "ICC_808",
     "ICC_808",
-    "UNG_111",
-    "UNG_111",
+    "CS2_011",
+    "CS2_011",
     "UNG_111",
     "UNG_111",
     "ICC_092",
     "ICC_092",
-    "CFM_325",
-    "CFM_325",
+    "NEW1_025",
+    "NEW1_025",
     "UNG_809",
     "UNG_809",
     "CFM_637",

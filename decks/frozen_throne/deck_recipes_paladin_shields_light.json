@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Paladin): Shields of the Light",
+  "name": "KFT 2017: Deck Recipes (Paladin): Shields of the Light",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -89,40 +89,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Equality",
-      "replacement": "Enter the Coliseum",
-      "replacement_id": "AT_078"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Ragnaros, Lightlord",
-      "replacement_id": "OG_229"
-    },
-    {
-      "source": "Blood Knight",
-      "replacement": "Darkspeaker",
-      "replacement_id": "OG_102"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_038",
     "ICC_038",
@@ -130,12 +99,12 @@
     "ICC_039",
     "ICC_244",
     "ICC_244",
-    "AT_078",
+    "EX1_619",
     "UNG_011",
     "UNG_011",
-    "LOE_017",
-    "LOE_017",
-    "ICC_071",
+    "EX1_382",
+    "EX1_382",
+    "CS2_093",
     "ICC_801",
     "ICC_801",
     "OG_222",
@@ -146,10 +115,10 @@
     "ICC_071",
     "ICC_858",
     "UNG_015",
-    "OG_229",
+    "EX1_383",
     "EX1_008",
     "EX1_008",
-    "OG_102",
+    "EX1_590",
     "UNG_072",
     "UNG_072",
     "ICC_912",

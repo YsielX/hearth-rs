@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Cerwindhunt’s Silence Priest – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Cerwindhunt’s Silence Priest – HCT Americas Summer Playoffs 2017",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -81,107 +81,36 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Circle of Healing",
-      "replacement": "Binding Heal",
-      "replacement_id": "UNG_030"
-    },
-    {
-      "source": "Inner Fire",
-      "replacement": "Confuse",
-      "replacement_id": "AT_016"
-    },
-    {
-      "source": "Inner Fire",
-      "replacement": "Confuse",
-      "replacement_id": "AT_016"
-    },
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Divine Spirit",
-      "replacement": "Power Word: Glory",
-      "replacement_id": "AT_013"
-    },
-    {
-      "source": "Divine Spirit",
-      "replacement": "Power Word: Glory",
-      "replacement_id": "AT_013"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Ancient Watcher",
-      "replacement": "Eerie Statue",
-      "replacement_id": "LOE_107"
-    },
-    {
-      "source": "Ancient Watcher",
-      "replacement": "Eerie Statue",
-      "replacement_id": "LOE_107"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "UNG_030",
+    "EX1_621",
     "EX1_332",
     "EX1_332",
-    "AT_016",
-    "AT_016",
-    "UNG_032",
-    "UNG_032",
+    "CS1_129",
+    "CS1_129",
+    "CS2_235",
+    "CS2_235",
     "CFM_603",
-    "CFM_626",
-    "CFM_626",
-    "AT_013",
-    "AT_013",
+    "CS2_004",
+    "CS2_004",
+    "CS2_236",
+    "CS2_236",
     "KAR_013",
     "KAR_013",
     "UNG_034",
     "UNG_034",
     "UNG_029",
     "UNG_029",
-    "CFM_603",
-    "LOE_104",
+    "CS2_234",
+    "CS2_234",
     "CFM_626",
     "CFM_626",
     "UNG_963",
-    "LOE_107",
-    "LOE_107",
-    "EX1_096",
+    "EX1_045",
+    "EX1_045",
+    "EX1_007",
     "UNG_844",
     "UNG_844",
     "OG_174",

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Dog’s Frozen Throne Giants Valeera the Hollow Miracle Rogue",
+  "name": "KFT 2017: Dog’s Frozen Throne Giants Valeera the Hollow Miracle Rogue",
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "format": "wild_through_icecrown",
@@ -89,25 +89,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.1,
-  "substitutions": [
-    {
-      "source": "Questing Adventurer",
-      "replacement": "Red Mana Wyrm",
-      "replacement_id": "CFM_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Red Mana Wyrm",
-      "replacement_id": "CFM_060"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CS2_072",
     "CS2_072",
@@ -134,9 +118,9 @@
     "ICC_827",
     "CFM_637",
     "EX1_012",
-    "CFM_060",
-    "UNG_060",
-    "CFM_060",
+    "EX1_044",
+    "EX1_095",
+    "EX1_095",
     "KAR_711",
     "KAR_711"
   ]

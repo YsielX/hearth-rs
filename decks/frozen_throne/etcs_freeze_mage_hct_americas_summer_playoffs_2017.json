@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: ETC’s Freeze Mage – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: ETC’s Freeze Mage – HCT Americas Summer Playoffs 2017",
   "class": "mage",
   "hero_power": "HERO_08bp",
   "format": "wild_through_icecrown",
@@ -89,85 +89,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5,
-  "substitutions": [
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Ice Barrier",
-      "replacement": "Counterspell",
-      "replacement_id": "EX1_287"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Counterspell",
-      "replacement_id": "EX1_287"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Potion of Polymorph",
-      "replacement_id": "CFM_620"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Flamestrike",
-      "replacement": "Flame Lance",
-      "replacement_id": "AT_001"
-    },
-    {
-      "source": "Pyroblast",
-      "replacement": "Flame Lance",
-      "replacement_id": "AT_001"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Baron Geddon",
-      "replacement": "Baron Rivendare",
-      "replacement_id": "FP1_031"
-    },
-    {
-      "source": "Alexstrasza",
-      "replacement": "Nefarian",
-      "replacement_id": "BRM_030"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_020",
     "UNG_020",
@@ -177,27 +101,27 @@
     "KAR_092",
     "UNG_941",
     "UNG_941",
-    "OG_090",
-    "OG_090",
-    "CFM_065",
-    "CFM_065",
-    "EX1_287",
-    "EX1_287",
-    "CFM_620",
+    "CS2_023",
+    "CS2_023",
+    "CS2_026",
+    "CS2_026",
+    "EX1_289",
+    "EX1_295",
+    "EX1_295",
     "CS2_029",
     "CS2_029",
     "CS2_022",
-    "UNG_955",
-    "UNG_955",
+    "CS2_028",
+    "CS2_028",
     "KAR_076",
     "KAR_076",
-    "AT_001",
+    "CS2_032",
     "ICC_833",
-    "AT_001",
-    "GVG_076",
-    "GVG_076",
-    "FP1_031",
+    "EX1_279",
+    "NEW1_021",
+    "NEW1_021",
+    "EX1_249",
     "KAR_097",
-    "BRM_030"
+    "EX1_561"
   ]
 }

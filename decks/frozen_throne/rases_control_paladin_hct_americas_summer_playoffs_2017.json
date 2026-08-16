@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Rase’s Control Paladin – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Rase’s Control Paladin – HCT Americas Summer Playoffs 2017",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -101,105 +101,34 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Equality",
-      "replacement": "Enter the Coliseum",
-      "replacement_id": "AT_078"
-    },
-    {
-      "source": "Equality",
-      "replacement": "Enter the Coliseum",
-      "replacement_id": "AT_078"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Aldor Peacekeeper",
-      "replacement": "Keeper of Uldaman",
-      "replacement_id": "LOE_017"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Consecration",
-      "replacement": "Light's Sorrow",
-      "replacement_id": "ICC_071"
-    },
-    {
-      "source": "Truesilver Champion",
-      "replacement": "Rallying Blade",
-      "replacement_id": "OG_222"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Wickerflame Burnbristle",
-      "replacement_id": "CFM_815"
-    },
-    {
-      "source": "Hungry Crab",
-      "replacement": "Golakka Crawler",
-      "replacement_id": "UNG_807"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_198",
-    "AT_078",
-    "AT_078",
+    "EX1_619",
+    "EX1_619",
     "UNG_011",
     "UNG_011",
-    "LOE_017",
-    "LOE_017",
-    "ICC_071",
-    "ICC_071",
+    "EX1_382",
+    "EX1_382",
+    "CS2_093",
+    "CS2_093",
     "OG_222",
-    "OG_222",
+    "CS2_097",
     "UNG_952",
     "UNG_952",
     "UNG_015",
     "OG_229",
-    "CFM_815",
+    "EX1_383",
     "ICC_829",
+    "NEW1_017",
+    "NEW1_021",
+    "NEW1_021",
     "UNG_807",
-    "GVG_076",
-    "GVG_076",
-    "UNG_807",
-    "ICC_913",
-    "ICC_913",
-    "EX1_096",
+    "NEW1_020",
+    "NEW1_020",
+    "EX1_007",
     "UNG_946",
     "UNG_072",
     "UNG_072",

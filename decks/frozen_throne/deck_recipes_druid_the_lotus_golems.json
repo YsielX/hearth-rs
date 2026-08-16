@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Druid): The Lotus’ Golems",
+  "name": "KFT 2017: Deck Recipes (Druid): The Lotus’ Golems",
   "class": "druid",
   "hero_power": "HERO_06bp",
   "format": "wild_through_icecrown",
@@ -85,50 +85,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.26666666666666666,
-  "substitutions": [
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Wrath",
-      "replacement": "Living Roots",
-      "replacement_id": "AT_037"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Swipe",
-      "replacement": "Poison Seeds",
-      "replacement_id": "FP1_019"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Nourish",
-      "replacement": "Lunar Visions",
-      "replacement_id": "CFM_811"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Red Mana Wyrm",
-      "replacement_id": "CFM_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Red Mana Wyrm",
-      "replacement_id": "CFM_060"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_169",
     "EX1_169",
@@ -138,26 +97,26 @@
     "UNG_108",
     "CS2_013",
     "CS2_013",
-    "AT_037",
-    "AT_037",
+    "EX1_154",
+    "EX1_154",
     "ICC_808",
     "OG_047",
     "OG_047",
     "CFM_713",
     "CFM_713",
-    "FP1_019",
-    "FP1_019",
+    "CS2_012",
+    "CS2_012",
     "OG_044",
     "CFM_715",
     "CFM_715",
     "CFM_343",
     "CFM_343",
-    "CFM_811",
-    "CFM_811",
+    "EX1_164",
+    "EX1_164",
     "ICC_050",
     "CFM_902",
-    "CFM_060",
-    "CFM_060",
+    "EX1_095",
+    "EX1_095",
     "UNG_848",
     "OG_134"
   ]

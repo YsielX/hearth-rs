@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Death Knight Discard Questlock",
+  "name": "KFT 2017: DisguisedToast’s KFT Death Knight Discard Questlock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -81,68 +81,17 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Soulfire",
-      "replacement": "Fist of Jaraxxus",
-      "replacement_id": "AT_022"
-    },
-    {
-      "source": "Soulfire",
-      "replacement": "Fist of Jaraxxus",
-      "replacement_id": "AT_022"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_829",
-    "GVG_015",
-    "GVG_015",
-    "AT_022",
-    "AT_022",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "EX1_308",
+    "EX1_308",
+    "CS2_065",
+    "CS2_065",
     "UNG_836",
     "OG_109",
     "OG_109",
@@ -158,11 +107,11 @@
     "UNG_832",
     "UNG_833",
     "UNG_833",
-    "CFM_608",
-    "CFM_608",
+    "EX1_309",
+    "EX1_309",
     "ICC_841",
-    "AT_020",
-    "AT_020",
+    "EX1_310",
+    "EX1_310",
     "ICC_831",
     "OG_239",
     "OG_239"

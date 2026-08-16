@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warlock): Feed the Void",
+  "name": "KFT 2017: Deck Recipes (Warlock): Feed the Void",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -89,44 +89,13 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Soulfire",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Soulfire",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    },
-    {
-      "source": "Doomguard",
-      "replacement": "Fearsome Doomguard",
-      "replacement_id": "AT_020"
-    },
-    {
-      "source": "Deathwing",
-      "replacement": "Deathwing, Dragonlord",
-      "replacement_id": "OG_317"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_829",
-    "GVG_015",
-    "GVG_015",
+    "EX1_308",
+    "EX1_308",
     "UNG_835",
     "UNG_835",
     "UNG_836",
@@ -143,16 +112,16 @@
     "UNG_832",
     "UNG_833",
     "UNG_833",
-    "CFM_608",
+    "EX1_309",
     "ICC_841",
     "UNG_830",
     "UNG_830",
     "ICC_075",
     "ICC_075",
-    "AT_020",
-    "AT_020",
+    "EX1_310",
+    "EX1_310",
     "CFM_094",
     "OG_239",
-    "OG_317"
+    "NEW1_030"
   ]
 }

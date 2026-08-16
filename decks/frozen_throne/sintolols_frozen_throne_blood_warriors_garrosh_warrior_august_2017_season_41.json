@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Sintolol’s Frozen Throne Blood Warriors Garrosh Warrior",
+  "name": "KFT 2017: Sintolol’s Frozen Throne Blood Warriors Garrosh Warrior",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -81,95 +81,29 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.43333333333333335,
-  "substitutions": [
-    {
-      "source": "Inner Rage",
-      "replacement": "Blood To Ichor",
-      "replacement_id": "OG_314"
-    },
-    {
-      "source": "Inner Rage",
-      "replacement": "Blood To Ichor",
-      "replacement_id": "OG_314"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Revenge",
-      "replacement_id": "BRM_015"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Frothing Berserker",
-      "replacement": "Grim Patron",
-      "replacement_id": "BRM_019"
-    },
-    {
-      "source": "Frothing Berserker",
-      "replacement": "Grim Patron",
-      "replacement_id": "BRM_019"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "OG_314",
-    "OG_314",
+    "EX1_607",
+    "EX1_607",
     "ICC_238",
     "ICC_238",
     "OG_314",
     "OG_314",
-    "BRM_015",
-    "BRM_015",
-    "OG_149",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
-    "EX1_606",
+    "EX1_391",
+    "EX1_391",
+    "EX1_400",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
+    "EX1_392",
     "CS2_106",
     "CS2_106",
     "OG_276",
     "OG_276",
-    "BRM_019",
-    "BRM_019",
+    "EX1_604",
+    "EX1_604",
     "OG_149",
     "OG_149",
     "ICC_064",
@@ -178,8 +112,8 @@
     "OG_218",
     "ICC_405",
     "ICC_834",
-    "EX1_096",
-    "EX1_096",
+    "EX1_007",
+    "EX1_007",
     "ICC_314"
   ]
 }

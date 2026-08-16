@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Fibonacci’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Fibonacci’s N’zoth Warrior – HCT Americas Summer Playoffs 2017",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -85,102 +85,21 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5333333333333333,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Shield Slam",
-      "replacement": "Bash",
-      "replacement_id": "AT_064"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Blood To Ichor",
-      "replacement_id": "OG_314"
-    },
-    {
-      "source": "Slam",
-      "replacement": "Blood To Ichor",
-      "replacement_id": "OG_314"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_052",
-    "GVG_052",
-    "AT_064",
-    "OG_314",
-    "OG_314",
-    "OG_149",
-    "OG_149",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
-    "EX1_606",
+    "CS2_108",
+    "CS2_108",
+    "EX1_410",
+    "EX1_391",
+    "EX1_391",
+    "EX1_400",
+    "EX1_400",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
+    "EX1_392",
     "ICC_091",
     "EX1_606",
     "EX1_606",
@@ -190,14 +109,14 @@
     "ICC_062",
     "ICC_064",
     "ICC_064",
-    "GVG_050",
+    "EX1_407",
     "UNG_957",
     "UNG_957",
     "ICC_834",
-    "GVG_076",
-    "GVG_076",
-    "EX1_096",
-    "EX1_096",
+    "NEW1_021",
+    "NEW1_021",
+    "EX1_007",
+    "EX1_007",
     "UNG_946",
     "OG_133"
   ]

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: PNC’s Big Priest – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: PNC’s Big Priest – HCT Americas Summer Playoffs 2017",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -85,45 +85,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.23333333333333334,
-  "substitutions": [
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Thoughtsteal",
-      "replacement": "Curious Glimmerroot",
-      "replacement_id": "UNG_035"
-    },
-    {
-      "source": "Thoughtsteal",
-      "replacement": "Curious Glimmerroot",
-      "replacement_id": "UNG_035"
-    },
-    {
-      "source": "Ysera",
-      "replacement": "Nefarian",
-      "replacement_id": "BRM_030"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_332",
     "CFM_661",
@@ -132,12 +96,12 @@
     "CFM_603",
     "UNG_029",
     "UNG_029",
-    "LOE_104",
-    "LOE_104",
-    "LOE_111",
-    "LOE_111",
-    "UNG_035",
-    "UNG_035",
+    "EX1_622",
+    "EX1_622",
+    "CS2_234",
+    "CS2_234",
+    "EX1_339",
+    "EX1_339",
     "ICC_213",
     "ICC_213",
     "CFM_604",
@@ -153,7 +117,7 @@
     "ICC_214",
     "KAR_114",
     "ICC_314",
-    "BRM_030",
+    "EX1_572",
     "OG_042"
   ]
 }

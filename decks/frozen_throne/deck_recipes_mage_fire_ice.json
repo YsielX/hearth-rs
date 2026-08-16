@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Mage): Fire and Ice",
+  "name": "KFT 2017: Deck Recipes (Mage): Fire and Ice",
   "class": "mage",
   "hero_power": "HERO_08bp",
   "format": "wild_through_icecrown",
@@ -81,40 +81,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Water Elemental",
-      "replacement": "Fire Plume Phoenix",
-      "replacement_id": "UNG_084"
-    },
-    {
-      "source": "Water Elemental",
-      "replacement": "Fire Plume Phoenix",
-      "replacement_id": "UNG_084"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CS2_024",
     "CS2_024",
@@ -126,16 +95,16 @@
     "OG_081",
     "OG_081",
     "UNG_846",
-    "OG_090",
-    "OG_090",
+    "CS2_023",
+    "CS2_023",
     "ICC_252",
     "ICC_252",
     "UNG_021",
     "UNG_021",
-    "UNG_084",
-    "UNG_084",
-    "UNG_955",
-    "UNG_955",
+    "CS2_033",
+    "CS2_033",
+    "CS2_028",
+    "CS2_028",
     "ICC_838",
     "ICC_833",
     "UNG_809",

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Shaman): Remorseless Winter",
+  "name": "KFT 2017: Deck Recipes (Shaman): Remorseless Winter",
   "class": "shaman",
   "hero_power": "HERO_02bp",
   "format": "wild_through_icecrown",
@@ -85,40 +85,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Hex",
-      "replacement": "Devolve",
-      "replacement_id": "CFM_696"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Big Game Hunter",
-      "replacement_id": "EX1_005"
-    },
-    {
-      "source": "Lightning Storm",
-      "replacement": "Maelstrom Portal",
-      "replacement_id": "KAR_073"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Frost Elemental",
-      "replacement": "Frozen Crusher",
-      "replacement_id": "UNG_079"
-    },
-    {
-      "source": "Frost Elemental",
-      "replacement": "Frozen Crusher",
-      "replacement_id": "UNG_079"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_058",
     "ICC_058",
@@ -128,12 +97,12 @@
     "KAR_073",
     "ICC_081",
     "ICC_081",
-    "CFM_696",
-    "EX1_005",
+    "EX1_246",
+    "EX1_246",
     "ICC_236",
     "ICC_236",
-    "KAR_073",
-    "EX1_096",
+    "EX1_259",
+    "EX1_575",
     "ICC_078",
     "ICC_078",
     "CFM_061",
@@ -148,7 +117,7 @@
     "UNG_205",
     "ICC_855",
     "ICC_855",
-    "UNG_079",
-    "UNG_079"
+    "EX1_283",
+    "EX1_283"
   ]
 }

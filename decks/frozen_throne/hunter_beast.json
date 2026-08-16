@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: J4CKIECHAN’s Frozen Throne Penguin Beast Hunter",
+  "name": "KFT 2017: J4CKIECHAN’s Frozen Throne Penguin Beast Hunter",
   "class": "hunter",
   "hero_power": "HERO_05bp",
   "format": "wild_through_icecrown",
@@ -77,65 +77,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.36666666666666664,
-  "substitutions": [
-    {
-      "source": "Timber Wolf",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Scavenging Hyena",
-      "replacement": "Trogg Beastrager",
-      "replacement_id": "CFM_338"
-    },
-    {
-      "source": "Scavenging Hyena",
-      "replacement": "Trogg Beastrager",
-      "replacement_id": "CFM_338"
-    },
-    {
-      "source": "Animal Companion",
-      "replacement": "Rat Pack",
-      "replacement_id": "CFM_316"
-    },
-    {
-      "source": "Animal Companion",
-      "replacement": "Rat Pack",
-      "replacement_id": "CFM_316"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Unleash the Hounds",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Unleash the Hounds",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_916",
     "UNG_916",
@@ -143,24 +87,24 @@
     "CFM_315",
     "UNG_912",
     "UNG_912",
-    "EX1_162",
+    "DS1_175",
     "UNG_915",
     "UNG_915",
     "KAR_005",
     "KAR_005",
-    "CFM_338",
-    "CFM_338",
-    "CFM_316",
-    "CFM_316",
+    "EX1_531",
+    "EX1_531",
+    "NEW1_031",
+    "NEW1_031",
     "OG_045",
-    "BRM_013",
-    "BRM_013",
+    "EX1_539",
+    "EX1_539",
     "CFM_316",
     "CFM_316",
-    "UNG_910",
-    "UNG_910",
-    "KAR_702",
-    "KAR_702",
+    "EX1_538",
+    "EX1_538",
+    "DS1_070",
+    "DS1_070",
     "ICC_023",
     "ICC_023",
     "EX1_162",

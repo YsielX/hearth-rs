@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Noxious’ KFT Wild Randuin Wrynn Reno Priest",
+  "name": "KFT 2017: Noxious’ KFT Wild Randuin Wrynn Reno Priest",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -133,58 +133,17 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.26666666666666666,
-  "substitutions": [
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Thoughtsteal",
-      "replacement": "Curious Glimmerroot",
-      "replacement_id": "UNG_035"
-    },
-    {
-      "source": "Mad Bomber",
-      "replacement": "Flame Juggler",
-      "replacement_id": "AT_094"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Mind Control Tech",
-      "replacement": "Dirty Rat",
-      "replacement_id": "CFM_790"
-    },
-    {
-      "source": "Sylvanas Windrunner",
-      "replacement": "Sneed's Old Shredder",
-      "replacement_id": "GVG_114"
-    },
-    {
-      "source": "Ragnaros the Firelord",
-      "replacement": "Nefarian",
-      "replacement_id": "BRM_030"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_032",
-    "UNG_032",
+    "CS2_235",
     "CFM_603",
-    "CFM_626",
+    "CS2_004",
     "CFM_649",
     "ICC_210",
-    "UNG_035",
+    "EX1_339",
     "UNG_035",
     "ICC_213",
     "CFM_604",
@@ -199,14 +158,14 @@
     "ICC_830",
     "ICC_214",
     "LOE_029",
-    "AT_094",
-    "ICC_913",
+    "EX1_082",
+    "NEW1_020",
     "ICC_854",
     "KAR_114",
-    "CFM_790",
+    "EX1_085",
     "LOE_011",
-    "GVG_114",
-    "BRM_030",
+    "EX1_016",
+    "EX1_298",
     "ICC_314"
   ]
 }

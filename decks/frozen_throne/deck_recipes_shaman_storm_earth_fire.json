@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Shaman): Storm, Earth, and Fire",
+  "name": "KFT 2017: Deck Recipes (Shaman): Storm, Earth, and Fire",
   "class": "shaman",
   "hero_power": "HERO_02bp",
   "format": "wild_through_icecrown",
@@ -97,76 +97,30 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Devolve",
-      "replacement_id": "CFM_696"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Big Game Hunter",
-      "replacement_id": "EX1_005"
-    },
-    {
-      "source": "Lightning Storm",
-      "replacement": "Elemental Destruction",
-      "replacement_id": "AT_051"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Bloodlust",
-      "replacement": "Everyfin is Awesome",
-      "replacement_id": "LOE_113"
-    },
-    {
-      "source": "Fire Elemental",
-      "replacement": "Fireguard Destroyer",
-      "replacement_id": "BRM_012"
-    },
-    {
-      "source": "Fire Elemental",
-      "replacement": "Fireguard Destroyer",
-      "replacement_id": "BRM_012"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CFM_696",
-    "EX1_162",
-    "EX1_162",
+    "EX1_565",
+    "EX1_565",
     "CFM_717",
     "CFM_717",
     "KAR_073",
     "KAR_073",
-    "CFM_696",
-    "EX1_005",
+    "EX1_246",
+    "EX1_246",
     "UNG_938",
     "UNG_938",
     "CFM_707",
     "CFM_707",
-    "AT_051",
-    "EX1_096",
+    "EX1_259",
+    "EX1_575",
     "ICC_078",
-    "LOE_113",
+    "CS2_046",
     "CFM_902",
-    "BRM_012",
-    "BRM_012",
+    "CS2_042",
+    "CS2_042",
     "UNG_211",
     "UNG_809",
     "UNG_809",

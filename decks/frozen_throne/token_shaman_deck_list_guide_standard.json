@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Frozen Throne Token Shaman Deck List Guide – Theorycraft",
+  "name": "KFT 2017: Frozen Throne Token Shaman Deck List Guide – Theorycraft",
   "class": "shaman",
   "hero_power": "HERO_02bp",
   "format": "wild_through_icecrown",
@@ -81,76 +81,30 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3,
-  "substitutions": [
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Flametongue Totem",
-      "replacement": "Dire Wolf Alpha",
-      "replacement_id": "EX1_162"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Devolve",
-      "replacement_id": "CFM_696"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Big Game Hunter",
-      "replacement_id": "EX1_005"
-    },
-    {
-      "source": "Lightning Storm",
-      "replacement": "Maelstrom Portal",
-      "replacement_id": "KAR_073"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Mana Tide Totem",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Bloodlust",
-      "replacement": "Everyfin is Awesome",
-      "replacement_id": "LOE_113"
-    },
-    {
-      "source": "Bloodlust",
-      "replacement": "Everyfin is Awesome",
-      "replacement_id": "LOE_113"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_027",
     "OG_027",
     "CFM_696",
-    "EX1_162",
-    "EX1_162",
+    "EX1_565",
+    "EX1_565",
     "CFM_717",
     "CFM_717",
     "UNG_201",
     "UNG_201",
-    "CFM_696",
-    "EX1_005",
+    "EX1_246",
+    "EX1_246",
     "CFM_707",
     "CFM_707",
-    "KAR_073",
-    "EX1_096",
-    "EX1_096",
+    "EX1_259",
+    "EX1_575",
+    "EX1_575",
     "OG_328",
     "OG_328",
-    "LOE_113",
-    "LOE_113",
+    "CS2_046",
+    "CS2_046",
     "ICC_481",
     "OG_028",
     "OG_028",

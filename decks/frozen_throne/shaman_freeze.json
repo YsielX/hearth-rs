@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Moorabi Freeze Shaman",
+  "name": "KFT 2017: DisguisedToast’s KFT Moorabi Freeze Shaman",
   "class": "shaman",
   "hero_power": "HERO_02bp",
   "format": "wild_through_icecrown",
@@ -77,45 +77,14 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Frost Shock",
-      "replacement": "Glacial Shard",
-      "replacement_id": "UNG_205"
-    },
-    {
-      "source": "Frost Shock",
-      "replacement": "Glacial Shard",
-      "replacement_id": "UNG_205"
-    },
-    {
-      "source": "Ancestral Spirit",
-      "replacement": "Ancestral Knowledge",
-      "replacement_id": "AT_053"
-    },
-    {
-      "source": "Ancestral Spirit",
-      "replacement": "Ancestral Knowledge",
-      "replacement_id": "AT_053"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Devolve",
-      "replacement_id": "CFM_696"
-    },
-    {
-      "source": "Hex",
-      "replacement": "Devolve",
-      "replacement_id": "CFM_696"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "UNG_205",
-    "UNG_205",
-    "AT_053",
-    "AT_053",
+    "CS2_037",
+    "CS2_037",
+    "CS2_038",
+    "CS2_038",
     "ICC_058",
     "ICC_058",
     "ICC_056",
@@ -125,8 +94,8 @@
     "UNG_956",
     "ICC_081",
     "ICC_081",
-    "CFM_696",
-    "CFM_696",
+    "EX1_246",
+    "EX1_246",
     "ICC_236",
     "ICC_236",
     "CFM_707",

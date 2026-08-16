@@ -79,7 +79,161 @@ fn legacy_and_expert1_contain_the_complete_collectible_basic_and_classic_pools()
         .filter(|card| card.collectible && card.set == "EXPERT1")
         .count();
     assert_eq!(legacy, 133, "original Basic collectible count");
-    assert_eq!(expert1, 239, "original Classic collectible count");
+    assert_eq!(expert1, 245, "original Classic collectible count");
+}
+
+#[test]
+fn azure_drake_draws_and_provides_spell_damage() {
+    let mut game = game(repeated("EX1_284"), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let hand_before = game.state().player(PlayerId::ONE).hand.len();
+    let drake = play(&mut game, PlayerId::ONE, "EX1_284", None);
+
+    let drake = game.state().entity(drake).unwrap();
+    assert_eq!((drake.attack, drake.health()), (4, 5));
+    assert_eq!(drake.spell_damage, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).hand.len(), hand_before);
+}
+
+#[test]
+fn sylvanas_takes_a_random_enemy_minion_on_death() {
+    let mut game = game(repeated("EX1_016"), mixed(&["CS2_120", "CS2_076"]));
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    let crocolisk = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let sylvanas = play(&mut game, PlayerId::ONE, "EX1_016", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    play(&mut game, PlayerId::TWO, "CS2_076", Some(sylvanas));
+
+    assert_eq!(game.state().entity(sylvanas).unwrap().zone, Zone::Graveyard);
+    assert_eq!(
+        game.state().entity(crocolisk).unwrap().controller,
+        PlayerId::ONE
+    );
+    assert!(
+        game.state()
+            .player(PlayerId::ONE)
+            .board
+            .contains(&crocolisk)
+    );
+}
+
+#[test]
+fn ragnaros_cannot_attack_and_hits_one_random_enemy_at_end_of_turn() {
+    let mut game = game(repeated("EX1_298"), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    play(&mut game, PlayerId::TWO, "CS2_120", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+
+    advance_to_mana(&mut game, PlayerId::ONE, 8);
+    let ragnaros = play(&mut game, PlayerId::ONE, "EX1_298", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    assert!(game.state().log.iter().any(|event| matches!(
+        event,
+        GameEvent::Damaged { source, target, amount }
+            if *source == ragnaros
+                && *amount == 8
+                && game.state().entity(*target).unwrap().controller == PlayerId::TWO
+    )));
+
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    assert!(!game.legal_actions().unwrap().iter().any(|action| matches!(
+        action,
+        PlayerCommand::Attack { attacker, .. } if *attacker == ragnaros
+    )));
+}
+
+#[test]
+fn lifesteal_rejects_recursive_triggers_when_healing_becomes_damage() {
+    let mut game = game(mixed(&["EX1_591", "ICC_802"]), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    let crocolisk = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    let auchenai = play(&mut game, PlayerId::ONE, "EX1_591", None);
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let hero = game.state().player(PlayerId::ONE).hero;
+    let lash = play(&mut game, PlayerId::ONE, "ICC_802", None);
+
+    assert_eq!(game.state().entity(hero).unwrap().health(), 28);
+    assert_eq!(game.state().entity(auchenai).unwrap().health(), 4);
+    assert_eq!(game.state().entity(crocolisk).unwrap().health(), 2);
+    assert_eq!(
+        game.state()
+            .log
+            .iter()
+            .filter(|event| matches!(
+                event,
+                GameEvent::Damaged {
+                    source,
+                    target,
+                    amount: 1,
+                } if *source == lash && *target == hero
+            ))
+            .count(),
+        2
+    );
+}
+
+#[test]
+fn power_overwhelming_destroys_at_end_of_turn_unless_silenced() {
+    let deck = mixed(&["CS2_120", "EX1_316", "EX1_332"]);
+    let mut doomed = game(deck.clone(), repeated("CS2_120"));
+    advance_to_mana(&mut doomed, PlayerId::ONE, 3);
+    let target = play(&mut doomed, PlayerId::ONE, "CS2_120", None);
+    play(&mut doomed, PlayerId::ONE, "EX1_316", Some(target));
+    assert_eq!(
+        (
+            doomed.state().entity(target).unwrap().attack,
+            doomed.state().entity(target).unwrap().health()
+        ),
+        (6, 7)
+    );
+    doomed.dispatch(PlayerCommand::EndTurn).unwrap();
+    assert_eq!(doomed.state().entity(target).unwrap().zone, Zone::Graveyard);
+
+    let mut silenced = game(deck, repeated("CS2_120"));
+    advance_to_mana(&mut silenced, PlayerId::ONE, 3);
+    let target = play(&mut silenced, PlayerId::ONE, "CS2_120", None);
+    play(&mut silenced, PlayerId::ONE, "EX1_316", Some(target));
+    play(&mut silenced, PlayerId::ONE, "EX1_332", Some(target));
+    silenced.dispatch(PlayerCommand::EndTurn).unwrap();
+    let target = silenced.state().entity(target).unwrap();
+    assert_eq!(target.zone, Zone::Board);
+    assert_eq!((target.attack, target.health()), (2, 3));
+}
+
+#[test]
+fn ice_lance_freezes_first_and_damages_an_already_frozen_character() {
+    let mut game = game(repeated("CS2_031"), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+
+    play(&mut game, PlayerId::ONE, "CS2_031", Some(enemy_hero));
+    assert!(game.state().entity(enemy_hero).unwrap().frozen);
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 30);
+
+    play(&mut game, PlayerId::ONE, "CS2_031", Some(enemy_hero));
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 26);
+}
+
+#[test]
+fn conceal_grants_stealth_until_the_casters_next_turn() {
+    let mut game = game(mixed(&["CS2_120", "EX1_128"]), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    let target = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    play(&mut game, PlayerId::ONE, "EX1_128", None);
+    assert!(game.state().entity(target).unwrap().has_keyword("stealth"));
+
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    assert!(game.state().entity(target).unwrap().has_keyword("stealth"));
+    game.dispatch(PlayerCommand::EndTurn).unwrap();
+    assert!(!game.state().entity(target).unwrap().has_keyword("stealth"));
 }
 
 #[test]
@@ -203,13 +357,14 @@ fn gladiators_longbow_prevents_combat_damage_to_its_attacking_hero() {
 #[test]
 fn newly_completed_classic_cards_survive_legal_action_walks_and_replay() {
     let ids = [
-        "DS1_188", "EX1_076", "EX1_083", "EX1_130", "EX1_132", "EX1_136", "EX1_289", "EX1_294",
-        "EX1_295", "EX1_303", "EX1_304", "EX1_310", "EX1_317", "EX1_320", "EX1_323", "EX1_334",
-        "EX1_339", "EX1_341", "EX1_345", "EX1_350", "EX1_363", "EX1_365", "EX1_366", "EX1_379",
-        "EX1_384", "EX1_398", "EX1_411", "EX1_531", "EX1_533", "EX1_536", "EX1_537", "EX1_538",
-        "EX1_544", "EX1_549", "EX1_554", "EX1_557", "EX1_560", "EX1_572", "EX1_583", "EX1_584",
-        "EX1_590", "EX1_594", "EX1_596", "EX1_609", "EX1_611", "EX1_612", "EX1_625", "NEW1_005",
-        "NEW1_014", "NEW1_029", "NEW1_041", "tt_010",
+        "CS2_031", "DS1_188", "EX1_016", "EX1_076", "EX1_083", "EX1_128", "EX1_130", "EX1_132",
+        "EX1_136", "EX1_284", "EX1_289", "EX1_294", "EX1_295", "EX1_298", "EX1_303", "EX1_304",
+        "EX1_310", "EX1_316", "EX1_317", "EX1_320", "EX1_323", "EX1_334", "EX1_339", "EX1_341",
+        "EX1_345", "EX1_350", "EX1_363", "EX1_365", "EX1_366", "EX1_379", "EX1_384", "EX1_398",
+        "EX1_411", "EX1_531", "EX1_533", "EX1_536", "EX1_537", "EX1_538", "EX1_544", "EX1_549",
+        "EX1_554", "EX1_557", "EX1_560", "EX1_572", "EX1_583", "EX1_584", "EX1_590", "EX1_594",
+        "EX1_596", "EX1_609", "EX1_611", "EX1_612", "EX1_625", "NEW1_005", "NEW1_014", "NEW1_029",
+        "NEW1_041", "tt_010",
     ];
     let deck_one = ids
         .iter()

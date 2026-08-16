@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: DisguisedToast’s KFT Giants Death Knight Miracle Rogue",
+  "name": "KFT 2017: DisguisedToast’s KFT Giants Death Knight Miracle Rogue",
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "format": "wild_through_icecrown",
@@ -89,30 +89,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.13333333333333333,
-  "substitutions": [
-    {
-      "source": "Vanish",
-      "replacement": "Sabotage",
-      "replacement_id": "GVG_047"
-    },
-    {
-      "source": "Vanish",
-      "replacement": "Sabotage",
-      "replacement_id": "GVG_047"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CS2_072",
     "CS2_072",
@@ -135,13 +114,13 @@
     "OG_291",
     "UNG_064",
     "UNG_064",
-    "GVG_047",
-    "GVG_047",
+    "NEW1_004",
+    "NEW1_004",
     "ICC_827",
     "CFM_637",
     "EX1_012",
-    "UNG_060",
-    "UNG_060",
+    "EX1_095",
+    "EX1_095",
     "KAR_711",
     "KAR_711"
   ]

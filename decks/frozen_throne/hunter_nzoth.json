@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Ant’s KFT N’Zoth Deathstalker Hunter",
+  "name": "KFT 2017: Ant’s KFT N’Zoth Deathstalker Hunter",
   "class": "hunter",
   "hero_power": "HERO_05bp",
   "format": "wild_through_icecrown",
@@ -81,60 +81,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Eaglehorn Bow",
-      "replacement": "Glaivezooka",
-      "replacement_id": "GVG_043"
-    },
-    {
-      "source": "Eaglehorn Bow",
-      "replacement": "Glaivezooka",
-      "replacement_id": "GVG_043"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Unleash the Hounds",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Unleash the Hounds",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    },
-    {
-      "source": "Savannah Highmane",
-      "replacement": "Infested Wolf",
-      "replacement_id": "OG_216"
-    },
-    {
-      "source": "Savannah Highmane",
-      "replacement": "Infested Wolf",
-      "replacement_id": "OG_216"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CFM_315",
     "CFM_315",
@@ -144,23 +93,23 @@
     "UNG_915",
     "KAR_005",
     "KAR_005",
-    "GVG_043",
-    "GVG_043",
-    "BRM_013",
-    "BRM_013",
+    "EX1_536",
+    "EX1_536",
+    "EX1_539",
+    "EX1_539",
     "CFM_316",
     "CFM_316",
     "ICC_415",
     "ICC_415",
-    "UNG_910",
-    "UNG_910",
-    "KAR_702",
-    "KAR_702",
+    "EX1_538",
+    "EX1_538",
+    "DS1_070",
+    "DS1_070",
     "ICC_243",
     "ICC_243",
     "ICC_828",
-    "OG_216",
-    "OG_216",
+    "EX1_534",
+    "EX1_534",
     "EX1_162",
     "EX1_162",
     "ICC_854",

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Ryzen’s KFT Lilian Voss Miracle Rogue",
+  "name": "KFT 2017: Ryzen’s KFT Lilian Voss Miracle Rogue",
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "format": "wild_through_icecrown",
@@ -85,35 +85,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.16666666666666666,
-  "substitutions": [
-    {
-      "source": "Cold Blood",
-      "replacement": "Tinker's Sharpsword Oil",
-      "replacement_id": "GVG_022"
-    },
-    {
-      "source": "Cold Blood",
-      "replacement": "Tinker's Sharpsword Oil",
-      "replacement_id": "GVG_022"
-    },
-    {
-      "source": "Leeroy Jenkins",
-      "replacement": "Argent Horserider",
-      "replacement_id": "AT_087"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CS2_072",
     "CS2_072",
@@ -121,8 +95,8 @@
     "CFM_630",
     "EX1_145",
     "EX1_145",
-    "GVG_022",
-    "GVG_022",
+    "CS2_073",
+    "CS2_073",
     "UNG_856",
     "UNG_856",
     "EX1_124",
@@ -142,8 +116,8 @@
     "EX1_012",
     "ICC_913",
     "ICC_913",
-    "AT_087",
-    "UNG_060",
-    "UNG_060"
+    "EX1_116",
+    "EX1_095",
+    "EX1_095"
   ]
 }

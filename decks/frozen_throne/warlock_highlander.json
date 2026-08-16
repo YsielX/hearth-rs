@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Reynad’s KFT Kazakus Highlander Warlock",
+  "name": "KFT 2017: Reynad’s KFT Kazakus Highlander Warlock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -129,100 +129,39 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Shadowflame",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Lord Jaraxxus",
-      "replacement": "Bloodreaver Gul'dan",
-      "replacement_id": "ICC_831"
-    },
-    {
-      "source": "Twisting Nether",
-      "replacement": "DOOM!",
-      "replacement_id": "OG_239"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Earthen Ring Farseer",
-      "replacement": "Friendly Bartender",
-      "replacement_id": "CFM_654"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Mind Control Tech",
-      "replacement": "Dirty Rat",
-      "replacement_id": "CFM_790"
-    },
-    {
-      "source": "Mountain Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
+    "EX1_302",
     "ICC_041",
     "ICC_041",
     "ICC_055",
-    "CFM_094",
+    "CS2_062",
     "CFM_621",
-    "CFM_094",
-    "CFM_608",
+    "EX1_303",
+    "EX1_309",
     "ICC_075",
     "UNG_049",
     "CFM_663",
     "CFM_751",
-    "ICC_831",
-    "OG_239",
+    "EX1_323",
+    "EX1_312",
     "CFM_750",
     "ICC_831",
     "CFM_120",
     "CFM_790",
-    "GVG_076",
-    "CFM_654",
+    "NEW1_021",
+    "CS2_117",
     "UNG_946",
     "UNG_928",
     "OG_295",
-    "OG_174",
+    "EX1_093",
     "OG_254",
     "OG_174",
-    "OG_320",
+    "EX1_043",
     "ICC_905",
-    "CFM_790",
-    "AT_120"
+    "EX1_085",
+    "EX1_105"
   ]
 }

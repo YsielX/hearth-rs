@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Apxvoid’s Control Warlock – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Apxvoid’s Control Warlock – HCT Americas Summer Playoffs 2017",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -81,115 +81,39 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Hellfire",
-      "replacement": "Felfire Potion",
-      "replacement_id": "CFM_094"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Twisting Nether",
-      "replacement": "DOOM!",
-      "replacement_id": "OG_239"
-    },
-    {
-      "source": "Twisting Nether",
-      "replacement": "DOOM!",
-      "replacement_id": "OG_239"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "GVG_015",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "CS2_065",
+    "CS2_065",
     "ICC_041",
     "ICC_041",
     "ICC_055",
     "ICC_055",
-    "CFM_094",
-    "CFM_094",
-    "CFM_608",
-    "CFM_608",
+    "CS2_062",
+    "CS2_062",
+    "EX1_309",
+    "EX1_309",
     "ICC_075",
     "ICC_075",
     "CFM_751",
     "CFM_751",
-    "OG_239",
-    "OG_239",
+    "EX1_312",
+    "EX1_312",
     "ICC_831",
     "CFM_120",
     "CFM_120",
-    "GVG_076",
-    "GVG_076",
+    "NEW1_021",
+    "NEW1_021",
     "ICC_913",
     "ICC_913",
     "UNG_946",
-    "FP1_016",
-    "OG_320",
-    "OG_320",
+    "EX1_048",
+    "EX1_043",
+    "EX1_043",
     "KAR_097"
   ]
 }

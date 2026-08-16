@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Dog’s Frozen Throne Divine Shield Token Paladin",
+  "name": "KFT 2017: Dog’s Frozen Throne Divine Shield Token Paladin",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -85,43 +85,12 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Blessing of Might",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Blessing of Might",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Divine Favor",
-      "replacement": "Small-Time Recruits",
-      "replacement_id": "CFM_905"
-    },
-    {
-      "source": "Divine Favor",
-      "replacement": "Small-Time Recruits",
-      "replacement_id": "CFM_905"
-    },
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Spikeridged Steed",
-      "replacement_id": "UNG_952"
-    },
-    {
-      "source": "Blood Knight",
-      "replacement": "Darkspeaker",
-      "replacement_id": "OG_102"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "AT_074",
-    "AT_074",
+    "CS2_087",
+    "CS2_087",
     "CS2_091",
     "UNG_960",
     "UNG_960",
@@ -131,14 +100,14 @@
     "OG_221",
     "UNG_011",
     "UNG_011",
-    "CFM_905",
-    "CFM_905",
+    "EX1_349",
+    "EX1_349",
     "OG_222",
     "OG_222",
     "CFM_905",
     "OG_310",
     "OG_310",
-    "UNG_952",
+    "CS2_092",
     "UNG_015",
     "ICC_092",
     "ICC_092",
@@ -149,6 +118,6 @@
     "CS2_146",
     "NEW1_019",
     "NEW1_019",
-    "OG_102"
+    "EX1_590"
   ]
 }

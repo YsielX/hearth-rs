@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Stark’s Quest Warrior – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Stark’s Quest Warrior – HCT Americas Summer Playoffs 2017",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -89,50 +89,14 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.23333333333333334,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_052",
+    "CS2_108",
     "UNG_934",
-    "CFM_756",
-    "CFM_756",
+    "EX1_402",
+    "EX1_402",
     "CS2_106",
     "CS2_106",
     "ICC_281",
@@ -144,13 +108,13 @@
     "ICC_064",
     "CFM_756",
     "CFM_756",
-    "GVG_050",
-    "GVG_050",
+    "EX1_407",
+    "EX1_407",
     "UNG_957",
     "CFM_790",
     "CFM_790",
-    "EX1_096",
-    "EX1_096",
+    "EX1_007",
+    "EX1_007",
     "UNG_072",
     "UNG_072",
     "UNG_928",

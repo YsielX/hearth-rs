@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Hunter): The Eternal Hunt",
+  "name": "KFT 2017: Deck Recipes (Hunter): The Eternal Hunt",
   "class": "hunter",
   "hero_power": "HERO_05bp",
   "format": "wild_through_icecrown",
@@ -81,40 +81,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Deadly Shot",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Deadly Shot",
-      "replacement": "Grievous Bite",
-      "replacement_id": "UNG_910"
-    },
-    {
-      "source": "Savannah Highmane",
-      "replacement": "Infested Wolf",
-      "replacement_id": "OG_216"
-    },
-    {
-      "source": "Savannah Highmane",
-      "replacement": "Infested Wolf",
-      "replacement_id": "OG_216"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_052",
     "ICC_052",
@@ -122,15 +91,15 @@
     "UNG_800",
     "ICC_049",
     "ICC_049",
-    "UNG_910",
-    "UNG_910",
+    "EX1_617",
+    "EX1_617",
     "ICC_415",
     "ICC_415",
     "ICC_243",
     "ICC_243",
     "ICC_828",
-    "OG_216",
-    "OG_216",
+    "EX1_534",
+    "EX1_534",
     "ICC_825",
     "ICC_825",
     "CFM_120",
@@ -138,8 +107,8 @@
     "UNG_083",
     "UNG_083",
     "ICC_854",
-    "OG_174",
-    "OG_174",
+    "EX1_093",
+    "EX1_093",
     "ICC_812",
     "ICC_812",
     "UNG_900",

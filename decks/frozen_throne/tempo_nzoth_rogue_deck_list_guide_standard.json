@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Frozen Throne Tempo N’Zoth Rogue Deck List Guide – Theorycraft",
+  "name": "KFT 2017: Frozen Throne Tempo N’Zoth Rogue Deck List Guide – Theorycraft",
   "class": "rogue",
   "hero_power": "HERO_03bp",
   "format": "wild_through_icecrown",
@@ -97,20 +97,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.06666666666666667,
-  "substitutions": [
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Mimic Pod",
-      "replacement_id": "UNG_060"
-    },
-    {
-      "source": "Gadgetzan Auctioneer",
-      "replacement": "Red Mana Wyrm",
-      "replacement_id": "CFM_060"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CS2_072",
     "CS2_072",
@@ -138,8 +127,8 @@
     "EX1_012",
     "ICC_854",
     "KAR_114",
-    "UNG_060",
-    "CFM_060",
+    "EX1_095",
+    "EX1_095",
     "ICC_314",
     "OG_133"
   ]

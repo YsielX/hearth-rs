@@ -7836,6 +7836,24 @@
     "type": "SPELL"
   },
   {
+    "artist": "Alex Horley Orlandelli",
+    "cardClass": "MAGE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 172,
+    "flavor": "这个把戏的重点是别把冰枪弄断。否则，“冰渣术”可就没这么厉害了。",
+    "id": "CS2_031",
+    "mechanics": [
+      "FREEZE"
+    ],
+    "name": "Ice Lance",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "FROST",
+    "text": "<b>Freeze</b> a character. If it was already <b>Frozen</b>, deal $4 damage instead.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Romain De Santi",
     "cardClass": "MAGE",
     "collectible": true,
@@ -10624,6 +10642,30 @@
     "type": "MINION"
   },
   {
+    "artist": "Glenn Rane",
+    "attack": 5,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 6,
+    "dbfId": 1721,
+    "elite": true,
+    "flavor": "没有人比女王更渴望真正地死去。",
+    "health": 5,
+    "id": "EX1_016",
+    "mechanics": [
+      "DEATHRATTLE"
+    ],
+    "name": "Sylvanas Windrunner",
+    "race": "UNDEAD",
+    "races": [
+      "UNDEAD"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "<b>Deathrattle:</b> Take\ncontrol of a random\nenemy minion.",
+    "type": "MINION"
+  },
+  {
     "artist": "Jaemin Kim",
     "attack": 4,
     "cardClass": "NEUTRAL",
@@ -11578,6 +11620,24 @@
     "type": "SPELL"
   },
   {
+    "artist": "Steve Hui",
+    "cardClass": "ROGUE",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 990,
+    "flavor": "潜行者们能够隐藏除了他们表情之外的一切东西。你不能阻止他们表达执行暗杀后的兴奋感觉。",
+    "id": "EX1_128",
+    "name": "Conceal",
+    "rarity": "COMMON",
+    "referencedTags": [
+      "STEALTH"
+    ],
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Give your minions <b>Stealth</b> until your next turn.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Andrew Robinson",
     "cardClass": "ROGUE",
     "collectible": true,
@@ -12483,6 +12543,31 @@
     "type": "MINION"
   },
   {
+    "artist": "Ben Zhang",
+    "attack": 4,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 5,
+    "dbfId": 825,
+    "flavor": "它们本来应该是宝蓝色或是蔚蓝色，但这几个颜色显得有点太耀眼了。",
+    "health": 5,
+    "id": "EX1_284",
+    "mechanics": [
+      "BATTLECRY",
+      "SPELLPOWER"
+    ],
+    "name": "Azure Drake",
+    "race": "DRAGON",
+    "races": [
+      "DRAGON"
+    ],
+    "rarity": "RARE",
+    "set": "EXPERT1",
+    "spellDamage": 1,
+    "text": "<b>Spell Damage +1</b>\n<b>Battlecry:</b> Draw a card.",
+    "type": "MINION"
+  },
+  {
     "artist": "Jason Chan",
     "cardClass": "MAGE",
     "collectible": true,
@@ -12559,6 +12644,32 @@
     "spellSchool": "FROST",
     "text": "<b>Secret:</b> When your hero takes fatal damage, prevent it and become <b>Immune</b> this turn.",
     "type": "SPELL"
+  },
+  {
+    "artist": "Greg Staples",
+    "attack": 8,
+    "cardClass": "NEUTRAL",
+    "collectible": true,
+    "cost": 8,
+    "dbfId": 374,
+    "elite": true,
+    "flavor": "拉格纳罗斯是由黑铁矮人召唤出来的，而这些矮人最终也成为了炎魔之王的奴隶。所以召唤拉格纳罗斯往往得不到你想要的结果。",
+    "hasDiamondSkin": true,
+    "health": 8,
+    "id": "EX1_298",
+    "mechanics": [
+      "CANT_ATTACK",
+      "TRIGGER_VISUAL"
+    ],
+    "name": "Ragnaros the Firelord",
+    "race": "ELEMENTAL",
+    "races": [
+      "ELEMENTAL"
+    ],
+    "rarity": "LEGENDARY",
+    "set": "EXPERT1",
+    "text": "Can't attack. At the end of your turn, deal 8 damage to a random enemy.",
+    "type": "MINION"
   },
   {
     "artist": "John Polidora",
@@ -12773,6 +12884,21 @@
     "set": "EXPERT1",
     "text": "Your minions cost (2) less, but not less than (1).",
     "type": "MINION"
+  },
+  {
+    "artist": "Tom Baxa",
+    "cardClass": "WARLOCK",
+    "collectible": true,
+    "cost": 1,
+    "dbfId": 846,
+    "flavor": "别让那个随从知道他死后的样子。那惨象无可言状。",
+    "id": "EX1_316",
+    "name": "Power Overwhelming",
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "spellSchool": "SHADOW",
+    "text": "Give a friendly minion +4/+4 until end of turn. Then, it dies. Horribly.",
+    "type": "SPELL"
   },
   {
     "artist": "Raven Mimura",

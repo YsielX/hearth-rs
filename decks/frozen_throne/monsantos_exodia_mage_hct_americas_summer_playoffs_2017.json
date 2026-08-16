@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Monsanto’s Exodia Mage – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Monsanto’s Exodia Mage – HCT Americas Summer Playoffs 2017",
   "class": "mage",
   "hero_power": "HERO_08bp",
   "format": "wild_through_icecrown",
@@ -81,90 +81,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5333333333333333,
-  "substitutions": [
-    {
-      "source": "Sorcerer’s Apprentice",
-      "replacement": "Cult Sorcerer",
-      "replacement_id": "OG_303"
-    },
-    {
-      "source": "Sorcerer’s Apprentice",
-      "replacement": "Cult Sorcerer",
-      "replacement_id": "OG_303"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Ice Barrier",
-      "replacement": "Counterspell",
-      "replacement_id": "EX1_287"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Counterspell",
-      "replacement_id": "EX1_287"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Potion of Polymorph",
-      "replacement_id": "CFM_620"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Blizzard",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Archmage Antonidas",
-      "replacement": "Rhonin",
-      "replacement_id": "AT_009"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Coldlight Oracle",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Coldlight Oracle",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "KAR_009",
     "UNG_028",
@@ -172,29 +91,29 @@
     "UNG_020",
     "UNG_941",
     "UNG_941",
-    "OG_303",
-    "OG_303",
-    "OG_090",
-    "OG_090",
-    "CFM_065",
-    "CFM_065",
-    "EX1_287",
-    "EX1_287",
-    "CFM_620",
+    "EX1_608",
+    "EX1_608",
+    "CS2_023",
+    "CS2_023",
+    "CS2_026",
+    "CS2_026",
+    "EX1_289",
+    "EX1_295",
+    "EX1_295",
     "ICC_823",
     "ICC_823",
     "OG_090",
     "OG_090",
     "UNG_948",
     "UNG_948",
-    "UNG_955",
-    "UNG_955",
-    "AT_009",
-    "GVG_076",
-    "GVG_076",
+    "CS2_028",
+    "CS2_028",
+    "EX1_559",
+    "NEW1_021",
+    "NEW1_021",
     "EX1_015",
     "EX1_015",
-    "EX1_096",
-    "EX1_096"
+    "EX1_050",
+    "EX1_050"
   ]
 }

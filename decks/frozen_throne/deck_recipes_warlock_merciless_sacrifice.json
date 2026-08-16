@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Warlock): Merciless Sacrifice",
+  "name": "KFT 2017: Deck Recipes (Warlock): Merciless Sacrifice",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -73,20 +73,9 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.06666666666666667,
-  "substitutions": [
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    },
-    {
-      "source": "Defender of Argus",
-      "replacement": "Faceless Shambler",
-      "replacement_id": "OG_174"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "OG_241",
     "OG_241",
@@ -110,8 +99,8 @@
     "UNG_083",
     "ICC_067",
     "ICC_067",
-    "OG_174",
-    "OG_174",
+    "EX1_093",
+    "EX1_093",
     "ICC_812",
     "ICC_812",
     "OG_200",

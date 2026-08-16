@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Cydonia’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Cydonia’s Murloc Paladin – HCT Americas Summer Playoffs 2017",
   "class": "paladin",
   "hero_power": "HERO_04bp",
   "format": "wild_through_icecrown",
@@ -89,40 +89,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.2,
-  "substitutions": [
-    {
-      "source": "Blessing of Kings",
-      "replacement": "Seal of Champions",
-      "replacement_id": "AT_074"
-    },
-    {
-      "source": "Tirion Fordring",
-      "replacement": "Ragnaros, Lightlord",
-      "replacement_id": "OG_229"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Murloc Tidecaller",
-      "replacement": "Murloc Tinyfin",
-      "replacement_id": "LOEA10_3"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    },
-    {
-      "source": "Murloc Warleader",
-      "replacement": "Gentle Megasaur",
-      "replacement_id": "UNG_089"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "ICC_038",
     "ICC_038",
@@ -133,17 +102,17 @@
     "OG_222",
     "OG_222",
     "CFM_815",
-    "AT_074",
+    "CS2_092",
     "UNG_952",
     "UNG_952",
     "UNG_015",
-    "OG_229",
-    "LOEA10_3",
-    "LOEA10_3",
+    "EX1_383",
+    "EX1_509",
+    "EX1_509",
     "UNG_073",
     "UNG_073",
-    "UNG_089",
-    "UNG_089",
+    "EX1_507",
+    "EX1_507",
     "ICC_912",
     "ICC_912",
     "UNG_089",

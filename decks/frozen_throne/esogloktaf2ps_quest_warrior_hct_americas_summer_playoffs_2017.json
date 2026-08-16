@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: ESOGloktaF2P’s Quest Warrior – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: ESOGloktaF2P’s Quest Warrior – HCT Americas Summer Playoffs 2017",
   "class": "warrior",
   "hero_power": "HERO_01bp",
   "format": "wild_through_icecrown",
@@ -89,68 +89,17 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Execute",
-      "replacement": "Crush",
-      "replacement_id": "GVG_052"
-    },
-    {
-      "source": "Whirlwind",
-      "replacement": "Ravaging Ghoul",
-      "replacement_id": "OG_149"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Armorsmith",
-      "replacement": "Alley Armorsmith",
-      "replacement_id": "CFM_756"
-    },
-    {
-      "source": "Battle Rage",
-      "replacement": "Shield Block",
-      "replacement_id": "EX1_606"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Brawl",
-      "replacement": "Bouncing Blade",
-      "replacement_id": "GVG_050"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_052",
-    "GVG_052",
+    "CS2_108",
+    "CS2_108",
     "UNG_934",
-    "OG_149",
-    "CFM_756",
-    "CFM_756",
-    "EX1_606",
+    "EX1_400",
+    "EX1_402",
+    "EX1_402",
+    "EX1_392",
     "CS2_106",
     "CS2_106",
     "CFM_716",
@@ -160,13 +109,13 @@
     "ICC_064",
     "CFM_756",
     "CFM_756",
-    "GVG_050",
-    "GVG_050",
+    "EX1_407",
+    "EX1_407",
     "UNG_957",
     "CFM_790",
     "CFM_790",
-    "EX1_096",
-    "EX1_096",
+    "EX1_007",
+    "EX1_007",
     "UNG_072",
     "UNG_072",
     "UNG_928",

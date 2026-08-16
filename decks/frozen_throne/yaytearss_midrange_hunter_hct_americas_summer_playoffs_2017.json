@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: YAYtears’s Midrange Hunter – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: YAYtears’s Midrange Hunter – HCT Americas Summer Playoffs 2017",
   "class": "hunter",
   "hero_power": "HERO_05bp",
   "format": "wild_through_icecrown",
@@ -85,113 +85,37 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.5,
-  "substitutions": [
-    {
-      "source": "Tracking",
-      "replacement": "Stitched Tracker",
-      "replacement_id": "ICC_415"
-    },
-    {
-      "source": "Tracking",
-      "replacement": "Stitched Tracker",
-      "replacement_id": "ICC_415"
-    },
-    {
-      "source": "Animal Companion",
-      "replacement": "Rat Pack",
-      "replacement_id": "CFM_316"
-    },
-    {
-      "source": "Animal Companion",
-      "replacement": "Rat Pack",
-      "replacement_id": "CFM_316"
-    },
-    {
-      "source": "Deadly Shot",
-      "replacement": "Toxic Arrow",
-      "replacement_id": "ICC_049"
-    },
-    {
-      "source": "Eaglehorn Bow",
-      "replacement": "Glaivezooka",
-      "replacement_id": "GVG_043"
-    },
-    {
-      "source": "Eaglehorn Bow",
-      "replacement": "Glaivezooka",
-      "replacement_id": "GVG_043"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Kill Command",
-      "replacement": "Quick Shot",
-      "replacement_id": "BRM_013"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    },
-    {
-      "source": "Houndmaster",
-      "replacement": "Menagerie Magician",
-      "replacement_id": "KAR_702"
-    },
-    {
-      "source": "Savannah Highmane",
-      "replacement": "Infested Wolf",
-      "replacement_id": "OG_216"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    },
-    {
-      "source": "Bloodsail Corsair",
-      "replacement": "Small-Time Buccaneer",
-      "replacement_id": "CFM_325"
-    },
-    {
-      "source": "Spellbreaker",
-      "replacement": "Wailing Soul",
-      "replacement_id": "FP1_016"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "CFM_315",
     "CFM_315",
-    "ICC_415",
-    "ICC_415",
+    "DS1_184",
+    "DS1_184",
     "UNG_915",
     "UNG_915",
     "KAR_005",
     "KAR_005",
-    "CFM_316",
-    "CFM_316",
+    "NEW1_031",
+    "NEW1_031",
     "ICC_419",
     "ICC_419",
-    "ICC_049",
-    "GVG_043",
-    "GVG_043",
-    "BRM_013",
-    "BRM_013",
-    "KAR_702",
-    "KAR_702",
+    "EX1_617",
+    "EX1_536",
+    "EX1_536",
+    "EX1_539",
+    "EX1_539",
+    "DS1_070",
+    "DS1_070",
     "ICC_828",
-    "OG_216",
-    "CFM_325",
-    "CFM_325",
+    "EX1_534",
+    "NEW1_025",
+    "NEW1_025",
     "CFM_637",
     "UNG_807",
     "UNG_807",
-    "FP1_016",
+    "EX1_048",
     "UNG_087",
     "UNG_087",
     "ICC_705"

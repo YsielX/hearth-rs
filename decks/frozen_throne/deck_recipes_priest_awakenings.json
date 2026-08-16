@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Deck Recipes (Priest): Awakenings",
+  "name": "KFT 2017: Deck Recipes (Priest): Awakenings",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -89,44 +89,18 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.16666666666666666,
-  "substitutions": [
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Holy Nova",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_940",
     "UNG_032",
     "UNG_032",
-    "LOE_104",
-    "LOE_104",
-    "CFM_603",
-    "CFM_603",
-    "LOE_111",
+    "EX1_622",
+    "EX1_622",
+    "CS2_234",
+    "CS2_234",
+    "CS1_112",
     "UNG_037",
     "UNG_037",
     "ICC_213",

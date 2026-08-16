@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: weghuz’s Frozen Throne Frost Lich Jaina Control Mage",
+  "name": "KFT 2017: weghuz’s Frozen Throne Frost Lich Jaina Control Mage",
   "class": "mage",
   "hero_power": "HERO_08bp",
   "format": "wild_through_icecrown",
@@ -85,60 +85,9 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.3333333333333333,
-  "substitutions": [
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Arcane Intellect",
-      "replacement": "Cabalist's Tome",
-      "replacement_id": "OG_090"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Frost Nova",
-      "replacement": "Volcanic Potion",
-      "replacement_id": "CFM_065"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Potion of Polymorph",
-      "replacement_id": "CFM_620"
-    },
-    {
-      "source": "Ice Block",
-      "replacement": "Potion of Polymorph",
-      "replacement_id": "CFM_620"
-    },
-    {
-      "source": "Flamestrike",
-      "replacement": "Meteor",
-      "replacement_id": "UNG_955"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Alexstrasza",
-      "replacement": "Nefarian",
-      "replacement_id": "BRM_030"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "UNG_020",
     "UNG_020",
@@ -149,26 +98,26 @@
     "UNG_941",
     "UNG_941",
     "UNG_027",
-    "OG_090",
-    "OG_090",
+    "CS2_023",
+    "CS2_023",
     "EX1_287",
     "EX1_287",
-    "CFM_065",
-    "CFM_065",
-    "CFM_620",
-    "CFM_620",
+    "CS2_026",
+    "CS2_026",
+    "EX1_295",
+    "EX1_295",
     "CS2_029",
     "CS2_029",
     "ICC_069",
     "ICC_069",
     "KAR_076",
     "KAR_076",
-    "UNG_955",
+    "CS2_032",
     "ICC_833",
-    "GVG_076",
-    "GVG_076",
+    "NEW1_021",
+    "NEW1_021",
     "KAR_097",
     "ICC_314",
-    "BRM_030"
+    "EX1_561"
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Updated: Hotform’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
+  "name": "KFT 2017: Updated: Hotform’s Frozen Throne Bloodreaver Gul’dan Control Warlock",
   "class": "warlock",
   "hero_power": "HERO_07bp",
   "format": "wild_through_icecrown",
@@ -81,95 +81,24 @@
       "count": 2
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4666666666666667,
-  "substitutions": [
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Mortal Coil",
-      "replacement": "Darkbomb",
-      "replacement_id": "GVG_015"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Voidwalker",
-      "replacement": "Possessed Villager",
-      "replacement_id": "OG_241"
-    },
-    {
-      "source": "Shadow Bolt",
-      "replacement": "Demonwrath",
-      "replacement_id": "BRM_005"
-    },
-    {
-      "source": "Shadow Bolt",
-      "replacement": "Demonwrath",
-      "replacement_id": "BRM_005"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Siphon Soul",
-      "replacement": "Blastcrystal Potion",
-      "replacement_id": "CFM_608"
-    },
-    {
-      "source": "Bane of Doom",
-      "replacement": "Kara Kazham!",
-      "replacement_id": "KAR_025"
-    },
-    {
-      "source": "Bane of Doom",
-      "replacement": "Kara Kazham!",
-      "replacement_id": "KAR_025"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Twilight Drake",
-      "replacement": "Midnight Drake",
-      "replacement_id": "OG_320"
-    },
-    {
-      "source": "Mountain Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    },
-    {
-      "source": "Mountain Giant",
-      "replacement": "Frost Giant",
-      "replacement_id": "AT_120"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
-    "GVG_015",
-    "GVG_015",
-    "OG_241",
-    "OG_241",
+    "EX1_302",
+    "EX1_302",
+    "CS2_065",
+    "CS2_065",
     "UNG_831",
     "UNG_831",
     "ICC_041",
     "ICC_041",
-    "BRM_005",
-    "BRM_005",
-    "CFM_608",
-    "CFM_608",
-    "KAR_025",
-    "KAR_025",
+    "CS2_057",
+    "CS2_057",
+    "EX1_309",
+    "EX1_309",
+    "EX1_320",
+    "EX1_320",
     "ICC_075",
     "ICC_075",
     "CFM_751",
@@ -178,13 +107,13 @@
     "EX1_012",
     "UNG_928",
     "UNG_928",
-    "OG_320",
-    "OG_320",
+    "EX1_043",
+    "EX1_043",
     "ICC_701",
     "ICC_705",
     "ICC_705",
     "ICC_314",
-    "AT_120",
-    "AT_120"
+    "EX1_105",
+    "EX1_105"
   ]
 }

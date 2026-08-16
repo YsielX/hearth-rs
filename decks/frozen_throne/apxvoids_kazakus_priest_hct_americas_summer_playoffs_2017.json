@@ -1,5 +1,5 @@
 {
-  "name": "KFT 2017 runtime-adapted: Apxvoid’s Kazakus Priest – HCT Americas Summer Playoffs 2017",
+  "name": "KFT 2017: Apxvoid’s Kazakus Priest – HCT Americas Summer Playoffs 2017",
   "class": "priest",
   "hero_power": "HERO_09bp",
   "format": "wild_through_icecrown",
@@ -133,85 +133,24 @@
       "count": 1
     }
   ],
-  "adapted": true,
-  "adaptation_ratio": 0.4,
-  "substitutions": [
-    {
-      "source": "Holy Smite",
-      "replacement": "Potion of Madness",
-      "replacement_id": "CFM_603"
-    },
-    {
-      "source": "Northshire Cleric",
-      "replacement": "Crystalline Oracle",
-      "replacement_id": "UNG_032"
-    },
-    {
-      "source": "Power Word: Shield",
-      "replacement": "Kabal Talonpriest",
-      "replacement_id": "CFM_626"
-    },
-    {
-      "source": "Shadow Word: Death",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Shadow Word: Pain",
-      "replacement": "Entomb",
-      "replacement_id": "LOE_104"
-    },
-    {
-      "source": "Thoughtsteal",
-      "replacement": "Curious Glimmerroot",
-      "replacement_id": "UNG_035"
-    },
-    {
-      "source": "Holy Nova",
-      "replacement": "Excavated Evil",
-      "replacement_id": "LOE_111"
-    },
-    {
-      "source": "Prophet Velen",
-      "replacement": "Confessor Paletress",
-      "replacement_id": "AT_018"
-    },
-    {
-      "source": "Doomsayer",
-      "replacement": "Explosive Sheep",
-      "replacement_id": "GVG_076"
-    },
-    {
-      "source": "Wild Pyromancer",
-      "replacement": "Tainted Zealot",
-      "replacement_id": "ICC_913"
-    },
-    {
-      "source": "Acolyte of Pain",
-      "replacement": "Loot Hoarder",
-      "replacement_id": "EX1_096"
-    },
-    {
-      "source": "Gnomish Inventor",
-      "replacement": "Novice Engineer",
-      "replacement_id": "EX1_015"
-    }
-  ],
+  "adapted": false,
+  "adaptation_ratio": 0.0,
+  "substitutions": [],
   "cards": [
     "EX1_332",
-    "CFM_603",
-    "UNG_032",
+    "CS1_130",
+    "CS2_235",
     "CFM_661",
     "CFM_603",
-    "CFM_626",
+    "CS2_004",
     "UNG_034",
     "UNG_029",
-    "LOE_104",
-    "LOE_104",
+    "EX1_622",
+    "CS2_234",
     "ICC_802",
+    "EX1_339",
     "UNG_035",
-    "UNG_035",
-    "LOE_111",
+    "CS1_112",
     "CFM_604",
     "CFM_621",
     "UNG_963",
@@ -219,14 +158,14 @@
     "OG_100",
     "CFM_662",
     "CFM_020",
-    "AT_018",
+    "EX1_350",
     "ICC_830",
     "EX1_012",
-    "GVG_076",
+    "NEW1_021",
     "EX1_015",
-    "ICC_913",
-    "EX1_096",
+    "NEW1_020",
+    "EX1_007",
     "UNG_946",
-    "EX1_015"
+    "CS2_147"
   ]
 }
