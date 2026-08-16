@@ -137,6 +137,12 @@ return {
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
           on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end },
+        { id = "TEST_GANGS_TRIGGER_DEATHRATTLE", name = "Trigger Deathrattle", text = "", set = "TEST", type = "spell",
+          cost = 0, collectible = false, target_mode = "required",
+          targets = function(ctx) return ctx:minions() end,
+          on_play = function(ctx, self, target)
+              ctx:trigger_hook(target, "on_deathrattle", ctx:board_position(target))
+          end },
         { id = "TEST_GANGS_SILENCE", name = "Silence", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
@@ -230,14 +236,16 @@ return {
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              give_many(ctx, player, { "CFM_316", "TEST_GANGS_BUFF", "TEST_GANGS_KILL" })
+              give_many(ctx, player, { "CFM_316", "TEST_GANGS_BUFF", "TEST_GANGS_KILL",
+                  "TEST_GANGS_TRIGGER_DEATHRATTLE" })
           end },
         { id = "TEST_GANGS_SALLY_SETUP", name = "Sally Setup", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = true,
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              give_many(ctx, player, { "CFM_341", "TEST_GANGS_BUFF", "TEST_GANGS_KILL" })
+              give_many(ctx, player, { "CFM_341", "TEST_GANGS_BUFF", "TEST_GANGS_KILL",
+                  "TEST_GANGS_TRIGGER_DEATHRATTLE" })
               ctx:summon(ctx:opponent(player), "TEST_GANGS_DUMMY")
               ctx:summon(ctx:opponent(player), "TEST_GANGS_DUMMY")
           end },
@@ -659,6 +667,49 @@ fn rat_pack_and_sergeant_sally_use_attack_frozen_at_death() {
         play(&mut game, PlayerId::ONE, "TEST_GANGS_BUFF", Some(sally));
         play(&mut game, PlayerId::ONE, "TEST_GANGS_KILL", Some(sally));
         assert_eq!(game.state().entity(sally).unwrap().attack_at_death, Some(4));
+        for enemy in enemies {
+            assert_eq!(game.state().entity(enemy).unwrap().damage, 4);
+        }
+    }
+}
+
+#[test]
+fn rat_pack_and_sergeant_sally_use_current_attack_when_triggered_while_alive() {
+    {
+        let (_dir, mut game) = fixture_game("TEST_GANGS_RAT_SETUP", 152);
+        advance_to_mana(&mut game, PlayerId::ONE, 3);
+        let rat_pack = play(&mut game, PlayerId::ONE, "CFM_316", None);
+        play(&mut game, PlayerId::ONE, "TEST_GANGS_BUFF", Some(rat_pack));
+        play(
+            &mut game,
+            PlayerId::ONE,
+            "TEST_GANGS_TRIGGER_DEATHRATTLE",
+            Some(rat_pack),
+        );
+        assert_eq!(game.state().entity(rat_pack).unwrap().attack_at_death, None);
+        assert_eq!(
+            game.state()
+                .player(PlayerId::ONE)
+                .board
+                .iter()
+                .filter(|entity| game.state().entity(**entity).unwrap().card_id == "CFM_316t")
+                .count(),
+            5
+        );
+    }
+    {
+        let (_dir, mut game) = fixture_game("TEST_GANGS_SALLY_SETUP", 153);
+        advance_to_mana(&mut game, PlayerId::ONE, 3);
+        let enemies = game.state().player(PlayerId::TWO).board.clone();
+        let sally = play(&mut game, PlayerId::ONE, "CFM_341", None);
+        play(&mut game, PlayerId::ONE, "TEST_GANGS_BUFF", Some(sally));
+        play(
+            &mut game,
+            PlayerId::ONE,
+            "TEST_GANGS_TRIGGER_DEATHRATTLE",
+            Some(sally),
+        );
+        assert_eq!(game.state().entity(sally).unwrap().attack_at_death, None);
         for enemy in enemies {
             assert_eq!(game.state().entity(enemy).unwrap().damage, 4);
         }

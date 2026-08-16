@@ -13,7 +13,8 @@ return {
     tags = { "beast" },
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self, position)
-        local count = math.max(0, ctx:entity(self).attack_at_death)
+        local me = ctx:entity(self)
+        local count = math.max(0, me.attack_at_death or me.attack or 0)
         for _ = 1, count do ctx:summon_at(ctx:controller(self), "CFM_316t", position) end
     end,
     tokens = {{
