@@ -18,7 +18,7 @@ function card.on_battlecry(ctx, self, target)
     if not target then return end
     ctx:set_data(self, "destroyed_minion", target)
     ctx:set_data(self, "destroyed_controller", ctx:controller(target))
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
 end
 
 function card.on_deathrattle(ctx, self)

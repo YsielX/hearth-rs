@@ -38,7 +38,7 @@ function card.on_play(ctx, self)
             end
         end
     end
-    ctx:destroy_all(minions)
+    cardlib.effects.destroy_all(ctx, minions)
     ctx:continue_with_value("summon_replacements", replacements)
 end
 

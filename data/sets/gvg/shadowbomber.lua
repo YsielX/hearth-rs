@@ -13,7 +13,7 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:damage_all({
+        cardlib.effects.damage_all(ctx, {
             ctx:player(player).hero,
             ctx:player(ctx:opponent(player)).hero,
         }, 3)

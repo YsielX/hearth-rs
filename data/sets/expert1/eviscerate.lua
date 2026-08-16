@@ -11,7 +11,7 @@ return {
     keywords = { "combo" },
     targets = function(ctx, self) return ctx:enemy_characters(self) end,
     on_play = function(ctx, self, target)
-        if not ctx:combo_active(self) then ctx:damage(target, 2) end
+        if not ctx:combo_active(self) then cardlib.effects.damage(ctx, target, 2) end
     end,
-    on_combo = function(ctx, self, target) ctx:damage(target, 4) end,
+    on_combo = function(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end,
 }

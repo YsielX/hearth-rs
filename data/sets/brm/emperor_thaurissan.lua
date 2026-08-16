@@ -19,7 +19,7 @@ return {
             end,
             effect = function(ctx, self)
                 for _, card in ipairs(ctx:hand(ctx:controller(self))) do
-                    ctx:modify(card, {
+                    cardlib.effects.modify(ctx, card, {
                         stat = "cost",
                         operation = "add",
                         value = -1,

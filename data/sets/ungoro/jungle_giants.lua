@@ -22,7 +22,7 @@ card.tokens = {{ id = "UNG_116t", name = "Barnabus the Stomper",
     on_battlecry = function(ctx, self)
         for _, entity in ipairs(ctx:deck(ctx:controller(self))) do
             if ctx:entity(entity).type == "minion" then
-                ctx:modify(entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
+                cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
             end
         end
     end }}

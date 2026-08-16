@@ -124,7 +124,7 @@ Rust 为此提供的都是通用原语：禁用任意关键词、取消任意待
   → Death Checkpoint
 ```
 
-Lua hook 不直接改变 `GameState`。例如 `ctx:damage(target, 3)` 只输出 `EffectSpec::Damage`。这样每个成功玩家命令可以在临时状态中完成；任何 Lua 错误、非法目标或不变量失败都会回滚整个命令。
+Lua hook 不直接改变 `GameState`。例如 `cardlib.effects.damage(ctx, target, 3)` 只输出 `EffectSpec::Damage`。这样每个成功玩家命令可以在临时状态中完成；任何 Lua 错误、非法目标或不变量失败都会回滚整个命令。
 
 同时伤害使用一组待提交事件：先收集全部 `before`，再提交未取消项，然后基于同一提交后状态发布 `after`，最后统一进入死亡检查点。
 

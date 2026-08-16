@@ -103,7 +103,7 @@ function doom_pact.on_play(ctx, self)
         if not is_dormant(ctx, minion) then minions[#minions + 1] = minion end
     end
     ctx:set_data(self, "doom_pact_destroyed", #minions)
-    if #minions > 0 then ctx:destroy_all(minions) end
+    if #minions > 0 then cardlib.effects.destroy_all(ctx, minions) end
     ctx:continue_with("remove_doom_pact_cards")
 end
 
@@ -172,9 +172,9 @@ end
 
 function death_coil.on_play(ctx, self, target)
     if ctx:entity(target).controller == ctx:controller(self) then
-        ctx:heal(target, 5)
+        cardlib.effects.heal(ctx, target, 5)
     else
-        ctx:damage(target, 5)
+        cardlib.effects.damage(ctx, target, 5)
     end
 end
 
@@ -199,8 +199,8 @@ local obliterate = {
 
 function obliterate.on_play(ctx, self, target)
     local health = math.max(0, ctx:entity(target).health)
-    ctx:destroy(target)
-    ctx:damage_ignoring_spell_damage(ctx:player(ctx:controller(self)).hero, health)
+    cardlib.effects.destroy(ctx, target)
+    cardlib.effects.damage_ignoring_spell_damage(ctx, ctx:player(ctx:controller(self)).hero, health)
 end
 
 local anti_magic_shell = {
@@ -241,7 +241,7 @@ local death_and_decay = {
                 targets[#targets + 1] = character
             end
         end
-        ctx:damage_all(targets, 3)
+        cardlib.effects.damage_all(ctx, targets, 3)
     end,
 }
 

@@ -10,7 +10,7 @@ return {
                 return event.source == ctx:player(ctx:controller(self)).hero_power
             end,
             effect = function(ctx, self, event)
-                ctx:set_event_amount(event, event.amount + 1)
+                cardlib.effects.add_event_amount(ctx, event, 1)
             end,
         },
     },

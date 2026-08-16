@@ -11,5 +11,5 @@ return {
     cost = 1,
     target_mode = "required",
     targets = function(ctx) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:heal(target, 5) end,
+    on_play = function(ctx, self, target) cardlib.effects.heal(ctx, target, 5) end,
 }

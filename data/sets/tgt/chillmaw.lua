@@ -15,7 +15,7 @@ local card = {
 }
 
 function card.on_deathrattle(ctx, self)
-    if holding_dragon(ctx, self) then ctx:damage_all(ctx:minions(), 3) end
+    if holding_dragon(ctx, self) then cardlib.effects.damage_all(ctx, ctx:minions(), 3) end
 end
 
 return card

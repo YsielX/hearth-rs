@@ -11,7 +11,7 @@ return {
     tags = { "dragon" },
     keywords = { "spellburst" },
     on_spellburst = function(ctx, self)
-        ctx:modify(self, {
+        cardlib.effects.modify(ctx, self, {
             stat = "attack",
             operation = "multiply",
             value = 2,

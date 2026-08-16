@@ -9,5 +9,5 @@ return {
     cost = 2,
     target_mode = "required",
     targets = function(ctx, self) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:heal(target, 2) end,
+    on_play = function(ctx, self, target) cardlib.effects.heal(ctx, target, 2) end,
 }

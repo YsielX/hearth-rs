@@ -4,7 +4,7 @@ local card = {
     set = "UNGORO", type = "spell", class = "warrior", rarity = "epic", cost = 2,
 }
 function card.on_play(ctx, self)
-    for _, entity in ipairs(ctx:deck(ctx:controller(self))) do ctx:transform(entity, "UNG_922t1") end
+    for _, entity in ipairs(ctx:deck(ctx:controller(self))) do cardlib.effects.transform(ctx, entity, "UNG_922t1") end
 end
 local choice = { id = "UNG_922t1", name = "Choose Your Path", text = "<b>Discover</b> a card.", set = "UNGORO", type = "spell", class = "warrior", collectible = false, cost = 0, keywords = { "discover" } }
 function choice.on_play(ctx, self)

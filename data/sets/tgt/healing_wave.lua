@@ -17,20 +17,20 @@ local card = {
 function card.on_play(ctx, self, target)
     ctx:set_data(self, "heal_target", target)
     local candidates = deck_minions(ctx, ctx:controller(self))
-    if #candidates == 0 then ctx:heal(target, 8)
+    if #candidates == 0 then cardlib.effects.heal(ctx, target, 8)
     else ctx:random_value(candidates, "reveal_friendly_minion") end
 end
 
 function card.reveal_friendly_minion(ctx, self, entity)
     ctx:set_data(self, "friendly_cost", ctx:entity(entity).cost)
     local candidates = deck_minions(ctx, ctx:opponent(ctx:controller(self)))
-    if #candidates == 0 then ctx:heal(ctx:get_data(self, "heal_target"), 16)
+    if #candidates == 0 then cardlib.effects.heal(ctx, ctx:get_data(self, "heal_target"), 16)
     else ctx:random_value(candidates, "reveal_enemy_minion") end
 end
 
 function card.reveal_enemy_minion(ctx, self, entity)
     local amount = ctx:get_data(self, "friendly_cost") > ctx:entity(entity).cost and 16 or 8
-    ctx:heal(ctx:get_data(self, "heal_target"), amount)
+    cardlib.effects.heal(ctx, ctx:get_data(self, "heal_target"), amount)
 end
 
 return card

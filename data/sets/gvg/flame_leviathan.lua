@@ -32,7 +32,7 @@ return {
                 for _, character in ipairs(ctx:characters()) do
                     if not is_mech(ctx, character) then targets[#targets + 1] = character end
                 end
-                ctx:damage_all(targets, 2)
+                cardlib.effects.damage_all(ctx, targets, 2)
             end,
         },
     },

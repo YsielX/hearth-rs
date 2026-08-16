@@ -19,7 +19,7 @@ function card.on_battlecry(ctx, self)
     for _, entity in ipairs(ctx:hand(player)) do
         local definition = ctx:card_definition(ctx:entity(entity).card_id)
         if definition.class ~= "neutral" and definition.class ~= own_class then
-            ctx:modify(entity, { stat = "cost", operation = "add", value = -2 })
+            cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "add", value = -2 })
         end
     end
 end

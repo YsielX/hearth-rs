@@ -39,7 +39,7 @@ end
 
 function card.hit_enemy(ctx, self, target)
     ctx:set_data(self, "shots_remaining", ctx:get_data(self, "shots_remaining") - 1)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:continue_with("fire_next")
 end
 

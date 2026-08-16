@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 6)
+    cardlib.effects.damage(ctx, target, 6)
     ctx:continue_with("choose_six_cost_minion")
 end
 

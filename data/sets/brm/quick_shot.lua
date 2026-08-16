@@ -13,7 +13,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     ctx:continue_with("draw_if_hand_is_empty")
 end
 

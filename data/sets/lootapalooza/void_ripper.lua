@@ -32,7 +32,7 @@ function card.on_battlecry(ctx, self)
             end
         end
     end
-    if #modifications > 0 then ctx:modify_batch(modifications) end
+    if #modifications > 0 then cardlib.effects.modify_batch(ctx, modifications) end
 end
 
 return card

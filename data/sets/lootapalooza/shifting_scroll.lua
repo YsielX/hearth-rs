@@ -1,3 +1,3 @@
 local card={api_version=1,id="LOOT_104",name="Shifting Scroll",text="Each turn this is in your hand, transform it into a random Mage spell.",set="LOOTAPALOOZA",type="spell",class="mage",rarity="common",spell_school="arcane",cost=0}
 card.triggers={{event="turn_started",timing="after",active_zones={"hand"},condition=function(ctx,self,event)return event.player==ctx:controller(self)end,effect=function(ctx,self)local pool={};for _,id in ipairs(ctx:collectible_cards())do local d=ctx:card_definition(id);if d.type=="spell"and d.class=="mage"and id~="LOOT_104"then pool[#pool+1]=id end end;if #pool>0 then ctx:attach_script(self,"LOOT_104");ctx:random_value(pool,"shifting_scroll_spell")end end}}
-function card.shifting_scroll_spell(ctx,self,id)ctx:transform_preserving_scripts(self,id)end;return card
+function card.shifting_scroll_spell(ctx,self,id)cardlib.effects.transform_preserving_scripts(ctx, self,id)end;return card

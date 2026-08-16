@@ -26,7 +26,7 @@ return {
         end,
         effect = function(ctx, self, event)
             ctx:reveal_secret(self)
-            ctx:transform(event.entity, "CS2_tk1")
+            cardlib.effects.transform(ctx, event.entity, "CS2_tk1")
         end,
     }},
 }

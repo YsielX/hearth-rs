@@ -3,5 +3,5 @@ local card = {
     text = "Deal $5 damage to all characters.", set = "GANGS", type = "spell",
     class = "warlock", spell_school = "fel", rarity = "rare", cost = 6,
 }
-function card.on_play(ctx, self) ctx:damage_all(ctx:characters(), 5) end
+function card.on_play(ctx, self) cardlib.effects.damage_all(ctx, ctx:characters(), 5) end
 return card

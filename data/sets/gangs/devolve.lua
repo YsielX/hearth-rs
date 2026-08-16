@@ -37,7 +37,7 @@ function card.devolve_next(ctx, self)
 end
 function card.transform_target(ctx, self, card_id)
     local target = ctx:get_data(self, "devolve_target")
-    if ctx:entity(target).zone == "board" then ctx:transform(target, card_id) end
+    if ctx:entity(target).zone == "board" then cardlib.effects.transform(ctx, target, card_id) end
     ctx:continue_with("devolve_next")
 end
 return card

@@ -20,7 +20,7 @@ return {
             end,
             effect = function(ctx, self)
                 local enemy = ctx:opponent(ctx:controller(self))
-                ctx:damage(ctx:player(enemy).hero, 2)
+                cardlib.effects.damage(ctx, ctx:player(enemy).hero, 2)
             end,
         },
     },

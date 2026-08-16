@@ -42,13 +42,13 @@ card.tokens = {
                 end,
                 effect = function(ctx, self, event)
                     -- Burrowing Mine has the official ImmuneToSpellpower mechanic.
-                    ctx:set_event_amount(event, 10)
+                    cardlib.effects.set_event_amount(ctx, event, 10)
                 end,
             },
         },
         on_play = function(ctx, self)
             local player = ctx:controller(self)
-            ctx:damage(ctx:player(player).hero, 10)
+            cardlib.effects.damage(ctx, ctx:player(player).hero, 10)
         end,
     },
 }

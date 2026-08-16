@@ -25,7 +25,7 @@ return {
             end
         end
         for _, swap in ipairs(swaps) do
-            ctx:modify(swap.id, { stat = "attack", operation = "set", value = swap.health })
+            cardlib.effects.modify(ctx, swap.id, { stat = "attack", operation = "set", value = swap.health })
             ctx:set_health(swap.id, swap.attack)
         end
     end,

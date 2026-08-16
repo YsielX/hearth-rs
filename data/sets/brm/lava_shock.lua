@@ -13,7 +13,7 @@ return {
     targets = function(ctx, self) return ctx:characters() end,
     on_play = function(ctx, self, target)
         local player = ctx:controller(self)
-        ctx:damage(target, 2)
+        cardlib.effects.damage(ctx, target, 2)
         ctx:clear_overload(player)
     end,
 }

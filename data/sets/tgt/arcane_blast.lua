@@ -13,11 +13,11 @@ local card = {
                 for _, minion in ipairs(ctx:friendly_minions(self)) do
                     bonus = bonus + ctx:entity(minion).spell_damage
                 end
-                ctx:set_event_amount(event, event.amount + bonus)
+                cardlib.effects.set_event_amount(ctx, event, event.amount + bonus)
             end,
         },
     },
 }
 
-function card.on_play(ctx, self, target) ctx:damage(target, 2) end
+function card.on_play(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end
 return card

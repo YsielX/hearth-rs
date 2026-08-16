@@ -18,7 +18,7 @@ end
 
 function card.on_play(ctx, self, target)
     local entity = ctx:entity(target)
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
     ctx:continue_with_value("return_to_life", {
         card_id = entity.card_id,
         player = entity.controller,

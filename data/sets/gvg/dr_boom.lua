@@ -18,6 +18,6 @@ card.tokens = {{
         ctx:set_data(self, "boom_damage", amount)
         ctx:random_entity(ctx:enemy_characters(self), "explode")
     end,
-    explode = function(ctx, self, target) ctx:damage(target, ctx:get_data(self, "boom_damage")) end,
+    explode = function(ctx, self, target) cardlib.effects.damage(ctx, target, ctx:get_data(self, "boom_damage")) end,
 }}
 return card

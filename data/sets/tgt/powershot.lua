@@ -8,6 +8,6 @@ return {
         for _, adjacent in ipairs(ctx:adjacent_minions(target)) do
             victims[#victims + 1] = adjacent
         end
-        ctx:damage_all(victims, 2)
+        cardlib.effects.damage_all(ctx, victims, 2)
     end,
 }

@@ -13,7 +13,7 @@ local power = {
 
 function power.on_play(ctx, self, target)
     local was_minion = ctx:entity(target).type == "minion"
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     if was_minion then ctx:continue_with_entity("after_damage", target) end
 end
 

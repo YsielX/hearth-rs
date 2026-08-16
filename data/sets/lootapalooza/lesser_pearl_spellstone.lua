@@ -7,7 +7,7 @@ local function healing_trigger(next_id)
         effect = function(ctx, self, event)
             local restored = ctx:get_data(self, "pearl_restored") + event.amount
             ctx:set_data(self, "pearl_restored", restored)
-            if restored >= 3 then ctx:transform(self, next_id) end
+            if restored >= 3 then cardlib.effects.transform(ctx, self, next_id) end
         end,
     }}
 end

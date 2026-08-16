@@ -7,5 +7,5 @@ return {
     set = "ICECROWN",
     class = "warrior",
     cost = 2,
-    on_play = function(ctx, self) ctx:damage_all(ctx:minions(), 1) end,
+    on_play = function(ctx, self) cardlib.effects.damage_all(ctx, ctx:minions(), 1) end,
 }

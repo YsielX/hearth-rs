@@ -16,7 +16,7 @@ return {
     on_battlecry = function(ctx, self, target)
         if not target then return end
         local entity = ctx:entity(target)
-        ctx:modify(target, { stat = "attack", operation = "set", value = entity.health })
+        cardlib.effects.modify(ctx, target, { stat = "attack", operation = "set", value = entity.health })
         ctx:set_health(target, entity.attack)
     end,
 }

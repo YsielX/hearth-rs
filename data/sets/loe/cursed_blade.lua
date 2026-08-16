@@ -20,7 +20,7 @@ return {
                 return event.target == ctx:player(player).hero and event.amount > 0
             end,
             effect = function(ctx, self, event)
-                ctx:set_event_amount(event, event.amount * 2)
+                cardlib.effects.set_event_amount(ctx, event, event.amount * 2)
             end,
         },
     },

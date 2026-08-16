@@ -18,7 +18,7 @@ function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:friendly_minions(self)) do
         targets[#targets + 1] = minion
     end
-    ctx:heal_all(targets, 2)
+    cardlib.effects.heal_all(ctx, targets, 2)
 end
 
 return card

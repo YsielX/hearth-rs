@@ -39,7 +39,7 @@ local card = {
 }
 
 function card.fire_cannon(ctx, self, target)
-    ctx:damage(target, 2)
+    cardlib.effects.damage(ctx, target, 2)
 end
 
 return card

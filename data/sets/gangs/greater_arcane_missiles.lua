@@ -24,7 +24,7 @@ end
 
 function card.fire_missile(ctx, self, target)
     ctx:set_data(self, "missiles_remaining", ctx:get_data(self, "missiles_remaining") - 1)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     ctx:continue_with("choose_missile_target")
 end
 

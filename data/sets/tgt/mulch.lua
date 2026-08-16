@@ -7,7 +7,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
     local pool = {}
     for _, id in ipairs(ctx:collectible_cards()) do
         if ctx:card_definition(id).type == "minion" then pool[#pool + 1] = id end

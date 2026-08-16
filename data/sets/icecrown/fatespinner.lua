@@ -5,11 +5,11 @@ local function all_minions(ctx)
 end
 
 local function decay(ctx)
-    ctx:damage_all(all_minions(ctx), 3)
+    cardlib.effects.damage_all(ctx, all_minions(ctx), 3)
 end
 
 local function growth(ctx)
-    ctx:modify_all(all_minions(ctx), { attack = 2, health = 2, operation = "add" })
+    cardlib.effects.modify_all(ctx, all_minions(ctx), { attack = 2, health = 2, operation = "add" })
 end
 
 local card = {
@@ -28,12 +28,12 @@ function card.on_choose_one(ctx, self)
 end
 
 function card.fatespinner_chosen(ctx, self, choice)
-    ctx:transform(self, "ICC_047t")
+    cardlib.effects.transform(ctx, self, "ICC_047t")
     ctx:set_data(self, "fatespinner_mode", choice)
 end
 
 function card.on_choose_multiple(ctx, self)
-    ctx:transform(self, "ICC_047t2")
+    cardlib.effects.transform(ctx, self, "ICC_047t2")
 end
 
 card.tokens = {

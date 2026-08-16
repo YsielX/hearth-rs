@@ -10,7 +10,7 @@ return {
     cost = 7,
     target_mode = "required",
     targets = function(ctx) return ctx:minions() end,
-    on_play = function(ctx, self, target) ctx:destroy(target) end,
+    on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end,
     auras = {
         {
             active_zones = { "hand" },

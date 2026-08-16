@@ -17,6 +17,6 @@ function card.on_battlecry(ctx, self)
     if #candidates > 0 then ctx:random_entity(candidates, "deal_random_damage") end
 end
 
-function card.deal_random_damage(ctx, self, target) ctx:damage(target, 1) end
+function card.deal_random_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end
 
 return card

@@ -8,7 +8,7 @@ return {
             return event.attacker == self and ctx:entity(event.defender).type == "minion"
         end,
         effect = function(ctx, self, event)
-            ctx:damage_all(ctx:adjacent_minions(event.defender), ctx:entity(self).attack)
+            cardlib.effects.damage_all(ctx, ctx:adjacent_minions(event.defender), ctx:entity(self).attack)
         end,
     }},
 }

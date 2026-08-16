@@ -3,7 +3,7 @@ local card = {
     text = "Transform a minion into a 4/2 Boar with <b>Charge</b>.", set = "TGT",
     type = "spell", class = "mage", rarity = "rare", spell_school = "arcane",
     cost = 3, target_mode = "required", targets = function(ctx) return ctx:minions() end,
-    on_play = function(ctx, self, target) ctx:transform(target, "AT_005t") end,
+    on_play = function(ctx, self, target) cardlib.effects.transform(ctx, target, "AT_005t") end,
 }
 
 card.tokens = {

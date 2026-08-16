@@ -13,7 +13,7 @@ card.tokens = {{
     id = "AT_050t", name = "Lightning Jolt", text = "Deal $2 damage.", set = "TGT",
     type = "hero_power", class = "shaman", cost = 2, target_mode = "required",
     targets = function(ctx) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:damage(target, 2) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end,
 }}
 
 return card

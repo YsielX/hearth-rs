@@ -59,7 +59,7 @@ return {
     cost = 2,
     target_mode = "required",
     targets = function(ctx, self) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:damage(target, 1) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end,
 }
 ```
 
@@ -183,7 +183,7 @@ actions = {
 -- card module
 action_effects = {
     forge = function(ctx, self, spent, target)
-        ctx:modify(self, {
+        cardlib.effects.modify(ctx, self, {
             stat = "cost", operation = "add", value = -2,
         })
     end,
@@ -260,10 +260,10 @@ Returned arrays/tables are snapshots. Lua cannot mutate Rust containers. Scripts
 These functions append validated effects; they do not mutate state during the Lua call:
 
 ```lua
-ctx:damage(target, amount)
-ctx:damage_ignoring_spell_damage(target, amount)
-ctx:damage_all(targets, amount)
-ctx:heal(target, amount)
+cardlib.effects.damage(ctx, target, amount)
+cardlib.effects.damage_ignoring_spell_damage(ctx, target, amount)
+cardlib.effects.damage_all(ctx, targets, amount)
+cardlib.effects.heal(ctx, target, amount)
 ctx:gain_armor(player, amount)
 
 ctx:overload(player, amount)
@@ -317,23 +317,23 @@ ctx:shuffle_entity_into_deck(player, entity)
 ctx:shuffle_copy_into_deck(player, entity)
 ctx:change_controller(entity, player)
 ctx:change_controller_until_end_of_turn(entity, player)
-ctx:transform(entity, card_id)
-ctx:transform_all(entities, card_id)
-ctx:transform_batch({ { entity, card_id }, ... })
+cardlib.effects.transform(ctx, entity, card_id)
+cardlib.effects.transform_all(ctx, entities, card_id)
+cardlib.effects.transform_batch(ctx, { { entity, card_id }, ... })
 ctx:transform_into_copy(entity, template, attack_or_nil, health_or_nil)
-ctx:transform_preserving_scripts(entity, card_id)
-ctx:destroy(entity)
-ctx:destroy_all(entities)
-ctx:damage_batch({ { entity, amount }, ... })
-ctx:damage_batch_ignoring_spell_damage({ { entity, amount }, ... })
-ctx:damage_batch_from(source, { { entity, amount }, ... })
-ctx:damage_from(source, entity, amount)
+cardlib.effects.transform_preserving_scripts(ctx, entity, card_id)
+cardlib.effects.destroy(ctx, entity)
+cardlib.effects.destroy_all(ctx, entities)
+cardlib.effects.damage_batch(ctx, { { entity, amount }, ... })
+cardlib.effects.damage_batch_ignoring_spell_damage(ctx, { { entity, amount }, ... })
+cardlib.effects.damage_batch_from(ctx, source, { { entity, amount }, ... })
+cardlib.effects.damage_from(ctx, source, entity, amount)
 ctx:add_attack_collateral(event_id, entities, amount)
 ctx:force_attack(attacker, defender)
 ctx:take_extra_turn(player)
 ctx:win_game(player)
 ctx:set_health(entity, amount)
-ctx:heal_all(entities, amount)
+cardlib.effects.heal_all(ctx, entities, amount)
 ctx:trigger_hook(entity, hook)
 ctx:attach_hook(entity, hook, card_id)
 ctx:attach_script(entity, card_id)
@@ -341,8 +341,8 @@ ctx:board_position(entity)
 
 ctx:buff(entity, attack_delta, health_delta)
 ctx:buff_until_end_of_turn(entity, attack_delta, health_delta)
-ctx:modify(entity, modifier_table)
-ctx:modify_all(entities, modifier_table)
+cardlib.effects.modify(ctx, entity, modifier_table)
+cardlib.effects.modify_all(ctx, entities, modifier_table)
 ctx:remove_enchantments_from(entity, source)
 ctx:grant_keyword(entity, keyword_id)
 ctx:grant_keyword_until_end_of_turn(entity, keyword_id)
@@ -356,8 +356,9 @@ ctx:freeze(entity)
 
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
-ctx:set_event_amount(event, amount)
-ctx:multiply_event_amount(event, factor)
+cardlib.effects.set_event_amount(ctx, event, amount)
+cardlib.effects.add_event_amount(ctx, event, amount)
+cardlib.effects.multiply_event_amount(ctx, event, factor)
 ctx:set_attack_defender(event_id, defender)
 ctx:set_damage_target(event_id, target)
 ctx:set_spell_target(event_id, target)
@@ -374,6 +375,8 @@ ctx:continue_with_value(hook, serializable_value)
 ```
 
 The current hook entity is automatically recorded as the effect source.
+
+`cardlib.effects` is the card-facing Lua convenience layer. Its single-target and equal-value group helpers fold into one atomic batch call: `ctx:damage_batch(hits, options_or_nil)`, `ctx:heal_batch(hits)`, `ctx:destroy_batch(targets)`, `ctx:transform_batch(transforms, options_or_nil)`, or `ctx:modify_batch(modifications)`. Damage options accept `source` and `apply_spell_damage`; the event-amount helpers all call `ctx:modify_event_amount(event, { operation = "set" | "add" | "multiply", value = n })`.
 
 `replace_hero` requires a Hero definition with a valid `hero_power`. The new hero starts at its defined full Health while preserving Armor, frozen state, and attacks used this turn; both replacement events are published. Player keywords are persistent, serializable Lua mechanics hosted by the current hero, so they survive minion silence, transformation, death, and hero replacement.
 
@@ -398,7 +401,7 @@ The current hook entity is automatically recorded as the effect source.
 `modify` supports:
 
 ```lua
-ctx:modify(target, {
+cardlib.effects.modify(ctx, target, {
     stat = "attack",             -- attack / health / cost / spell_damage
     operation = "set",           -- set / add / pre_final_add / multiply / final_set
     value = 5,
@@ -471,7 +474,7 @@ random_cards_sampled, random_entities_sampled,
 conceded, game_ended
 ```
 
-Before events may be cancelled while pending. `set_event_amount` applies to supported numeric pending events. Cancellation semantics are generic and event-specific: for example, countered hand cards still consume payment, cancelled draws restore the reserved top card, and cancelled effect summons move their reserved token to Removed.
+Before events may be cancelled while pending. The `set_event_amount`, `add_event_amount`, and `multiply_event_amount` Lua helpers compose in EffectSpec queue order for supported numeric pending events. Cancellation semantics are generic and event-specific: for example, countered hand cards still consume payment, cancelled draws restore the reserved top card, and cancelled effect summons move their reserved token to Removed.
 
 `card_drawn` and `card_burned` expose the drawn card as `entity` and the causal effect entity as `source`. Natural turn and opening-hand draws use `source = nil`; script draws, Hero Power draws, and trade replacement draws retain their actual source.
 

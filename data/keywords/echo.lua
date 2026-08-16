@@ -23,7 +23,7 @@ return {
             end,
             effect = function(ctx, self, event)
                 ctx:set_data(self, "echo_copy", 1)
-                ctx:modify(self, {
+                cardlib.effects.modify(ctx, self, {
                     stat = "cost", operation = "set",
                     value = ctx:entity(event.source).cost,
                 })

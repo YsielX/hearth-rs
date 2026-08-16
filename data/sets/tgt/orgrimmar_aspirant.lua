@@ -4,6 +4,6 @@ return {
     class = "warrior", rarity = "common", cost = 3, attack = 3, health = 3,
     keywords = { "inspire" }, on_inspire = function(ctx, self)
         local weapon = ctx:player(ctx:controller(self)).weapon
-        if weapon ~= nil then ctx:modify(weapon, { stat = "attack", operation = "add", value = 1 }) end
+        if weapon ~= nil then cardlib.effects.modify(ctx, weapon, { stat = "attack", operation = "add", value = 1 }) end
     end,
 }

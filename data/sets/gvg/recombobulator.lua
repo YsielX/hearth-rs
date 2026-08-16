@@ -25,6 +25,6 @@ function card.on_battlecry(ctx, self, target)
     end
 end
 function card.transform_target(ctx, self, id)
-    ctx:transform(ctx:get_data(self, "recombobulate_target"), id)
+    cardlib.effects.transform(ctx, ctx:get_data(self, "recombobulate_target"), id)
 end
 return card

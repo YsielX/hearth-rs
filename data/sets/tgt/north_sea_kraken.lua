@@ -13,5 +13,5 @@ return {
     keywords = { "battlecry" },
     target_mode = "required",
     targets = function(ctx) return ctx:characters() end,
-    on_battlecry = function(ctx, self, target) ctx:damage(target, 4) end,
+    on_battlecry = function(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end,
 }

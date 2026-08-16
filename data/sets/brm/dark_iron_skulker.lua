@@ -19,6 +19,6 @@ return {
                 targets[#targets + 1] = entity
             end
         end
-        if #targets > 0 then ctx:damage_all(targets, 2) end
+        if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 2) end
     end,
 }

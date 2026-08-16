@@ -6,7 +6,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:modify_all({ target }, {
+    cardlib.effects.modify_all(ctx, { target }, {
         attack = 3, health = 3, operation = "final_set", silenciable = true, reset_damage = true,
     })
 end

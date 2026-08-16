@@ -25,7 +25,7 @@ return {
         end,
         effect = function(ctx, self, event)
             local player = ctx:controller(self)
-            ctx:heal(ctx:player(player).hero, event.amount)
+            cardlib.effects.heal(ctx, ctx:player(player).hero, event.amount)
         end,
     }},
 }

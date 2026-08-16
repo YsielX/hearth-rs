@@ -9,6 +9,6 @@ function card.on_play(ctx, self, target)
     local player = ctx:controller(self)
     local amount = ctx:player(player).mana
     ctx:spend_mana(player, amount)
-    ctx:damage(target, amount)
+    cardlib.effects.damage(ctx, target, amount)
 end
 return card

@@ -18,5 +18,5 @@ local card = {
         end,
     }},
 }
-function card.become_minion(ctx, self, card_id) ctx:transform(self, card_id) end
+function card.become_minion(ctx, self, card_id) cardlib.effects.transform(ctx, self, card_id) end
 return card

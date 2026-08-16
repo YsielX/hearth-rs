@@ -26,7 +26,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     local player = ctx:controller(self)
-    ctx:heal(target, 6)
+    cardlib.effects.heal(ctx, target, 6)
     if #ctx:board(player) < 7 then
         local pool = six_cost_minions(ctx)
         if #pool > 0 then ctx:random_value(pool, "summon_six_cost_minion") end

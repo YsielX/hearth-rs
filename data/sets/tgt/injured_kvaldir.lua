@@ -11,5 +11,5 @@ return {
     health = 4,
     tags = { "undead" },
     keywords = { "battlecry" },
-    on_battlecry = function(ctx, self) ctx:damage(self, 3) end,
+    on_battlecry = function(ctx, self) cardlib.effects.damage(ctx, self, 3) end,
 }

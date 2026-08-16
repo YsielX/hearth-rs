@@ -22,5 +22,5 @@ return {
         end
         return result
     end,
-    on_play = function(ctx, self, target) ctx:damage(target, 2) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end,
 }

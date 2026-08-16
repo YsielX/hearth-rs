@@ -21,7 +21,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, entity in ipairs(ctx:enemy_characters(self)) do
             if ctx:entity(entity).type == "minion" and not is_dormant(ctx, entity) then
-                ctx:modify(entity, { stat = "attack", operation = "set", value = 1 })
+                cardlib.effects.modify(ctx, entity, { stat = "attack", operation = "set", value = 1 })
             end
         end
     end,

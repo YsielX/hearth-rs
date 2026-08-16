@@ -12,7 +12,7 @@ return {
         return ctx:minions()
     end,
     on_play = function(ctx, self, target)
-        ctx:transform(target, "CS2_tk1")
+        cardlib.effects.transform(ctx, target, "CS2_tk1")
     end,
     tokens = {
         {

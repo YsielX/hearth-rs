@@ -11,6 +11,6 @@ return {
         id = "UNG_057t1", name = "Razorpetal", text = "Deal $2 damage.",
         set = "UNGORO", type = "spell", class = "rogue", spell_school = "nature", cost = 1,
         target_mode = "required", targets = function(ctx, self) return ctx:characters() end,
-        on_play = function(ctx, self, target) ctx:damage(target, 2) end,
+        on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end,
     }},
 }

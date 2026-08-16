@@ -7,6 +7,6 @@ local card = {
 function card.on_battlecry(ctx, self)
     local targets = {}
     for _, entity in ipairs(ctx:characters()) do if entity ~= self then targets[#targets + 1] = entity end end
-    if #targets > 0 then ctx:damage_all(targets, 3) end
+    if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 3) end
 end
 return card

@@ -5,6 +5,6 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:heal(ctx:player(player).hero, 8)
+        cardlib.effects.heal(ctx, ctx:player(player).hero, 8)
     end,
 }

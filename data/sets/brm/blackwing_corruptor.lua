@@ -30,6 +30,6 @@ return {
         return {}
     end,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:damage(target, 5) end
+        if target ~= nil then cardlib.effects.damage(ctx, target, 5) end
     end,
 }

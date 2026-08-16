@@ -1,5 +1,5 @@
 local function damage_heroes(ctx, self)
-    ctx:damage_all({ ctx:player(0).hero, ctx:player(1).hero }, 4)
+    cardlib.effects.damage_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 4)
 end
 
 return {

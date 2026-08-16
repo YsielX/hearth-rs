@@ -7,7 +7,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     local player = ctx:controller(self)
-    ctx:damage(target, 5)
+    cardlib.effects.damage(ctx, target, 5)
     ctx:draw(player, 5)
     ctx:gain_armor(player, 5)
     ctx:summon(player, "ICC_085t")

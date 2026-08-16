@@ -29,7 +29,7 @@ card.triggers = {{
 }}
 
 function card.blackguard_hit(ctx, self, choice)
-    ctx:damage(choice.target, choice.amount)
+    cardlib.effects.damage(ctx, choice.target, choice.amount)
 end
 
 return card

@@ -5,5 +5,5 @@ return {
     health = 6, keywords = { "battlecry", "overload" },
     keyword_params = { overload = 1 }, target_mode = "required_if_available",
     targets = function(ctx) return ctx:characters() end,
-    on_battlecry = function(ctx, self, target) if target then ctx:heal(target, 6) end end,
+    on_battlecry = function(ctx, self, target) if target then cardlib.effects.heal(ctx, target, 6) end end,
 }

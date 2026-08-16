@@ -15,6 +15,6 @@ return {
     on_battlecry = function(ctx, self, target)
         if not target then return end
         local entity = ctx:entity(target)
-        ctx:heal(target, entity.max_health - entity.health)
+        cardlib.effects.heal(ctx, target, entity.max_health - entity.health)
     end,
 }

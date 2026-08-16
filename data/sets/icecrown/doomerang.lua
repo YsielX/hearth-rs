@@ -11,7 +11,7 @@ local card = {
 function card.on_play(ctx, self, target)
     local weapon = ctx:player(ctx:controller(self)).weapon
     if weapon == nil then return end
-    ctx:damage_from(weapon, target, ctx:entity(weapon).attack)
+    cardlib.effects.damage_from(ctx, weapon, target, ctx:entity(weapon).attack)
     ctx:continue_with_entity("return_doomerang_weapon", weapon)
 end
 

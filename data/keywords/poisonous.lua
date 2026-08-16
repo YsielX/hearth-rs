@@ -22,7 +22,7 @@ return {
                     and ctx:entity(event.target).type == "minion"
             end,
             effect = function(ctx, self, event)
-                ctx:destroy(event.target)
+                cardlib.effects.destroy(ctx, event.target)
             end,
         },
     },

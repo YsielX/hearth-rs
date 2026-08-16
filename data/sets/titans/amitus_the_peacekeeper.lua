@@ -23,15 +23,15 @@ local card = {
                     and event.amount > 2
             end,
             effect = function(ctx, self, event)
-                ctx:set_event_amount(event, 2)
+                cardlib.effects.set_event_amount(ctx, event, 2)
             end,
         },
     },
 }
 
 local function set_to_two(ctx, entity)
-    ctx:modify(entity, { stat = "attack", operation = "set", value = 2 })
-    ctx:modify(entity, { stat = "health", operation = "set", value = 2 })
+    cardlib.effects.modify(ctx, entity, { stat = "attack", operation = "set", value = 2 })
+    cardlib.effects.modify(ctx, entity, { stat = "health", operation = "set", value = 2 })
 end
 
 card.action_effects = {
@@ -50,7 +50,7 @@ card.action_effects = {
         if #selected > 0 then ctx:draw(player, #selected) end
         for _, entity in ipairs(selected) do
             set_to_two(ctx, entity)
-            ctx:modify(entity, { stat = "cost", operation = "set", value = 2 })
+            cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "set", value = 2 })
         end
     end,
     titan_2 = function(ctx, self)

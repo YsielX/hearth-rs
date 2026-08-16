@@ -26,7 +26,7 @@ local card = {
             end,
             effect = function(ctx, self, event)
                 ctx:set_data(self, "waiting_for_copy", 0)
-                ctx:modify(event.entity, { stat = "cost", operation = "set", value = 1 })
+                cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "set", value = 1 })
             end,
         },
     },

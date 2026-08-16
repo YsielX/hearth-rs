@@ -5,6 +5,6 @@ return {
     cost = 4, attack = 3, health = 5,
     keywords = { "spell_damage", "inspire" }, keyword_params = { spell_damage = 1 },
     on_inspire = function(ctx, self)
-        ctx:modify(self, { stat = "spell_damage", operation = "add", value = 1 })
+        cardlib.effects.modify(ctx, self, { stat = "spell_damage", operation = "add", value = 1 })
     end,
 }

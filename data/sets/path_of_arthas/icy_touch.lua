@@ -22,7 +22,7 @@ return {
     target_mode = "required",
     targets = enemies,
     on_play = function(ctx, self, target)
-        ctx:damage(target, 2)
+        cardlib.effects.damage(ctx, target, 2)
         ctx:freeze(target)
     end,
 }

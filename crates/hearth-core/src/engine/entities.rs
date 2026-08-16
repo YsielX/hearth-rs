@@ -617,7 +617,7 @@ impl<R: CardRuntime> Game<R> {
             } else {
                 EffectSpec::Destroy {
                     source: entity,
-                    target: entity,
+                    targets: vec![entity],
                 }
             };
             self.resolve_effects(vec![effect])?;

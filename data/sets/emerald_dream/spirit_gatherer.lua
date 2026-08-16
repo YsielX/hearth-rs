@@ -34,7 +34,7 @@ card.tokens = {
             for _ = 1, amount do ctx:summon(player, "CS2_231") end
             for _ = 1, amount do ctx:random_entity(ctx:enemy_characters(self), "deal_wisp_damage") end
         end,
-        deal_wisp_damage = function(ctx, self, target) ctx:damage(target, 1) end,
+        deal_wisp_damage = function(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end,
     },
 }
 

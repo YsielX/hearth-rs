@@ -69,7 +69,7 @@ end
 
 function golden_monkey.replace_with_legendary(ctx, self, card_id)
     local target = ctx:get_data(self, "replace_target")
-    if target then ctx:transform(target, card_id) end
+    if target then cardlib.effects.transform(ctx, target, card_id) end
     local index = ctx:get_data(self, "replace_index") or 1
     ctx:set_data(self, "replace_index", index + 1)
     ctx:continue_with("replace_next_card")

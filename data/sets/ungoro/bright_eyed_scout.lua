@@ -12,7 +12,7 @@ function card.on_battlecry(ctx, self)
 end
 function card.set_scout_card_cost(ctx, self, entity)
     if ctx:entity(entity).zone == "hand" then
-        ctx:modify(entity, { stat = "cost", operation = "final_set", value = 5 })
+        cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "final_set", value = 5 })
     end
 end
 return card

@@ -1,1 +1,1 @@
-return {api_version=1,id="EX1_621",name="Circle of Healing",text="Restore #4 Health to ALL minions.",set="EXPERT1",type="spell",class="priest",rarity="common",spell_school="holy",cost=0,on_play=function(ctx)ctx:heal_all(ctx:minions(),4)end}
+return {api_version=1,id="EX1_621",name="Circle of Healing",text="Restore #4 Health to ALL minions.",set="EXPERT1",type="spell",class="priest",rarity="common",spell_school="holy",cost=0,on_play=function(ctx)cardlib.effects.heal_all(ctx, ctx:minions(),4)end}

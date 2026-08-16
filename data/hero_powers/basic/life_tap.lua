@@ -10,6 +10,6 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         ctx:draw(player, 1)
-        ctx:damage(ctx:player(player).hero, 2)
+        cardlib.effects.damage(ctx, ctx:player(player).hero, 2)
     end,
 }

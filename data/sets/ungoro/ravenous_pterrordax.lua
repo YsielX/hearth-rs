@@ -31,7 +31,7 @@ function card.targets(ctx, self)
 end
 function card.on_battlecry(ctx, self, target)
     if not target then return end
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
     ctx:set_data(self, "adapts_left", 2)
     ctx:continue_with("choose_adapt")
 end

@@ -14,9 +14,9 @@ end
 function card.on_battlecry(ctx, self, target)
     if not target then return end
     local own, other = ctx:entity(self), ctx:entity(target)
-    ctx:modify(self, { stat = "attack", operation = "set", value = other.attack })
+    cardlib.effects.modify(ctx, self, { stat = "attack", operation = "set", value = other.attack })
     ctx:set_health(self, other.health)
-    ctx:modify(target, { stat = "attack", operation = "set", value = own.attack })
+    cardlib.effects.modify(ctx, target, { stat = "attack", operation = "set", value = own.attack })
     ctx:set_health(target, own.health)
 end
 return card

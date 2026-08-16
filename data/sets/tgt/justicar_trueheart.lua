@@ -60,7 +60,7 @@ card.tokens = {
                 return event.player == ctx:controller(self)
             end,
             effect = function(ctx, self)
-                ctx:heal_all(ctx:friendly_minions(self), 1)
+                cardlib.effects.heal_all(ctx, ctx:friendly_minions(self), 1)
             end,
         }},
     },
@@ -106,7 +106,7 @@ card.tokens = {
         type = "hero_power", class = "hunter", cost = 2,
         on_play = function(ctx, self)
             local enemy = ctx:opponent(ctx:controller(self))
-            ctx:damage(ctx:player(enemy).hero, 3)
+            cardlib.effects.damage(ctx, ctx:player(enemy).hero, 3)
         end,
     },
     {
@@ -129,13 +129,13 @@ card.tokens = {
         text = "<b>Hero Power</b>\nDeal $2 damage.", set = "LEGACY",
         type = "hero_power", class = "mage", cost = 2, target_mode = "required",
         targets = function(ctx) return ctx:characters() end,
-        on_play = function(ctx, self, target) ctx:damage(target, 2) end,
+        on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end,
     },
     {
         id = "HERO_09bp2", name = "Heal", text = "<b>Hero Power</b>\nRestore #4 Health.",
         set = "LEGACY", type = "hero_power", class = "priest", cost = 2,
         target_mode = "required", targets = function(ctx) return ctx:characters() end,
-        on_play = function(ctx, self, target) ctx:heal(target, 4) end,
+        on_play = function(ctx, self, target) cardlib.effects.heal(ctx, target, 4) end,
     },
     {
         id = "HERO_10bp2", name = "Demon's Bite",

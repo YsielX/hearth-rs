@@ -26,7 +26,7 @@ card.triggers = {
         effect = function(ctx, self, event)
             ctx:set_data(self, "draws_remaining", ctx:get_data(self, "draws_remaining") - 1)
             if ctx:entity(event.entity).type == "minion" then
-                ctx:modify(event.entity, { stat = "cost", operation = "add", value = -2 })
+                cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "add", value = -2 })
             end
         end,
     },

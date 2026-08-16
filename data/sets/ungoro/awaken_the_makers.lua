@@ -31,7 +31,7 @@ card.tokens = {{
     keywords = { "taunt", "battlecry" },
     on_battlecry = function(ctx, self)
         local hero = ctx:player(ctx:controller(self)).hero
-        ctx:modify(hero, { stat = "health", operation = "final_set", value = 40, silenciable = false })
+        cardlib.effects.modify(ctx, hero, { stat = "health", operation = "final_set", value = 40, silenciable = false })
         ctx:continue_with_entity("set_amara_health", hero)
     end,
     set_amara_health = function(ctx, self, hero) ctx:set_health(hero, 40) end,

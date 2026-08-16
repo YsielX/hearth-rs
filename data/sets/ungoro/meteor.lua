@@ -5,5 +5,5 @@ return { api_version = 1, id = "UNG_955", name = "Meteor",
     on_play = function(ctx, self, target)
         local hits = { { target, 15 } }
         for _, adjacent in ipairs(ctx:adjacent_minions(target)) do hits[#hits + 1] = { adjacent, 4 } end
-        ctx:damage_batch(hits)
+        cardlib.effects.damage_batch(ctx, hits)
     end }

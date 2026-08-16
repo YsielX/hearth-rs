@@ -41,13 +41,13 @@ function card.on_play(ctx, self)
 end
 
 function card.destroy_minion(ctx, self, target)
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
 end
 
 function card.on_combo(ctx, self)
     local opponent = ctx:opponent(ctx:controller(self))
     local weapon = ctx:player(opponent).weapon
-    if weapon ~= nil then ctx:destroy(weapon) end
+    if weapon ~= nil then cardlib.effects.destroy(ctx, weapon) end
 end
 
 return card

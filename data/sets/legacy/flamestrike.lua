@@ -1,1 +1,1 @@
-return { api_version=1, id="CS2_032", name="Flamestrike", text="Deal $5 damage to all enemy minions.", set="LEGACY", type="spell", class="mage", spell_school="fire", cost=7, on_play=function(ctx,self) ctx:damage_all(ctx:enemy_minions(self),5) end }
+return { api_version=1, id="CS2_032", name="Flamestrike", text="Deal $5 damage to all enemy minions.", set="LEGACY", type="spell", class="mage", spell_school="fire", cost=7, on_play=function(ctx,self) cardlib.effects.damage_all(ctx, ctx:enemy_minions(self),5) end }

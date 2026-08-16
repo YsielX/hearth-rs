@@ -29,12 +29,12 @@ function card.choose_first_destroy(ctx, self, target)
     for _, minion in ipairs(enemy_minions(ctx, self)) do
         if minion ~= target then candidates[#candidates + 1] = minion end
     end
-    if #candidates == 0 then ctx:destroy(target); start_discard(ctx, self)
+    if #candidates == 0 then cardlib.effects.destroy(ctx, target); start_discard(ctx, self)
     else ctx:random_entity(candidates, "choose_second_destroy") end
 end
 
 function card.choose_second_destroy(ctx, self, target)
-    ctx:destroy_all({ ctx:get_data(self, "first_destroy"), target })
+    cardlib.effects.destroy_all(ctx, { ctx:get_data(self, "first_destroy"), target })
     start_discard(ctx, self)
 end
 

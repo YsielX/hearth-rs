@@ -6,6 +6,6 @@ local card = {
 }
 function card.on_battlecry(ctx, self)
     local weapon = ctx:player(ctx:opponent(ctx:controller(self))).weapon
-    if weapon then local amount = ctx:entity(weapon).attack; ctx:destroy(weapon); if amount > 0 then ctx:gain_armor(ctx:controller(self), amount) end end
+    if weapon then local amount = ctx:entity(weapon).attack; cardlib.effects.destroy(ctx, weapon); if amount > 0 then ctx:gain_armor(ctx:controller(self), amount) end end
 end
 return card

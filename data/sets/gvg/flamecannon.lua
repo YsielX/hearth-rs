@@ -38,7 +38,7 @@ function card.on_play(ctx, self)
 end
 
 function card.hit_minion(ctx, self, target)
-    ctx:damage(target, 4)
+    cardlib.effects.damage(ctx, target, 4)
 end
 
 return card

@@ -11,6 +11,6 @@ return {
     health = 5,
     keywords = { "battlecry" },
     on_battlecry = function(ctx)
-        ctx:heal_all({ ctx:player(0).hero, ctx:player(1).hero }, 4)
+        cardlib.effects.heal_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 4)
     end,
 }

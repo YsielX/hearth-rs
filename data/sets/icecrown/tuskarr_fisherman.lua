@@ -12,6 +12,6 @@ return {
         return result
     end,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:modify(target, { stat = "spell_damage", operation = "add", value = 1 }) end
+        if target ~= nil then cardlib.effects.modify(ctx, target, { stat = "spell_damage", operation = "add", value = 1 }) end
     end,
 }

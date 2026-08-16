@@ -32,7 +32,7 @@ function power.on_play(ctx, self, target)
 end
 
 function power.transmute(ctx, self, choice)
-    ctx:transform(choice.target, choice.card)
+    cardlib.effects.transform(ctx, choice.target, choice.card)
 end
 
 return power

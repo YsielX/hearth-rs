@@ -16,6 +16,6 @@ return {
         for _, target in ipairs(ctx:enemy_characters(self)) do
             if ctx:entity(target).type == "minion" then targets[#targets + 1] = target end
         end
-        if #targets > 0 then ctx:damage_all(targets, math.max(0, ctx:entity(self).attack_at_death)) end
+        if #targets > 0 then cardlib.effects.damage_all(ctx, targets, math.max(0, ctx:entity(self).attack_at_death)) end
     end,
 }

@@ -13,8 +13,8 @@ return {
     targets = function(ctx, self) return ctx:characters() end,
     on_play = function(ctx, self, target)
         if ctx:player(ctx:controller(self)).max_mana < 8 then
-            ctx:damage(target, 2)
+            cardlib.effects.damage(ctx, target, 2)
         end
     end,
-    on_manathirst = function(ctx, self, target) ctx:damage(target, 3) end,
+    on_manathirst = function(ctx, self, target) cardlib.effects.damage(ctx, target, 3) end,
 }

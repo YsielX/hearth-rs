@@ -23,7 +23,7 @@ return {
         if ctx:controller(target) == ctx:controller(self) and is_demon(ctx, target) then
             ctx:buff(target, 5, 5)
         else
-            ctx:damage(target, 5)
+            cardlib.effects.damage(ctx, target, 5)
         end
     end,
 }

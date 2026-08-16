@@ -11,5 +11,5 @@ return {
         end
         return result
     end,
-    on_play = function(ctx, self, target) ctx:destroy(target) end,
+    on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end,
 }

@@ -13,7 +13,7 @@ return {
     targets = function(ctx) return ctx:minions() end,
     on_play = function(ctx, self, target)
         local enemy = ctx:opponent(ctx:controller(self))
-        ctx:damage(target, 3)
-        ctx:damage(ctx:player(enemy).hero, 3)
+        cardlib.effects.damage(ctx, target, 3)
+        cardlib.effects.damage(ctx, ctx:player(enemy).hero, 3)
     end,
 }

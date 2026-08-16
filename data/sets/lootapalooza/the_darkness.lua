@@ -19,7 +19,7 @@ local candle = {
                 local count = ctx:get_data(darkness, "candles_drawn") + 1
                 ctx:set_data(darkness, "candles_drawn", count)
                 if count == 3 then
-                    ctx:transform_preserving_scripts(darkness, "LOOT_526")
+                    cardlib.effects.transform_preserving_scripts(ctx, darkness, "LOOT_526")
                 end
             end,
         },
@@ -66,7 +66,7 @@ local card = {
             active_zones = { "board" },
             condition = function(_, self, event) return event.entity == self end,
             effect = function(ctx, self)
-                ctx:transform_preserving_scripts(self, "LOOT_526d")
+                cardlib.effects.transform_preserving_scripts(ctx, self, "LOOT_526d")
             end,
         },
         {
@@ -88,7 +88,7 @@ function card.on_battlecry(ctx, self)
     ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
     ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
     ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
-    ctx:transform_preserving_scripts(self, "LOOT_526d")
+    cardlib.effects.transform_preserving_scripts(ctx, self, "LOOT_526d")
 end
 
 return card

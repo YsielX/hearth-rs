@@ -4,6 +4,6 @@ return {
     set = "GANGS", type = "minion", rarity = "common", cost = 3, attack = 3, health = 1,
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:damage(ctx:player(ctx:opponent(ctx:controller(self))).hero, 2)
+        cardlib.effects.damage(ctx, ctx:player(ctx:opponent(ctx:controller(self))).hero, 2)
     end,
 }

@@ -11,7 +11,7 @@ local card = {
 }
 
 function card.on_combo(ctx, self, target)
-    if target ~= nil then ctx:damage(target, 2 * ctx:entity(self).cards_played_before) end
+    if target ~= nil then cardlib.effects.damage(ctx, target, 2 * ctx:entity(self).cards_played_before) end
 end
 
 return card

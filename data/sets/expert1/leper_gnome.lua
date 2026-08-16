@@ -12,6 +12,6 @@ return {
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
         local opponent = ctx:opponent(ctx:controller(self))
-        ctx:damage(ctx:player(opponent).hero, 2)
+        cardlib.effects.damage(ctx, ctx:player(opponent).hero, 2)
     end,
 }

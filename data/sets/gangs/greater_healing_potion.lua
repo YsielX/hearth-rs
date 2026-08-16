@@ -9,7 +9,7 @@ return {
         return result
     end,
     on_play = function(ctx, self, target)
-        ctx:heal(target, 12)
+        cardlib.effects.heal(ctx, target, 12)
         ctx:draw(ctx:controller(self), 1)
     end,
 }

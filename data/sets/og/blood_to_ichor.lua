@@ -6,7 +6,7 @@ local card = {
 }
 function card.on_play(ctx, self, target)
     ctx:set_data(self, "ichor_target", target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:continue_with("summon_slime_if_survived")
 end
 function card.summon_slime_if_survived(ctx, self)

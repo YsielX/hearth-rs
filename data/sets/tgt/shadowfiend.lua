@@ -19,7 +19,7 @@ return {
                 return event.player == ctx:controller(self)
             end,
             effect = function(ctx, self, event)
-                ctx:modify(event.entity, { stat = "cost", operation = "add", value = -1 })
+                cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "add", value = -1 })
             end,
         },
     },

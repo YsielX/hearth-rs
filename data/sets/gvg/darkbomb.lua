@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     ctx:continue_with_entity("draw_shadow_spell_if_dead", target)
 end
 

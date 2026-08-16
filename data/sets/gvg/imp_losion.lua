@@ -33,7 +33,7 @@ function card.on_play(ctx, self, target)
 end
 
 function card.deal_implosion_damage(ctx, self, amount)
-    ctx:damage(ctx:get_data(self, "target"), amount)
+    cardlib.effects.damage(ctx, ctx:get_data(self, "target"), amount)
 end
 
 card.tokens = {

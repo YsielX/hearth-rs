@@ -6,10 +6,10 @@ local card = {
     targets = function(ctx, self) return ctx:characters() end,
 }
 function card.on_play(ctx, self, target)
-    if not ctx:combo_active(self) then ctx:damage(target, 3) end
+    if not ctx:combo_active(self) then cardlib.effects.damage(ctx, target, 3) end
 end
 function card.on_combo(ctx, self, target)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     local player = ctx:controller(self)
     ctx:increment_player_data(player, "jade_golem_count", 1)
     ctx:continue_with("summon_jade_shuriken_golem")

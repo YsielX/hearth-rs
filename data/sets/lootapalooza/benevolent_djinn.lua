@@ -5,6 +5,6 @@ local card = {
     tags = { "elemental" },
     triggers = {{ event = "turn_ended", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return event.player == ctx:controller(self) end,
-        effect = function(ctx, self) ctx:heal(ctx:player(ctx:controller(self)).hero, 3) end }},
+        effect = function(ctx, self) cardlib.effects.heal(ctx, ctx:player(ctx:controller(self)).hero, 3) end }},
 }
 return card

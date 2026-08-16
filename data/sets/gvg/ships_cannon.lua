@@ -16,5 +16,5 @@ card.triggers = {{
     end,
     effect = function(ctx, self) ctx:random_entity(ctx:enemy_characters(self), "fire") end,
 }}
-function card.fire(ctx, self, target) ctx:damage(target, 2) end
+function card.fire(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end
 return card

@@ -27,7 +27,7 @@ local card = {
 }
 
 function card.punch(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
 end
 
 return card

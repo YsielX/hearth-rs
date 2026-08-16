@@ -23,7 +23,7 @@ return {
                     condition = function(ctx, self, event)
                         return event.player == ctx:controller(self)
                     end,
-                    effect = function(ctx, self) ctx:destroy(self) end,
+                    effect = function(ctx, self) cardlib.effects.destroy(ctx, self) end,
                 },
             },
         },

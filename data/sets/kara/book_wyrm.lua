@@ -40,7 +40,7 @@ function card.targets(ctx, self)
 end
 
 function card.on_battlecry(ctx, self, target)
-    if target then ctx:destroy(target) end
+    if target then cardlib.effects.destroy(ctx, target) end
 end
 
 return card

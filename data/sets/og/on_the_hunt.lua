@@ -5,7 +5,7 @@ local card = {
     targets = function(ctx) return ctx:characters() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:summon(ctx:controller(self), "OG_061t")
 end
 card.tokens = {{ id = "OG_061t", name = "Mastiff", text = "", set = "OG",

@@ -56,7 +56,7 @@ local card = {
 }
 
 function card.on_quest_cannon(ctx, self, target)
-    ctx:damage(target, 2)
+    cardlib.effects.damage(ctx, target, 2)
     local cannons = ctx:get_data(self, "cannons") + 1
     ctx:set_data(self, "cannons", cannons)
     if cannons < 2 then fire_cannon(ctx, self, "on_quest_cannon") end
@@ -135,7 +135,7 @@ card.tokens = {
             fire_cannon(ctx, self, "on_juggernaut_cannon")
         end,
         on_juggernaut_cannon = function(ctx, self, target)
-            ctx:damage(target, 2)
+            cardlib.effects.damage(ctx, target, 2)
             local cannons = ctx:get_data(self, "cannons") + 1
             ctx:set_data(self, "cannons", cannons)
             if cannons < 2 then fire_cannon(ctx, self, "on_juggernaut_cannon") end

@@ -7,7 +7,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 2)
+    cardlib.effects.damage(ctx, target, 2)
     ctx:continue_with_entity("toxic_arrow_survived", target)
 end
 

@@ -13,7 +13,7 @@ return {
                 return ctx:get_data(self, "prepared_turn") ~= ctx:turn()
             end,
             effect = function(ctx, self, spent, target)
-                ctx:modify(self, {
+                cardlib.effects.modify(ctx, self, {
                     stat = "cost", operation = "add", value = -(spent + 1),
                 })
                 ctx:set_data(self, "prepared_turn", ctx:turn())

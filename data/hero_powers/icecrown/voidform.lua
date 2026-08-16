@@ -9,7 +9,7 @@ return {
     cost = 2,
     target_mode = "required",
     targets = function(ctx, self) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:damage(target, 2) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end,
     triggers = {
         {
             event = "card_played", timing = "after", active_zones = { "hero_power" },

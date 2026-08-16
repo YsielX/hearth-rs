@@ -13,6 +13,6 @@ card.triggers = {{
     effect = function(ctx, self) ctx:random_entity(ctx:enemy_characters(self), "deal_darkbane_damage") end,
 }}
 
-function card.deal_darkbane_damage(ctx, self, target) ctx:damage(target, 3) end
+function card.deal_darkbane_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 3) end
 
 return card

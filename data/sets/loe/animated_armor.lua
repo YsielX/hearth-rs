@@ -8,6 +8,6 @@ return {
         condition = function(ctx, self, event)
             return event.target == ctx:player(ctx:controller(self)).hero and event.amount > 1
         end,
-        effect = function(ctx, self, event) ctx:set_event_amount(event, 1) end,
+        effect = function(ctx, self, event) cardlib.effects.set_event_amount(ctx, event, 1) end,
     }},
 }

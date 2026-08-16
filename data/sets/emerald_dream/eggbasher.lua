@@ -14,7 +14,7 @@ return {
     targets = function(ctx, self) return ctx:minions() end,
     on_battlecry = function(ctx, self, target)
         if target == nil then return end
-        ctx:damage(target, 1)
+        cardlib.effects.damage(ctx, target, 1)
         ctx:buff(target, 4, 0)
     end,
 }

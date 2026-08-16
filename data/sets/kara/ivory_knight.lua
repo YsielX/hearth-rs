@@ -32,7 +32,7 @@ end
 function card.receive_spell(ctx, self, card_id)
     local player = ctx:controller(self)
     ctx:give_card(player, card_id)
-    ctx:heal(ctx:player(player).hero, ctx:card_definition(card_id).cost)
+    cardlib.effects.heal(ctx, ctx:player(player).hero, ctx:card_definition(card_id).cost)
 end
 
 return card

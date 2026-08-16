@@ -112,6 +112,7 @@ fn fixture_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::fs::write(
         root.join("test_ungoro_effects.lua"),
         r#"
@@ -126,7 +127,7 @@ end
 local function make_free(ctx, player, card_id)
     for _, entity in ipairs(ctx:hand(player)) do
         if ctx:entity(entity).card_id == card_id then
-            ctx:modify(entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
+            cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
         end
     end
 end
@@ -153,7 +154,7 @@ local cards = {
     { id = "TEST_UNGORO_KILL", name = "Kill", text = "", set = "TEST", type = "spell",
       cost = 0, collectible = false, target_mode = "required",
       targets = function(ctx) return ctx:minions() end,
-      on_play = function(ctx, self, target) ctx:destroy(target) end },
+      on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end },
     { id = "TEST_UNGORO_FILLER", name = "Filler", text = "", set = "TEST",
       type = "spell", cost = 0, collectible = false },
 
@@ -196,7 +197,7 @@ local cards = {
       end,
       damage_tarim_targets = function(ctx, self)
           for _, entity in ipairs(ctx:minions()) do
-              if ctx:entity(entity).card_id == "TEST_UNGORO_BIG" then ctx:damage_ignoring_spell_damage(entity, 5) end
+              if ctx:entity(entity).card_id == "TEST_UNGORO_BIG" then cardlib.effects.damage_ignoring_spell_damage(ctx, entity, 5) end
           end
       end,
       finish_tarim_setup = function(ctx, self) make_free(ctx, ctx:controller(self), "UNG_015") end },
@@ -232,7 +233,7 @@ local cards = {
       end,
       kill_sherazin = function(ctx, self)
           for _, entity in ipairs(ctx:board(ctx:controller(self))) do
-              if ctx:entity(entity).card_id == "UNG_065" then ctx:destroy(entity); return end
+              if ctx:entity(entity).card_id == "UNG_065" then cardlib.effects.destroy(ctx, entity); return end
           end
       end },
     { id = "TEST_UNGORO_FIRE_PLUME_SETUP", name = "Fire Plume Setup", text = "", set = "TEST",

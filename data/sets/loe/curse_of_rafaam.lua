@@ -35,7 +35,7 @@ card.tokens = {
                 end,
                 effect = function(ctx, self)
                     local player = ctx:controller(self)
-                    ctx:damage(ctx:player(player).hero, 2)
+                    cardlib.effects.damage(ctx, ctx:player(player).hero, 2)
                 end,
             },
         },

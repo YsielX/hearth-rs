@@ -10,6 +10,6 @@ return {
     rarity = "epic",
     cost = 9,
     on_play = function(ctx)
-        ctx:heal_all(ctx:characters(), 1000000)
+        cardlib.effects.heal_all(ctx, ctx:characters(), 1000000)
     end,
 }

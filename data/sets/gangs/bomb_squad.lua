@@ -10,6 +10,6 @@ return {
         end
         return result
     end,
-    on_battlecry = function(ctx, self, target) if target then ctx:damage(target, 5) end end,
-    on_deathrattle = function(ctx, self) ctx:damage(ctx:player(ctx:controller(self)).hero, 5) end,
+    on_battlecry = function(ctx, self, target) if target then cardlib.effects.damage(ctx, target, 5) end end,
+    on_deathrattle = function(ctx, self) cardlib.effects.damage(ctx, ctx:player(ctx:controller(self)).hero, 5) end,
 }

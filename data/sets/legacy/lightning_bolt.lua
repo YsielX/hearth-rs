@@ -15,6 +15,6 @@ return {
         return ctx:characters()
     end,
     on_play = function(ctx, self, target)
-        ctx:damage(target, 3)
+        cardlib.effects.damage(ctx, target, 3)
     end,
 }

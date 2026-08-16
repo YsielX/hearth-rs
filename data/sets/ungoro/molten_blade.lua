@@ -18,5 +18,5 @@ local card = {
         end,
     }},
 }
-function card.become_weapon(ctx, self, id) ctx:transform_preserving_scripts(self, id) end
+function card.become_weapon(ctx, self, id) cardlib.effects.transform_preserving_scripts(ctx, self, id) end
 return card

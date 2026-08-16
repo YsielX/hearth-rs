@@ -5,10 +5,7 @@ impl<R: CardRuntime> Game<R> {
     pub(super) fn apply_effect(&mut self, effect: EffectSpec) -> Result<Vec<GameEvent>, GameError> {
         match effect {
             EffectSpec::Damage { .. }
-            | EffectSpec::DamageGroup { .. }
-            | EffectSpec::DamageBatch { .. }
             | EffectSpec::Heal { .. }
-            | EffectSpec::HealGroup { .. }
             | EffectSpec::Draw { .. }
             | EffectSpec::DrawEntity { .. }
             | EffectSpec::Discard { .. }
@@ -21,7 +18,6 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::SummonFreshCopy { .. }
             | EffectSpec::Recruit { .. }
             | EffectSpec::Destroy { .. }
-            | EffectSpec::DestroyGroup { .. }
             | EffectSpec::LoseWeaponDurability { .. }
             | EffectSpec::MoveEntity { .. }
             | EffectSpec::ChangeController { .. }
@@ -29,12 +25,9 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::ForceAttack { .. }
             | EffectSpec::Transform { .. }
             | EffectSpec::TransformIntoCopy { .. }
-            | EffectSpec::TransformGroup { .. }
-            | EffectSpec::TransformBatch { .. }
             | EffectSpec::Continue { .. }
             | EffectSpec::CancelEvent { .. }
-            | EffectSpec::SetEventAmount { .. }
-            | EffectSpec::MultiplyEventAmount { .. }
+            | EffectSpec::ModifyEventAmount { .. }
             | EffectSpec::SetAttackDefender { .. }
             | EffectSpec::AddAttackCollateral { .. }
             | EffectSpec::SetDamageTarget { .. }
@@ -703,80 +696,6 @@ impl<R: CardRuntime> Game<R> {
                 Ok(Vec::new())
             }
             EffectSpec::ModifyStat {
-                source,
-                target,
-                modifier,
-                duration,
-                silenciable,
-            } => {
-                if self.state.entity(target).is_some_and(|entity| {
-                    entity.kind == CardKind::Location && modifier.stat != Stat::Cost
-                }) {
-                    return Ok(Vec::new());
-                }
-                let id = EnchantmentId(self.state.next_enchantment_id);
-                self.state.next_enchantment_id += 1;
-                let expires_at = self.expiry_for(duration);
-                let entity = self
-                    .state
-                    .entities
-                    .get_mut(&target)
-                    .ok_or(GameError::UnknownEntity(target))?;
-                entity.enchantments.push(Enchantment {
-                    id,
-                    source,
-                    attack: 0,
-                    health: 0,
-                    modifiers: vec![modifier],
-                    keywords: Vec::new(),
-                    silenciable,
-                    expires_at,
-                });
-                Self::recompute_entity(entity);
-                Ok(Vec::new())
-            }
-            EffectSpec::ModifyStatGroup {
-                source,
-                targets,
-                modifiers,
-                duration,
-                silenciable,
-                reset_damage,
-            } => {
-                let expires_at = self.expiry_for(duration);
-                let mut seen = std::collections::BTreeSet::new();
-                for target in targets {
-                    if !seen.insert(target) {
-                        continue;
-                    }
-                    let Some(entity) = self.state.entities.get_mut(&target) else {
-                        continue;
-                    };
-                    if entity.kind == CardKind::Location
-                        && modifiers.iter().any(|modifier| modifier.stat != Stat::Cost)
-                    {
-                        continue;
-                    }
-                    let id = EnchantmentId(self.state.next_enchantment_id);
-                    self.state.next_enchantment_id += 1;
-                    entity.enchantments.push(Enchantment {
-                        id,
-                        source,
-                        attack: 0,
-                        health: 0,
-                        modifiers: modifiers.clone(),
-                        keywords: Vec::new(),
-                        silenciable,
-                        expires_at,
-                    });
-                    Self::recompute_entity(entity);
-                    if reset_damage {
-                        entity.damage = 0;
-                    }
-                }
-                Ok(Vec::new())
-            }
-            EffectSpec::ModifyStatBatch {
                 source,
                 modifications,
             } => self.apply_stat_batch(source, modifications),

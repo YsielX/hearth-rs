@@ -109,7 +109,7 @@ create before event
   → run a death checkpoint
 ```
 
-Lua cannot mutate `GameState`. `ctx:damage(target, 3)` only appends an `EffectSpec::Damage`. A player command executes against a temporary transaction; a script error, illegal target, or failed invariant rolls back the entire command.
+Lua cannot mutate `GameState`. `cardlib.effects.damage(ctx, target, 3)` only appends an `EffectSpec::Damage`. A player command executes against a temporary transaction; a script error, illegal target, or failed invariant rolls back the entire command.
 
 Grouped damage collects every `damaged/before`, commits all uncancelled damage against one stable state, publishes the after group, then performs one death checkpoint.
 

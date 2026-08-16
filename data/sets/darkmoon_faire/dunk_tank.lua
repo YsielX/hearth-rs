@@ -24,8 +24,8 @@ local card = {
     targets = targets,
 }
 
-function card.on_play(ctx, self, target) ctx:damage(target, 4) end
-function card.on_corrupt(ctx, self) ctx:transform(self, "DMF_701t") end
+function card.on_play(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end
+function card.on_corrupt(ctx, self) cardlib.effects.transform(ctx, self, "DMF_701t") end
 
 card.tokens = {
     {
@@ -39,8 +39,8 @@ card.tokens = {
         target_mode = "required",
         targets = targets,
         on_play = function(ctx, self, target)
-            ctx:damage(target, 4)
-            ctx:damage_all(enemy_minions(ctx, self), 2)
+            cardlib.effects.damage(ctx, target, 4)
+            cardlib.effects.damage_all(ctx, enemy_minions(ctx, self), 2)
         end,
     },
 }

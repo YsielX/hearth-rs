@@ -13,6 +13,6 @@ function card.on_deathrattle(ctx, self)
     if #pool > 0 then ctx:random_entity(pool, "destroy_statue_victim") end
 end
 
-function card.destroy_statue_victim(ctx, self, target) ctx:destroy(target) end
+function card.destroy_statue_victim(ctx, self, target) cardlib.effects.destroy(ctx, target) end
 
 return card

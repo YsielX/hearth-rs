@@ -21,7 +21,7 @@ return {
                 for _, enemy in ipairs(ctx:enemy_characters(self)) do
                     if not is_dormant(ctx, enemy) then targets[#targets + 1] = enemy end
                 end
-                if #targets > 0 then ctx:damage_all(targets, 1) end
+                if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 1) end
             end,
         },
     },

@@ -41,7 +41,7 @@ function card.awaken(ctx, self)
 end
 
 function card.reduce_minion(ctx, self, target)
-    ctx:modify(target, { stat = "cost", operation = "add", value = -5 })
+    cardlib.effects.modify(ctx, target, { stat = "cost", operation = "add", value = -5 })
 end
 
 return card

@@ -20,7 +20,7 @@ return {
                     and ctx:entity(self).damage > 0
             end,
             effect = function(ctx, self, event)
-                ctx:heal(self, ctx:entity(self).damage)
+                cardlib.effects.heal(ctx, self, ctx:entity(self).damage)
             end,
         },
     },

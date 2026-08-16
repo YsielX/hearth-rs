@@ -12,6 +12,6 @@ return {
     health = 4,
     keywords = { "overheal" },
     on_overheal = function(ctx, self, amount)
-        ctx:modify(self, { stat = "attack", operation = "add", value = 2 })
+        cardlib.effects.modify(ctx, self, { stat = "attack", operation = "add", value = 2 })
     end,
 }

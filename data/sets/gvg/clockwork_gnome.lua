@@ -89,7 +89,7 @@ card.tokens = {
         targets = all_minions,
         on_play = function(ctx, self, target)
             local minion = ctx:entity(target)
-            ctx:modify(target, { stat = "attack", operation = "set", value = minion.health })
+            cardlib.effects.modify(ctx, target, { stat = "attack", operation = "set", value = minion.health })
             ctx:set_health(target, minion.attack)
         end,
     },

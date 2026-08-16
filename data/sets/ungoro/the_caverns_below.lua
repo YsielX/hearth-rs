@@ -8,7 +8,7 @@ local function make_five_five(ctx, self, entity)
     if not is_friendly_minion(ctx, self, entity) then
         return
     end
-    ctx:modify_all({ entity }, {
+    cardlib.effects.modify_all(ctx, { entity }, {
         attack = 5, health = 5, operation = "final_set", silenciable = false, reset_damage = true,
     })
 end

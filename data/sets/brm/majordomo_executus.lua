@@ -38,7 +38,7 @@ card.tokens = {
             ctx:random_entity(ctx:enemy_characters(self), "deal_ragnaros_damage")
         end,
         deal_ragnaros_damage = function(ctx, self, target)
-            ctx:damage(target, 8)
+            cardlib.effects.damage(ctx, target, 8)
         end,
     },
     {
@@ -52,14 +52,14 @@ card.tokens = {
             ctx:random_entity(ctx:enemy_characters(self), "deal_first_ragnaros_damage")
         end,
         deal_first_ragnaros_damage = function(ctx, self, target)
-            ctx:damage(target, 8)
+            cardlib.effects.damage(ctx, target, 8)
             ctx:continue_with("choose_second_ragnaros_target")
         end,
         choose_second_ragnaros_target = function(ctx, self)
             ctx:random_entity(ctx:enemy_characters(self), "deal_second_ragnaros_damage")
         end,
         deal_second_ragnaros_damage = function(ctx, self, target)
-            ctx:damage(target, 8)
+            cardlib.effects.damage(ctx, target, 8)
         end,
     },
 }

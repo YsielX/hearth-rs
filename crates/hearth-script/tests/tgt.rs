@@ -407,6 +407,27 @@ fn garrison_commander_allows_two_uses_and_coldarra_allows_mana_limited_uses() {
 }
 
 #[test]
+fn multiple_fallen_heroes_add_to_the_pending_hero_power_damage() {
+    let mut game = game_with(
+        repeated("AT_003"),
+        repeated("CS2_120"),
+        ["HERO_08bp", DEFAULT_HERO_POWER],
+        ["mage", "neutral"],
+        47,
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    play(&mut game, PlayerId::ONE, "AT_003", None);
+    play(&mut game, PlayerId::ONE, "AT_003", None);
+    let enemy = game.state().player(PlayerId::TWO).hero;
+    game.dispatch(PlayerCommand::UseHeroPower {
+        target: Some(enemy),
+    })
+    .unwrap();
+
+    assert_eq!(game.state().entity(enemy).unwrap().damage, 3);
+}
+
+#[test]
 fn justicar_replaces_each_original_class_power_with_its_canonical_upgrade() {
     let cases = [
         ("warrior", "HERO_01bp", "HERO_01bp2"),

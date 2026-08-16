@@ -24,7 +24,7 @@ local card = {
 function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:friendly_minions(self)) do
         if minion ~= self and is_beast(ctx, minion) then
-            ctx:transform(self, "GVG_080t")
+            cardlib.effects.transform(ctx, self, "GVG_080t")
             return
         end
     end

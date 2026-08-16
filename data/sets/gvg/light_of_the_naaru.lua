@@ -16,7 +16,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:heal(target, 3)
+    cardlib.effects.heal(ctx, target, 3)
     ctx:continue_with_entity("check_target", target)
 end
 

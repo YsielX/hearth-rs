@@ -10,7 +10,7 @@ return {
     spell_school = "shadow",
     cost = 5,
     on_play = function(ctx, self)
-        ctx:damage_all(ctx:minions(), 3)
+        cardlib.effects.damage_all(ctx, ctx:minions(), 3)
         ctx:shuffle_entity_into_deck(ctx:opponent(ctx:controller(self)), self)
     end,
 }

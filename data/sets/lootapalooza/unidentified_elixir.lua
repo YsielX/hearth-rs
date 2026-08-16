@@ -12,7 +12,7 @@ local card = {
         { event = "card_created", timing = "after", active_zones = { "hand" }, condition = function(ctx, self, event) return event.entity == self end, effect = reveal },
     },
 }
-function card.reveal_elixir(ctx, self, id) ctx:transform(self, id) end
+function card.reveal_elixir(ctx, self, id) cardlib.effects.transform(ctx, self, id) end
 local function elixir(id, name, text, school, effect)
     return { id=id, name=name, text=text, set="LOOTAPALOOZA", type="spell", class="priest", collectible=false,
         spell_school=school, cost=3, target_mode="required", targets=function(ctx) return ctx:minions() end, on_play=effect }

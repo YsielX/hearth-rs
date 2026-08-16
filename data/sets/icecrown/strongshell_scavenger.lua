@@ -15,6 +15,6 @@ return {
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             if has_keyword(ctx, minion, "taunt") then targets[#targets + 1] = minion end
         end
-        ctx:modify_all(targets, { attack = 2, health = 2, operation = "add" })
+        cardlib.effects.modify_all(ctx, targets, { attack = 2, health = 2, operation = "add" })
     end,
 }

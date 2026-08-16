@@ -51,7 +51,7 @@ function card.chosen(ctx, self, choice)
     if choice == 1 then choose_damage_target(ctx, self) else summon_saplings(ctx, self) end
 end
 
-function card.deal_damage(ctx, self, target) ctx:damage(target, 2) end
+function card.deal_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end
 
 function card.on_choose_multiple(ctx, self)
     choose_damage_target(ctx, self)

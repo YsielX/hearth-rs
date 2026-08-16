@@ -5,7 +5,7 @@ local card = {
     cost = 4, target_mode = "required", targets = function(ctx) return ctx:minions() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:destroy(target)
+    cardlib.effects.destroy(ctx, target)
     ctx:destroy_mana_crystals(ctx:controller(self), 1)
 end
 return card

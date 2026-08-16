@@ -12,6 +12,6 @@ return {
     health = 2,
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:damage_all(ctx:minions(), 1)
+        cardlib.effects.damage_all(ctx, ctx:minions(), 1)
     end,
 }

@@ -13,7 +13,7 @@ local card = {
 
 function card.on_play(ctx, self)
     local enemies = ctx:enemy_minions(self)
-    if #enemies > 0 then ctx:damage_all(enemies, 1) end
+    if #enemies > 0 then cardlib.effects.damage_all(ctx, enemies, 1) end
     ctx:continue_with("choose_one_cost_minion")
 end
 

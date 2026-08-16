@@ -14,5 +14,5 @@ return {
         for _, minion in ipairs(ctx:minions()) do if beast(ctx, minion) then result[#result + 1] = minion end end
         return result
     end,
-    on_battlecry = function(ctx, self, target) if target ~= nil then ctx:destroy(target) end end,
+    on_battlecry = function(ctx, self, target) if target ~= nil then cardlib.effects.destroy(ctx, target) end end,
 }

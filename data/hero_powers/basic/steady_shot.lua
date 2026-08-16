@@ -27,6 +27,6 @@ return {
             local enemy = ctx:opponent(ctx:controller(self))
             target = ctx:player(enemy).hero
         end
-        ctx:damage(target, 2)
+        cardlib.effects.damage(ctx, target, 2)
     end,
 }

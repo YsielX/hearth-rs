@@ -11,6 +11,6 @@ return {
     on_play = function(ctx, self)
         local hero = ctx:player(ctx:controller(self)).hero
         local amount = ctx:entity(hero).health <= 12 and 3 or 1
-        ctx:damage_all(ctx:minions(), amount)
+        cardlib.effects.damage_all(ctx, ctx:minions(), amount)
     end,
 }

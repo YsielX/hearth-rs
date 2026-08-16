@@ -5,7 +5,7 @@ local card = {
     target_mode = "required", targets = function(ctx) return ctx:characters() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     ctx:continue_with("queue_jade")
 end
 function card.queue_jade(ctx, self)

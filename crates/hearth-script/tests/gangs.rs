@@ -102,6 +102,7 @@ fn fixture_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::fs::write(
         root.join("test_gangs_effects.lua"),
         r#"
@@ -131,11 +132,11 @@ return {
         { id = "TEST_GANGS_POWER", name = "Test Power", text = "Deal 1 damage.", set = "TEST",
           type = "hero_power", cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:characters() end,
-          on_play = function(ctx, self, target) ctx:damage(target, 1) end },
+          on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end },
         { id = "TEST_GANGS_KILL", name = "Kill", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
-          on_play = function(ctx, self, target) ctx:destroy(target) end },
+          on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end },
         { id = "TEST_GANGS_SILENCE", name = "Silence", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
@@ -143,7 +144,7 @@ return {
         { id = "TEST_GANGS_TRANSFORM", name = "Transform", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
-          on_play = function(ctx, self, target) ctx:transform(target, "TEST_GANGS_SHEEP") end },
+          on_play = function(ctx, self, target) cardlib.effects.transform(ctx, target, "TEST_GANGS_SHEEP") end },
         { id = "TEST_GANGS_BUFF", name = "Buff", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
@@ -151,7 +152,7 @@ return {
         { id = "TEST_GANGS_DAMAGE", name = "Damage", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:characters() end,
-          on_play = function(ctx, self, target) ctx:damage(target, 1) end },
+          on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end },
         { id = "TEST_GANGS_FILL_SELF", name = "Fill Self", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false,
           on_play = function(ctx, self)
@@ -220,7 +221,7 @@ return {
           discount_kun = function(ctx, self)
               for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
                   if ctx:entity(entity).card_id == "CFM_308" then
-                      ctx:modify(entity, { stat = "cost", operation = "set", value = 0 })
+                      cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "set", value = 0 })
                   end
               end
           end },
@@ -253,7 +254,7 @@ return {
               local player = ctx:controller(self)
               for _, entity in ipairs(ctx:board(player)) do
                   if ctx:entity(entity).card_id == "TEST_GANGS_DUMMY" then
-                      ctx:destroy(entity)
+                      cardlib.effects.destroy(ctx, entity)
                       break
                   end
               end

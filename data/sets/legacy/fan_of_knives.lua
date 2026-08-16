@@ -14,7 +14,7 @@ return {
                 targets[#targets + 1] = entity
             end
         end
-        ctx:damage_all(targets, 1)
+        cardlib.effects.damage_all(ctx, targets, 1)
         ctx:draw(ctx:controller(self), 1)
     end,
 }

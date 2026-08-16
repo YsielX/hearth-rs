@@ -38,6 +38,6 @@ function card.on_battlecry(ctx, self, target)
     end
 end
 function card.finish_evolution(ctx, self, card_id)
-    ctx:transform(ctx:get_data(self, "evolution_target"), card_id)
+    cardlib.effects.transform(ctx, ctx:get_data(self, "evolution_target"), card_id)
 end
 return card

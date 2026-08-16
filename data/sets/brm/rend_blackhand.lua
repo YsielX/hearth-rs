@@ -36,6 +36,6 @@ return {
         return candidates
     end,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:destroy(target) end
+        if target ~= nil then cardlib.effects.destroy(ctx, target) end
     end,
 }

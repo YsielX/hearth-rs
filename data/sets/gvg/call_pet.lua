@@ -35,7 +35,7 @@ card.triggers = {
             ctx:set_data(self, "awaiting_draw", 0)
             local definition = ctx:card_definition(ctx:entity(event.entity).card_id)
             if has_tag(definition, "beast") then
-                ctx:modify(event.entity, { stat = "cost", operation = "add", value = -4 })
+                cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "add", value = -4 })
             end
         end,
     },

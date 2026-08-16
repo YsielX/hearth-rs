@@ -98,6 +98,7 @@ fn fixture_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::fs::write(
         root.join("test_icecrown_effects.lua"),
         r#"
@@ -112,7 +113,7 @@ end
 local function make_free(ctx, player, card_id)
     for _, entity in ipairs(ctx:hand(player)) do
         if ctx:entity(entity).card_id == card_id then
-            ctx:modify(entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
+            cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "set", value = 0, silenciable = false })
         end
     end
 end
@@ -143,7 +144,7 @@ local cards = {
           condition = function(ctx, self, event) return event.player == ctx:controller(self) end,
           effect = function(ctx, self)
               local opponent = ctx:opponent(ctx:controller(self))
-              ctx:damage_ignoring_spell_damage(ctx:player(opponent).hero, 1)
+              cardlib.effects.damage_ignoring_spell_damage(ctx, ctx:player(opponent).hero, 1)
           end,
       }} },
 
@@ -219,7 +220,7 @@ local cards = {
           for _, minion in ipairs(ctx:board(player)) do
               if ctx:entity(minion).card_id == "TEST_ICC_COPY_TARGET" then
                   ctx:buff(minion, 2, 3)
-                  ctx:damage_ignoring_spell_damage(minion, 2)
+                  cardlib.effects.damage_ignoring_spell_damage(ctx, minion, 2)
                   ctx:freeze(minion)
                   ctx:set_data(minion, "copied_marker", 42)
                   ctx:attach_hook(minion, "on_deathrattle", "TEST_ICC_ATTACHED_DEATHRATTLE")

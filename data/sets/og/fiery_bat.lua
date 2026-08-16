@@ -15,5 +15,5 @@ function card.on_deathrattle(ctx, self)
     end
     if #pool > 0 then ctx:random_entity(pool, "deal_random_damage") end
 end
-function card.deal_random_damage(ctx, self, target) ctx:damage(target, 1) end
+function card.deal_random_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end
 return card

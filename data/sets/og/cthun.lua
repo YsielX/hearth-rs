@@ -12,5 +12,5 @@ function card.fire_cthun(ctx,self)
     end
     if #pool>0 then ctx:random_entity(pool,"hit_enemy")end
 end
-function card.hit_enemy(ctx,self,target)ctx:damage(target,1);local n=ctx:get_data(self,"damage_left")-1;ctx:set_data(self,"damage_left",n);if n>0 then ctx:continue_with("fire_cthun")end end
+function card.hit_enemy(ctx,self,target)cardlib.effects.damage(ctx, target,1);local n=ctx:get_data(self,"damage_left")-1;ctx:set_data(self,"damage_left",n);if n>0 then ctx:continue_with("fire_cthun")end end
 return card

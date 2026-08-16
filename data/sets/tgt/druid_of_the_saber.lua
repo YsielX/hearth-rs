@@ -13,10 +13,10 @@ function card.on_choose_one(ctx, self)
 end
 
 function card.chosen(ctx, self, choice)
-    ctx:transform(self, choice == 1 and "AT_042t" or "AT_042t2")
+    cardlib.effects.transform(ctx, self, choice == 1 and "AT_042t" or "AT_042t2")
 end
 
-function card.on_choose_multiple(ctx, self) ctx:transform(self, "OG_044c") end
+function card.on_choose_multiple(ctx, self) cardlib.effects.transform(ctx, self, "OG_044c") end
 
 card.tokens = {
     { id = "AT_042a", name = "Lion Form", text = "<b>Charge</b>", set = "TGT",

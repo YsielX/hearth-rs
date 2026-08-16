@@ -13,6 +13,6 @@ return {
         for _, entity in ipairs(ctx:characters()) do
             if ctx:entity(entity).type == "minion" and not dragon(ctx, entity) then targets[#targets + 1] = entity end
         end
-        ctx:damage_all(targets, 5)
+        cardlib.effects.damage_all(ctx, targets, 5)
     end,
 }

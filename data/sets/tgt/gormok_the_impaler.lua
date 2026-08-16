@@ -12,5 +12,5 @@ return {
     type = "minion", rarity = "legendary", cost = 4, attack = 4, health = 4,
     keywords = { "battlecry" }, target_mode = "required_if_available",
     targets = function(ctx, self) if enough_others(ctx, self) then return ctx:characters() end return {} end,
-    on_battlecry = function(ctx, self, target) if target ~= nil then ctx:damage(target, 4) end end,
+    on_battlecry = function(ctx, self, target) if target ~= nil then cardlib.effects.damage(ctx, target, 4) end end,
 }

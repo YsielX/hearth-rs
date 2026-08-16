@@ -28,7 +28,7 @@ end
 local function replace_in_zones(ctx, player, wanted, replacement)
     for _, zone in ipairs({ ctx:hand(player), ctx:deck(player), ctx:board(player) }) do
         for _, entity in ipairs(zone) do
-            if ctx:entity(entity).card_id == wanted then ctx:transform(entity, replacement) end
+            if ctx:entity(entity).card_id == wanted then cardlib.effects.transform(ctx, entity, replacement) end
         end
     end
 end

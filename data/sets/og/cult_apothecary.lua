@@ -14,6 +14,6 @@ return {
             end
             if view.type == "minion" and not dormant then count = count + 1 end
         end
-        if count > 0 then ctx:heal(ctx:player(player).hero, count * 2) end
+        if count > 0 then cardlib.effects.heal(ctx, ctx:player(player).hero, count * 2) end
     end,
 }

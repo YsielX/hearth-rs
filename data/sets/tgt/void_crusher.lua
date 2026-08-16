@@ -21,12 +21,12 @@ end
 function card.choose_friendly_victim(ctx, self, target)
     ctx:set_data(self, "friendly_victim", target)
     local enemy = enemy_minions(ctx, self)
-    if #enemy == 0 then ctx:destroy(target)
+    if #enemy == 0 then cardlib.effects.destroy(ctx, target)
     else ctx:random_entity(enemy, "choose_enemy_victim") end
 end
 
 function card.choose_enemy_victim(ctx, self, target)
-    ctx:destroy_all({ ctx:get_data(self, "friendly_victim"), target })
+    cardlib.effects.destroy_all(ctx, { ctx:get_data(self, "friendly_victim"), target })
 end
 
 return card

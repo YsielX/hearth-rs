@@ -62,7 +62,7 @@ function card.choose_evolution(ctx, self, choice)
             }
         end
         transforms[#transforms + 1] = { choice.target, choice.card }
-        ctx:transform_batch(transforms)
+        cardlib.effects.transform_batch(ctx, transforms)
     end
 end
 

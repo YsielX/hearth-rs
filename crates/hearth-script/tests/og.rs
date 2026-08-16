@@ -119,6 +119,7 @@ fn fixture_runtime(files: &[(&str, &str)]) -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     for (name, source) in files {
         std::fs::write(root.join(name), source).unwrap();
     }
@@ -144,7 +145,7 @@ return {
           on_play = function(ctx, self, target) ctx:discard(ctx:controller(self), target) end },
         { id = "TEST_OG_KILL", name = "Kill", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           target_mode = "required", targets = function(ctx) return ctx:minions() end,
-          on_play = function(ctx, self, target) ctx:destroy(target) end },
+          on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end },
         { id = "TEST_OG_SILENCE", name = "Silence", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           target_mode = "required", targets = function(ctx) return ctx:minions() end,
           on_play = function(ctx, self, target) ctx:silence(target) end },
@@ -156,24 +157,24 @@ return {
           on_play = function(ctx, self)
               local targets = { ctx:player(ctx:controller(self)).hero }
               for _, minion in ipairs(ctx:friendly_minions(self)) do targets[#targets + 1] = minion end
-              ctx:damage_all(targets, 1)
+              cardlib.effects.damage_all(ctx, targets, 1)
           end },
         { id = "TEST_OG_HEAL_FRIENDS", name = "Heal Friends", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local targets = { ctx:player(ctx:controller(self)).hero }
               for _, minion in ipairs(ctx:friendly_minions(self)) do targets[#targets + 1] = minion end
-              ctx:heal_all(targets, 10)
+              cardlib.effects.heal_all(ctx, targets, 10)
           end },
         { id = "TEST_OG_HURT_HERO", name = "Hurt Hero", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local player = ctx:controller(self)
-              ctx:damage(ctx:player(player).hero, 10)
+              cardlib.effects.damage(ctx, ctx:player(player).hero, 10)
               ctx:give_card(player, "TEST_OG_SILENCE")
           end },
         { id = "TEST_OG_HURT_HEROES", name = "Hurt Heroes", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
-          on_play = function(ctx, self) ctx:damage_all({ ctx:player(0).hero, ctx:player(1).hero }, 3) end },
+          on_play = function(ctx, self) cardlib.effects.damage_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 3) end },
         { id = "TEST_OG_HEAL_HEROES", name = "Heal Heroes", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
-          on_play = function(ctx, self) ctx:heal_all({ ctx:player(0).hero, ctx:player(1).hero }, 4) end },
+          on_play = function(ctx, self) cardlib.effects.heal_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 4) end },
     },
 }
 "#;
@@ -698,7 +699,7 @@ return {
     set = "TEST", type = "spell", cost = 5,
     on_play = function(ctx, self)
         local targets = ctx:minions()
-        if #targets > 0 then ctx:destroy_all(targets) end
+        if #targets > 0 then cardlib.effects.destroy_all(ctx, targets) end
     end,
     tokens = {{ api_version = 1, id = "TEST_OG_HP", name = "Test Hero Power", text = "",
         set = "TEST", type = "hero_power", cost = 2, collectible = false }},
@@ -771,7 +772,7 @@ local card = {
         if #minions > 0 then ctx:random_entity(minions, "transform_chosen") end
     end,
 }
-function card.transform_chosen(ctx, self, target) ctx:transform(target, "CFM_308") end
+function card.transform_chosen(ctx, self, target) cardlib.effects.transform(ctx, target, "CFM_308") end
 card.tokens = {{ api_version = 1, id = "TEST_OG_HP", name = "Test Hero Power", text = "",
     set = "TEST", type = "hero_power", cost = 2, collectible = false }}
 return card

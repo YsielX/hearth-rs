@@ -21,11 +21,11 @@ function card.on_choose_one(ctx, self)
 end
 
 function card.chosen(ctx, self, choice)
-    ctx:transform(self, choice == 1 and "BRM_010t" or "BRM_010t2")
+    cardlib.effects.transform(ctx, self, choice == 1 and "BRM_010t" or "BRM_010t2")
 end
 
 function card.on_choose_multiple(ctx, self)
-    ctx:transform(self, "OG_044b")
+    cardlib.effects.transform(ctx, self, "OG_044b")
 end
 
 card.tokens = {

@@ -5,6 +5,6 @@ return {
     tags = { "mech" }, keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
         local enemy = ctx:opponent(ctx:controller(self))
-        ctx:heal(ctx:player(enemy).hero, 8)
+        cardlib.effects.heal(ctx, ctx:player(enemy).hero, 8)
     end,
 }

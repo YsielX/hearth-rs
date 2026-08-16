@@ -22,7 +22,7 @@ local card = {
     target_mode = "required", targets = function(ctx) return ctx:minions() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 3)
+    cardlib.effects.damage(ctx, target, 3)
     ctx:continue_with("summon_pterrordaxes")
 end
 function card.summon_pterrordaxes(ctx, self)

@@ -15,7 +15,7 @@ return {
     targets = function(ctx) return ctx:minions() end,
     on_battlecry = function(ctx, self, target)
         if target == nil then return end
-        ctx:modify(target, { stat = "attack", operation = "set", value = 3 })
+        cardlib.effects.modify(ctx, target, { stat = "attack", operation = "set", value = 3 })
         ctx:set_health(target, 3)
     end,
 }

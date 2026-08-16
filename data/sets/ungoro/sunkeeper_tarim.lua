@@ -13,7 +13,7 @@ return {
         for _, entity in ipairs(ctx:minions()) do
             if entity ~= self and not dormant(ctx, entity) then targets[#targets + 1] = entity end
         end
-        ctx:modify_all(targets, {
+        cardlib.effects.modify_all(ctx, targets, {
             attack = 3, health = 3, operation = "final_set", silenciable = true, reset_damage = true,
         })
     end,

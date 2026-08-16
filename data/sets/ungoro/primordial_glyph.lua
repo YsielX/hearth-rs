@@ -3,7 +3,7 @@ local card = { api_version = 1, id = "UNG_941", name = "Primordial Glyph",
     type = "spell", class = "mage", rarity = "epic", spell_school = "arcane", cost = 2,
     keywords = { "discover" }, triggers = {{ event = "card_created", timing = "after", active_zones = { "graveyard" },
         condition = function(ctx, self, event) return event.source == self end,
-        effect = function(ctx, self, event) ctx:modify(event.entity, { stat = "cost", operation = "add", value = -2 }) end }} }
+        effect = function(ctx, self, event) cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "add", value = -2 }) end }} }
 local function generatable(definition)
     for _, keyword in ipairs(definition.keywords or {}) do
         if keyword == "quest" or keyword == "questline" or keyword == "cannot_be_randomly_generated" then return false end

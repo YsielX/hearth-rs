@@ -5,7 +5,7 @@ local card = {
     cost = 4, attack = 6, health = 3, keywords = { "deathrattle" },
 }
 function card.on_deathrattle(ctx, self, position)
-    ctx:transform(self, "UNG_065t")
+    cardlib.effects.transform(ctx, self, "UNG_065t")
     ctx:summon_existing_at(ctx:controller(self), self, position)
 end
 local seed = {
@@ -21,12 +21,12 @@ seed.triggers = {
     {
         event = "minion_summoned", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return event.entity == self and ready(ctx, self, event.player) end,
-        effect = function(ctx, self) ctx:transform(self, "UNG_065") end,
+        effect = function(ctx, self) cardlib.effects.transform(ctx, self, "UNG_065") end,
     },
     {
         event = "card_played", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return ready(ctx, self, event.player) end,
-        effect = function(ctx, self) ctx:transform(self, "UNG_065") end,
+        effect = function(ctx, self) cardlib.effects.transform(ctx, self, "UNG_065") end,
     },
 }
 card.tokens = { seed }

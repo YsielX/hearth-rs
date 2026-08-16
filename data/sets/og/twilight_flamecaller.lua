@@ -8,6 +8,6 @@ return {
         for _, minion in ipairs(ctx:enemy_characters(self)) do
             if ctx:entity(minion).type == "minion" then targets[#targets + 1] = minion end
         end
-        if #targets > 0 then ctx:damage_all(targets, 1) end
+        if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 1) end
     end,
 }

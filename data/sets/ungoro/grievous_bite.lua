@@ -5,5 +5,5 @@ return { api_version = 1, id = "UNG_910", name = "Grievous Bite",
     on_play = function(ctx, self, target)
         local hits = { { target, 3 } }
         for _, adjacent in ipairs(ctx:adjacent_minions(target)) do hits[#hits + 1] = { adjacent, 1 } end
-        ctx:damage_batch(hits)
+        cardlib.effects.damage_batch(ctx, hits)
     end }

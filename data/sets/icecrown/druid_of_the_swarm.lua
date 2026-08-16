@@ -12,8 +12,8 @@ function card.on_choose_one(ctx, self)
     }, "swarm_form_chosen")
 end
 
-function card.swarm_form_chosen(ctx, self, choice) ctx:transform(self, choice) end
-function card.on_choose_multiple(ctx, self) ctx:transform(self, "ICC_051t3") end
+function card.swarm_form_chosen(ctx, self, choice) cardlib.effects.transform(ctx, self, choice) end
+function card.on_choose_multiple(ctx, self) cardlib.effects.transform(ctx, self, "ICC_051t3") end
 
 card.tokens = {
     { id = "ICC_051a", name = "Spider Form", text = "<b>Poisonous</b>", set = "ICECROWN", type = "minion", class = "druid", collectible = false, cost = 2, attack = 1, health = 2, tags = { "beast" }, keywords = { "poisonous" } },

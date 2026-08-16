@@ -10,7 +10,7 @@ end
 
 local function add_stat(ctx, entity, stat, amount)
     if amount == 0 then return end
-    ctx:modify(entity, {
+    cardlib.effects.modify(ctx, entity, {
         stat = stat,
         operation = "add",
         value = amount,
@@ -29,7 +29,7 @@ local function apply_historical_total(ctx, entity, player)
         local applied = ctx:get_data(entity, applied_key(stat)) or 0
         local missing = total - applied
         if missing > 0 then
-            ctx:modify(entity, {
+            cardlib.effects.modify(ctx, entity, {
                 stat = stat,
                 operation = "pre_final_add",
                 value = missing,

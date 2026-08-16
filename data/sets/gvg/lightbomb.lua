@@ -22,7 +22,7 @@ local card = {
                 for _, minion in ipairs(ctx:friendly_minions(self)) do
                     spell_damage = spell_damage + ctx:entity(minion).spell_damage
                 end
-                ctx:set_event_amount(event, ctx:entity(event.target).attack + spell_damage)
+                cardlib.effects.set_event_amount(ctx, event, ctx:entity(event.target).attack + spell_damage)
             end,
         },
     },
@@ -33,7 +33,7 @@ function card.on_play(ctx, self)
     if #minions > 0 then
         -- A group keeps the damage simultaneous. Its provisional amount is replaced
         -- per target by the before trigger above, including this spell's damage bonus.
-        ctx:damage_all(minions, 1)
+        cardlib.effects.damage_all(ctx, minions, 1)
     end
 end
 

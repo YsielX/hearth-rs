@@ -53,7 +53,7 @@ return {
                     end,
                     effect = function(ctx, self, event)
                         ctx:attach_script(self, "ICC_827t")
-                        ctx:transform_preserving_scripts(self, ctx:entity(event.entity).card_id)
+                        cardlib.effects.transform_preserving_scripts(ctx, self, ctx:entity(event.entity).card_id)
                     end,
                 },
                 {

@@ -72,7 +72,7 @@ function card.destroy_losers(ctx, self)
             losers[#losers + 1] = minion
         end
     end
-    ctx:destroy_all(losers)
+    cardlib.effects.destroy_all(ctx, losers)
 end
 
 return card

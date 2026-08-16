@@ -14,7 +14,7 @@ function card.on_play(ctx, self)
 end
 
 function card.breath_target_chosen(ctx, self, target)
-    ctx:damage(target, 2)
+    cardlib.effects.damage(ctx, target, 2)
     ctx:continue_with_entity("breath_freeze_survivor", target)
 end
 

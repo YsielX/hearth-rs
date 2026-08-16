@@ -23,7 +23,7 @@ return {
 
     on_combo = function(ctx, self, target)
         if target ~= nil then
-            ctx:damage(target, 3)
+            cardlib.effects.damage(ctx, target, 3)
         end
     end,
 }

@@ -23,7 +23,7 @@ local card = {
 
 local function win(ctx, self)
     local player = ctx:controller(self)
-    ctx:heal(ctx:player(player).hero, 7)
+    cardlib.effects.heal(ctx, ctx:player(player).hero, 7)
 end
 
 function card.on_battlecry(ctx, self)

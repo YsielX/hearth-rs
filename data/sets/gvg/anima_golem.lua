@@ -20,7 +20,7 @@ return {
                 return #ctx:friendly_minions(self) == 1
             end,
             effect = function(ctx, self)
-                ctx:destroy(self)
+                cardlib.effects.destroy(ctx, self)
             end,
         },
     },

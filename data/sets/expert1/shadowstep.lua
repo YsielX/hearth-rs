@@ -11,6 +11,6 @@ return {
     targets = function(ctx, self) return ctx:friendly_minions(self) end,
     on_play = function(ctx, self, target)
         ctx:move(target, "hand")
-        ctx:modify(target, { stat = "cost", operation = "add", value = -2 })
+        cardlib.effects.modify(ctx, target, { stat = "cost", operation = "add", value = -2 })
     end,
 }

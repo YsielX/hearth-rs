@@ -20,6 +20,6 @@ return {
             end
             if not dormant then targets[#targets + 1] = minion end
         end
-        ctx:damage_all(targets, 5)
+        cardlib.effects.damage_all(ctx, targets, 5)
     end,
 }

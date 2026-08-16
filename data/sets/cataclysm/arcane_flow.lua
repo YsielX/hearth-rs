@@ -18,8 +18,8 @@ function card.targets(ctx, self)
 end
 
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 4)
-    ctx:damage_all(ctx:enemy_characters(self), 2)
+    cardlib.effects.damage(ctx, target, 4)
+    cardlib.effects.damage_all(ctx, ctx:enemy_characters(self), 2)
 end
 
 function card.on_shatter(ctx, self)
@@ -46,7 +46,7 @@ card.tokens = {
             return ctx:enemy_characters(self)
         end,
         on_play = function(ctx, self, target)
-            ctx:damage(target, 4)
+            cardlib.effects.damage(ctx, target, 4)
         end,
         triggers = {
             {
@@ -93,7 +93,7 @@ card.tokens = {
         cost = 4,
         tags = { "shatter_fragment" },
         on_play = function(ctx, self)
-            ctx:damage_all(ctx:enemy_characters(self), 2)
+            cardlib.effects.damage_all(ctx, ctx:enemy_characters(self), 2)
         end,
     },
 }

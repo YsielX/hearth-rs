@@ -33,6 +33,6 @@ function power.on_play(ctx, self)
     local targets = ctx:enemy_characters(self)
     if #targets > 0 then ctx:random_entity(targets, "deal_insect_damage") end
 end
-function power.deal_insect_damage(ctx, self, target) ctx:damage(target, 8) end
+function power.deal_insect_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 8) end
 card.tokens = { sulfuras, power }
 return card

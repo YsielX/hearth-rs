@@ -52,7 +52,7 @@ local card = {
 }
 
 function card.deal_rumbling_damage(ctx, self, target)
-    ctx:damage(target, 2)
+    cardlib.effects.damage(ctx, target, 2)
 end
 
 -- LOE_016t is the official child entity associated with this card.

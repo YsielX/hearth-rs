@@ -94,7 +94,7 @@ local function apply_ingredient(ctx, self, category)
     if category == CATEGORY.felbloom then
         local damage = ({ 2, 4, 6 })[tier]
         local minions = ctx:minions()
-        if #minions > 0 then ctx:damage_all(minions, damage) end
+        if #minions > 0 then cardlib.effects.damage_all(ctx, minions, damage) end
         continue_potion(ctx)
     elseif category == CATEGORY.goldthorn then
         local health = ({ 2, 4, 6 })[tier]
@@ -107,7 +107,7 @@ local function apply_ingredient(ctx, self, category)
         if target ~= 0 then
             local zone = ctx:entity(target).zone
             if zone == "hero" or zone == "board" then
-                ctx:damage(target, ({ 3, 5, 8 })[tier])
+                cardlib.effects.damage(ctx, target, ({ 3, 5, 8 })[tier])
             end
         end
         continue_potion(ctx)
@@ -133,7 +133,7 @@ local function apply_ingredient(ctx, self, category)
             for _, minion in ipairs(ctx:minions()) do
                 if not is_dormant(ctx, minion) then targets[#targets + 1] = minion end
             end
-            ctx:transform_all(targets, "CFM_621_m5")
+            cardlib.effects.transform_all(ctx, targets, "CFM_621_m5")
             continue_potion(ctx)
         else
             local candidates = {}
@@ -222,7 +222,7 @@ local function kazakus_receive_demon(ctx, self, card_id)
 end
 
 local function kazakus_transform_sheep(ctx, self, target)
-    ctx:transform(target, "CFM_621_m5")
+    cardlib.effects.transform(ctx, target, "CFM_621_m5")
     continue_potion(ctx)
 end
 

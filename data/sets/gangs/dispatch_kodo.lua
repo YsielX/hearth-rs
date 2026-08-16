@@ -15,6 +15,6 @@ return {
     target_mode = "required",
     targets = function(ctx) return ctx:characters() end,
     on_battlecry = function(ctx, self, target)
-        ctx:damage(target, ctx:entity(self).attack)
+        cardlib.effects.damage(ctx, target, ctx:entity(self).attack)
     end,
 }

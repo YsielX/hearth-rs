@@ -66,6 +66,7 @@ fn golden_monkey_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::fs::write(
         root.join("give_golden_monkey.lua"),
         r#"

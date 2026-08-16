@@ -15,7 +15,7 @@ local card = { api_version = 1, id = "UNG_024", name = "Mana Bind",
           condition = function(ctx, self, event) return event.source == self and ctx:get_data(self, "waiting_copy") == 1 end,
           effect = function(ctx, self, event)
               ctx:set_data(self, "waiting_copy", 0)
-              ctx:modify(event.entity, { stat = "cost", operation = "set", value = 0 })
+              cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "set", value = 0 })
           end },
     } }
 return card

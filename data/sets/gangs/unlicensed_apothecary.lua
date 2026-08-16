@@ -9,7 +9,7 @@ return {
             return event.player == ctx:controller(self) and event.entity ~= self
         end,
         effect = function(ctx, self)
-            ctx:damage(ctx:player(ctx:controller(self)).hero, 5)
+            cardlib.effects.damage(ctx, ctx:player(ctx:controller(self)).hero, 5)
         end,
     }},
 }

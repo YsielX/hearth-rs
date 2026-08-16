@@ -22,6 +22,6 @@ return {
         for _, minion in ipairs(ctx:minions()) do
             if not is_demon(ctx, minion) then targets[#targets + 1] = minion end
         end
-        if #targets > 0 then ctx:damage_all(targets, 2) end
+        if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 2) end
     end,
 }

@@ -564,6 +564,7 @@ impl<R: CardRuntime> Game<R> {
     pub(super) fn commit_transform_group(
         &mut self,
         transforms: Vec<PendingEvent>,
+        preserve_attached_scripts: bool,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
         let mut after = Vec::new();
@@ -638,9 +639,11 @@ impl<R: CardRuntime> Game<R> {
             entity_state.enchantments.clear();
             entity_state.silenced = false;
             entity_state.temporary_control = None;
-            entity_state.script_data.clear();
-            entity_state.choice_policy = ChoicePolicy::Player;
-            entity_state.attached_cards.clear();
+            if !preserve_attached_scripts {
+                entity_state.script_data.clear();
+                entity_state.choice_policy = ChoicePolicy::Player;
+                entity_state.attached_cards.clear();
+            }
             entity_state.hook_attachments.clear();
             Self::recompute_entity(entity_state);
             touched_board |= zone == Zone::Board;
@@ -877,7 +880,7 @@ impl<R: CardRuntime> Game<R> {
                 ResolutionItem::CommitTransform { transform, .. } if transform.id == id => {
                     return Some(transform);
                 }
-                ResolutionItem::CommitTransformGroup { transforms } => {
+                ResolutionItem::CommitTransformGroup { transforms, .. } => {
                     if let Some(event) = transforms.iter_mut().find(|event| event.id == id) {
                         return Some(event);
                     }

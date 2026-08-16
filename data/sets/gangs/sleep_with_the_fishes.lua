@@ -9,6 +9,6 @@ function card.on_play(ctx, self)
         local minion = ctx:entity(entity)
         if minion.health < minion.max_health then targets[#targets + 1] = entity end
     end
-    if #targets > 0 then ctx:damage_all(targets, 3) end
+    if #targets > 0 then cardlib.effects.damage_all(ctx, targets, 3) end
 end
 return card

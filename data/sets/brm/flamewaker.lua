@@ -46,7 +46,7 @@ function card.fire_first_shot(ctx, self)
 end
 
 function card.deal_first_damage(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:continue_with("fire_second_shot")
 end
 
@@ -55,7 +55,7 @@ function card.fire_second_shot(ctx, self)
 end
 
 function card.deal_second_damage(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
 end
 
 return card

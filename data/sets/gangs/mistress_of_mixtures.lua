@@ -12,6 +12,6 @@ return {
     tags = { "undead" },
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:heal_all({ ctx:player(0).hero, ctx:player(1).hero }, 4)
+        cardlib.effects.heal_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 4)
     end,
 }

@@ -30,7 +30,7 @@ card.tokens = {
         keywords = { "casts_when_drawn" },
         on_play = function(ctx, self)
             local player = ctx:controller(self)
-            ctx:damage(ctx:player(player).hero, 5)
+            cardlib.effects.damage(ctx, ctx:player(player).hero, 5)
         end,
     },
 }

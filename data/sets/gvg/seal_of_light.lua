@@ -11,7 +11,7 @@ return {
     spell_school = "holy",
     on_play = function(ctx, self)
         local hero = ctx:player(ctx:controller(self)).hero
-        ctx:heal(hero, 4)
+        cardlib.effects.heal(ctx, hero, 4)
         ctx:buff_until_end_of_turn(hero, 2, 0)
     end,
 }

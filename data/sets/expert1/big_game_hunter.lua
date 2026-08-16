@@ -23,7 +23,7 @@ return {
 
     on_battlecry = function(ctx, self, target)
         if target ~= nil then
-            ctx:destroy(target)
+            cardlib.effects.destroy(ctx, target)
         end
     end,
 }

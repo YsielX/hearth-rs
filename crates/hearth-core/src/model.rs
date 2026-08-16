@@ -954,31 +954,13 @@ pub struct EntityStatModification {
 pub enum EffectSpec {
     Damage {
         source: EntityId,
-        target: EntityId,
-        amount: i32,
-        #[serde(default = "default_true")]
-        apply_spell_damage: bool,
-    },
-    DamageGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
-        amount: i32,
-    },
-    DamageBatch {
-        source: EntityId,
         hits: Vec<(EntityId, i32)>,
         #[serde(default = "default_true")]
         apply_spell_damage: bool,
     },
     Heal {
         source: EntityId,
-        target: EntityId,
-        amount: i32,
-    },
-    HealGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
-        amount: i32,
+        hits: Vec<(EntityId, i32)>,
     },
     GainArmor {
         source: EntityId,
@@ -1225,8 +1207,7 @@ pub enum EffectSpec {
     },
     Transform {
         source: EntityId,
-        target: EntityId,
-        card_id: CardId,
+        transforms: Vec<(EntityId, CardId)>,
         #[serde(default)]
         preserve_attached_scripts: bool,
     },
@@ -1243,15 +1224,6 @@ pub enum EffectSpec {
         #[serde(default)]
         preserve_attached_scripts: bool,
     },
-    TransformGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
-        card_id: CardId,
-    },
-    TransformBatch {
-        source: EntityId,
-        transforms: Vec<(EntityId, CardId)>,
-    },
     ExchangeZoneContents {
         source: EntityId,
         first: PlayerId,
@@ -1260,7 +1232,7 @@ pub enum EffectSpec {
     },
     Destroy {
         source: EntityId,
-        target: EntityId,
+        targets: Vec<EntityId>,
     },
     /// Set current and maximum Health without publishing a heal event.
     SetHealth {
@@ -1288,10 +1260,6 @@ pub enum EffectSpec {
         source: EntityId,
         target: EntityId,
         card_id: CardId,
-    },
-    DestroyGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
     },
     Buff {
         source: EntityId,
@@ -1326,23 +1294,6 @@ pub enum EffectSpec {
         amount: i32,
     },
     ModifyStat {
-        source: EntityId,
-        target: EntityId,
-        modifier: StatModifier,
-        duration: EffectDuration,
-        #[serde(default = "default_true")]
-        silenciable: bool,
-    },
-    ModifyStatGroup {
-        source: EntityId,
-        targets: Vec<EntityId>,
-        modifiers: Vec<StatModifier>,
-        duration: EffectDuration,
-        silenciable: bool,
-        #[serde(default)]
-        reset_damage: bool,
-    },
-    ModifyStatBatch {
         source: EntityId,
         modifications: Vec<EntityStatModification>,
     },
@@ -1398,15 +1349,11 @@ pub enum EffectSpec {
         source: EntityId,
         event: EventId,
     },
-    SetEventAmount {
+    ModifyEventAmount {
         source: EntityId,
         event: EventId,
-        amount: i32,
-    },
-    MultiplyEventAmount {
-        source: EntityId,
-        event: EventId,
-        factor: i32,
+        operation: ModifierOperation,
+        value: i32,
     },
     SetAttackDefender {
         source: EntityId,
@@ -1617,6 +1564,8 @@ pub enum ResolutionItem {
     },
     CommitTransformGroup {
         transforms: Vec<PendingEvent>,
+        #[serde(default)]
+        preserve_attached_scripts: bool,
     },
     SummonFreshCopy {
         player: PlayerId,

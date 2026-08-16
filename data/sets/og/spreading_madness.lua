@@ -29,7 +29,7 @@ function card.deal_madness_damage(ctx, self, target)
     local left = ctx:get_data(self, "madness_left") or 0
     if left <= 0 then return end
     ctx:set_data(self, "madness_left", left - 1)
-    ctx:damage_ignoring_spell_damage(target, 1)
+    cardlib.effects.damage_ignoring_spell_damage(ctx, target, 1)
     if left > 1 then ctx:continue_with("choose_madness_target") end
 end
 return card

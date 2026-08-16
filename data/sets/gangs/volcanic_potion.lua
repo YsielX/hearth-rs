@@ -11,6 +11,6 @@ return {
     cost = 3,
     on_play = function(ctx)
         local minions = ctx:minions()
-        if #minions > 0 then ctx:damage_all(minions, 2) end
+        if #minions > 0 then cardlib.effects.damage_all(ctx, minions, 2) end
     end,
 }

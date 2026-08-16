@@ -70,8 +70,8 @@ function card.replace_next_warlock_card(ctx, self)
 end
 function card.finish_renouncing_card(ctx, self, card_id)
     local target = ctx:get_data(self, "renounce_target")
-    ctx:transform(target, card_id)
-    ctx:modify(target, { stat = "cost", operation = "add", value = -1 })
+    cardlib.effects.transform(ctx, target, card_id)
+    cardlib.effects.modify(ctx, target, { stat = "cost", operation = "add", value = -1 })
     ctx:set_data(self, "renounce_index", (ctx:get_data(self, "renounce_index") or 1) + 1)
     ctx:continue_with("replace_next_warlock_card")
 end

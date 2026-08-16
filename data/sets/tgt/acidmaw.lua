@@ -12,7 +12,7 @@ return {
                     and target.controller ~= ctx:controller(self)
                     and event.amount > 0
             end,
-            effect = function(ctx, self, event) ctx:destroy(event.target) end,
+            effect = function(ctx, self, event) cardlib.effects.destroy(ctx, event.target) end,
         },
     },
 }

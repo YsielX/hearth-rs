@@ -4,6 +4,6 @@ return {
     set = "TGT", type = "minion", rarity = "common", cost = 4, attack = 1, health = 8,
     keywords = { "inspire" },
     on_inspire = function(ctx, self)
-        ctx:heal(ctx:player(ctx:controller(self)).hero, 2)
+        cardlib.effects.heal(ctx, ctx:player(ctx:controller(self)).hero, 2)
     end,
 }

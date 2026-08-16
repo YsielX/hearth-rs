@@ -14,7 +14,7 @@ function card.on_battlecry(ctx, self)
         seen[card_id] = true
     end
     local hero = ctx:player(player).hero
-    ctx:heal(hero, ctx:entity(hero).damage)
+    cardlib.effects.heal(ctx, hero, ctx:entity(hero).damage)
 end
 
 return card

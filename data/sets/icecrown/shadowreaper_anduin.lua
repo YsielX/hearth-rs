@@ -19,7 +19,7 @@ function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:minions()) do
         if ctx:entity(minion).attack >= 5 then targets[#targets + 1] = minion end
     end
-    if #targets > 0 then ctx:destroy_all(targets) end
+    if #targets > 0 then cardlib.effects.destroy_all(ctx, targets) end
 end
 
 return card

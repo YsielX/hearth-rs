@@ -79,7 +79,7 @@ card.tokens = {
             local remaining = ctx:get_data(self, "horror_damage_left") or 0
             if remaining <= 0 then return end
             ctx:set_data(self, "horror_damage_left", remaining - 1)
-            ctx:damage(target, 1)
+            cardlib.effects.damage(ctx, target, 1)
             if remaining > 1 then ctx:continue_with("choose_horror_target") end
         end,
     },

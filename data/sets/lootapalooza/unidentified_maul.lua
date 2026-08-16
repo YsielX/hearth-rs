@@ -12,7 +12,7 @@ local card = {
         { event = "card_created", timing = "after", active_zones = { "hand" }, condition = function(ctx, self, event) return event.entity == self end, effect = reveal },
     },
 }
-function card.reveal_maul(ctx, self, id) ctx:transform(self, id) end
+function card.reveal_maul(ctx, self, id) cardlib.effects.transform(ctx, self, id) end
 
 local function weapon(id, name, text, battlecry)
     return {

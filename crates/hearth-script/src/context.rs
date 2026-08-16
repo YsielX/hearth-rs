@@ -659,40 +659,30 @@ pub(super) fn build_context(
 
     let output = effects.clone();
     ctx.set(
-        "damage",
-        lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
-            output.borrow_mut().push(EffectSpec::Damage {
-                source,
-                target: EntityId(target),
-                amount,
-                apply_spell_damage: true,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "damage_ignoring_spell_damage",
-        lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
-            output.borrow_mut().push(EffectSpec::Damage {
-                source,
-                target: EntityId(target),
-                amount,
-                apply_spell_damage: false,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "damage_from",
+        "damage_batch",
         lua.create_function(
-            move |_, (_ctx, damage_source, target, amount): (Table, u64, u64, i32)| {
+            move |_, (_ctx, hits, options): (Table, Table, Option<Table>)| {
+                let hits = hits
+                    .sequence_values::<Table>()
+                    .map(|hit| {
+                        let hit = hit?;
+                        Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
+                    })
+                    .collect::<mlua::Result<Vec<_>>>()?;
+                let damage_source = match &options {
+                    Some(options) => options.get::<Option<u64>>("source")?.map(EntityId),
+                    None => None,
+                }
+                .unwrap_or(source);
+                let apply_spell_damage = match &options {
+                    Some(options) => options.get::<Option<bool>>("apply_spell_damage")?,
+                    None => None,
+                }
+                .unwrap_or(damage_source == source);
                 output.borrow_mut().push(EffectSpec::Damage {
-                    source: EntityId(damage_source),
-                    target: EntityId(target),
-                    amount,
-                    apply_spell_damage: false,
+                    source: damage_source,
+                    hits,
+                    apply_spell_damage,
                 });
                 Ok(())
             },
@@ -700,23 +690,7 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "damage_all",
-        lua.create_function(move |_, (_ctx, targets, amount): (Table, Table, i32)| {
-            let targets = targets
-                .sequence_values::<u64>()
-                .map(|target| target.map(EntityId))
-                .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::DamageGroup {
-                source,
-                targets,
-                amount,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "damage_batch",
+        "heal_batch",
         lua.create_function(move |_, (_ctx, hits): (Table, Table)| {
             let hits = hits
                 .sequence_values::<Table>()
@@ -725,77 +699,7 @@ pub(super) fn build_context(
                     Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
                 })
                 .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::DamageBatch {
-                source,
-                hits,
-                apply_spell_damage: true,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "damage_batch_ignoring_spell_damage",
-        lua.create_function(move |_, (_ctx, hits): (Table, Table)| {
-            let hits = hits
-                .sequence_values::<Table>()
-                .map(|hit| {
-                    let hit = hit?;
-                    Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
-                })
-                .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::DamageBatch {
-                source,
-                hits,
-                apply_spell_damage: false,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "damage_batch_from",
-        lua.create_function(move |_, (_ctx, damage_source, hits): (Table, u64, Table)| {
-            let hits = hits
-                .sequence_values::<Table>()
-                .map(|hit| {
-                    let hit = hit?;
-                    Ok((EntityId(hit.get::<u64>(1)?), hit.get::<i32>(2)?))
-                })
-                .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::DamageBatch {
-                source: EntityId(damage_source),
-                hits,
-                apply_spell_damage: false,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "heal",
-        lua.create_function(move |_, (_ctx, target, amount): (Table, u64, i32)| {
-            output.borrow_mut().push(EffectSpec::Heal {
-                source,
-                target: EntityId(target),
-                amount,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "heal_all",
-        lua.create_function(move |_, (_ctx, targets, amount): (Table, Table, i32)| {
-            let targets = targets
-                .sequence_values::<u64>()
-                .map(|target| target.map(EntityId))
-                .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::HealGroup {
-                source,
-                targets,
-                amount,
-            });
+            output.borrow_mut().push(EffectSpec::Heal { source, hits });
             Ok(())
         })?,
     )?;
@@ -1590,49 +1494,30 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "transform",
-        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
-            output.borrow_mut().push(EffectSpec::Transform {
-                source,
-                target: EntityId(target),
-                card_id,
-                preserve_attached_scripts: false,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "transform_all",
+        "transform_batch",
         lua.create_function(
-            move |_, (_ctx, targets, card_id): (Table, Vec<u64>, String)| {
-                output.borrow_mut().push(EffectSpec::TransformGroup {
+            move |_, (_ctx, transforms, options): (Table, Table, Option<Table>)| {
+                let mut parsed = Vec::new();
+                for transform in transforms.sequence_values::<Table>() {
+                    let transform = transform?;
+                    parsed.push((
+                        EntityId(transform.get::<u64>(1)?),
+                        transform.get::<String>(2)?,
+                    ));
+                }
+                output.borrow_mut().push(EffectSpec::Transform {
                     source,
-                    targets: targets.into_iter().map(EntityId).collect(),
-                    card_id,
+                    transforms: parsed,
+                    preserve_attached_scripts: match options {
+                        Some(options) => options
+                            .get::<Option<bool>>("preserve_attached_scripts")?
+                            .unwrap_or(false),
+                        None => false,
+                    },
                 });
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "transform_batch",
-        lua.create_function(move |_, (_ctx, transforms): (Table, Table)| {
-            let mut parsed = Vec::new();
-            for transform in transforms.sequence_values::<Table>() {
-                let transform = transform?;
-                parsed.push((
-                    EntityId(transform.get::<u64>(1)?),
-                    transform.get::<String>(2)?,
-                ));
-            }
-            output.borrow_mut().push(EffectSpec::TransformBatch {
-                source,
-                transforms: parsed,
-            });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1648,19 +1533,6 @@ pub(super) fn build_context(
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "transform_preserving_scripts",
-        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
-            output.borrow_mut().push(EffectSpec::Transform {
-                source,
-                target: EntityId(target),
-                card_id,
-                preserve_attached_scripts: true,
-            });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1688,12 +1560,15 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "destroy",
-        lua.create_function(move |_, (_ctx, target): (Table, u64)| {
-            output.borrow_mut().push(EffectSpec::Destroy {
-                source,
-                target: EntityId(target),
-            });
+        "destroy_batch",
+        lua.create_function(move |_, (_ctx, targets): (Table, Table)| {
+            let targets = targets
+                .sequence_values::<u64>()
+                .map(|target| target.map(EntityId))
+                .collect::<mlua::Result<Vec<_>>>()?;
+            output
+                .borrow_mut()
+                .push(EffectSpec::Destroy { source, targets });
             Ok(())
         })?,
     )?;
@@ -1771,20 +1646,6 @@ pub(super) fn build_context(
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "destroy_all",
-        lua.create_function(move |_, (_ctx, targets): (Table, Table)| {
-            let targets = targets
-                .sequence_values::<u64>()
-                .map(|target| target.map(EntityId))
-                .collect::<mlua::Result<Vec<_>>>()?;
-            output
-                .borrow_mut()
-                .push(EffectSpec::DestroyGroup { source, targets });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1951,36 +1812,28 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "set_event_amount",
-        lua.create_function(move |_, (_ctx, event, amount): (Table, Table, i32)| {
+        "modify_event_amount",
+        lua.create_function(move |_, (_ctx, event, spec): (Table, Table, Table)| {
             let timing: String = event.get("timing")?;
             if timing != "before" {
                 return Err(mlua::Error::runtime(
-                    "set_event_amount can only be used by a before trigger",
+                    "modify_event_amount can only be used by a before trigger",
                 ));
             }
-            output.borrow_mut().push(EffectSpec::SetEventAmount {
-                source,
-                event: EventId(event.get("event_id")?),
-                amount,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "multiply_event_amount",
-        lua.create_function(move |_, (_ctx, event, factor): (Table, Table, i32)| {
-            let timing: String = event.get("timing")?;
-            if timing != "before" {
+            let operation = parse_modifier_operation(&spec.get::<String>("operation")?)?;
+            if !matches!(
+                operation,
+                ModifierOperation::Set | ModifierOperation::Add | ModifierOperation::Multiply
+            ) {
                 return Err(mlua::Error::runtime(
-                    "multiply_event_amount can only be used by a before trigger",
+                    "event amount operation must be set, add, or multiply",
                 ));
             }
-            output.borrow_mut().push(EffectSpec::MultiplyEventAmount {
+            output.borrow_mut().push(EffectSpec::ModifyEventAmount {
                 source,
                 event: EventId(event.get("event_id")?),
-                factor,
+                operation,
+                value: spec.get("value")?,
             });
             Ok(())
         })?,
@@ -2143,69 +1996,6 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "modify",
-        lua.create_function(move |_, (_ctx, target, spec): (Table, u64, Table)| {
-            let stat = parse_stat(&spec.get::<String>("stat")?)?;
-            let operation = parse_modifier_operation(&spec.get::<String>("operation")?)?;
-            let duration = parse_duration(
-                spec.get::<Option<String>>("duration")?
-                    .as_deref()
-                    .unwrap_or("permanent"),
-            )?;
-            output.borrow_mut().push(EffectSpec::ModifyStat {
-                source,
-                target: EntityId(target),
-                modifier: StatModifier {
-                    stat,
-                    operation,
-                    value: spec.get("value")?,
-                },
-                duration,
-                silenciable: spec.get::<Option<bool>>("silenciable")?.unwrap_or(true),
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "modify_all",
-        lua.create_function(move |_, (_ctx, targets, spec): (Table, Table, Table)| {
-            let targets = targets
-                .sequence_values::<u64>()
-                .map(|target| target.map(EntityId))
-                .collect::<mlua::Result<Vec<_>>>()?;
-            let duration = parse_duration(
-                spec.get::<Option<String>>("duration")?
-                    .as_deref()
-                    .unwrap_or("permanent"),
-            )?;
-            let mut modifiers = Vec::new();
-            for stat in ["attack", "health", "cost", "spell_damage"] {
-                if let Some(value) = spec.get::<Option<i32>>(stat)? {
-                    modifiers.push(StatModifier {
-                        stat: parse_stat(stat)?,
-                        operation: parse_modifier_operation(
-                            spec.get::<Option<String>>("operation")?
-                                .as_deref()
-                                .unwrap_or("final_set"),
-                        )?,
-                        value,
-                    });
-                }
-            }
-            output.borrow_mut().push(EffectSpec::ModifyStatGroup {
-                source,
-                targets,
-                modifiers,
-                duration,
-                silenciable: spec.get::<Option<bool>>("silenciable")?.unwrap_or(true),
-                reset_damage: spec.get::<Option<bool>>("reset_damage")?.unwrap_or(false),
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
         "modify_batch",
         lua.create_function(move |_, (_ctx, entries): (Table, Table)| {
             let modifications = entries
@@ -2226,7 +2016,7 @@ pub(super) fn build_context(
                     })
                 })
                 .collect::<mlua::Result<Vec<_>>>()?;
-            output.borrow_mut().push(EffectSpec::ModifyStatBatch {
+            output.borrow_mut().push(EffectSpec::ModifyStat {
                 source,
                 modifications,
             });

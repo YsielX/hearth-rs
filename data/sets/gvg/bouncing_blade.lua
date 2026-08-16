@@ -44,7 +44,7 @@ function card.on_play(ctx, self)
 end
 
 function card.hit_random_minion(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:continue_with("continue_bouncing")
 end
 

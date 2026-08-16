@@ -46,7 +46,7 @@ card.triggers = {{
     active_zones = { "board", "graveyard" },
     condition = function(ctx, self, event) return event.source == self end,
     effect = function(ctx, self, event)
-        ctx:modify(event.entity, { stat = "cost", operation = "add", value = -1 })
+        cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "add", value = -1 })
     end,
 }}
 

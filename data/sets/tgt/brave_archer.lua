@@ -6,7 +6,7 @@ return {
     on_inspire = function(ctx, self)
         if #ctx:hand(ctx:controller(self)) == 0 then
             local opponent = ctx:opponent(ctx:controller(self))
-            ctx:damage(ctx:player(opponent).hero, 2)
+            cardlib.effects.damage(ctx, ctx:player(opponent).hero, 2)
         end
     end,
 }

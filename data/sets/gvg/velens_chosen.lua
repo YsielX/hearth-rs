@@ -15,7 +15,7 @@ return {
     end,
     on_play = function(ctx, self, target)
         ctx:buff(target, 2, 4)
-        ctx:modify(target, {
+        cardlib.effects.modify(ctx, target, {
             stat = "spell_damage",
             operation = "add",
             value = 1,

@@ -22,7 +22,7 @@ local card = {
 
 function card.on_battlecry(ctx, self, target)
     if target ~= nil and #ctx:secrets(ctx:controller(self)) > 0 then
-        ctx:damage(target, 3)
+        cardlib.effects.damage(ctx, target, 3)
     end
 end
 

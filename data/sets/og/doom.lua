@@ -13,7 +13,7 @@ function card.on_play(ctx, self)
         if not dormant then minions[#minions + 1] = minion end
     end
     ctx:set_data(self, "doom_draws", #minions)
-    ctx:destroy_all(minions)
+    cardlib.effects.destroy_all(ctx, minions)
     ctx:continue_with("draw_doom_cards")
 end
 function card.draw_doom_cards(ctx, self)

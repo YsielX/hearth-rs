@@ -45,7 +45,7 @@ function card.evolve_next(ctx, self)
 end
 
 function card.finish_evolve(ctx, self, card_id)
-    ctx:transform(ctx:get_data(self, "evolve_target"), card_id)
+    cardlib.effects.transform(ctx, ctx:get_data(self, "evolve_target"), card_id)
     ctx:set_data(self, "evolve_index", (ctx:get_data(self, "evolve_index") or 1) + 1)
     ctx:continue_with("evolve_next")
 end

@@ -10,5 +10,5 @@ local function next_hit(ctx,self)
 end
 function card.on_play(ctx,self) ctx:set_data(self,"volcano_left",15); ctx:continue_with("volcano_next") end
 function card.volcano_next(ctx,self) next_hit(ctx,self) end
-function card.volcano_hit(ctx,self,target) ctx:damage_ignoring_spell_damage(target,1); ctx:continue_with("volcano_next") end
+function card.volcano_hit(ctx,self,target) cardlib.effects.damage_ignoring_spell_damage(ctx, target,1); ctx:continue_with("volcano_next") end
 return card

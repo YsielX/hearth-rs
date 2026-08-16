@@ -18,7 +18,7 @@ return {
             end,
             effect = function(ctx, self, event)
                 ctx:reveal_secret(self)
-                ctx:damage_all(ctx:enemy_characters(self), 2)
+                cardlib.effects.damage_all(ctx, ctx:enemy_characters(self), 2)
             end,
         },
     },

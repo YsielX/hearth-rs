@@ -18,7 +18,7 @@ card.triggers = {
         end,
         effect = function(ctx, self, event)
             ctx:set_data(self, "waiting_for_draw", 0)
-            if ctx:entity(event.entity).type == "minion" then ctx:transform(event.entity, "GVG_092t") end
+            if ctx:entity(event.entity).type == "minion" then cardlib.effects.transform(ctx, event.entity, "GVG_092t") end
         end,
     },
     {

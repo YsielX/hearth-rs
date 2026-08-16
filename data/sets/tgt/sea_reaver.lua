@@ -5,6 +5,6 @@ return {
     triggers = {{
         event = "card_drawn", timing = "after", active_zones = { "hand" },
         condition = function(ctx, self, event) return event.entity == self end,
-        effect = function(ctx, self) ctx:damage_all(ctx:friendly_minions(self), 1) end,
+        effect = function(ctx, self) cardlib.effects.damage_all(ctx, ctx:friendly_minions(self), 1) end,
     }},
 }

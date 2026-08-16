@@ -37,7 +37,7 @@ local card = {
 }
 
 function card.shift_into_minion(ctx, self, card_id)
-    ctx:transform_preserving_scripts(self, card_id)
+    cardlib.effects.transform_preserving_scripts(ctx, self, card_id)
 end
 
 return card

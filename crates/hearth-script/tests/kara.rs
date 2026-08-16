@@ -116,6 +116,7 @@ fn fixture_runtime() -> (TempRuntimeDir, LuaCardRuntime) {
     std::os::unix::fs::symlink(data_path().join("sets"), root.join("sets")).unwrap();
     std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
     std::os::unix::fs::symlink(data_path().join("hero_powers"), root.join("hero_powers")).unwrap();
+    std::os::unix::fs::symlink(data_path().join("libraries"), root.join("libraries")).unwrap();
     std::fs::write(
         root.join("test_kara_effects.lua"),
         r#"
@@ -135,7 +136,7 @@ return {
         { id = "TEST_KARA_KILL", name = "Kill", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = true, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
-          on_play = function(ctx, self, target) ctx:destroy(target) end },
+          on_play = function(ctx, self, target) cardlib.effects.destroy(ctx, target) end },
         { id = "TEST_KARA_NOOP", name = "No-op", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = true },
         { id = "TEST_KARA_DISCOUNT", name = "Discount", text = "", set = "TEST",
@@ -143,7 +144,7 @@ return {
           on_play = function(ctx, self)
               for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
                   if ctx:entity(entity).card_id == "KAR_013" then
-                      ctx:modify(entity, { stat = "cost", operation = "add", value = -1 })
+                      cardlib.effects.modify(ctx, entity, { stat = "cost", operation = "add", value = -1 })
                   end
               end
           end },

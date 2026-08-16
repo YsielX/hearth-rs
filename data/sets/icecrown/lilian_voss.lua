@@ -39,7 +39,7 @@ end
 function card.transform_voss_spell(ctx, self, card_id)
     local target = ctx:get_data(self, "voss_target")
     if target > 0 and ctx:entity(target).zone == "hand" then
-        ctx:transform(target, card_id)
+        cardlib.effects.transform(ctx, target, card_id)
         ctx:set_data(self, "voss_done:" .. target, 1)
     end
     ctx:continue_with("replace_next_voss_spell")

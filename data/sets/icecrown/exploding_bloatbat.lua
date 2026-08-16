@@ -9,6 +9,6 @@ return {
         for _, minion in ipairs(ctx:minions()) do
             if ctx:controller(minion) == opponent then targets[#targets + 1] = minion end
         end
-        ctx:damage_all(targets, 2)
+        cardlib.effects.damage_all(ctx, targets, 2)
     end,
 }

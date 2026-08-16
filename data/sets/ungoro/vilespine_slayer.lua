@@ -7,5 +7,5 @@ return {
         if not ctx:combo_active(self) then return {} end
         return ctx:minions()
     end,
-    on_combo = function(ctx, self, target) if target then ctx:destroy(target) end end,
+    on_combo = function(ctx, self, target) if target then cardlib.effects.destroy(ctx, target) end end,
 }

@@ -230,8 +230,15 @@ impl<R: CardRuntime> Game<R> {
                             &mut queue,
                         )?;
                     }
-                    ResolutionItem::CommitTransformGroup { transforms } => {
-                        self.commit_transform_group(transforms, &mut queue)?;
+                    ResolutionItem::CommitTransformGroup {
+                        transforms,
+                        preserve_attached_scripts,
+                    } => {
+                        self.commit_transform_group(
+                            transforms,
+                            preserve_attached_scripts,
+                            &mut queue,
+                        )?;
                     }
                     ResolutionItem::SummonFreshCopy {
                         player,

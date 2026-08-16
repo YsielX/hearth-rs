@@ -9,7 +9,7 @@ return {
             return event.player == player and event.source == ctx:player(player).hero_power
         end,
         effect = function(ctx, self, event)
-            ctx:modify(event.entity, { stat = "cost", operation = "set", value = 0 })
+            cardlib.effects.modify(ctx, event.entity, { stat = "cost", operation = "set", value = 0 })
         end,
     }},
 }

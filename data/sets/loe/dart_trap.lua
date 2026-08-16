@@ -27,5 +27,5 @@ card.triggers = {{
     end,
 }}
 
-function card.deal_dart_damage(ctx, self, target) ctx:damage(target, 5) end
+function card.deal_dart_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 5) end
 return card

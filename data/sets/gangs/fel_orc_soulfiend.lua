@@ -12,6 +12,6 @@ return {
     triggers = {{
         event = "turn_started", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return event.player == ctx:controller(self) end,
-        effect = function(ctx, self) ctx:damage(self, 2) end,
+        effect = function(ctx, self) cardlib.effects.damage(ctx, self, 2) end,
     }},
 }

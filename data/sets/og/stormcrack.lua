@@ -4,5 +4,5 @@ return {
     class = "shaman", rarity = "common", cost = 2, spell_school = "nature",
     keywords = { "overload" }, keyword_params = { overload = 1 },
     target_mode = "required", targets = function(ctx) return ctx:minions() end,
-    on_play = function(ctx, self, target) ctx:damage(target, 4) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end,
 }

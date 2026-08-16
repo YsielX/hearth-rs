@@ -16,7 +16,7 @@ function card.on_battlecry(ctx, self)
     throw(ctx, self)
 end
 function card.hit(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     local left = ctx:get_data(self, "bombs_left") - 1
     ctx:set_data(self, "bombs_left", left)
     if left > 0 then ctx:continue_with("throw_next") end

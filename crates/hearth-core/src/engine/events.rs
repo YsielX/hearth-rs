@@ -1053,8 +1053,7 @@ impl<R: CardRuntime> Game<R> {
         let hero = self.state.player(player).hero;
         queue.push_front(ResolutionItem::Effect(EffectSpec::Damage {
             source: hero,
-            target: hero,
-            amount: i32::try_from(amount).unwrap_or(i32::MAX),
+            hits: vec![(hero, i32::try_from(amount).unwrap_or(i32::MAX))],
             apply_spell_damage: false,
         }));
         queue.push_front(ResolutionItem::PublishAfter {

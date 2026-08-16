@@ -20,7 +20,7 @@ card.triggers = {{
         return event.player == ctx:controller(self) and #friendly_mechs(ctx, self) >= 3
     end,
     effect = function(ctx, self)
-        ctx:destroy_all(friendly_mechs(ctx, self))
+        cardlib.effects.destroy_all(ctx, friendly_mechs(ctx, self))
         ctx:continue_with("form_voltron")
     end,
 }}

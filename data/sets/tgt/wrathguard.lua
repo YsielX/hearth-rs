@@ -6,7 +6,7 @@ return {
         event = "damaged", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return event.target == self and event.amount > 0 end,
         effect = function(ctx, self, event)
-            ctx:damage(ctx:player(ctx:controller(self)).hero, event.amount)
+            cardlib.effects.damage(ctx, ctx:player(ctx:controller(self)).hero, event.amount)
         end,
     }},
 }

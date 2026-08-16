@@ -260,10 +260,10 @@ ctx:choose_cards(ctx:controller(self), "選擇一張1費隨從", candidates, "on
 這些函式不會在 Lua 中直接改變狀態，只會把效果描述加入本次呼叫的輸出緩衝區。Lua 函式成功返回後，Rust 才會驗證和執行它們。
 
 ```lua
-ctx:damage(target, amount)
-ctx:damage_ignoring_spell_damage(target, amount)
-ctx:damage_all(targets, amount)
-ctx:heal(target, amount)
+cardlib.effects.damage(ctx, target, amount)
+cardlib.effects.damage_ignoring_spell_damage(ctx, target, amount)
+cardlib.effects.damage_all(ctx, targets, amount)
+cardlib.effects.heal(ctx, target, amount)
 ctx:gain_armor(player, amount)
 ctx:overload(player, amount)
 ctx:unlock_mana(player, amount)
@@ -311,29 +311,29 @@ ctx:shuffle_entity_into_deck(player, target)
 ctx:shuffle_copy_into_deck(player, target)
 ctx:change_controller(target, player)
 ctx:change_controller_until_end_of_turn(target, player)
-ctx:transform(target, card_id)
-ctx:transform_all(targets, card_id)
-ctx:transform_batch({ { target, card_id }, ... })
+cardlib.effects.transform(ctx, target, card_id)
+cardlib.effects.transform_all(ctx, targets, card_id)
+cardlib.effects.transform_batch(ctx, { { target, card_id }, ... })
 ctx:transform_into_copy(target, template, attack_or_nil, health_or_nil)
-ctx:transform_preserving_scripts(target, card_id)
-ctx:destroy(target)
-ctx:destroy_all(targets)
-ctx:damage_batch({ { target, amount }, ... })
-ctx:damage_batch_ignoring_spell_damage({ { target, amount }, ... })
-ctx:damage_from(source, target, amount)
+cardlib.effects.transform_preserving_scripts(ctx, target, card_id)
+cardlib.effects.destroy(ctx, target)
+cardlib.effects.destroy_all(ctx, targets)
+cardlib.effects.damage_batch(ctx, { { target, amount }, ... })
+cardlib.effects.damage_batch_ignoring_spell_damage(ctx, { { target, amount }, ... })
+cardlib.effects.damage_from(ctx, source, target, amount)
 ctx:add_attack_collateral(event_id, targets, amount)
 ctx:force_attack(attacker, defender)
 ctx:take_extra_turn(player)
 ctx:win_game(player)
 ctx:set_health(target, amount)
-ctx:heal_all(targets, amount)
+cardlib.effects.heal_all(ctx, targets, amount)
 ctx:trigger_hook(target, hook)
 ctx:attach_hook(target, hook, card_id)
 ctx:attach_script(target, card_id)
 ctx:board_position(target)
 ctx:buff(target, attack_delta, health_delta)
 ctx:buff_until_end_of_turn(target, attack_delta, health_delta)
-ctx:modify_all(targets, modifier_table)
+cardlib.effects.modify_all(ctx, targets, modifier_table)
 ctx:grant_keyword(target, keyword)
 ctx:grant_keyword_until_end_of_turn(target, keyword)
 ctx:grant_keyword_until_next_turn(target, keyword)
@@ -347,7 +347,9 @@ ctx:silence(target)
 ctx:freeze(target)
 ctx:reveal_secret(secret)
 ctx:cancel_event(event)
-ctx:set_event_amount(event, amount)
+cardlib.effects.set_event_amount(ctx, event, amount)
+cardlib.effects.add_event_amount(ctx, event, amount)
+cardlib.effects.multiply_event_amount(ctx, event, factor)
 ctx:set_attack_defender(event_id, defender)
 ctx:set_damage_target(event_id, target)
 ctx:replace_trade_draw(event_id, replacement_entity)
@@ -361,6 +363,8 @@ ctx:increment_player_data(player, key, delta)
 ```
 
 所有效果的 `source` 自動設為當前執行 hook 的卡牌實體。
+
+`cardlib.effects` 是卡牌層的 Lua 便捷庫。其單體和等量群體函式最終摺疊成一次原子批次處理：`ctx:damage_batch(hits, options_or_nil)`、`ctx:heal_batch(hits)`、`ctx:destroy_batch(targets)`、`ctx:transform_batch(transforms, options_or_nil)`、`ctx:modify_batch(modifications)`。傷害 options 支援 `source` 和 `apply_spell_damage`；事件數值包裝統一呼叫 `ctx:modify_event_amount(event, { operation = "set" | "add" | "multiply", value = n })`。
 
 光環中的 `cost` 是加法層；卡牌文字寫「消耗為（1）」時使用 `cost_set = 1`（也可為函式）。屬性層順序為 `SET → ADD → MULTIPLY → FINAL SET → Aura SET → Aura ADD`，同層多個持續 SET 按光環時間戳順序由後者覆蓋。
 
@@ -464,7 +468,7 @@ hand, board, secret, deck_top, deck_bottom, deck_random, graveyard, removed
 通用屬性修改使用 `modify`：
 
 ```lua
-ctx:modify(target, {
+cardlib.effects.modify(ctx, target, {
     stat = "attack",             -- attack / health / cost / spell_damage
     operation = "set",           -- set / add / pre_final_add / multiply / final_set
     value = 5,
@@ -514,7 +518,7 @@ keyword_params = { spell_damage = 1 },
 
 地標是 `type = "location"` 的普通可收集卡牌，`health` 表示耐久度。它與隨從共用七個戰場位置，但不是角色：不能攻擊、不能成為攻擊目標，也不會出現在 `characters`、`minions`、`friendly_minions`、`enemy_characters` 或 `adjacent_minions` 的結果中。`ctx:board(player)` 會返回該玩家戰場上的所有隨從和地標，因此指令碼可以檢查 `ctx:entity(id).type` 來篩選地標。
 
-地標打出時不選擇目標，可照常實現 `on_play`。進入戰場後可以立刻免費使用；每次使用消耗 1 點耐久度，並在下一個己方回合保持冷卻，到再下一個己方回合恢復。實體快照中的 `location_cooldown` 在使用後為 `2`，兩個己方回合開始時依次變成 `1`、`0`。耐久耗盡後自動進入墓地；最後一次使用會先清出地標的戰場位置，再執行能力，因此滿場時仍可由該能力召喚隨從。普通傷害、治療、凍結、屬性增益和光環都不能改變地標耐久；需要移除地標時使用 `ctx:destroy`。
+地標打出時不選擇目標，可照常實現 `on_play`。進入戰場後可以立刻免費使用；每次使用消耗 1 點耐久度，並在下一個己方回合保持冷卻，到再下一個己方回合恢復。實體快照中的 `location_cooldown` 在使用後為 `2`，兩個己方回合開始時依次變成 `1`、`0`。耐久耗盡後自動進入墓地；最後一次使用會先清出地標的戰場位置，再執行能力，因此滿場時仍可由該能力召喚隨從。普通傷害、治療、凍結、屬性增益和光環都不能改變地標耐久；需要移除地標時使用 `cardlib.effects.destroy(ctx, target)`。
 
 ```lua
 return {
@@ -579,7 +583,7 @@ triggers = {
         end,
         effect = function(ctx, self, event)
             ctx:reveal_secret(self)
-            ctx:damage(event.attacker, 2)
+            cardlib.effects.damage(ctx, event.attacker, 2)
         end,
     },
 }
@@ -666,7 +670,7 @@ function card.on_play(ctx, self, target)
 end
 
 function card.on_target_chosen(ctx, self, choice)
-    ctx:damage(choice, 2)
+    cardlib.effects.damage(ctx, choice, 2)
 end
 
 return card
@@ -744,7 +748,7 @@ ctx:choose_options(ctx:controller(self), "選擇計劃", {
 
 function card.on_plan_chosen(ctx, self, plan)
     if plan.damage then
-        ctx:damage(plan.target, plan.damage)
+        cardlib.effects.damage(ctx, plan.target, plan.damage)
     end
 end
 ```
@@ -757,7 +761,7 @@ end
 
 ```lua
 function card.on_play(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     ctx:continue_with_entity("after_damage", target)
 end
 
@@ -812,7 +816,7 @@ name, event_id, timing，以及該事件自己的 player/source/target/amount �
     effect = function(ctx, self, event)
         -- 二選一：完全取消，或把最終傷害改為 1。
         -- ctx:cancel_event(event)
-        ctx:set_event_amount(event, 1)
+        cardlib.effects.set_event_amount(ctx, event, 1)
     end,
 }
 ```
@@ -827,7 +831,7 @@ name, event_id, timing，以及該事件自己的 player/source/target/amount �
 - `location_used`：耐久與冷卻已經預留；取消能力效果，但不返還這些消耗；
 - `attack`、`damaged`、`healed`：取消對應的攻擊、傷害或治療提交。
 
-`set_event_amount` 適用於 `damaged`、`healed` 和 `fatigue`。修改疲勞數值隻影響本次傷害，不改寫下次疲勞計數。在 after trigger、事件已經提交後或不支援數值替換的事件上呼叫，會令當前玩家命令失敗並事務回滾。
+`cardlib.effects.set_event_amount`、`add_event_amount` 和 `multiply_event_amount` 適用於 `damaged`、`healed` 和 `fatigue`，並按 EffectSpec 佇列順序組合。修改疲勞數值隻影響本次傷害，不改寫下次疲勞計數。在 after trigger、事件已經提交後或不支援數值替換的事件上呼叫，會令當前玩家命令失敗並事務回滾。
 
 before trigger 也可以呼叫 `choose_entities`/`choose_cards`。Rust 會把尚未執行的事件提交和戰鬥動作一起序列化進 `PendingInput`；玩家選擇後才繼續，而不是讓攻擊在選擇前偷跑。
 

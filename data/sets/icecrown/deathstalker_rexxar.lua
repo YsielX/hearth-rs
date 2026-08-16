@@ -21,7 +21,7 @@ function card.on_battlecry(ctx, self)
             targets[#targets + 1] = minion
         end
     end
-    ctx:damage_all(targets, 2)
+    cardlib.effects.damage_all(ctx, targets, 2)
 end
 
 card.tokens = {

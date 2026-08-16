@@ -42,7 +42,7 @@ function card.fire_missile(ctx, self)
 end
 
 function card.hit_with_missile(ctx, self, target)
-    ctx:damage(target, 1)
+    cardlib.effects.damage(ctx, target, 1)
     local remaining = ctx:get_data(self, "missiles_remaining") - 1
     ctx:set_data(self, "missiles_remaining", remaining)
     if remaining > 0 then ctx:continue_with("fire_missile") end
@@ -52,7 +52,7 @@ card.triggers = {
     {
         event = "damaged", timing = "before", active_zones = { "graveyard" },
         condition = function(ctx, self, event) return event.source == self end,
-        effect = function(ctx, self, event) ctx:set_event_amount(event, 1) end,
+        effect = function(ctx, self, event) cardlib.effects.set_event_amount(ctx, event, 1) end,
     },
 }
 

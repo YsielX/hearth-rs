@@ -9,7 +9,7 @@ local function request_damage(ctx, self)
 end
 
 function card.on_play(ctx, self) request_damage(ctx, self) end
-function card.deal_random_damage(ctx, self, target) ctx:damage(target, 4) end
+function card.deal_random_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end
 
 card.triggers = {{
     event = "card_discarded", timing = "after", active_zones = { "graveyard" },

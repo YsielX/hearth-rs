@@ -6,6 +6,6 @@ return {
     on_battlecry = function(ctx, self)
         local targets = {}
         for _, minion in ipairs(ctx:minions()) do if minion ~= self then targets[#targets + 1] = minion end end
-        ctx:damage_all(targets, 1)
+        cardlib.effects.damage_all(ctx, targets, 1)
     end,
 }

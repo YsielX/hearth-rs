@@ -36,7 +36,7 @@ card.triggers = {
         effect = function(ctx, self, event)
             ctx:set_data(self, "trial_minion", 0)
             ctx:reveal_secret(self)
-            ctx:destroy(event.entity)
+            cardlib.effects.destroy(ctx, event.entity)
         end,
     },
 }

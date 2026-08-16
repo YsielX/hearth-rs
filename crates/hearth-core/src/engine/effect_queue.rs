@@ -309,30 +309,45 @@ impl<R: CardRuntime> Game<R> {
             }
             EffectSpec::Damage {
                 source,
-                target,
-                amount,
+                hits,
                 apply_spell_damage,
             } => {
-                let target_kind = self
-                    .state
-                    .entity(target)
-                    .map(|entity| entity.kind)
-                    .ok_or(GameError::UnknownEntity(target))?;
-                if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
+                if hits.is_empty() {
                     return Ok(false);
                 }
-                let amount = if apply_spell_damage {
-                    self.apply_spell_damage_bonus(source, amount)
-                } else {
-                    amount
-                };
-                let pending = self.begin_event(GameEvent::Damaged {
-                    source,
-                    target,
-                    amount,
-                })?;
-                let before = self.trigger_event(&pending, EventTiming::Before)?;
-                queue.push_front(ResolutionItem::CommitEvent(pending));
+                let mut seen = std::collections::BTreeSet::new();
+                let mut damage = Vec::new();
+                for (target, amount) in hits {
+                    if !seen.insert(target) {
+                        continue;
+                    }
+                    let target_kind = self
+                        .state
+                        .entity(target)
+                        .map(|entity| entity.kind)
+                        .ok_or(GameError::UnknownEntity(target))?;
+                    if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
+                        continue;
+                    }
+                    let amount = if apply_spell_damage {
+                        self.apply_spell_damage_bonus(source, amount)
+                    } else {
+                        amount
+                    };
+                    damage.push(self.begin_event(GameEvent::Damaged {
+                        source,
+                        target,
+                        amount,
+                    })?);
+                }
+                if damage.is_empty() {
+                    return Ok(false);
+                }
+                let mut before = Vec::new();
+                for pending in &damage {
+                    before.extend(self.trigger_event(pending, EventTiming::Before)?);
+                }
+                queue.push_front(ResolutionItem::CommitDamageGroup { damage });
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
@@ -384,139 +399,8 @@ impl<R: CardRuntime> Game<R> {
                 )?;
                 Ok(false)
             }
-            EffectSpec::DamageGroup {
-                source,
-                targets,
-                amount,
-            } => {
-                if targets.is_empty() {
-                    return Ok(false);
-                }
-                let mut seen = std::collections::BTreeSet::new();
-                let mut damage = Vec::new();
-                let amount = self.apply_spell_damage_bonus(source, amount);
-                for target in targets {
-                    if !seen.insert(target) {
-                        continue;
-                    }
-                    let target_kind = self
-                        .state
-                        .entity(target)
-                        .map(|entity| entity.kind)
-                        .ok_or(GameError::UnknownEntity(target))?;
-                    if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
-                        continue;
-                    }
-                    damage.push(self.begin_event(GameEvent::Damaged {
-                        source,
-                        target,
-                        amount,
-                    })?);
-                }
-                if damage.is_empty() {
-                    return Ok(false);
-                }
-                let mut before = Vec::new();
-                for pending in &damage {
-                    before.extend(self.trigger_event(pending, EventTiming::Before)?);
-                }
-                queue.push_front(ResolutionItem::CommitDamageGroup { damage });
-                Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::DamageBatch {
-                source,
-                hits,
-                apply_spell_damage,
-            } => {
+            EffectSpec::Heal { source, hits } => {
                 if hits.is_empty() {
-                    return Ok(false);
-                }
-                let mut seen = std::collections::BTreeSet::new();
-                let mut damage = Vec::new();
-                for (target, amount) in hits {
-                    if !seen.insert(target) {
-                        continue;
-                    }
-                    let target_kind = self
-                        .state
-                        .entity(target)
-                        .map(|entity| entity.kind)
-                        .ok_or(GameError::UnknownEntity(target))?;
-                    if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
-                        continue;
-                    }
-                    let amount = if apply_spell_damage {
-                        self.apply_spell_damage_bonus(source, amount)
-                    } else {
-                        amount
-                    };
-                    damage.push(self.begin_event(GameEvent::Damaged {
-                        source,
-                        target,
-                        amount,
-                    })?);
-                }
-                if damage.is_empty() {
-                    return Ok(false);
-                }
-                let mut before = Vec::new();
-                for pending in &damage {
-                    before.extend(self.trigger_event(pending, EventTiming::Before)?);
-                }
-                queue.push_front(ResolutionItem::CommitDamageGroup { damage });
-                Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::Heal {
-                source,
-                target,
-                amount,
-            } => {
-                let target_kind = self
-                    .state
-                    .entity(target)
-                    .map(|entity| entity.kind)
-                    .ok_or(GameError::UnknownEntity(target))?;
-                if !matches!(target_kind, CardKind::Minion | CardKind::Hero) {
-                    return Ok(false);
-                }
-                let source_player = self
-                    .state
-                    .entity(source)
-                    .map(|entity| entity.controller)
-                    .ok_or(GameError::UnknownEntity(source))?;
-                let converts_healing = self.keyword_bool(
-                    self.state.player(source_player).hero,
-                    "healing_becomes_damage",
-                    false,
-                    Some(source),
-                )?;
-                let event = if converts_healing {
-                    GameEvent::Damaged {
-                        source,
-                        target,
-                        amount: amount.max(0),
-                    }
-                } else {
-                    GameEvent::Healed {
-                        source,
-                        target,
-                        amount: amount.max(0),
-                    }
-                };
-                let pending = self.begin_event(event)?;
-                let before = self.trigger_event(&pending, EventTiming::Before)?;
-                queue.push_front(ResolutionItem::CommitEvent(pending));
-                Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::HealGroup {
-                source,
-                targets,
-                amount,
-            } => {
-                if targets.is_empty() {
                     return Ok(false);
                 }
                 let source_player = self
@@ -532,7 +416,7 @@ impl<R: CardRuntime> Game<R> {
                 )?;
                 let mut seen = std::collections::BTreeSet::new();
                 let mut healing = Vec::new();
-                for target in targets {
+                for (target, amount) in hits {
                     if !seen.insert(target) {
                         continue;
                     }
@@ -1010,60 +894,32 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, before);
                 Ok(false)
             }
-            EffectSpec::DestroyGroup { source, targets } => {
+            EffectSpec::Destroy { source, targets } => {
                 let mut seen = std::collections::BTreeSet::new();
                 let mut events = Vec::new();
+                let mut weapon_destructions = Vec::new();
+                let mut weapon_before = Vec::new();
                 for target in targets {
-                    if seen.insert(target) {
-                        let Some(entity) = self.state.entity(target).cloned() else {
-                            return Err(GameError::UnknownEntity(target));
-                        };
-                        if entity.zone != Zone::Board {
-                            continue;
-                        }
-                        if !self.keyword_bool(target, "can_be_destroyed", true, Some(source))? {
-                            continue;
-                        }
-                        match entity.kind {
-                            CardKind::Minion => {
-                                self.state.entities.get_mut(&target).unwrap().damage =
-                                    entity.max_health.max(1);
-                            }
-                            CardKind::Location => {
-                                self.remove_from_zone(target, Zone::Board, entity.controller);
-                                self.move_to_graveyard(target, entity.controller);
-                                events.push(GameEvent::LocationDestroyed {
-                                    player: entity.controller,
-                                    location: target,
-                                });
-                            }
-                            _ => {}
-                        }
+                    if !seen.insert(target) {
+                        continue;
                     }
-                }
-                self.refresh_auras()?;
-                queue.push_front(ResolutionItem::DeathCheck);
-                for event in events.into_iter().rev() {
-                    let triggered = self.publish(event)?;
-                    Self::prepend_effects(queue, triggered);
-                }
-                Ok(false)
-            }
-            EffectSpec::Destroy { source, target } => {
-                let Some(entity) = self.state.entity(target).cloned() else {
-                    return Err(GameError::UnknownEntity(target));
-                };
-                if entity.kind == CardKind::Weapon && entity.zone == Zone::Weapon {
-                    let pending = self.begin_event(GameEvent::WeaponDestroyed {
-                        player: entity.controller,
-                        weapon: target,
-                    })?;
-                    let before = self.trigger_event(&pending, EventTiming::Before)?;
-                    queue.push_front(ResolutionItem::CommitForcedWeaponDestruction(pending));
-                    Self::prepend_effects(queue, before);
-                } else if entity.zone == Zone::Board
-                    && self.keyword_bool(target, "can_be_destroyed", true, Some(source))?
-                {
+                    let Some(entity) = self.state.entity(target).cloned() else {
+                        return Err(GameError::UnknownEntity(target));
+                    };
+                    if entity.kind == CardKind::Weapon && entity.zone == Zone::Weapon {
+                        let pending = self.begin_event(GameEvent::WeaponDestroyed {
+                            player: entity.controller,
+                            weapon: target,
+                        })?;
+                        weapon_before.extend(self.trigger_event(&pending, EventTiming::Before)?);
+                        weapon_destructions.push(pending);
+                        continue;
+                    }
+                    if entity.zone != Zone::Board
+                        || !self.keyword_bool(target, "can_be_destroyed", true, Some(source))?
+                    {
+                        continue;
+                    }
                     match entity.kind {
                         CardKind::Minion => {
                             let target = self.state.entities.get_mut(&target).unwrap();
@@ -1073,17 +929,24 @@ impl<R: CardRuntime> Game<R> {
                         CardKind::Location => {
                             self.remove_from_zone(target, Zone::Board, entity.controller);
                             self.move_to_graveyard(target, entity.controller);
-                            let triggered = self.publish(GameEvent::LocationDestroyed {
+                            events.push(GameEvent::LocationDestroyed {
                                 player: entity.controller,
                                 location: target,
-                            })?;
-                            Self::prepend_effects(queue, triggered);
+                            });
                         }
                         _ => {}
                     }
-                    self.refresh_auras()?;
-                    queue.push_front(ResolutionItem::DeathCheck);
                 }
+                self.refresh_auras()?;
+                queue.push_front(ResolutionItem::DeathCheck);
+                for pending in weapon_destructions.into_iter().rev() {
+                    queue.push_front(ResolutionItem::CommitForcedWeaponDestruction(pending));
+                }
+                for event in events.into_iter().rev() {
+                    let triggered = self.publish(event)?;
+                    Self::prepend_effects(queue, triggered);
+                }
+                Self::prepend_effects(queue, weapon_before);
                 Ok(false)
             }
             EffectSpec::TriggerHook {
@@ -1253,112 +1116,9 @@ impl<R: CardRuntime> Game<R> {
             }
             EffectSpec::Transform {
                 source,
-                target,
-                card_id,
+                transforms,
                 preserve_attached_scripts,
             } => {
-                let entity = self
-                    .state
-                    .entity(target)
-                    .ok_or(GameError::UnknownEntity(target))?;
-                if matches!(
-                    entity.zone,
-                    Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
-                ) {
-                    return Ok(false);
-                }
-                let definition = self
-                    .runtime
-                    .definition(&card_id)
-                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
-                let hand_can_change_kind = matches!(entity.zone, Zone::Hand | Zone::Deck)
-                    && matches!(
-                        definition.kind,
-                        CardKind::Hero
-                            | CardKind::Minion
-                            | CardKind::Spell
-                            | CardKind::Weapon
-                            | CardKind::Location
-                    );
-                if definition.kind != entity.kind && !hand_can_change_kind {
-                    return Err(GameError::CardCannotTransformInto(card_id));
-                }
-                if entity.card_id == card_id {
-                    return Ok(false);
-                }
-                let pending = self.begin_event(GameEvent::Transformed {
-                    source,
-                    entity: target,
-                    from_card: entity.card_id.clone(),
-                    to_card: card_id,
-                })?;
-                let before = self.trigger_event(&pending, EventTiming::Before)?;
-                queue.push_front(ResolutionItem::CommitTransform {
-                    transform: pending,
-                    preserve_attached_scripts,
-                });
-                Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::TransformGroup {
-                source,
-                targets,
-                card_id,
-            } => {
-                let definition_kind = self
-                    .runtime
-                    .definition(&card_id)
-                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?
-                    .kind;
-                let mut seen = std::collections::BTreeSet::new();
-                let mut pending_events = Vec::new();
-                let mut before = Vec::new();
-                for target in targets {
-                    if !seen.insert(target) {
-                        continue;
-                    }
-                    let Some(entity) = self.state.entity(target) else {
-                        continue;
-                    };
-                    if matches!(
-                        entity.zone,
-                        Zone::Hero | Zone::HeroPower | Zone::SetAside | Zone::Removed
-                    ) || entity.card_id == card_id
-                    {
-                        continue;
-                    }
-                    let hidden_zone_can_change_kind =
-                        matches!(entity.zone, Zone::Hand | Zone::Deck)
-                            && matches!(
-                                definition_kind,
-                                CardKind::Hero
-                                    | CardKind::Minion
-                                    | CardKind::Spell
-                                    | CardKind::Weapon
-                                    | CardKind::Location
-                            );
-                    if definition_kind != entity.kind && !hidden_zone_can_change_kind {
-                        return Err(GameError::CardCannotTransformInto(card_id));
-                    }
-                    let pending = self.begin_event(GameEvent::Transformed {
-                        source,
-                        entity: target,
-                        from_card: entity.card_id.clone(),
-                        to_card: card_id.clone(),
-                    })?;
-                    before.extend(self.trigger_event(&pending, EventTiming::Before)?);
-                    pending_events.push(pending);
-                }
-                if pending_events.is_empty() {
-                    return Ok(false);
-                }
-                queue.push_front(ResolutionItem::CommitTransformGroup {
-                    transforms: pending_events,
-                });
-                Self::prepend_effects(queue, before);
-                Ok(false)
-            }
-            EffectSpec::TransformBatch { source, transforms } => {
                 let mut seen = std::collections::BTreeSet::new();
                 let mut pending_events = Vec::new();
                 let mut before = Vec::new();
@@ -1408,6 +1168,7 @@ impl<R: CardRuntime> Game<R> {
                 }
                 queue.push_front(ResolutionItem::CommitTransformGroup {
                     transforms: pending_events,
+                    preserve_attached_scripts,
                 });
                 Self::prepend_effects(queue, before);
                 Ok(false)
@@ -1483,37 +1244,37 @@ impl<R: CardRuntime> Game<R> {
                 pending.cancelled = true;
                 Ok(false)
             }
-            EffectSpec::SetEventAmount {
+            EffectSpec::ModifyEventAmount {
                 source: _,
                 event,
-                amount,
-            } => {
-                let pending = Self::find_pending_event_mut(queue, event)
-                    .ok_or(GameError::EventNotPending(event))?;
-                match &mut pending.event {
-                    GameEvent::Damaged { amount: value, .. }
-                    | GameEvent::Healed { amount: value, .. } => *value = amount.max(0),
-                    GameEvent::Fatigue { amount: value, .. } => {
-                        *value = u32::try_from(amount.max(0)).unwrap_or(u32::MAX)
-                    }
-                    _ => return Err(GameError::EventAmountNotReplaceable(event)),
-                }
-                Ok(false)
-            }
-            EffectSpec::MultiplyEventAmount {
-                source: _,
-                event,
-                factor,
+                operation,
+                value,
             } => {
                 let pending = Self::find_pending_event_mut(queue, event)
                     .ok_or(GameError::EventNotPending(event))?;
                 match &mut pending.event {
                     GameEvent::Damaged { amount, .. } | GameEvent::Healed { amount, .. } => {
-                        *amount = amount.saturating_mul(factor).max(0)
+                        *amount = match operation {
+                            ModifierOperation::Set | ModifierOperation::FinalSet => value,
+                            ModifierOperation::Add | ModifierOperation::PreFinalAdd => {
+                                amount.saturating_add(value)
+                            }
+                            ModifierOperation::Multiply => amount.saturating_mul(value),
+                        }
+                        .max(0);
                     }
                     GameEvent::Fatigue { amount, .. } => {
-                        *amount =
-                            amount.saturating_mul(u32::try_from(factor.max(0)).unwrap_or(u32::MAX))
+                        let current = i64::from(*amount);
+                        let modified = match operation {
+                            ModifierOperation::Set | ModifierOperation::FinalSet => {
+                                i64::from(value)
+                            }
+                            ModifierOperation::Add | ModifierOperation::PreFinalAdd => {
+                                current.saturating_add(i64::from(value))
+                            }
+                            ModifierOperation::Multiply => current.saturating_mul(i64::from(value)),
+                        };
+                        *amount = modified.clamp(0, i64::from(u32::MAX)) as u32;
                     }
                     _ => return Err(GameError::EventAmountNotReplaceable(event)),
                 }

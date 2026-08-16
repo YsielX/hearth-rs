@@ -4,6 +4,6 @@ return {
     set = "UNGORO", type = "minion", rarity = "common", cost = 1, attack = 2, health = 1,
     tags = { "beast" }, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        ctx:damage_all({ ctx:player(0).hero, ctx:player(1).hero }, 1)
+        cardlib.effects.damage_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 1)
     end,
 }

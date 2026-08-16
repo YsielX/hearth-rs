@@ -5,6 +5,6 @@ local card = {
     cost = 2, keywords = { "lifesteal" },
 }
 
-function card.on_play(ctx, self) ctx:damage_all(ctx:minions(), 1) end
+function card.on_play(ctx, self) cardlib.effects.damage_all(ctx, ctx:minions(), 1) end
 
 return card

@@ -14,7 +14,7 @@ return {
 
     action_effects = {
         forge = function(ctx, self)
-            ctx:modify(self, { stat = "cost", operation = "add", value = -2 })
+            cardlib.effects.modify(ctx, self, { stat = "cost", operation = "add", value = -2 })
         end,
     },
 }

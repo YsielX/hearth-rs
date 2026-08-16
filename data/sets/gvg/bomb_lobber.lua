@@ -12,5 +12,5 @@ function card.on_battlecry(ctx, self)
     end
     if #targets > 0 then ctx:random_entity(targets, "lob") end
 end
-function card.lob(ctx, self, target) ctx:damage(target, 4) end
+function card.lob(ctx, self, target) cardlib.effects.damage(ctx, target, 4) end
 return card

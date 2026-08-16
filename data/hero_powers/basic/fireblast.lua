@@ -9,5 +9,5 @@ return {
     cost = 2,
     target_mode = "required",
     targets = function(ctx, self) return ctx:characters() end,
-    on_play = function(ctx, self, target) ctx:damage(target, 1) end,
+    on_play = function(ctx, self, target) cardlib.effects.damage(ctx, target, 1) end,
 }

@@ -42,7 +42,7 @@ power.tokens = {
                 end,
                 effect = function(ctx, self)
                     for _, minion in ipairs(ctx:friendly_minions(self)) do
-                        ctx:heal(minion, 1)
+                        cardlib.effects.heal(ctx, minion, 1)
                     end
                 end,
             },

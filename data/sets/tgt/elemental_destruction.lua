@@ -10,7 +10,7 @@ function card.on_play(ctx, self)
 end
 
 function card.deal_elemental_damage(ctx, self, amount)
-    ctx:damage_all(ctx:minions(), amount)
+    cardlib.effects.damage_all(ctx, ctx:minions(), amount)
 end
 
 return card
