@@ -78,6 +78,26 @@ fn play(
     card
 }
 
+#[test]
+fn multiple_keening_banshees_remove_distinct_top_cards() {
+    let mut game = game_with_runtime(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        repeated("CS2_120"),
+        repeated("ICC_911"),
+        7,
+        ["mage", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 8);
+    play(&mut game, PlayerId::TWO, "ICC_911", None);
+    play(&mut game, PlayerId::TWO, "ICC_911", None);
+    let before = game.state().player(PlayerId::TWO).deck.len();
+    play(&mut game, PlayerId::TWO, "GAME_005", None);
+    assert_eq!(
+        game.state().player(PlayerId::TWO).deck.len(),
+        before.saturating_sub(6)
+    );
+}
+
 static TEMP_RUNTIME_COUNTER: AtomicU64 = AtomicU64::new(0);
 
 struct TempRuntimeDir(PathBuf);

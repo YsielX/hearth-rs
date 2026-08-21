@@ -186,6 +186,7 @@ impl<R: CardRuntime> Game<R> {
         copy.silenced = template.silenced;
         copy.script_data = template.script_data.clone();
         copy.choice_policy = ChoicePolicy::Player;
+        copy.base_attached_cards = template.base_attached_cards.clone();
         copy.attached_cards = template.attached_cards.clone();
         copy.hook_attachments = template.hook_attachments.clone();
         Self::recompute_entity(copy);
@@ -373,6 +374,7 @@ impl<R: CardRuntime> Game<R> {
             script_data: Default::default(),
             choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
+            base_attached_cards: Vec::new(),
             hook_attachments: BTreeMap::new(),
         }
     }
@@ -423,6 +425,7 @@ impl<R: CardRuntime> Game<R> {
             script_data: Default::default(),
             choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
+            base_attached_cards: Vec::new(),
             hook_attachments: BTreeMap::new(),
         }
     }

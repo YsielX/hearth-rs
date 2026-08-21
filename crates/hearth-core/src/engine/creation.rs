@@ -57,6 +57,7 @@ impl<R: CardRuntime> Game<R> {
             if let Some(keywords) = creation.keywords {
                 entity.base_keywords = keywords;
             }
+            entity.base_attached_cards = creation.attached_scripts.clone();
             entity.attached_cards = creation.attached_scripts;
             Self::recompute_entity(entity);
         }

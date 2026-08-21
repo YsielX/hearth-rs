@@ -952,25 +952,28 @@ impl LuaCardRuntime {
         Ok(output)
     }
 
-    fn bind_unique_keyword_continuation_owners(
+    fn bind_keyword_continuation_owners(
         &self,
         state: &GameState,
         source: EntityId,
-        effects: &mut [EffectSpec],
+        effects: &mut Vec<EffectSpec>,
     ) -> Result<(), String> {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown keyword continuation source entity {source}"))?;
-        for effect in effects {
+        let mut bound = Vec::with_capacity(effects.len());
+        for effect in std::mem::take(effects) {
             let EffectSpec::Continue {
                 hook,
                 continuation_owner,
                 ..
-            } = effect
+            } = &effect
             else {
+                bound.push(effect);
                 continue;
             };
             if continuation_owner.is_some() {
+                bound.push(effect);
                 continue;
             }
 
@@ -994,10 +997,23 @@ impl LuaCardRuntime {
                     owners.push(card_id);
                 }
             }
-            if owners.len() == 1 {
-                *continuation_owner = owners.pop();
+            if owners.is_empty() {
+                bound.push(effect);
+                continue;
+            }
+            for owner in owners {
+                let mut owned = effect.clone();
+                let EffectSpec::Continue {
+                    continuation_owner, ..
+                } = &mut owned
+                else {
+                    unreachable!()
+                };
+                *continuation_owner = Some(owner);
+                bound.push(owned);
             }
         }
+        *effects = bound;
         Ok(())
     }
 
@@ -1087,27 +1103,38 @@ impl CardRuntime for LuaCardRuntime {
         let entity = state
             .entity(source)
             .ok_or_else(|| format!("unknown source entity {source}"))?;
-        let module = self.module(&entity.card_id)?;
-        let Some(function) = module
-            .get::<Option<Function>>("targets")
-            .map_err(|error| error.to_string())?
-        else {
-            return Ok(Vec::new());
-        };
-        let effects = Rc::new(RefCell::new(Vec::new()));
-        let ctx = build_context(
-            &self.lua,
-            state,
-            source,
-            effects,
-            self.catalog.clone(),
-            self.locale,
-        )
-        .map_err(|error| error.to_string())?;
-        let ids: Vec<u64> = function
-            .call((ctx, source.0))
+        let mut card_ids = vec![entity.card_id.clone()];
+        card_ids.extend(entity.attached_cards.iter().cloned());
+        let mut seen = HashSet::new();
+        let mut targets = Vec::new();
+        for card_id in card_ids {
+            let module = self.module(&card_id)?;
+            let Some(function) = module
+                .get::<Option<Function>>("targets")
+                .map_err(|error| error.to_string())?
+            else {
+                continue;
+            };
+            let effects = Rc::new(RefCell::new(Vec::new()));
+            let ctx = build_context(
+                &self.lua,
+                state,
+                source,
+                effects,
+                self.catalog.clone(),
+                self.locale,
+            )
             .map_err(|error| error.to_string())?;
-        Ok(ids.into_iter().map(EntityId).collect())
+            let ids: Vec<u64> = function
+                .call((ctx, source.0))
+                .map_err(|error| format!("card {card_id} targets: {error}"))?;
+            for id in ids.into_iter().map(EntityId) {
+                if seen.insert(id) {
+                    targets.push(id);
+                }
+            }
+        }
+        Ok(targets)
     }
 
     fn location_targets(
@@ -1387,7 +1414,7 @@ impl CardRuntime for LuaCardRuntime {
                 output.extend(effects.borrow_mut().drain(..));
             }
         }
-        self.bind_unique_keyword_continuation_owners(state, source, &mut output)?;
+        self.bind_keyword_continuation_owners(state, source, &mut output)?;
         let module = self.module(&entity.card_id)?;
         if let Some(effects) = module
             .get::<Option<Table>>("action_effects")
@@ -1440,7 +1467,7 @@ impl CardRuntime for LuaCardRuntime {
         // handler now so a summon trigger cannot transform the host before the
         // continuation runs. Keep multi-handler dispatches unowned so every
         // attached implementation still executes.
-        self.bind_unique_keyword_continuation_owners(state, source, &mut keyword_effects)?;
+        self.bind_keyword_continuation_owners(state, source, &mut keyword_effects)?;
         output.extend(keyword_effects);
         Ok(output)
     }
@@ -1465,7 +1492,7 @@ impl CardRuntime for LuaCardRuntime {
         bind_continuation_owner(&mut output, &entity.card_id);
         let mut keyword_effects =
             self.invoke_keyword_effect_hooks(state, source, "on_location_use", target)?;
-        self.bind_unique_keyword_continuation_owners(state, source, &mut keyword_effects)?;
+        self.bind_keyword_continuation_owners(state, source, &mut keyword_effects)?;
         output.extend(keyword_effects);
         Ok(output)
     }
@@ -1506,7 +1533,7 @@ impl CardRuntime for LuaCardRuntime {
         for keyword in self.active_keyword_ids(state, listener)? {
             let module = self.keyword_module(&keyword)?;
             let mut generated = self.invoke_triggers(state, listener, event, module)?;
-            self.bind_unique_keyword_continuation_owners(state, listener, &mut generated)?;
+            self.bind_keyword_continuation_owners(state, listener, &mut generated)?;
             output.extend(generated);
         }
         Ok(output)
@@ -1611,6 +1638,7 @@ impl CardRuntime for LuaCardRuntime {
                 card_ids.extend(attachments.iter().cloned());
             }
         }
+        let searched_card_ids = card_ids.clone();
         let mut output = Vec::new();
         let mut found = false;
         for card_id in card_ids {
@@ -1650,8 +1678,8 @@ impl CardRuntime for LuaCardRuntime {
         }
         if !found {
             return Err(format!(
-                "card {} and its attachments have no continuation hook {hook}",
-                entity.card_id
+                "card {} and searched scripts {:?} have no continuation hook {hook}",
+                entity.card_id, searched_card_ids
             ));
         }
         Ok(output)

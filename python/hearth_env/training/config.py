@@ -33,7 +33,8 @@ class ModelConfig:
 class TrainConfig:
     device: str = "auto"
     seed: int = 0
-    learning_rate: float = 3e-4
+    bc_learning_rate: float = 3e-4
+    dmc_learning_rate: float = 1e-5
     weight_decay: float = 1e-4
     batch_size: int = 128
     grad_clip: float = 1.0
@@ -52,6 +53,8 @@ class TrainConfig:
     league_snapshot_every: int = 25
     max_steps: int = 1000
     history_limit: int | None = 96
+    bc_regularization_start: float = 0.2
+    bc_regularization_end: float = 0.05
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

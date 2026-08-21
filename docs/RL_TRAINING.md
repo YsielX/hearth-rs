@@ -61,16 +61,68 @@ python3 -m venv .venv
 .venv/bin/hearth-train --workers 16 collect-bc \
   --episodes 10000 --output training-data/bc-000.jsonl.gz
 
-.venv/bin/hearth-train --device cuda train-bc \
+.venv/bin/hearth-train --device cuda --bc-learning-rate 3e-4 train-bc \
   --input training-data/bc-000.jsonl.gz --output runs/bc.pt --epochs 3
 
-.venv/bin/hearth-train --workers 24 --device cuda train-dmc \
-  --init runs/bc.pt --run-dir runs/dmc \
+.venv/bin/hearth-train --workers 24 --device cuda --dmc-learning-rate 1e-5 train-dmc \
+  --init runs/bc.pt --bc-input training-data/bc-000.jsonl.gz --run-dir runs/dmc \
   --iterations 1000 --episodes-per-iteration 64 --updates-per-iteration 128
 
 .venv/bin/hearth-train --device cuda evaluate \
   --checkpoint runs/dmc/latest.pt --matches 200
 ```
+
+`collect-bc`、`train-dmc` 和 `evaluate` 默认只从显式传入的牌组采样
+（`--curated-probability 1 --perturb-probability 0`）。需要混合扰动或随机牌组时必须显式修改这两个比例；剩余概率是随机职业合法牌组。这样固定 seen/unseen
+评估不会意外混入其他分布。
+
+独立 BC 动作验证和 checkpoint 对 champion 的双边换位评估分别使用：
+
+```bash
+.venv/bin/hearth-train evaluate-bc \
+  --input training-data/bc-validation.jsonl.gz --checkpoint runs/bc.pt
+
+.venv/bin/hearth-train evaluate \
+  --checkpoint runs/dmc/latest.pt --opponent-checkpoint runs/bc.pt \
+  --matches 250 --output runs/dmc-vs-bc-500.json
+```
+
+也可以在终端中直接与 checkpoint 对战；双方牌组都使用仓库中的 JSON 牌表：
+
+```bash
+.venv/bin/hearth-train --device cpu --seed 42 play-model \
+  --checkpoint runs/bc.pt \
+  --human-deck decks/frozen_throne/hunter_beast.json \
+  --ai-deck decks/frozen_throne/fenoms_murloc_paladin_hct_americas_summer_playoffs_2017.json \
+  --human-seat 1 --locale zhCN
+```
+
+交互界面只显示玩家可见状态和引擎枚举的合法动作；输入动作编号执行，输入 `q` 退出。
+
+`--init` 只加载模型参数并创建新的 DMC AdamW；`--resume` 只接受 DMC checkpoint，
+恢复 optimizer 和 iteration，并从 `run-dir/rollouts` 重建 replay buffer。两者互斥：
+
+```bash
+.venv/bin/hearth-train --workers 24 --device cuda train-dmc \
+  --resume runs/dmc/latest.pt --bc-input training-data/bc-000.jsonl.gz \
+  --run-dir runs/dmc --iterations 2000
+```
+
+DMC batch 默认另取约20%的 BC anchor，损失权重在前20%训练中从0.2降到0.05，
+随后保持0.05。联盟 snapshot 在空过率超过5%、截断率超过1%或出现对局错误时
+拒绝晋级。worker 错误会把 seed、套牌、策略/checkpoint、动作历史、最后 observation、
+action、traceback 和权威 replay 保存到运行目录的 `failures/`。
+
+正式收集前先按原始30张牌的近似簇生成固定拆分，再运行环境压测：
+
+```bash
+.venv/bin/hearth-train split-decks --output-dir runs/first/manifests
+.venv/bin/hearth-train --workers 16 stability \
+  --episodes 5000 --output-dir runs/first/stability-5000
+```
+
+`stability` 交替使用启发式和随机策略、原始和扰动牌表，要求0错误、截断率低于
+0.1%，并对固定随机抽取的100局逐 observation/action 和权威 replay 严格重放。
 
 每个 rollout worker 是一个独立 OS 进程，拥有一个 Lua runtime，并用 `reset_match` 连续重开
 不同套牌的多局；Lua 对象不跨线程共享。learner 可用一张 GPU，actor 默认在 CPU 推理。原始

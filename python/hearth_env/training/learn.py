@@ -17,6 +17,8 @@ from .trajectory import TrainingSample
 class LossMetrics:
     loss: float
     accuracy: float | None = None
+    dmc_loss: float | None = None
+    bc_loss: float | None = None
 
 
 def _sample_batch(
@@ -72,6 +74,59 @@ def train_batch(
     torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_clip)
     optimizer.step()
     return LossMetrics(float(loss.detach().item()), accuracy)
+
+
+def train_mixed_batch(
+    model: HearthQNetwork,
+    optimizer: torch.optim.Optimizer,
+    tensorizer: Tensorizer,
+    dmc_samples: Sequence[TrainingSample],
+    bc_samples: Sequence[TrainingSample],
+    config: TrainConfig,
+    device: str,
+    *,
+    bc_weight: float,
+) -> LossMetrics:
+    """Apply DMC regression and a weighted BC anchor in one optimizer step."""
+
+    if not dmc_samples:
+        raise ValueError("a mixed DMC batch needs at least one return sample")
+    model.train()
+    dmc_batch, dmc_actions, dmc_targets, dmc_weights = _sample_batch(
+        dmc_samples, tensorizer, device
+    )
+    bc_encoded = _sample_batch(bc_samples, tensorizer, device) if bc_samples else None
+    amp_enabled = config.amp and device.startswith("cuda")
+    context = (
+        torch.autocast(device_type="cuda", enabled=True)
+        if amp_enabled
+        else nullcontext()
+    )
+    optimizer.zero_grad(set_to_none=True)
+    with context:
+        dmc_values = model(dmc_batch)
+        dmc_per_item = F.smooth_l1_loss(
+            selected_q(dmc_values, dmc_actions), dmc_targets, reduction="none"
+        )
+        dmc_loss = (dmc_per_item * dmc_weights).sum() / dmc_weights.sum().clamp_min(1.0)
+        bc_loss = torch.zeros((), device=device)
+        accuracy = None
+        if bc_encoded is not None:
+            bc_batch, bc_actions, _, bc_weights = bc_encoded
+            bc_values = model(bc_batch)
+            bc_per_item = F.cross_entropy(bc_values, bc_actions, reduction="none")
+            bc_loss = (bc_per_item * bc_weights).sum() / bc_weights.sum().clamp_min(1.0)
+            accuracy = float((bc_values.argmax(1) == bc_actions).float().mean().item())
+        loss = dmc_loss + bc_weight * bc_loss
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_clip)
+    optimizer.step()
+    return LossMetrics(
+        float(loss.detach().item()),
+        accuracy,
+        float(dmc_loss.detach().item()),
+        float(bc_loss.detach().item()) if bc_encoded is not None else None,
+    )
 
 
 def train_stream(

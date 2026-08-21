@@ -855,6 +855,7 @@ local card = {
         })
     end,
 }
+
 card.tokens = {
     { api_version = 1, id = "TEST_OG_RANDOM_CHOICE", name = "Random Choice", text = "",
       set = "TEST", type = "spell", cost = 1,
@@ -894,6 +895,65 @@ return card
             .log
             .iter()
             .any(|event| matches!(event, GameEvent::RandomChoiceMade { options: 2, .. }))
+    );
+}
+
+#[test]
+fn random_secret_cast_is_removed_when_the_secret_zone_fills() {
+    let suffix = TEMP_RUNTIME_COUNTER.fetch_add(1, Ordering::Relaxed);
+    let root = std::env::temp_dir().join(format!(
+        "hearth-rs-og-random-secret-{}-{suffix}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&root).unwrap();
+    std::os::unix::fs::symlink(data_path().join("keywords"), root.join("keywords")).unwrap();
+    std::os::unix::fs::symlink(
+        data_path().join("sets/core/the_coin.lua"),
+        root.join("the_coin.lua"),
+    )
+    .unwrap();
+    std::fs::write(
+        root.join("fixture.lua"),
+        r#"
+local card = {
+    api_version = 1, id = "TEST_OG_SECRET_CASTER", name = "Secret Caster", text = "",
+    set = "TEST", type = "spell", cost = 0, collectible = true,
+    on_play = function(ctx, self)
+        for _ = 1, 6 do
+            ctx:cast_spell(ctx:controller(self), "TEST_OG_SECRET", {
+                skip_if_invalid = true,
+            })
+        end
+    end,
+}
+card.tokens = {
+    { api_version = 1, id = "TEST_OG_SECRET", name = "Test Secret", text = "",
+      set = "TEST", type = "spell", cost = 1, keywords = { "secret" } },
+    { api_version = 1, id = "TEST_OG_SECRET_HP", name = "Test Hero Power", text = "",
+      set = "TEST", type = "hero_power", cost = 2 },
+}
+return card
+"#,
+    )
+    .unwrap();
+    let runtime = LuaCardRuntime::load_dir(Path::new(&root)).unwrap();
+    let _dir = TempRuntimeDir(root);
+    let mut game = game_with_runtime(
+        runtime,
+        repeated("TEST_OG_SECRET_CASTER"),
+        repeated("TEST_OG_SECRET_CASTER"),
+        91,
+        ["TEST_OG_SECRET_HP", "TEST_OG_SECRET_HP"],
+    );
+    play(&mut game, PlayerId::ONE, "TEST_OG_SECRET_CASTER", None);
+    assert_eq!(game.state().player(PlayerId::ONE).secrets.len(), 5);
+    assert_eq!(
+        game.state()
+            .entities
+            .values()
+            .filter(|entity| entity.card_id == "TEST_OG_SECRET" && entity.zone == Zone::Removed)
+            .count(),
+        1
     );
 }
 

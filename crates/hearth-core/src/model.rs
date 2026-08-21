@@ -447,6 +447,10 @@ pub struct Entity {
     /// Magnetic. Duplicates preserve attachment order.
     #[serde(default)]
     pub attached_cards: Vec<CardId>,
+    /// Intrinsic scripts of a generated composite card. Hidden-zone resets
+    /// restore these while still removing ordinary Magnetic attachments.
+    #[serde(default)]
+    pub base_attached_cards: Vec<CardId>,
     /// Ordered, stackable card scripts attached to one specific Lua hook.
     #[serde(default)]
     pub hook_attachments: BTreeMap<String, Vec<CardId>>,
@@ -735,8 +739,8 @@ impl GameState {
                 Zone::SetAside => {
                     if self.pending_input.is_none() {
                         return Err(format!(
-                            "entity {} remains set aside without pending input",
-                            entity.id
+                            "entity {} ({}) remains set aside without pending input",
+                            entity.id, entity.card_id
                         ));
                     }
                 }

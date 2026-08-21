@@ -32,7 +32,12 @@ impl<R: CardRuntime> Game<R> {
         let is_secret =
             definition_secret || self.keyword_bool(card, "enters_secret_zone", false, None)?;
         if is_secret && self.state.player(player).secrets.len() >= MAX_SECRET_SIZE {
-            return Ok(());
+            if skip_if_invalid {
+                self.remove_from_zone(card, entity.zone, player);
+                self.state.entities.get_mut(&card).unwrap().zone = Zone::Removed;
+                return Ok(());
+            }
+            return Err(GameError::SecretZoneFull);
         }
 
         self.state.entities.get_mut(&card).unwrap().choice_policy = choice_policy;

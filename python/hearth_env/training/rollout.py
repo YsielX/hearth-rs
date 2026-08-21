@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import multiprocessing as mp
 import os
+import json
+import traceback
 from collections.abc import Iterator, Sequence
 from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from dataclasses import dataclass
@@ -23,6 +25,7 @@ class RolloutJob:
     match_config: dict[str, Any]
     seed: int
     policies: tuple[dict[str, Any], dict[str, Any]]
+    capture_replay: bool = False
 
 
 def play_episode(
@@ -30,16 +33,48 @@ def play_episode(
     policies: Sequence[Policy],
     match_config: dict[str, Any],
     seed: int,
+    *,
+    capture_replay: bool = False,
 ) -> dict[str, Any]:
-    decision = env.reset(seed=seed, match_config=match_config)
     steps: list[dict[str, Any]] = []
-    while decision is not None:
-        seat = int(decision["actor_seat"])
-        action_index = policies[seat].choose(decision, match_config["decks"][seat])
-        steps.append({"decision": decision, "action_index": action_index})
-        transition = env.step(action_index)
-        decision = transition["next"]
-    return {
+    decision: dict[str, Any] | None = None
+    action_index: int | None = None
+    try:
+        decision = env.reset(seed=seed, match_config=match_config)
+        while decision is not None:
+            seat = int(decision["actor_seat"])
+            action_index = policies[seat].choose(
+                decision, match_config["decks"][seat]
+            )
+            steps.append({"decision": decision, "action_index": action_index})
+            transition = env.step(action_index)
+            decision = transition["next"]
+    except Exception as error:
+        try:
+            replay = env.replay()
+        except Exception as replay_error:
+            replay = {"capture_error": repr(replay_error)}
+        return {
+            "format_version": 1,
+            "observation_schema_version": 3,
+            "pack_hash": env.pack_hash,
+            "seed": seed,
+            "match_config": match_config,
+            "steps": steps,
+            "rewards": [0.0, 0.0],
+            "outcome": None,
+            "terminated": False,
+            "truncated": True,
+            "error": {
+                "type": type(error).__name__,
+                "message": str(error),
+                "traceback": traceback.format_exc(),
+                "last_observation": decision,
+                "last_action_index": action_index,
+                "replay": replay,
+            },
+        }
+    episode = {
         "format_version": 1,
         "observation_schema_version": 3,
         "pack_hash": env.pack_hash,
@@ -51,6 +86,9 @@ def play_episode(
         "terminated": transition["terminated"],
         "truncated": transition["truncated"],
     }
+    if capture_replay:
+        episode["replay"] = env.replay()
+    return episode
 
 
 _WORKER_ENV: HearthEnv | None = None
@@ -123,7 +161,16 @@ def _worker_play(job: RolloutJob) -> dict[str, Any]:
     policies = [
         _policy(spec, job.seed ^ (seat << 32)) for seat, spec in enumerate(job.policies)
     ]
-    return play_episode(_WORKER_ENV, policies, job.match_config, job.seed)
+    episode = play_episode(
+        _WORKER_ENV,
+        policies,
+        job.match_config,
+        job.seed,
+        capture_replay=job.capture_replay,
+    )
+    if episode.get("error"):
+        episode["error"]["policies"] = job.policies
+    return episode
 
 
 class ParallelCollector:
@@ -139,10 +186,15 @@ class ParallelCollector:
         history_limit: int | None = 96,
         torch_threads: int = 1,
         card_hash_dim: int = 256,
+        failure_dir: str | Path | None = None,
+        max_failures: int = 0,
     ) -> None:
         if workers < 1:
             raise ValueError("workers must be positive")
         self.workers = workers
+        self.failure_dir = Path(failure_dir) if failure_dir else None
+        self.max_failures = max_failures
+        self.failures = 0
         self.executor = ProcessPoolExecutor(
             max_workers=workers,
             mp_context=mp.get_context("spawn"),
@@ -196,6 +248,22 @@ class ParallelCollector:
                     completed % progress_every == 0 or completed == len(jobs)
                 ):
                     print(f"rollout progress={completed}/{len(jobs)}", flush=True)
+                if episode.get("error"):
+                    self.failures += 1
+                    if self.failure_dir is not None:
+                        self.failure_dir.mkdir(parents=True, exist_ok=True)
+                        path = self.failure_dir / (
+                            f"failure-{episode['seed']}-{next_index - 1:06d}.json"
+                        )
+                        path.write_text(
+                            json.dumps(episode, indent=2), encoding="utf-8"
+                        )
+                    if self.failures > self.max_failures:
+                        raise RuntimeError(
+                            f"rollout failure threshold exceeded: {self.failures} > "
+                            f"{self.max_failures}; reproduction saved under "
+                            f"{self.failure_dir}"
+                        )
                 yield episode
                 continue
 

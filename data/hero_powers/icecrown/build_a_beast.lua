@@ -73,6 +73,8 @@ power.tokens = {
         id = "ICC_828t", name = "Zombeast", text = "{0}\n{1}",
         set = "ICECROWN", type = "minion", class = "hunter",
         cost = 0, attack = 1, health = 1, tags = { "undead", "beast" },
+        target_mode = "required_if_available",
+        targets = function() return {} end,
     },
 }
 

@@ -541,6 +541,7 @@ impl<R: CardRuntime> Game<R> {
         if !preserve_attached_scripts {
             entity_state.script_data.clear();
             entity_state.choice_policy = ChoicePolicy::Player;
+            entity_state.base_attached_cards.clear();
             entity_state.attached_cards.clear();
         }
         entity_state.hook_attachments.clear();
@@ -642,6 +643,7 @@ impl<R: CardRuntime> Game<R> {
             if !preserve_attached_scripts {
                 entity_state.script_data.clear();
                 entity_state.choice_policy = ChoicePolicy::Player;
+                entity_state.base_attached_cards.clear();
                 entity_state.attached_cards.clear();
             }
             entity_state.hook_attachments.clear();
@@ -708,6 +710,9 @@ impl<R: CardRuntime> Game<R> {
         let preserved_attached_cards = preserve_attached_scripts
             .then(|| current.attached_cards.clone())
             .unwrap_or_default();
+        let preserved_base_attached_cards = preserve_attached_scripts
+            .then(|| current.base_attached_cards.clone())
+            .unwrap_or_default();
         self.copy_card_state(&template, entity);
         let target = self.state.entities.get_mut(&entity).unwrap();
         target.card_id = template.card_id.clone();
@@ -717,6 +722,11 @@ impl<R: CardRuntime> Game<R> {
         target.temporary_control = None;
         if preserve_attached_scripts {
             target.script_data.extend(preserved_script_data);
+            for card_id in preserved_base_attached_cards {
+                if !target.base_attached_cards.contains(&card_id) {
+                    target.base_attached_cards.push(card_id);
+                }
+            }
             for card_id in preserved_attached_cards {
                 if !target.attached_cards.contains(&card_id) {
                     target.attached_cards.push(card_id);
@@ -791,7 +801,7 @@ impl<R: CardRuntime> Game<R> {
         entity.cards_played_before = 0;
         entity.script_data.clear();
         entity.choice_policy = ChoicePolicy::Player;
-        entity.attached_cards.clear();
+        entity.attached_cards = entity.base_attached_cards.clone();
         entity.hook_attachments.clear();
         Self::recompute_entity(entity);
     }

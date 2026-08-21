@@ -6,3 +6,4 @@ __pycache__/
 /python/hearth_env/_native*.so
 /runs/
 /training-data/
+train.md

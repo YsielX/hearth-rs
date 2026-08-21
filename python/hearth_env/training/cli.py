@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import time
 from collections.abc import Iterable, Iterator
 from pathlib import Path
@@ -9,15 +10,18 @@ from typing import Any
 
 from hearth_env import HearthEnv
 
-from .bc import train_behavior_clone
+from .bc import evaluate_behavior_clone, train_behavior_clone
 from .catalog import CardCatalog
 from .checkpoint import load_checkpoint
 from .config import ModelConfig, TrainConfig, resolve_device
 from .decks import Deck, DeckPool, match_config
 from .dmc import train_dmc
 from .evaluate import paired_evaluate
+from .health import EpisodeHealth
+from .interactive import play_interactive_match
+from .manifests import write_deck_split
 from .model import HearthQNetwork, parameter_count
-from .policies import HeuristicPolicy, ModelPolicy
+from .policies import HeuristicPolicy, ModelPolicy, RandomPolicy
 from .rollout import ParallelCollector, RolloutJob, play_episode
 from .tensorize import Tensorizer
 from .trajectory import write_episodes
@@ -64,7 +68,8 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
     return TrainConfig(
         device=args.device,
         seed=args.seed,
-        learning_rate=args.learning_rate,
+        bc_learning_rate=args.bc_learning_rate,
+        dmc_learning_rate=args.dmc_learning_rate,
         batch_size=args.batch_size,
         workers=args.workers,
         max_steps=args.max_steps,
@@ -74,6 +79,10 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
         episodes_per_iteration=getattr(args, "episodes_per_iteration", 64),
         updates_per_iteration=getattr(args, "updates_per_iteration", 128),
         replay_warmup=getattr(args, "replay_warmup", 2000),
+        replay_capacity=getattr(args, "replay_capacity", 500_000),
+        epsilon_start=getattr(args, "epsilon_start", 0.25),
+        epsilon_end=getattr(args, "epsilon_end", 0.05),
+        epsilon_decay_iterations=getattr(args, "epsilon_decay_iterations", 500),
         checkpoint_every=getattr(args, "checkpoint_every", 10),
         league_snapshot_every=getattr(args, "league_snapshot_every", 25),
     )
@@ -105,7 +114,13 @@ def command_collect_bc(args: argparse.Namespace) -> None:
     env, catalog = _env_and_catalog(args, decks)
     demonstrations = _bc_decks(decks)
     print(f"deck pool: {len(decks)} total, {len(demonstrations)} heuristic-compatible")
-    pool = DeckPool(catalog, demonstrations, seed=args.seed)
+    pool = DeckPool(
+        catalog,
+        demonstrations,
+        seed=args.seed,
+        curated_probability=args.curated_probability,
+        perturb_probability=args.perturb_probability,
+    )
     jobs = [
         RolloutJob(
             pool.sample_match(),
@@ -131,6 +146,8 @@ def command_collect_bc(args: argparse.Namespace) -> None:
             max_steps=args.max_steps,
             history_limit=args.history_limit,
             card_hash_dim=catalog.hash_dim,
+            failure_dir=Path(args.output).parent / "failures",
+            max_failures=0,
         ) as collector:
             written = write_episodes(
                 args.output,
@@ -159,6 +176,139 @@ def command_collect_bc(args: argparse.Namespace) -> None:
     )
 
 
+def _validate_history(episode: dict[str, Any]) -> None:
+    for step in episode.get("steps", []):
+        history = step["decision"]["observation"]["history"]
+        events = history["events"]
+        if history["start_cursor"] + len(events) != history["next_cursor"]:
+            raise ValueError("public history window cursor bounds are inconsistent")
+        cursors = [int(record["cursor"]) for record in events]
+        if cursors and cursors != list(range(cursors[0], cursors[0] + len(cursors))):
+            raise ValueError("public history cursors are not contiguous")
+
+
+def _strict_replay(env: HearthEnv, episode: dict[str, Any]) -> None:
+    decision = env.reset(
+        seed=int(episode["seed"]), match_config=episode["match_config"]
+    )
+    for step in episode["steps"]:
+        captured = step["decision"]
+        if (
+            decision.get("actor_seat") != captured.get("actor_seat")
+            or decision.get("observation") != captured.get("observation")
+            or decision.get("actions") != captured.get("actions")
+        ):
+            raise ValueError("replayed public decision differs from captured decision")
+        transition = env.step(int(step["action_index"]))
+        decision = transition["next"]
+    if env.replay() != episode["replay"]:
+        raise ValueError("authoritative replay differs after deterministic re-execution")
+
+
+def command_split_decks(args: argparse.Namespace) -> None:
+    decks = _decks(args.deck)
+    _, catalog = _env_and_catalog(args, decks)
+    manifest = write_deck_split(args.deck, args.output_dir, catalog, seed=args.seed)
+    split_counts = {
+        name: len(records) for name, records in manifest["splits"].items()
+    }
+    cluster_counts = {
+        name: sum(1 for cluster in manifest["clusters"] if cluster["split"] == name)
+        for name in manifest["splits"]
+    }
+    print(json.dumps({"decks": split_counts, "clusters": cluster_counts}, indent=2))
+
+
+def command_stability(args: argparse.Namespace) -> None:
+    decks = _decks(args.deck)
+    env, catalog = _env_and_catalog(args, decks)
+    pool = DeckPool(catalog, decks, seed=args.seed)
+    rng = random.Random(args.seed)
+    replay_indices = set(rng.sample(range(args.episodes), min(100, args.episodes)))
+    jobs: list[RolloutJob] = []
+    for index in range(args.episodes):
+        primary = decks[index % len(decks)]
+        if (index // len(decks)) % 2:
+            primary = pool.perturb(primary, 0.2)
+        opponent = pool.sample()
+        config = (
+            match_config(primary, opponent)
+            if index % 2 == 0
+            else match_config(opponent, primary)
+        )
+        kind = "heuristic" if index % 2 == 0 else "random"
+        policies = ({"kind": kind}, {"kind": kind})
+        jobs.append(
+            RolloutJob(
+                config,
+                args.seed + index,
+                policies,
+                capture_replay=index in replay_indices,
+            )
+        )
+
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    health = EpisodeHealth()
+    replayed = 0
+    started = time.monotonic()
+    if args.workers > 0:
+        with ParallelCollector(
+            args.data,
+            jobs[0].match_config,
+            workers=args.workers,
+            max_steps=args.max_steps,
+            history_limit=args.history_limit,
+            card_hash_dim=catalog.hash_dim,
+            failure_dir=output_dir / "failures",
+            max_failures=0,
+        ) as collector:
+            episodes: Iterable[dict[str, Any]] = collector.iter_collect(
+                jobs, progress_every=max(len(jobs) // 20, 1)
+            )
+            for episode in episodes:
+                _validate_history(episode)
+                health.add(episode)
+                if "replay" in episode:
+                    _strict_replay(env, episode)
+                    replayed += 1
+    else:
+        for job in jobs:
+            policies = [
+                HeuristicPolicy(job.seed),
+                HeuristicPolicy(job.seed ^ 1),
+            ] if job.policies[0]["kind"] == "heuristic" else [
+                RandomPolicy(job.seed),
+                RandomPolicy(job.seed ^ 1),
+            ]
+            episode = play_episode(
+                env,
+                policies,
+                job.match_config,
+                job.seed,
+                capture_replay=job.capture_replay,
+            )
+            _validate_history(episode)
+            health.add(episode)
+            if "replay" in episode:
+                _strict_replay(env, episode)
+                replayed += 1
+    summary = health.summary()
+    report = {
+        **summary,
+        "strict_replays": replayed,
+        "elapsed_seconds": time.monotonic() - started,
+    }
+    (output_dir / "report.json").write_text(
+        json.dumps(report, indent=2), encoding="utf-8"
+    )
+    print(json.dumps(report, indent=2))
+    if health.errors or replayed != min(100, args.episodes):
+        raise RuntimeError("stability run had errors or incomplete replay verification")
+    if summary["truncation_rate"] >= 0.001:
+        raise RuntimeError("stability truncation rate did not meet the <0.1% gate")
+
+
 def command_train_bc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     _, catalog = _env_and_catalog(args, decks)
@@ -175,10 +325,38 @@ def command_train_bc(args: argparse.Namespace) -> None:
     )
 
 
+def command_evaluate_bc(args: argparse.Namespace) -> None:
+    decks = _decks(args.deck)
+    _, catalog = _env_and_catalog(args, decks)
+    device = resolve_device(args.device)
+    model, payload = load_checkpoint(args.checkpoint, catalog, device=device)
+    print(
+        json.dumps(
+            {
+                "checkpoint_step": payload.get("step", 0),
+                **evaluate_behavior_clone(
+                    catalog,
+                    args.input,
+                    model,
+                    device=device,
+                    batch_size=args.batch_size,
+                ),
+            },
+            indent=2,
+        )
+    )
+
+
 def command_train_dmc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     _, catalog = _env_and_catalog(args, decks)
-    pool = DeckPool(catalog, decks, seed=args.seed)
+    pool = DeckPool(
+        catalog,
+        decks,
+        seed=args.seed,
+        curated_probability=args.curated_probability,
+        perturb_probability=args.perturb_probability,
+    )
     train_dmc(
         args.data,
         catalog,
@@ -186,6 +364,8 @@ def command_train_dmc(args: argparse.Namespace) -> None:
         args.run_dir,
         _train_config(args),
         initial_checkpoint=args.init,
+        resume_checkpoint=args.resume,
+        bc_shards=args.bc_input,
         model_config=ModelConfig(
             hidden_dim=args.hidden_dim,
             card_hash_dim=args.card_hash_dim,
@@ -201,27 +381,72 @@ def command_evaluate(args: argparse.Namespace) -> None:
     device = resolve_device(args.device)
     model, payload = load_checkpoint(args.checkpoint, catalog, device=device)
     tensorizer = Tensorizer(catalog, model.config)
-    pool = DeckPool(catalog, decks, seed=args.seed)
+    pool = DeckPool(
+        catalog,
+        decks,
+        seed=args.seed,
+        curated_probability=args.curated_probability,
+        perturb_probability=args.perturb_probability,
+    )
     matches = [pool.sample_match() for _ in range(args.matches)]
+    if args.opponent_checkpoint:
+        opponent_model, _ = load_checkpoint(
+            args.opponent_checkpoint, catalog, device=device
+        )
+        opponent_tensorizer = Tensorizer(catalog, opponent_model.config)
+        opponent_factory = lambda seed: ModelPolicy(
+            opponent_model, opponent_tensorizer, device=device, seed=seed
+        )
+    else:
+        opponent_factory = lambda seed: HeuristicPolicy(seed)
     result = paired_evaluate(
         env,
         lambda seed: ModelPolicy(model, tensorizer, device=device, seed=seed),
-        lambda seed: HeuristicPolicy(seed),
+        opponent_factory,
         matches,
         seed=args.seed,
     )
-    print(
-        json.dumps(
-            {
-                "checkpoint_step": payload.get("step", 0),
-                **result.summary(),
-                "by_matchup": {
-                    name: value.summary()
-                    for name, value in sorted(result.by_matchup.items())
-                },
-            },
-            indent=2,
-        )
+    report = {
+        "checkpoint_step": payload.get("step", 0),
+        **result.summary(),
+        "by_matchup": {
+            name: value.summary()
+            for name, value in sorted(result.by_matchup.items())
+        },
+    }
+    rendered = json.dumps(report, indent=2)
+    if args.output:
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(rendered + "\n", encoding="utf-8")
+        print(json.dumps({**result.summary(), "output": str(output)}, indent=2))
+    else:
+        print(rendered)
+
+
+def command_play_model(args: argparse.Namespace) -> None:
+    human_deck = Deck.from_file(args.human_deck)
+    ai_deck = Deck.from_file(args.ai_deck)
+    human_seat = args.human_seat - 1
+    decks = (
+        [human_deck, ai_deck] if human_seat == 0 else [ai_deck, human_deck]
+    )
+    env, catalog = _env_and_catalog(args, decks)
+    device = resolve_device(args.device)
+    model, _ = load_checkpoint(args.checkpoint, catalog, device=device)
+    tensorizer = Tensorizer(catalog, model.config)
+    print(f"你的牌组：{human_deck.name}")
+    print(f"AI 牌组：{ai_deck.name}")
+    print(f"你是玩家 {args.human_seat}（{'先手' if human_seat == 0 else '后手'}）")
+    play_interactive_match(
+        env,
+        model,
+        tensorizer,
+        env.match_config["decks"],
+        device=device,
+        seed=args.seed,
+        human_seat=human_seat,
+        locale=args.locale,
     )
 
 
@@ -287,6 +512,8 @@ def command_pipeline(args: argparse.Namespace) -> None:
             max_steps=args.max_steps,
             history_limit=args.history_limit,
             card_hash_dim=catalog.hash_dim,
+            failure_dir=run_dir / "failures",
+            max_failures=0,
         ) as collector:
             write_episodes(
                 demonstrations,
@@ -327,6 +554,7 @@ def command_pipeline(args: argparse.Namespace) -> None:
         run_dir / "dmc",
         config,
         initial_checkpoint=bc_checkpoint,
+        bc_shards=[demonstrations],
         specialist_probability=args.specialist_probability,
     )
 
@@ -344,7 +572,8 @@ def parser() -> argparse.ArgumentParser:
     root.add_argument("--hidden-dim", type=int, default=128)
     root.add_argument("--layers", type=int, default=2)
     root.add_argument("--batch-size", type=int, default=128)
-    root.add_argument("--learning-rate", type=float, default=3e-4)
+    root.add_argument("--bc-learning-rate", type=float, default=3e-4)
+    root.add_argument("--dmc-learning-rate", type=float, default=1e-5)
     commands = root.add_subparsers(dest="command", required=True)
 
     catalog = commands.add_parser("catalog")
@@ -353,8 +582,19 @@ def parser() -> argparse.ArgumentParser:
     collect = commands.add_parser("collect-bc")
     collect.add_argument("--episodes", type=int, default=1000)
     collect.add_argument("--noise", type=float, default=0.08)
+    collect.add_argument("--curated-probability", type=float, default=1.0)
+    collect.add_argument("--perturb-probability", type=float, default=0.0)
     collect.add_argument("--output", required=True)
     collect.set_defaults(function=command_collect_bc)
+
+    split = commands.add_parser("split-decks")
+    split.add_argument("--output-dir", required=True)
+    split.set_defaults(function=command_split_decks)
+
+    stability = commands.add_parser("stability")
+    stability.add_argument("--episodes", type=int, default=5000)
+    stability.add_argument("--output-dir", required=True)
+    stability.set_defaults(function=command_stability)
 
     bc = commands.add_parser("train-bc")
     bc.add_argument("--input", action="append", required=True)
@@ -362,22 +602,48 @@ def parser() -> argparse.ArgumentParser:
     bc.add_argument("--epochs", type=int, default=3)
     bc.set_defaults(function=command_train_bc)
 
+    evaluate_bc = commands.add_parser("evaluate-bc")
+    evaluate_bc.add_argument("--input", action="append", required=True)
+    evaluate_bc.add_argument("--checkpoint", required=True)
+    evaluate_bc.set_defaults(function=command_evaluate_bc)
+
     dmc = commands.add_parser("train-dmc")
-    dmc.add_argument("--init")
+    checkpoint = dmc.add_mutually_exclusive_group()
+    checkpoint.add_argument("--init")
+    checkpoint.add_argument("--resume")
+    dmc.add_argument("--bc-input", action="append", default=[])
     dmc.add_argument("--run-dir", required=True)
     dmc.add_argument("--iterations", type=int, default=1000)
     dmc.add_argument("--episodes-per-iteration", type=int, default=64)
     dmc.add_argument("--updates-per-iteration", type=int, default=128)
     dmc.add_argument("--replay-warmup", type=int, default=2000)
+    dmc.add_argument("--replay-capacity", type=int, default=500_000)
+    dmc.add_argument("--epsilon-start", type=float, default=0.25)
+    dmc.add_argument("--epsilon-end", type=float, default=0.05)
+    dmc.add_argument("--epsilon-decay-iterations", type=int, default=500)
     dmc.add_argument("--checkpoint-every", type=int, default=10)
     dmc.add_argument("--league-snapshot-every", type=int, default=25)
     dmc.add_argument("--specialist-probability", type=float, default=0.1)
+    dmc.add_argument("--curated-probability", type=float, default=1.0)
+    dmc.add_argument("--perturb-probability", type=float, default=0.0)
     dmc.set_defaults(function=command_train_dmc)
 
     evaluate = commands.add_parser("evaluate")
     evaluate.add_argument("--checkpoint", required=True)
+    evaluate.add_argument("--opponent-checkpoint")
     evaluate.add_argument("--matches", type=int, default=100)
+    evaluate.add_argument("--output")
+    evaluate.add_argument("--curated-probability", type=float, default=1.0)
+    evaluate.add_argument("--perturb-probability", type=float, default=0.0)
     evaluate.set_defaults(function=command_evaluate)
+
+    play_model = commands.add_parser("play-model")
+    play_model.add_argument("--checkpoint", required=True)
+    play_model.add_argument("--human-deck", required=True)
+    play_model.add_argument("--ai-deck", required=True)
+    play_model.add_argument("--human-seat", type=int, choices=(1, 2), default=1)
+    play_model.add_argument("--locale", choices=("enUS", "zhCN", "zhTW"), default="zhCN")
+    play_model.set_defaults(function=command_play_model)
 
     smoke = commands.add_parser("smoke")
     smoke.set_defaults(function=command_smoke)

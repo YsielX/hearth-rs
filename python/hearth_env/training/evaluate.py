@@ -8,6 +8,7 @@ from typing import Any
 from hearth_env import HearthEnv
 
 from .policies import Policy
+from .health import EpisodeHealth
 from .rollout import play_episode
 
 
@@ -18,6 +19,7 @@ class Evaluation:
     draws: int = 0
     truncated: int = 0
     by_matchup: dict[str, Evaluation] = field(default_factory=dict)
+    health: EpisodeHealth = field(default_factory=EpisodeHealth)
 
     @property
     def games(self) -> int:
@@ -45,6 +47,7 @@ class Evaluation:
             "draws": self.draws,
             "truncated": self.truncated,
             "score": self.score,
+            "health": self.health.summary(),
         }
 
 
@@ -68,12 +71,14 @@ def paired_evaluate(
             policies = [opponent(game_seed), opponent(game_seed ^ 0xA5A5)]
             policies[candidate_seat] = candidate(game_seed ^ 0x5A5A)
             episode = play_episode(env, policies, config, game_seed)
+            result.health.add(episode, controlled_seats={candidate_seat})
             opponent_seat = 1 - candidate_seat
             matchup = (
                 f"{_deck_label(config, candidate_seat)}_vs_"
                 f"{_deck_label(config, opponent_seat)}"
             )
             bucket = result.by_matchup.setdefault(matchup, Evaluation())
+            bucket.health.add(episode, controlled_seats={candidate_seat})
             if episode["truncated"]:
                 result.record(None)
                 bucket.record(None)

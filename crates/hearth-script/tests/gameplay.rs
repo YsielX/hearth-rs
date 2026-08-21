@@ -1267,7 +1267,7 @@ fn zombeast_dispatches_choose_one_from_its_attached_beast_script() {
     for seed in 0..128 {
         let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
             runtime.take().unwrap(),
-            repeated("CS2_120"),
+            repeated("EX1_144"),
             repeated("CS2_120"),
             seed,
             ["ICC_828p".to_owned(), "HERO_08bp".to_owned()],
@@ -1325,6 +1325,93 @@ fn zombeast_dispatches_choose_one_from_its_attached_beast_script() {
         "Choose One"
     );
     game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    assert!(game.state().player(PlayerId::ONE).board.contains(&zombeast));
+
+    play(&mut game, PlayerId::ONE, "EX1_144", Some(zombeast));
+    assert!(game.state().player(PlayerId::ONE).hand.contains(&zombeast));
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    game.dispatch(PlayerCommand::PlayCard {
+        card: zombeast,
+        target: None,
+    })
+    .unwrap();
+    assert_eq!(
+        game.state().pending_input.as_ref().unwrap().prompt,
+        "Choose One"
+    );
+}
+
+#[test]
+fn zombeast_inherits_required_targets_from_attached_battlecries() {
+    let mut runtime = Some(LuaCardRuntime::load_dir(data_path()).unwrap());
+    let mut discovered = None;
+    for seed in 0..512 {
+        let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
+            runtime.take().unwrap(),
+            repeated("CS2_120"),
+            repeated("CS2_120"),
+            seed,
+            ["ICC_828p".to_owned(), "HERO_08bp".to_owned()],
+            ["hunter".to_owned(), "mage".to_owned()],
+        )
+        .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        advance_to_mana(&mut game, PlayerId::ONE, 2);
+        game.dispatch(PlayerCommand::UseHeroPower { target: None })
+            .unwrap();
+        let dispatch_kodo = game
+            .state()
+            .pending_input
+            .as_ref()
+            .unwrap()
+            .options
+            .iter()
+            .position(|option| option.value == ChoiceValue::Card("CFM_335".to_owned()));
+        if let Some(index) = dispatch_kodo {
+            discovered = Some((game, index));
+            break;
+        }
+        runtime = Some(game.into_runtime());
+    }
+    let (mut game, dispatch_kodo) =
+        discovered.expect("Dispatch Kodo was not offered in 512 discoveries");
+    game.dispatch(PlayerCommand::Choose {
+        index: dispatch_kodo,
+    })
+    .unwrap();
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    let zombeast = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .copied()
+        .find(|entity| game.state().entities[entity].card_id == "ICC_828t")
+        .unwrap();
+
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    let plays = game
+        .legal_actions()
+        .unwrap()
+        .into_iter()
+        .filter(|command| {
+            matches!(
+                command,
+                PlayerCommand::PlayCard { card, .. } | PlayerCommand::PlayCardAt { card, .. }
+                    if *card == zombeast
+            )
+        })
+        .collect::<Vec<_>>();
+    assert!(!plays.is_empty());
+    assert!(plays.iter().all(|command| match command {
+        PlayerCommand::PlayCard { target, .. } | PlayerCommand::PlayCardAt { target, .. } =>
+            target.is_some(),
+        _ => unreachable!(),
+    }));
+    game.dispatch(plays.into_iter().next().unwrap()).unwrap();
     assert!(game.state().player(PlayerId::ONE).board.contains(&zombeast));
 }
 

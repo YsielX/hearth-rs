@@ -23,6 +23,7 @@ def save_checkpoint(
     step: int = 0,
     phase: str = "unknown",
     metrics: dict[str, float] | None = None,
+    extra_state: dict[str, Any] | None = None,
 ) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -39,6 +40,11 @@ def save_checkpoint(
     }
     if optimizer is not None:
         payload["optimizer"] = optimizer.state_dict()
+    if extra_state:
+        overlap = set(payload).intersection(extra_state)
+        if overlap:
+            raise ValueError(f"extra checkpoint state uses reserved keys: {sorted(overlap)}")
+        payload.update(extra_state)
     temporary = path.with_suffix(path.suffix + f".tmp-{os.getpid()}")
     torch.save(payload, temporary)
     os.replace(temporary, path)

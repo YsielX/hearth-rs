@@ -101,6 +101,14 @@ class DeckPool:
     ) -> None:
         if not curated:
             raise ValueError("at least one curated deck is required")
+        if not 0.0 <= curated_probability <= 1.0:
+            raise ValueError("curated_probability must be between 0 and 1")
+        if not 0.0 <= perturb_probability <= 1.0:
+            raise ValueError("perturb_probability must be between 0 and 1")
+        if curated_probability + perturb_probability > 1.0:
+            raise ValueError(
+                "curated_probability + perturb_probability must not exceed 1"
+            )
         self.catalog = catalog
         self.curated = list(curated)
         self.rng = random.Random(seed)
@@ -185,6 +193,11 @@ class DeckPool:
             adapted=True,
             era_cutoff=deck.era_cutoff,
         )
+
+    def perturb(self, deck: Deck, fraction: float = 0.2) -> Deck:
+        """Return a deterministic (for this pool seed) class-legal perturbation."""
+
+        return self._perturb(deck, fraction)
 
     def _random(self) -> Deck:
         card_class = self.rng.choice(sorted(self._pools))
