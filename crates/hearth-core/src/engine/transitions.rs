@@ -340,7 +340,7 @@ impl<R: CardRuntime> Game<R> {
                 Zone::Secret
             }
             ZonePlacement::DeckTop | ZonePlacement::DeckBottom | ZonePlacement::DeckRandom => {
-                if from != Zone::Deck {
+                if from != Zone::Deck || current.controller != destination_player {
                     self.reset_after_hidden_zone_change(entity, destination_player);
                 }
                 self.state.entities.get_mut(&entity).unwrap().zone = Zone::Deck;

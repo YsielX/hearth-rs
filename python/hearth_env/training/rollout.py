@@ -152,6 +152,8 @@ def _policy(spec: dict[str, Any], seed: int) -> Policy:
         device="cpu",
         epsilon=float(spec.get("epsilon", 0.0)),
         seed=seed,
+        sample=bool(spec.get("sample", False)),
+        temperature=float(spec.get("temperature", 1.0)),
     )
 
 

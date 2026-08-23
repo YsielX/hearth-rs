@@ -68,6 +68,15 @@ class HearthQNetwork(nn.Module):
             nn.GELU(),
             nn.Linear(hidden, 1),
         )
+        self.value_head = nn.Sequential(
+            nn.Linear(hidden * 2, hidden),
+            nn.GELU(),
+            nn.Linear(hidden, 1),
+        )
+        # A BC checkpoint has no value target. Starting at zero is a stable,
+        # honest prior when such a checkpoint is promoted into PPO training.
+        nn.init.zeros_(self.value_head[-1].weight)
+        nn.init.zeros_(self.value_head[-1].bias)
 
     def encode_card(self, indices: torch.Tensor) -> torch.Tensor:
         safe = indices.clamp(0, self.card_feature_table.shape[0] - 1)
@@ -79,7 +88,9 @@ class HearthQNetwork(nn.Module):
         weights = mask.to(values.dtype).unsqueeze(-1)
         return (values * weights).sum(dim=1) / weights.sum(dim=1).clamp_min(1.0)
 
-    def forward(self, batch: dict[str, torch.Tensor]) -> torch.Tensor:
+    def _encode_state(
+        self, batch: dict[str, torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         entity = self.encode_card(batch["entity_cards"]) + self.entity_state(
             batch["entity_state"]
         )
@@ -111,6 +122,14 @@ class HearthQNetwork(nn.Module):
                 [global_context, entity_context, history_context, deck_context], dim=-1
             )
         )
+        return entity, context
+
+    def policy_value(
+        self, batch: dict[str, torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return masked policy logits and the actor-relative state value."""
+
+        entity, context = self._encode_state(batch)
 
         _, action_count, _ = batch["action_sources"].shape
         safe_sources = batch["action_sources"].clamp_min(0)
@@ -145,10 +164,16 @@ class HearthQNetwork(nn.Module):
             ],
             dim=-1,
         )
-        q_values = self.action_scorer(action).squeeze(-1)
-        return q_values.masked_fill(
-            ~batch["action_mask"], torch.finfo(q_values.dtype).min
+        logits = self.action_scorer(action).squeeze(-1)
+        logits = logits.masked_fill(
+            ~batch["action_mask"], torch.finfo(logits.dtype).min
         )
+        value = torch.tanh(self.value_head(context).squeeze(-1))
+        return logits, value
+
+    def forward(self, batch: dict[str, torch.Tensor]) -> torch.Tensor:
+        logits, _ = self.policy_value(batch)
+        return logits
 
     def extra_repr(self) -> str:
         return f"hidden_dim={self.config.hidden_dim}"

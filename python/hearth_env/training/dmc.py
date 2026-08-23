@@ -221,7 +221,9 @@ def train_dmc(
                     completed += 1
                     new_samples += replay.extend_episode(episode)
             write_episodes(
-                run_dir / "rollouts" / f"iteration-{iteration:06d}.jsonl.gz", episodes
+                run_dir / "rollouts" / f"iteration-{iteration:06d}.jsonl.gz",
+                episodes,
+                append=False,
             )
 
             losses: list[float] = []

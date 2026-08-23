@@ -9,7 +9,10 @@ local card = {
     triggers = {{
         event = "minion_summoned", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event)
-            return event.player == ctx:controller(self) and event.entity ~= self and has(ctx, event.entity, "deathrattle")
+            return event.player == ctx:controller(self)
+                and event.entity ~= self
+                and ctx:entity(event.entity).zone == "board"
+                and has(ctx, event.entity, "deathrattle")
         end,
         effect = function(ctx, self, event)
             local repeats = has(ctx, event.entity, "deathrattle_repeater") and 2 or 1

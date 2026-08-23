@@ -1650,6 +1650,36 @@ impl CardRuntime for LuaCardRuntime {
                 continue;
             };
             found = true;
+            // A fused minion can inherit several targeted Battlecries whose
+            // target sets differ. The play target is the union of those sets,
+            // but only the attached Battlecries for which that target is legal
+            // should execute (for example, Fire Plume Phoenix may target an
+            // enemy while Princess Huhuran may only target a friendly
+            // Deathrattle minion).
+            if hook == "on_battlecry"
+                && entity.attached_cards.len() > 1
+                && let Some(ChoiceValue::Entity(target)) = payload
+                && let Some(targets) = module
+                    .get::<Option<Function>>("targets")
+                    .map_err(|error| error.to_string())?
+            {
+                let emitted = Rc::new(RefCell::new(Vec::new()));
+                let ctx = build_context(
+                    &self.lua,
+                    state,
+                    source,
+                    emitted,
+                    self.catalog.clone(),
+                    self.locale,
+                )
+                .map_err(|error| error.to_string())?;
+                let legal_targets: Vec<u64> = targets
+                    .call((ctx, source.0))
+                    .map_err(|error| format!("card {card_id} targets: {error}"))?;
+                if !legal_targets.contains(&target.0) {
+                    continue;
+                }
+            }
             let effects = Rc::new(RefCell::new(Vec::new()));
             let ctx = build_context(
                 &self.lua,

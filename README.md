@@ -186,7 +186,7 @@ The baseline [`hearth-bot`](crates/hearth-bot/README.md) prioritizes board letha
 
 The framework-neutral `hearth-env` adapter exposes player-safe observations,
 structured choices, indexed legal actions, and public-event history. The optional
-Python package adds card/Lua-aware encoders, behavior cloning, Deep Monte Carlo
+Python package adds card/Lua-aware encoders, behavior cloning, PPO actor-critic
 self-play, parallel rollout workers, checkpoint leagues, evaluation, and
 new-card checkpoint migration. See the [Chinese training guide](docs/RL_TRAINING.md).
 

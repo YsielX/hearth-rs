@@ -15,6 +15,15 @@ fn repeated(card: &str) -> Vec<String> {
     std::iter::repeat_n(card.to_owned(), 20).collect()
 }
 
+fn mixed(cards: &[&str]) -> Vec<String> {
+    cards
+        .iter()
+        .cycle()
+        .take(20)
+        .map(|card| (*card).to_owned())
+        .collect()
+}
+
 fn game_with_runtime(
     runtime: LuaCardRuntime,
     one: Vec<String>,
@@ -82,6 +91,59 @@ fn play(
 
 fn choose(game: &mut Game<LuaCardRuntime>, index: usize) {
     game.dispatch(PlayerCommand::Choose { index }).unwrap();
+}
+
+#[test]
+fn repeated_weasel_tunneler_deathrattle_keeps_deck_ownership_consistent() {
+    let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
+    let mut game = game_with_runtime(
+        runtime,
+        repeated("OG_028"),
+        mixed(&["FP1_031", "CFM_095"]),
+        20261158,
+        ["HERO_02bp", "HERO_09bp"],
+    );
+
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let attacker = play(&mut game, PlayerId::ONE, "OG_028", None);
+    end_turn(&mut game);
+    while !["FP1_031", "CFM_095"].iter().all(|card_id| {
+        game.state()
+            .player(PlayerId::TWO)
+            .hand
+            .iter()
+            .any(|entity| game.state().entity(*entity).unwrap().card_id == *card_id)
+    }) {
+        end_turn(&mut game);
+        end_turn(&mut game);
+    }
+    play(&mut game, PlayerId::TWO, "FP1_031", None);
+    let weasel = play(&mut game, PlayerId::TWO, "CFM_095", None);
+    end_turn(&mut game);
+
+    game.dispatch(PlayerCommand::Attack {
+        attacker,
+        defender: weasel,
+    })
+    .unwrap();
+
+    // Baron repeats the hook after its first move. The second cross-player deck move
+    // must update the controller as well as the owner and zone list.
+    assert!(!game.state().player(PlayerId::ONE).deck.contains(&weasel));
+    assert!(game.state().player(PlayerId::TWO).deck.contains(&weasel));
+    assert!(
+        !game
+            .state()
+            .player(PlayerId::TWO)
+            .graveyard
+            .contains(&weasel)
+    );
+    let moved = game.state().entity(weasel).unwrap();
+    assert_eq!(moved.zone, Zone::Deck);
+    assert_eq!(
+        (moved.owner, moved.controller),
+        (PlayerId::TWO, PlayerId::TWO)
+    );
 }
 
 static TEMP_RUNTIME_COUNTER: AtomicU64 = AtomicU64::new(0);

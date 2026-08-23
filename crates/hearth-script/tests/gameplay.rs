@@ -1416,6 +1416,74 @@ fn zombeast_inherits_required_targets_from_attached_battlecries() {
 }
 
 #[test]
+fn zombeast_only_dispatches_battlecries_valid_for_the_selected_target() {
+    let mut runtime = Some(LuaCardRuntime::load_dir(data_path()).unwrap());
+    let mut discovered = None;
+    for seed in 0..512 {
+        let mut game = Game::new_unrestricted_with_hero_powers_and_classes(
+            runtime.take().unwrap(),
+            repeated("CS2_120"),
+            repeated("UNG_809"),
+            seed,
+            ["ICC_828p".to_owned(), "HERO_08bp".to_owned()],
+            ["hunter".to_owned(), "mage".to_owned()],
+        )
+        .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+            .unwrap();
+        advance_to_mana(&mut game, PlayerId::ONE, 2);
+        game.dispatch(PlayerCommand::UseHeroPower { target: None })
+            .unwrap();
+        let huhuran = game
+            .state()
+            .pending_input
+            .as_ref()
+            .unwrap()
+            .options
+            .iter()
+            .position(|option| option.value == ChoiceValue::Card("OG_309".to_owned()));
+        if let Some(index) = huhuran {
+            discovered = Some((game, index));
+            break;
+        }
+        runtime = Some(game.into_runtime());
+    }
+    let (mut game, huhuran) = discovered.expect("Princess Huhuran was not offered");
+    game.dispatch(PlayerCommand::Choose { index: huhuran })
+        .unwrap();
+    let phoenix = game
+        .state()
+        .pending_input
+        .as_ref()
+        .unwrap()
+        .options
+        .iter()
+        .position(|option| option.label == "Fire Plume Phoenix")
+        .expect("Fire Plume Phoenix is a valid second Beast");
+    game.dispatch(PlayerCommand::Choose { index: phoenix })
+        .unwrap();
+    let zombeast = hand_card(&game, PlayerId::ONE, "ICC_828t");
+    assert_eq!(
+        game.state().entities[&zombeast].attached_cards,
+        vec!["OG_309".to_owned(), "UNG_084".to_owned()]
+    );
+
+    end_turn(&mut game);
+    let fire_fly = play(&mut game, PlayerId::TWO, "UNG_809", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 9);
+    game.dispatch(PlayerCommand::PlayCard {
+        card: zombeast,
+        target: Some(fire_fly),
+    })
+    .unwrap();
+
+    assert!(game.state().player(PlayerId::ONE).board.contains(&zombeast));
+    assert!(!game.state().player(PlayerId::TWO).board.contains(&fire_fly));
+}
+
+#[test]
 fn the_four_horsemen_power_wins_only_after_four_distinct_horsemen() {
     let mut game = game_with_hero_powers(
         repeated("CS2_120"),

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import random
 import tempfile
 import unittest
 from copy import deepcopy
@@ -14,8 +15,11 @@ from hearth_env.training.config import ModelConfig, TrainConfig
 from hearth_env.training.decks import SET_ORDER, Deck, DeckPool, match_config
 from hearth_env.training.learn import train_batch
 from hearth_env.training.model import HearthQNetwork
+from hearth_env.training.policies import HeuristicPolicy
+from hearth_env.training.ppo import build_ppo_experiences, train_ppo_epochs
+from hearth_env.training.rollout import play_episode
 from hearth_env.training.tensorize import Tensorizer, collate
-from hearth_env.training.trajectory import TrainingSample
+from hearth_env.training.trajectory import TrainingSample, read_episodes, write_episodes
 
 ROOT = Path(__file__).parents[2]
 
@@ -45,6 +49,20 @@ class TrainingTest(unittest.TestCase):
             max_history=16,
         )
 
+    def test_iteration_rollout_shard_can_atomically_replace_stale_data(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            shard = Path(directory) / "iteration-000003.jsonl.gz"
+            write_episodes(shard, [{"seed": 1}])
+            write_episodes(shard, [{"seed": 2}])
+            self.assertEqual(
+                [episode["seed"] for episode in read_episodes([shard])],
+                [1, 2],
+            )
+
+            write_episodes(shard, [{"seed": 3}], append=False)
+            self.assertEqual(list(read_episodes([shard])), [{"seed": 3}])
+            self.assertFalse((shard.parent / f".{shard.name}.tmp").exists())
+
     def test_catalog_combines_definition_and_lua(self) -> None:
         feature = self.catalog.feature("CS2_120")
         self.assertEqual(len(feature), self.catalog.feature_dim)
@@ -71,6 +89,49 @@ class TrainingTest(unittest.TestCase):
             behavior_clone=False,
         )
         self.assertGreaterEqual(metrics.loss, 0.0)
+
+        logits, value = model.policy_value(batch)
+        self.assertEqual(tuple(logits.shape), tuple(values.shape))
+        self.assertEqual(tuple(value.shape), (1,))
+        self.assertTrue(torch.all(value >= -1.0))
+        self.assertTrue(torch.all(value <= 1.0))
+
+    def test_ppo_builds_terminal_returns_and_updates(self) -> None:
+        episode = play_episode(
+            self.env,
+            [HeuristicPolicy(21), HeuristicPolicy(22)],
+            demo_config(),
+            21,
+        )
+        self.assertTrue(episode["terminated"])
+        model = HearthQNetwork(self.catalog, self.config)
+        tensorizer = Tensorizer(self.catalog, self.config)
+        config = TrainConfig(
+            batch_size=64,
+            amp=False,
+            ppo_epochs=1,
+            shaping_coefficient=0.05,
+        )
+        experiences = build_ppo_experiences(
+            [(episode, {0, 1})], model, tensorizer, config, device="cpu"
+        )
+        self.assertGreater(len(experiences), 0)
+        self.assertTrue(any(item.return_value > 0 for item in experiences))
+        self.assertTrue(any(item.return_value < 0 for item in experiences))
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+        metrics = train_ppo_epochs(
+            model,
+            optimizer,
+            tensorizer,
+            experiences,
+            config,
+            device="cpu",
+            rng=random.Random(1),
+            reference_model=deepcopy(model),
+        )
+        self.assertGreater(metrics.updates, 0)
+        self.assertTrue(torch.isfinite(torch.tensor(metrics.loss)))
+        self.assertGreaterEqual(metrics.reference_kl, 0.0)
 
     def test_checkpoint_expands_for_new_cards(self) -> None:
         model = HearthQNetwork(self.catalog, self.config)

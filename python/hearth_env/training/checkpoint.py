@@ -80,7 +80,9 @@ def load_checkpoint(
         key for key in incompatible.unexpected_keys if key != "card_feature_table"
     ]
     missing = [
-        key for key in incompatible.missing_keys if key != "card_id_embedding.weight"
+        key
+        for key in incompatible.missing_keys
+        if key != "card_id_embedding.weight" and not key.startswith("value_head.")
     ]
     if unexpected or missing:
         raise ValueError(

@@ -17,6 +17,10 @@ class EpisodeHealth:
     mana_available_at_end: float = 0.0
     max_mana_at_end: float = 0.0
     action_kinds: Counter[str] = field(default_factory=Counter)
+    attacks: int = 0
+    face_attacks: int = 0
+    board_attacks: int = 0
+    nonlethal_face_with_killable_minion: int = 0
 
     def add(
         self, episode: dict[str, Any], *, controlled_seats: set[int] | None = None
@@ -41,6 +45,8 @@ class EpisodeHealth:
             kind = str(chosen.get("kind", "unknown"))
             self.action_kinds[kind] += 1
             self.decisions += 1
+            if kind == "attack":
+                self._add_attack(decision, chosen, actions)
             if kind != "end_turn":
                 continue
             self.end_turns += 1
@@ -53,6 +59,52 @@ class EpisodeHealth:
             player = decision.get("observation", {}).get("self_player", {})
             self.mana_available_at_end += float(player.get("mana", 0))
             self.max_mana_at_end += float(player.get("max_mana", 0))
+
+    def _add_attack(
+        self,
+        decision: dict[str, Any],
+        chosen: dict[str, Any],
+        actions: list[dict[str, Any]],
+    ) -> None:
+        self.attacks += 1
+        entities = {
+            int(entity["entity"]): entity
+            for entity in decision.get("observation", {}).get("entities", [])
+        }
+        target = entities.get(int(chosen.get("target", -1)), {})
+        if target.get("area") != "hero":
+            self.board_attacks += 1
+            return
+        self.face_attacks += 1
+        sources = tuple(chosen.get("sources", []))
+        source = entities.get(int(sources[0]), {}) if sources else {}
+        source_attack = float(source.get("attack", 0))
+        hero_health = max(
+            float(target.get("max_health", 0))
+            - float(target.get("damage", 0))
+            + float(target.get("armor", 0)),
+            0.0,
+        )
+        if source_attack >= hero_health:
+            return
+        for alternative in actions:
+            if alternative.get("kind") != "attack":
+                continue
+            if tuple(alternative.get("sources", [])) != sources:
+                continue
+            alternative_target = entities.get(
+                int(alternative.get("target", -1)), {}
+            )
+            if alternative_target.get("area") != "board":
+                continue
+            remaining = max(
+                float(alternative_target.get("max_health", 0))
+                - float(alternative_target.get("damage", 0)),
+                0.0,
+            )
+            if source_attack >= remaining:
+                self.nonlethal_face_with_killable_minion += 1
+                return
 
     def summary(self) -> dict[str, Any]:
         result = asdict(self)
@@ -71,6 +123,11 @@ class EpisodeHealth:
             self.action_kinds["play_card"] + self.action_kinds["play_card_at"]
         ) / max(self.decisions, 1)
         result["attack_rate"] = self.action_kinds["attack"] / max(self.decisions, 1)
+        result["face_attack_rate"] = self.face_attacks / max(self.attacks, 1)
+        result["board_attack_rate"] = self.board_attacks / max(self.attacks, 1)
+        result["nonlethal_face_with_killable_minion_rate"] = (
+            self.nonlethal_face_with_killable_minion / max(self.attacks, 1)
+        )
         return result
 
 
@@ -79,6 +136,7 @@ def health_gate(
     *,
     max_avoidable_end_turn_rate: float = 0.05,
     max_truncation_rate: float = 0.01,
+    max_nonlethal_face_with_killable_minion_rate: float = 0.35,
 ) -> list[str]:
     summary = health.summary()
     failures: list[str] = []
@@ -94,5 +152,12 @@ def health_gate(
         failures.append(
             f"truncation_rate={summary['truncation_rate']:.3%} > "
             f"{max_truncation_rate:.3%}"
+        )
+    trade_skip_rate = summary["nonlethal_face_with_killable_minion_rate"]
+    if trade_skip_rate > max_nonlethal_face_with_killable_minion_rate:
+        failures.append(
+            "nonlethal_face_with_killable_minion_rate="
+            f"{trade_skip_rate:.3%} > "
+            f"{max_nonlethal_face_with_killable_minion_rate:.3%}"
         )
     return failures

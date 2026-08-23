@@ -132,6 +132,22 @@ fn card_level_can_play_rule_blocks_empty_random_target_spells() {
 }
 
 #[test]
+fn multiple_fel_reavers_remove_distinct_top_cards() {
+    let mut game = game(repeated("CS2_120"), repeated("GVG_016"));
+    advance_to_mana(&mut game, PlayerId::TWO, 10);
+    play(&mut game, PlayerId::TWO, "GVG_016", None);
+    play(&mut game, PlayerId::TWO, "GVG_016", None);
+    end_turn(&mut game);
+
+    let before = game.state().player(PlayerId::TWO).deck.len();
+    play(&mut game, PlayerId::ONE, "CS2_120", None);
+    assert_eq!(
+        game.state().player(PlayerId::TWO).deck.len(),
+        before.saturating_sub(6)
+    );
+}
+
+#[test]
 fn feign_death_triggers_deathrattles_and_baron_doubles_them() {
     let mut game = game(
         mixed(&["FP1_002", "FP1_031", "GVG_026"]),

@@ -19,17 +19,35 @@ class TrainingSample:
     weight: float = 1.0
 
 
-def write_episodes(path: str | Path, episodes: Iterable[dict[str, Any]]) -> int:
-    """Append newline-delimited episodes to a gzip shard."""
+def write_episodes(
+    path: str | Path,
+    episodes: Iterable[dict[str, Any]],
+    *,
+    append: bool = True,
+) -> int:
+    """Write newline-delimited episodes to a gzip shard.
+
+    Iteration-scoped training shards use ``append=False`` so resuming an
+    interrupted iteration replaces its stale rollout instead of silently
+    concatenating a second batch under the same filename.
+    """
 
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    output_path = path if append else path.with_name(f".{path.name}.tmp")
     count = 0
-    with gzip.open(path, "at", encoding="utf-8") as output:
-        for episode in episodes:
-            output.write(json.dumps(episode, separators=(",", ":")))
-            output.write("\n")
-            count += 1
+    try:
+        with gzip.open(output_path, "at" if append else "wt", encoding="utf-8") as output:
+            for episode in episodes:
+                output.write(json.dumps(episode, separators=(",", ":")))
+                output.write("\n")
+                count += 1
+        if not append:
+            output_path.replace(path)
+    except BaseException:
+        if not append:
+            output_path.unlink(missing_ok=True)
+        raise
     return count
 
 

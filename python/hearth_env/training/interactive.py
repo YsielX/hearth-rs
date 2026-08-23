@@ -78,6 +78,10 @@ def _entity_label(
         if armor:
             suffix += f" 护甲{armor}"
         return f"{name}[{reference}] 费用{cost}{suffix}"
+    if kind == "weapon":
+        attack = int(entity.get("attack", 0))
+        durability = int(entity.get("max_health", 0)) - int(entity.get("damage", 0))
+        return f"{name}[{reference}] 费用{cost} 攻击{attack} 耐久{durability}"
     return f"{name}[{reference}] 费用{cost}"
 
 
@@ -151,6 +155,15 @@ def render_state(decision: Mapping[str, Any], names: Mapping[str, str]) -> None:
         f"回合 {observation.get('turn', 0)} | 阶段 {observation.get('phase')} | 轮到你操作"
     )
     print(_player_line("对手", observation["opponent"], entities, names))
+    opponent_weapon = observation["opponent"].get("weapon")
+    print(
+        "对手武器："
+        + (
+            _entity_label(int(opponent_weapon), entities, names, detailed=True)
+            if opponent_weapon is not None
+            else "（无）"
+        )
+    )
     opponent_board = observation["opponent"].get("board", [])
     print(
         "对手场面："
@@ -177,6 +190,15 @@ def render_state(decision: Mapping[str, Any], names: Mapping[str, str]) -> None:
         )
     )
     print(_player_line("你", observation["self_player"], entities, names))
+    own_weapon = observation["self_player"].get("weapon")
+    print(
+        "你的武器："
+        + (
+            _entity_label(int(own_weapon), entities, names, detailed=True)
+            if own_weapon is not None
+            else "（无）"
+        )
+    )
     hand = observation["self_player"].get("hand", [])
     print(
         "你的手牌："

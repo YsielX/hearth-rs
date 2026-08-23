@@ -15,6 +15,7 @@ from .catalog import CardCatalog
 from .checkpoint import load_checkpoint
 from .config import ModelConfig, TrainConfig, resolve_device
 from .decks import Deck, DeckPool, match_config
+from .diagnostics import attack_target_diagnostic
 from .dmc import train_dmc
 from .evaluate import paired_evaluate
 from .health import EpisodeHealth
@@ -22,6 +23,7 @@ from .interactive import play_interactive_match
 from .manifests import write_deck_split
 from .model import HearthQNetwork, parameter_count
 from .policies import HeuristicPolicy, ModelPolicy, RandomPolicy
+from .ppo import train_ppo
 from .rollout import ParallelCollector, RolloutJob, play_episode
 from .tensorize import Tensorizer
 from .trajectory import write_episodes
@@ -70,12 +72,14 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
         seed=args.seed,
         bc_learning_rate=args.bc_learning_rate,
         dmc_learning_rate=args.dmc_learning_rate,
+        ppo_learning_rate=args.ppo_learning_rate,
         batch_size=args.batch_size,
         workers=args.workers,
         max_steps=args.max_steps,
         history_limit=args.history_limit,
         bc_epochs=getattr(args, "epochs", 3),
         dmc_iterations=getattr(args, "iterations", 1000),
+        ppo_iterations=getattr(args, "iterations", 1000),
         episodes_per_iteration=getattr(args, "episodes_per_iteration", 64),
         updates_per_iteration=getattr(args, "updates_per_iteration", 128),
         replay_warmup=getattr(args, "replay_warmup", 2000),
@@ -85,6 +89,15 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
         epsilon_decay_iterations=getattr(args, "epsilon_decay_iterations", 500),
         checkpoint_every=getattr(args, "checkpoint_every", 10),
         league_snapshot_every=getattr(args, "league_snapshot_every", 25),
+        ppo_epochs=getattr(args, "ppo_epochs", 4),
+        ppo_clip=getattr(args, "ppo_clip", 0.2),
+        value_clip=getattr(args, "value_clip", 0.2),
+        value_coefficient=getattr(args, "value_coefficient", 0.5),
+        entropy_coefficient=getattr(args, "entropy_coefficient", 0.01),
+        gamma=getattr(args, "gamma", 0.995),
+        gae_lambda=getattr(args, "gae_lambda", 0.95),
+        shaping_coefficient=getattr(args, "shaping_coefficient", 0.05),
+        reference_kl_coefficient=getattr(args, "reference_kl_coefficient", 0.02),
     )
 
 
@@ -312,6 +325,9 @@ def command_stability(args: argparse.Namespace) -> None:
 def command_train_bc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     _, catalog = _env_and_catalog(args, decks)
+    initial_model = None
+    if args.init:
+        initial_model, _ = load_checkpoint(args.init, catalog, device="cpu")
     train_behavior_clone(
         catalog,
         args.input,
@@ -322,6 +338,7 @@ def command_train_bc(args: argparse.Namespace) -> None:
             card_hash_dim=args.card_hash_dim,
             transformer_layers=args.layers,
         ),
+        initial_model=initial_model,
     )
 
 
@@ -375,6 +392,34 @@ def command_train_dmc(args: argparse.Namespace) -> None:
     )
 
 
+def command_train_ppo(args: argparse.Namespace) -> None:
+    decks = _decks(args.deck)
+    _, catalog = _env_and_catalog(args, decks)
+    pool = DeckPool(
+        catalog,
+        decks,
+        seed=args.seed,
+        curated_probability=args.curated_probability,
+        perturb_probability=args.perturb_probability,
+    )
+    train_ppo(
+        args.data,
+        catalog,
+        pool,
+        args.run_dir,
+        _train_config(args),
+        initial_checkpoint=args.init,
+        resume_checkpoint=args.resume,
+        model_config=ModelConfig(
+            hidden_dim=args.hidden_dim,
+            card_hash_dim=args.card_hash_dim,
+            transformer_layers=args.layers,
+        ),
+        specialist_probability=args.specialist_probability,
+        reference_checkpoint=args.reference,
+    )
+
+
 def command_evaluate(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
@@ -422,6 +467,67 @@ def command_evaluate(args: argparse.Namespace) -> None:
         print(json.dumps({**result.summary(), "output": str(output)}, indent=2))
     else:
         print(rendered)
+
+
+def command_diagnose_attacks(args: argparse.Namespace) -> None:
+    decks = _decks(args.deck)
+    env, catalog = _env_and_catalog(args, decks)
+    pool = DeckPool(
+        catalog,
+        decks,
+        seed=args.seed,
+        curated_probability=args.curated_probability,
+        perturb_probability=args.perturb_probability,
+    )
+    jobs: list[RolloutJob] = []
+    for index in range(args.matches):
+        model_seat = index % 2
+        model = {"kind": "model", "checkpoint": args.checkpoint}
+        opponent = {"kind": "heuristic", "noise": 0.0}
+        policies = (model, opponent) if model_seat == 0 else (opponent, model)
+        jobs.append(RolloutJob(pool.sample_match(), args.seed + index, policies))
+    if args.workers > 0:
+        with ParallelCollector(
+            args.data,
+            jobs[0].match_config,
+            workers=args.workers,
+            max_steps=args.max_steps,
+            history_limit=args.history_limit,
+            card_hash_dim=catalog.hash_dim,
+            failure_dir=Path(args.output).parent / "failures" if args.output else None,
+            max_failures=0,
+        ) as collector:
+            episodes = collector.collect(jobs)
+    else:
+        device = resolve_device(args.device)
+        model, _ = load_checkpoint(args.checkpoint, catalog, device=device)
+        tensorizer = Tensorizer(catalog, model.config)
+        episodes = []
+        for index, job in enumerate(jobs):
+            model_policy = ModelPolicy(
+                model, tensorizer, device=device, seed=job.seed
+            )
+            opponent_policy = HeuristicPolicy(job.seed ^ 1, noise=0.0)
+            policies = (
+                [model_policy, opponent_policy]
+                if index % 2 == 0
+                else [opponent_policy, model_policy]
+            )
+            episodes.append(
+                play_episode(env, policies, job.match_config, job.seed)
+            )
+    annotated = [(episode, {index % 2}) for index, episode in enumerate(episodes)]
+    report = {
+        "checkpoint": args.checkpoint,
+        "episodes": len(episodes),
+        **attack_target_diagnostic(annotated),
+    }
+    rendered = json.dumps(report, indent=2)
+    if args.output:
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(rendered + "\n", encoding="utf-8")
+    print(rendered)
 
 
 def command_play_model(args: argparse.Namespace) -> None:
@@ -482,7 +588,7 @@ def command_smoke(args: argparse.Namespace) -> None:
 
 
 def command_pipeline(args: argparse.Namespace) -> None:
-    """Run the BC warm start followed by league-based DMC self-play."""
+    """Run the BC warm start followed by league-based PPO self-play."""
 
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
@@ -547,14 +653,13 @@ def command_pipeline(args: argparse.Namespace) -> None:
         config,
         model_config=model_config,
     )
-    train_dmc(
+    train_ppo(
         args.data,
         catalog,
         pool,
-        run_dir / "dmc",
+        run_dir / "ppo",
         config,
         initial_checkpoint=bc_checkpoint,
-        bc_shards=[demonstrations],
         specialist_probability=args.specialist_probability,
     )
 
@@ -574,6 +679,7 @@ def parser() -> argparse.ArgumentParser:
     root.add_argument("--batch-size", type=int, default=128)
     root.add_argument("--bc-learning-rate", type=float, default=3e-4)
     root.add_argument("--dmc-learning-rate", type=float, default=1e-5)
+    root.add_argument("--ppo-learning-rate", type=float, default=3e-5)
     commands = root.add_subparsers(dest="command", required=True)
 
     catalog = commands.add_parser("catalog")
@@ -600,6 +706,7 @@ def parser() -> argparse.ArgumentParser:
     bc.add_argument("--input", action="append", required=True)
     bc.add_argument("--output", required=True)
     bc.add_argument("--epochs", type=int, default=3)
+    bc.add_argument("--init")
     bc.set_defaults(function=command_train_bc)
 
     evaluate_bc = commands.add_parser("evaluate-bc")
@@ -628,6 +735,30 @@ def parser() -> argparse.ArgumentParser:
     dmc.add_argument("--perturb-probability", type=float, default=0.0)
     dmc.set_defaults(function=command_train_dmc)
 
+    ppo = commands.add_parser("train-ppo")
+    checkpoint = ppo.add_mutually_exclusive_group()
+    checkpoint.add_argument("--init")
+    checkpoint.add_argument("--resume")
+    ppo.add_argument("--reference")
+    ppo.add_argument("--run-dir", required=True)
+    ppo.add_argument("--iterations", type=int, default=1000)
+    ppo.add_argument("--episodes-per-iteration", type=int, default=64)
+    ppo.add_argument("--ppo-epochs", type=int, default=4)
+    ppo.add_argument("--ppo-clip", type=float, default=0.2)
+    ppo.add_argument("--value-clip", type=float, default=0.2)
+    ppo.add_argument("--value-coefficient", type=float, default=0.5)
+    ppo.add_argument("--entropy-coefficient", type=float, default=0.01)
+    ppo.add_argument("--gamma", type=float, default=0.995)
+    ppo.add_argument("--gae-lambda", type=float, default=0.95)
+    ppo.add_argument("--shaping-coefficient", type=float, default=0.05)
+    ppo.add_argument("--reference-kl-coefficient", type=float, default=0.02)
+    ppo.add_argument("--checkpoint-every", type=int, default=10)
+    ppo.add_argument("--league-snapshot-every", type=int, default=25)
+    ppo.add_argument("--specialist-probability", type=float, default=0.1)
+    ppo.add_argument("--curated-probability", type=float, default=1.0)
+    ppo.add_argument("--perturb-probability", type=float, default=0.0)
+    ppo.set_defaults(function=command_train_ppo)
+
     evaluate = commands.add_parser("evaluate")
     evaluate.add_argument("--checkpoint", required=True)
     evaluate.add_argument("--opponent-checkpoint")
@@ -636,6 +767,14 @@ def parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--curated-probability", type=float, default=1.0)
     evaluate.add_argument("--perturb-probability", type=float, default=0.0)
     evaluate.set_defaults(function=command_evaluate)
+
+    diagnose = commands.add_parser("diagnose-attacks")
+    diagnose.add_argument("--checkpoint", required=True)
+    diagnose.add_argument("--matches", type=int, default=500)
+    diagnose.add_argument("--output")
+    diagnose.add_argument("--curated-probability", type=float, default=1.0)
+    diagnose.add_argument("--perturb-probability", type=float, default=0.0)
+    diagnose.set_defaults(function=command_diagnose_attacks)
 
     play_model = commands.add_parser("play-model")
     play_model.add_argument("--checkpoint", required=True)
@@ -660,6 +799,15 @@ def parser() -> argparse.ArgumentParser:
     pipeline.add_argument("--checkpoint-every", type=int, default=10)
     pipeline.add_argument("--league-snapshot-every", type=int, default=25)
     pipeline.add_argument("--specialist-probability", type=float, default=0.1)
+    pipeline.add_argument("--ppo-epochs", type=int, default=4)
+    pipeline.add_argument("--ppo-clip", type=float, default=0.2)
+    pipeline.add_argument("--value-clip", type=float, default=0.2)
+    pipeline.add_argument("--value-coefficient", type=float, default=0.5)
+    pipeline.add_argument("--entropy-coefficient", type=float, default=0.01)
+    pipeline.add_argument("--gamma", type=float, default=0.995)
+    pipeline.add_argument("--gae-lambda", type=float, default=0.95)
+    pipeline.add_argument("--shaping-coefficient", type=float, default=0.05)
+    pipeline.add_argument("--reference-kl-coefficient", type=float, default=0.02)
     pipeline.set_defaults(function=command_pipeline)
     return root
 

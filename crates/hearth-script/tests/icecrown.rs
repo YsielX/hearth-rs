@@ -220,6 +220,8 @@ local cards = {
       type = "minion", cost = 5, attack = 5, health = 5, collectible = false },
     { id = "TEST_ICC_GRIP_MINION", name = "Grip Victim", text = "", set = "TEST",
       type = "minion", cost = 1, attack = 1, health = 1, collectible = false },
+    { id = "TEST_ICC_DEFILE_VICTIM", name = "Defile Victim", text = "", set = "TEST",
+      type = "minion", cost = 0, attack = 1, health = 1, collectible = false },
 
     { id = "TEST_ICC_REFLECTION_A", name = "Reflection A", text = "", set = "TEST",
       type = "minion", cost = 0, attack = 2, health = 2, collectible = false },
@@ -259,6 +261,27 @@ local cards = {
           ctx:summon(player, "ICC_901"); ctx:summon(player, "ICC_901")
           ctx:summon(player, "TEST_ICC_END_TURN")
           ctx:summon(opponent, "TEST_ICC_END_TURN")
+      end },
+
+    { id = "TEST_ICC_DEFILE_SETUP", name = "Defile Setup", text = "",
+      set = "TEST", type = "spell", cost = 0, collectible = true,
+      on_play = function(ctx, self)
+          local player, opponent = ctx:controller(self), ctx:opponent(ctx:controller(self))
+          clear_hand(ctx, player)
+          ctx:summon(opponent, "BRM_019"); ctx:summon(opponent, "BRM_019")
+          ctx:summon(opponent, "TEST_ICC_DEFILE_VICTIM")
+          ctx:give_card(player, "ICC_041")
+          ctx:continue_with("finish_defile_setup")
+      end,
+      finish_defile_setup = function(ctx, self)
+          local player, opponent = ctx:controller(self), ctx:opponent(ctx:controller(self))
+          for _, minion in ipairs(ctx:board(opponent)) do
+              if ctx:entity(minion).card_id == "BRM_019" then
+                  cardlib.effects.damage_ignoring_spell_damage(ctx, minion, 1)
+                  break
+              end
+          end
+          make_free(ctx, player, "ICC_041")
       end },
 
     { id = "TEST_ICC_THRALL_SETUP", name = "Thrall Setup", text = "", set = "TEST",
@@ -390,6 +413,18 @@ fn icecrown_collectible_ids_match_the_official_135_card_set() {
     .collect::<BTreeSet<_>>();
     assert_eq!(actual.len(), 135);
     assert_eq!(actual, expected);
+}
+
+#[test]
+fn defile_stops_after_fourteen_waves_when_grim_patrons_keep_the_loop_alive() {
+    let (_guard, mut game) = fixture_game("TEST_ICC_DEFILE_SETUP", ["warlock", "warrior"]);
+    let defile = play(&mut game, PlayerId::ONE, "ICC_041", None);
+
+    assert_eq!(
+        game.state().entity(defile).unwrap().script_data["wave_count"],
+        14
+    );
+    assert!(game.state().outcome.is_none());
 }
 
 #[test]

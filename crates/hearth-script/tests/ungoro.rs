@@ -16,6 +16,15 @@ fn repeated(card: &str) -> Vec<String> {
     std::iter::repeat_n(card.to_owned(), 20).collect()
 }
 
+fn mixed(cards: &[&str]) -> Vec<String> {
+    cards
+        .iter()
+        .cycle()
+        .take(20)
+        .map(|card| (*card).to_owned())
+        .collect()
+}
+
 fn game_with_runtime(
     runtime: LuaCardRuntime,
     one: Vec<String>,
@@ -92,6 +101,38 @@ fn choose_card(game: &mut Game<LuaCardRuntime>, card_id: &str) -> bool {
     };
     game.dispatch(PlayerCommand::Choose { index }).unwrap();
     true
+}
+
+#[test]
+fn umbra_ignores_a_stale_summon_after_sacred_trial_destroyed_the_minion() {
+    let mut game = game_with_runtime(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        mixed(&["UNG_900", "CS2_120", "EX1_534"]),
+        repeated("LOE_027"),
+        20264534,
+        ["hunter", "paladin"],
+    );
+
+    advance_to_mana(&mut game, PlayerId::TWO, 1);
+    play(&mut game, PlayerId::TWO, "LOE_027", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    play(&mut game, PlayerId::ONE, "UNG_900", None);
+    play(&mut game, PlayerId::ONE, "CS2_120", None);
+    play(&mut game, PlayerId::ONE, "CS2_120", None);
+    end_turn(&mut game);
+    end_turn(&mut game);
+
+    let highmane = play(&mut game, PlayerId::ONE, "EX1_534", None);
+    assert_eq!(game.state().entity(highmane).unwrap().zone, Zone::Graveyard);
+    assert_eq!(
+        game.state()
+            .player(PlayerId::ONE)
+            .board
+            .iter()
+            .filter(|entity| game.state().entity(**entity).unwrap().card_id == "EX1_534t")
+            .count(),
+        2
+    );
 }
 
 static TEMP_RUNTIME_COUNTER: AtomicU64 = AtomicU64::new(0);

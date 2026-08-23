@@ -30,10 +30,11 @@ hash；增加新卡后加载旧 checkpoint，会按卡 ID 搬移旧 embedding，
 
 1. 用外部启发式策略生成行为克隆数据，学会基本合法节奏，避免从纯随机策略冷启动；
 2. 行为克隆（BC）用所有合法动作上的交叉熵训练动作评分；
-3. Deep Monte Carlo（DMC）自博弈，把终局胜负 `+1/0/-1` 回填到每个行动者当时的动作；
-4. 定期冻结 checkpoint 进入 league，当前模型会与当前/历史/启发式策略混合对战；
-5. 用成对换边评估，按套牌和 matchup 统计，而不是只看训练 loss；
-6. 新卡加入后直接加载旧 checkpoint，以包含新卡的套牌继续 BC/DMC。旧卡 embedding 会保留。
+3. PPO Actor-Critic 自博弈，以终局胜负 `+1/0/-1` 为主奖励，用 GAE 把优势回传到每个动作；
+4. 用很小的 actor-relative 场面势函数差值辅助信用分配；它考虑双方英雄有效生命、随从身材、武器和手牌，但不取代最终胜负；
+5. 定期冻结 checkpoint 进入 league，当前模型会与当前/历史/启发式策略混合对战；
+6. 用成对换边评估，按套牌和 matchup 统计，而不是只看训练 loss；
+7. 新卡加入后直接加载旧 checkpoint，以包含新卡的套牌继续 BC/PPO。旧卡 embedding 会保留。
 
 所谓 10% “specialist” 默认是自动启发式/冻结策略提供的行为多样性，不要求人工打 10% 的
 对局。你的高质量人类对局很珍贵，可以以后作为小比例加权 BC 数据，而不是训练成立的前提。
@@ -64,15 +65,20 @@ python3 -m venv .venv
 .venv/bin/hearth-train --device cuda --bc-learning-rate 3e-4 train-bc \
   --input training-data/bc-000.jsonl.gz --output runs/bc.pt --epochs 3
 
-.venv/bin/hearth-train --workers 24 --device cuda --dmc-learning-rate 1e-5 train-dmc \
-  --init runs/bc.pt --bc-input training-data/bc-000.jsonl.gz --run-dir runs/dmc \
-  --iterations 1000 --episodes-per-iteration 64 --updates-per-iteration 128
+# 修正示范策略后，也可以从已有 BC checkpoint 做纠偏微调：
+.venv/bin/hearth-train --device cuda --bc-learning-rate 1e-4 train-bc \
+  --init runs/old-bc.pt --input training-data/corrected-bc.jsonl.gz \
+  --output runs/corrected-bc.pt --epochs 2
+
+.venv/bin/hearth-train --workers 24 --device cuda --ppo-learning-rate 3e-5 train-ppo \
+  --init runs/bc.pt --run-dir runs/ppo \
+  --iterations 1000 --episodes-per-iteration 64 --ppo-epochs 4
 
 .venv/bin/hearth-train --device cuda evaluate \
-  --checkpoint runs/dmc/latest.pt --matches 200
+  --checkpoint runs/ppo/latest.pt --matches 200
 ```
 
-`collect-bc`、`train-dmc` 和 `evaluate` 默认只从显式传入的牌组采样
+`collect-bc`、`train-ppo` 和 `evaluate` 默认只从显式传入的牌组采样
 （`--curated-probability 1 --perturb-probability 0`）。需要混合扰动或随机牌组时必须显式修改这两个比例；剩余概率是随机职业合法牌组。这样固定 seen/unseen
 评估不会意外混入其他分布。
 
@@ -83,8 +89,8 @@ python3 -m venv .venv
   --input training-data/bc-validation.jsonl.gz --checkpoint runs/bc.pt
 
 .venv/bin/hearth-train evaluate \
-  --checkpoint runs/dmc/latest.pt --opponent-checkpoint runs/bc.pt \
-  --matches 250 --output runs/dmc-vs-bc-500.json
+  --checkpoint runs/ppo/latest.pt --opponent-checkpoint runs/bc.pt \
+  --matches 250 --output runs/ppo-vs-bc-500.json
 ```
 
 也可以在终端中直接与 checkpoint 对战；双方牌组都使用仓库中的 JSON 牌表：
@@ -99,19 +105,28 @@ python3 -m venv .venv
 
 交互界面只显示玩家可见状态和引擎枚举的合法动作；输入动作编号执行，输入 `q` 退出。
 
-`--init` 只加载模型参数并创建新的 DMC AdamW；`--resume` 只接受 DMC checkpoint，
-恢复 optimizer 和 iteration，并从 `run-dir/rollouts` 重建 replay buffer。两者互斥：
+`--init` 加载 BC/旧模型参数，并让新增价值头从零开始；`--resume` 只接受 PPO checkpoint，
+恢复 optimizer 和 iteration。两者互斥：
 
 ```bash
-.venv/bin/hearth-train --workers 24 --device cuda train-dmc \
-  --resume runs/dmc/latest.pt --bc-input training-data/bc-000.jsonl.gz \
-  --run-dir runs/dmc --iterations 2000
+.venv/bin/hearth-train --workers 24 --device cuda train-ppo \
+  --resume runs/ppo/latest.pt --run-dir runs/ppo --iterations 2000
 ```
 
-DMC batch 默认另取约20%的 BC anchor，损失权重在前20%训练中从0.2降到0.05，
-随后保持0.05。联盟 snapshot 在空过率超过5%、截断率超过1%或出现对局错误时
+PPO 使用合法动作掩码、裁剪策略损失、裁剪价值损失、熵正则和 GAE。默认还以初始化 checkpoint
+作为冻结参考策略施加小幅 KL 约束；也可用 `--reference` 显式指定参考 checkpoint，并用
+`--reference-kl-coefficient` 调整强度。联盟 snapshot 在空过率超过5%、截断率超过1%、
+“非斩杀且可击杀敌方随从时仍打脸”超过35%或出现对局错误时
 拒绝晋级。worker 错误会把 seed、套牌、策略/checkpoint、动作历史、最后 observation、
 action、traceback 和权威 replay 保存到运行目录的 `failures/`。
+
+攻击目标偏差可以独立复测：
+
+```bash
+.venv/bin/hearth-train --workers 16 diagnose-attacks \
+  --checkpoint runs/ppo/latest.pt --matches 500 \
+  --output runs/ppo/attack-diagnostic.json
+```
 
 正式收集前先按原始30张牌的近似簇生成固定拆分，再运行环境压测：
 
@@ -134,7 +149,7 @@ episode 以 gzip JSONL 保存，便于审计；大规模运行若 I/O 成为瓶�
 默认 128 hidden、2 层 encoder 在当前 1537 张定义上约 127 万参数：FP32 权重约 4.8 MiB，
 卡牌语义表约 1.6 MiB。8 GB 显存足以进行默认 batch 训练；16–24 GB 能提高 batch 和模型宽度，
 但不是起步条件。本机无 GPU 时也能完成 smoke、
-少量 BC/DMC 更新和主要的并行对局生成，只是神经网络 learner 会慢很多。
+少量 BC/PPO 更新和主要的并行对局生成，只是神经网络 learner 会慢很多。
 
 建议先用 5–20 万个启发式 decision（通常是数千局）验证 BC，再逐步累计百万到千万级自博弈
 decision。无需人工标注数据。实际磁盘量依赖 history 长度和对局复杂度，应先跑 100–1000 局，
@@ -153,7 +168,7 @@ decision。无需人工标注数据。实际磁盘量依赖 history 长度和对
 误称为历史原版。运行 `.venv/bin/python scripts/import_frozen_throne_decks.py` 可以从来源网页重新生成。
 
 简单 Bot 无法正确演示任务贼、无限火球等强顺序依赖策略，因此行为克隆只从标记为
-`bc_eligible` 的直接型快攻/中速牌组收集数据；DMC 自博弈和评估仍使用全部牌组。
+`bc_eligible` 的直接型快攻/中速牌组收集数据；PPO 自博弈和评估仍使用全部牌组。
 训练 DeckPool 同时抽样原始套牌、随机替换约 20% 卡的扰动套牌，以及职业合法池随机套牌，
 并把扰动和随机牌组严格限制在所有输入牌组声明的时代截止点（默认 `ICECROWN`），不会混入未来扩展。
 推荐继续补充真实强度套牌列表，并把训练/验证/测试按“完整套牌”拆分：验证和测试套牌不能只是
