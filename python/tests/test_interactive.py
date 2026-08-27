@@ -4,10 +4,47 @@ import io
 import unittest
 from contextlib import redirect_stdout
 
-from hearth_env.training.interactive import render_state
+from hearth_env.training.interactive import describe_action, render_state
 
 
 class InteractiveRenderingTests(unittest.TestCase):
+    def test_discover_actions_render_the_localized_card_names(self) -> None:
+        decision = {
+            "observation": {
+                "pending_choice": {
+                    "prompt": "Discover a spell",
+                    "options": [
+                        {
+                            "label": "Fireball",
+                            "value": {"kind": "card", "card_id": "CS2_029"},
+                        },
+                        {
+                            "label": "Frostbolt",
+                            "value": {"kind": "card", "card_id": "CS2_024"},
+                        },
+                    ],
+                },
+                "entities": [],
+            }
+        }
+
+        self.assertEqual(
+            describe_action(
+                decision,
+                {"kind": "choose", "choice_index": 0},
+                {"CS2_029": "火球术", "CS2_024": "寒冰箭"},
+            ),
+            "选择 火球术",
+        )
+        self.assertEqual(
+            describe_action(
+                decision,
+                {"kind": "choose", "choice_index": 1},
+                {"CS2_029": "火球术", "CS2_024": "寒冰箭"},
+            ),
+            "选择 寒冰箭",
+        )
+
     def test_state_renders_both_weapons_with_remaining_durability(self) -> None:
         player = {
             "class": "warrior",

@@ -83,6 +83,23 @@ fn legacy_and_expert1_contain_the_complete_collectible_basic_and_classic_pools()
 }
 
 #[test]
+fn starfall_only_offers_its_area_damage_mode_on_an_empty_board() {
+    let mut game = game(repeated("NEW1_007"), repeated("NEW1_007"));
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let starfall = play(&mut game, PlayerId::ONE, "NEW1_007", None);
+
+    let choice = game.state().pending_input.as_ref().unwrap();
+    assert_eq!(choice.options.len(), 1);
+    assert_eq!(
+        choice.options[0].label,
+        "Deal 2 damage to all enemy minions"
+    );
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    assert!(game.state().pending_input.is_none());
+    assert_eq!(game.state().entity(starfall).unwrap().zone, Zone::Graveyard);
+}
+
+#[test]
 fn azure_drake_draws_and_provides_spell_damage() {
     let mut game = game(repeated("EX1_284"), repeated("CS2_120"));
     advance_to_mana(&mut game, PlayerId::ONE, 5);

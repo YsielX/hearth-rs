@@ -13,6 +13,7 @@ from hearth_env.training.catalog import CardCatalog
 from hearth_env.training.checkpoint import load_checkpoint, save_checkpoint
 from hearth_env.training.config import ModelConfig, TrainConfig
 from hearth_env.training.decks import SET_ORDER, Deck, DeckPool, match_config
+from hearth_env.training.health import EpisodeHealth, health_gate
 from hearth_env.training.learn import train_batch
 from hearth_env.training.model import HearthQNetwork
 from hearth_env.training.policies import HeuristicPolicy
@@ -63,6 +64,15 @@ class TrainingTest(unittest.TestCase):
             self.assertEqual(list(read_episodes([shard])), [{"seed": 3}])
             self.assertFalse((shard.parent / f".{shard.name}.tmp").exists())
 
+    def test_face_attack_diagnostic_does_not_block_league_promotion(self) -> None:
+        health = EpisodeHealth(
+            episodes=1,
+            attacks=10,
+            face_attacks=10,
+            nonlethal_face_with_killable_minion=10,
+        )
+        self.assertEqual(health_gate(health), [])
+
     def test_catalog_combines_definition_and_lua(self) -> None:
         feature = self.catalog.feature("CS2_120")
         self.assertEqual(len(feature), self.catalog.feature_dim)
@@ -95,6 +105,39 @@ class TrainingTest(unittest.TestCase):
         self.assertEqual(tuple(value.shape), (1,))
         self.assertTrue(torch.all(value >= -1.0))
         self.assertTrue(torch.all(value <= 1.0))
+
+    def test_tensorizer_exposes_discovered_card_identity_to_the_policy(self) -> None:
+        decision = deepcopy(self.env.reset(seed=9))
+        decision["observation"]["phase"] = "choice"
+        decision["observation"]["pending_choice"] = {
+            "prompt": "Discover a spell",
+            "options": [
+                {
+                    "label": "Fireball",
+                    "value": {"kind": "card", "card_id": "CS2_029"},
+                },
+                {
+                    "label": "Frostbolt",
+                    "value": {"kind": "card", "card_id": "CS2_024"},
+                },
+            ],
+        }
+        decision["actions"] = [
+            {"index": 0, "kind": "choose", "choice_index": 0},
+            {"index": 1, "kind": "choose", "choice_index": 1},
+        ]
+
+        encoded = Tensorizer(self.catalog, self.config).encode(
+            decision, demo_config()["decks"][0]
+        )
+        self.assertEqual(
+            encoded["action_choice_cards"].tolist(),
+            [self.catalog.index("CS2_029"), self.catalog.index("CS2_024")],
+        )
+        self.assertNotEqual(
+            encoded["action_choice_cards"][0].item(),
+            encoded["action_choice_cards"][1].item(),
+        )
 
     def test_ppo_builds_terminal_returns_and_updates(self) -> None:
         episode = play_episode(

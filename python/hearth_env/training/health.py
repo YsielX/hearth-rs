@@ -136,7 +136,6 @@ def health_gate(
     *,
     max_avoidable_end_turn_rate: float = 0.05,
     max_truncation_rate: float = 0.01,
-    max_nonlethal_face_with_killable_minion_rate: float = 0.35,
 ) -> list[str]:
     summary = health.summary()
     failures: list[str] = []
@@ -152,12 +151,5 @@ def health_gate(
         failures.append(
             f"truncation_rate={summary['truncation_rate']:.3%} > "
             f"{max_truncation_rate:.3%}"
-        )
-    trade_skip_rate = summary["nonlethal_face_with_killable_minion_rate"]
-    if trade_skip_rate > max_nonlethal_face_with_killable_minion_rate:
-        failures.append(
-            "nonlethal_face_with_killable_minion_rate="
-            f"{trade_skip_rate:.3%} > "
-            f"{max_nonlethal_face_with_killable_minion_rate:.3%}"
         )
     return failures

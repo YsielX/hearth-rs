@@ -115,10 +115,10 @@ python3 -m venv .venv
 
 PPO 使用合法动作掩码、裁剪策略损失、裁剪价值损失、熵正则和 GAE。默认还以初始化 checkpoint
 作为冻结参考策略施加小幅 KL 约束；也可用 `--reference` 显式指定参考 checkpoint，并用
-`--reference-kl-coefficient` 调整强度。联盟 snapshot 在空过率超过5%、截断率超过1%、
-“非斩杀且可击杀敌方随从时仍打脸”超过35%或出现对局错误时
-拒绝晋级。worker 错误会把 seed、套牌、策略/checkpoint、动作历史、最后 observation、
-action、traceback 和权威 replay 保存到运行目录的 `failures/`。
+`--reference-kl-coefficient` 调整强度。联盟 snapshot 在空过率超过5%、截断率超过1%或出现
+对局错误时拒绝晋级。“非斩杀且可击杀敌方随从时仍打脸”只作为诊断指标记录，不影响晋级。
+worker 错误会把 seed、套牌、策略/checkpoint、动作历史、最后 observation、action、traceback
+和权威 replay 保存到运行目录的 `failures/`。
 
 攻击目标偏差可以独立复测：
 

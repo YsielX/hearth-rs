@@ -10,7 +10,6 @@ from .model import HearthQNetwork
 from .policies import ModelPolicy
 from .tensorize import Tensorizer
 
-
 _HTML_TAG = re.compile(r"<[^>]+>")
 _CLASS_NAMES = {
     "druid": "德鲁伊",
@@ -124,7 +123,17 @@ def describe_action(
             text += f" → {target_label}"
         return text
     if kind == "choose":
-        return f"选择选项 {action.get('choice_index', action.get('index'))}"
+        choice_index = action.get("choice_index")
+        pending = decision["observation"].get("pending_choice") or {}
+        options = pending.get("options", [])
+        if isinstance(choice_index, int) and 0 <= choice_index < len(options):
+            option = options[choice_index]
+            value = option.get("value") or {}
+            card_id = value.get("card_id")
+            label = names.get(str(card_id), str(card_id)) if card_id else None
+            label = label or option.get("label") or f"选项 {choice_index + 1}"
+            return f"选择 {label}"
+        return f"选择选项 {choice_index if choice_index is not None else '?'}"
     return _ACTION_NAMES.get(kind, kind)
 
 
@@ -210,6 +219,9 @@ def render_state(decision: Mapping[str, Any], names: Mapping[str, str]) -> None:
             else "（空）"
         )
     )
+    pending = observation.get("pending_choice")
+    if pending:
+        print(f"当前选择：{pending.get('prompt') or '请选择一项'}")
 
 
 def play_interactive_match(

@@ -17,7 +17,15 @@ impl<R: CardRuntime> Game<R> {
                 continuation_owner,
             } => {
                 if options.is_empty() {
-                    return Err(GameError::EmptyChoice);
+                    let card_id = self
+                        .state
+                        .entity(source)
+                        .map(|entity| entity.card_id.clone())
+                        .unwrap_or_else(|| "<unknown>".to_owned());
+                    return Err(GameError::EmptyChoice {
+                        entity: source,
+                        card_id,
+                    });
                 }
                 if options.len() > MAX_CHOICE_OPTIONS {
                     return Err(GameError::TooManyChoiceOptions {

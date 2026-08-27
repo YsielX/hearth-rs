@@ -107,8 +107,8 @@ pub enum GameError {
     InvalidMulliganCard(EntityId),
     #[error("choice {index} is invalid; expected 0..{options}")]
     InvalidChoice { index: usize, options: usize },
-    #[error("a card requested a choice without options")]
-    EmptyChoice,
+    #[error("card {card_id} ({entity}) requested a choice without options")]
+    EmptyChoice { entity: EntityId, card_id: String },
     #[error("a card requested {options} choice options; the maximum is {MAX_CHOICE_OPTIONS}")]
     TooManyChoiceOptions { options: usize },
     #[error("invalid serialized choice value: {0}")]
