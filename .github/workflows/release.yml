@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install --yes pkg-config libx11-dev libxi-dev libxkbcommon-dev
+          sudo apt-get install --yes pkg-config libfontconfig1-dev libx11-dev libxi-dev libxkbcommon-dev
 
       - name: Build CLI and graphical client
         run: cargo build --locked --release -p hearth-cli -p hearth-client-bevy
