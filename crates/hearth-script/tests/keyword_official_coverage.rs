@@ -84,6 +84,7 @@ fn every_public_keyword_has_one_unique_implemented_official_example() {
     public_keywords.retain(|keyword| *keyword != "hero_power_disabled");
     public_keywords.retain(|keyword| *keyword != "end_of_turn_repeater");
     public_keywords.retain(|keyword| *keyword != "no_corpse");
+    public_keywords.retain(|keyword| *keyword != "death_knight_corpses");
     public_keywords.retain(|keyword| *keyword != "unending_plagues");
     public_keywords.retain(|keyword| *keyword != "frost_plague_surcharge");
     public_keywords.retain(|keyword| *keyword != "frozen_solid");

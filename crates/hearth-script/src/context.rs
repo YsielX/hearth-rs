@@ -10,14 +10,6 @@ pub(super) fn build_context(
 ) -> mlua::Result<Table> {
     let state = Arc::new(state.clone());
     let ctx = lua.create_table()?;
-    // Lua decides conditional and "up to" Corpse spending synchronously. Keep
-    // a per-hook reservation balance so multiple calls cannot overcommit the
-    // immutable state snapshot before their effects resolve.
-    let corpse_balances = Rc::new(RefCell::new([
-        state.player(PlayerId::ONE).corpses,
-        state.player(PlayerId::TWO).corpses,
-    ]));
-
     ctx.set("locale", locale.code())?;
     ctx.set(
         "localize",
@@ -101,8 +93,16 @@ pub(super) fn build_context(
             table.set("mana", player.mana)?;
             table.set("max_mana", player.max_mana)?;
             table.set("temporary_mana", player.temporary_mana)?;
-            table.set("corpses", player.corpses)?;
-            table.set("corpses_spent", player.corpses_spent)?;
+            let resources = lua.create_table()?;
+            for (resource, amount) in &player.resources {
+                resources.set(resource.as_str(), *amount)?;
+            }
+            table.set("resources", resources)?;
+            let resources_spent = lua.create_table()?;
+            for (resource, amount) in &player.resources_spent {
+                resources_spent.set(resource.as_str(), *amount)?;
+            }
+            table.set("resources_spent", resources_spent)?;
             table.set("overload_pending", player.overload_pending)?;
             table.set("overloaded_mana", player.overloaded_mana)?;
             table.set("fatigue", player.fatigue)?;
@@ -872,72 +872,60 @@ pub(super) fn build_context(
             Ok(())
         })?,
     )?;
-    let output = effects.clone();
-    let balances = corpse_balances.clone();
+    let snapshot = state.clone();
     ctx.set(
-        "gain_corpses",
-        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u32)| {
-            let player = parse_player(player)?;
-            let mut balances = balances.borrow_mut();
-            balances[player.index()] = balances[player.index()].saturating_add(amount);
-            output.borrow_mut().push(EffectSpec::GainCorpses {
-                source,
-                player,
-                amount,
-            });
-            Ok(())
+        "resource",
+        lua.create_function(move |_, (_ctx, player, resource): (Table, u8, String)| {
+            Ok(snapshot.player(parse_player(player)?).resource(&resource))
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
+        "resource_spent",
+        lua.create_function(move |_, (_ctx, player, resource): (Table, u8, String)| {
+            Ok(snapshot
+                .player(parse_player(player)?)
+                .resource_spent(&resource))
         })?,
     )?;
     let output = effects.clone();
-    let balances = corpse_balances.clone();
     ctx.set(
-        "spend_corpses",
-        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u32)| {
-            let player = parse_player(player)?;
-            let mut balances = balances.borrow_mut();
-            if balances[player.index()] < amount {
-                return Ok(false);
-            }
-            balances[player.index()] -= amount;
-            output.borrow_mut().push(EffectSpec::SpendCorpses {
-                source,
-                player,
-                amount,
-            });
-            Ok(true)
-        })?,
-    )?;
-    let output = effects.clone();
-    let balances = corpse_balances.clone();
-    ctx.set(
-        "spend_up_to_corpses",
-        lua.create_function(move |_, (_ctx, player, maximum): (Table, u8, u32)| {
-            let player = parse_player(player)?;
-            let mut balances = balances.borrow_mut();
-            let amount = balances[player.index()].min(maximum);
-            balances[player.index()] -= amount;
-            if amount > 0 {
-                output.borrow_mut().push(EffectSpec::SpendCorpses {
+        "gain_resource",
+        lua.create_function(
+            move |_, (_ctx, player, resource, amount): (Table, u8, String, u32)| {
+                output.borrow_mut().push(EffectSpec::GainPlayerResource {
                     source,
-                    player,
+                    player: parse_player(player)?,
+                    resource,
                     amount,
                 });
-            }
-            Ok(amount)
-        })?,
+                Ok(())
+            },
+        )?,
     )?;
     let output = effects.clone();
     ctx.set(
-        "spend_corpses_and_continue",
+        "spend_resource_and_continue",
         lua.create_function(
-            move |_, (_ctx, player, amount, hook): (Table, u8, u32, String)| {
+            move |_,
+                  (_ctx, player, resource, minimum, maximum, hook): (
+                Table,
+                u8,
+                String,
+                u32,
+                u32,
+                String,
+            )| {
                 output
                     .borrow_mut()
-                    .push(EffectSpec::SpendCorpsesAndContinue {
+                    .push(EffectSpec::SpendPlayerResourceAndContinue {
                         source,
                         player: parse_player(player)?,
-                        amount,
+                        resource,
+                        minimum,
+                        maximum,
                         hook,
+                        continuation_owner: None,
                     });
                 Ok(())
             },
@@ -983,16 +971,17 @@ pub(super) fn build_context(
                 base_spell_damage: None,
                 keywords: None,
                 attached_scripts: Vec::new(),
+                started_in_deck: false,
             });
             Ok(())
         })?,
     )?;
     let output = effects.clone();
     ctx.set(
-        "take_sideboard_card",
+        "consume_sideboard_card",
         lua.create_function(
             move |_, (_ctx, player, owner, card_id): (Table, u8, String, String)| {
-                output.borrow_mut().push(EffectSpec::TakeSideboardCard {
+                output.borrow_mut().push(EffectSpec::ConsumeSideboardCard {
                     source,
                     player: parse_player(player)?,
                     owner,
@@ -1019,6 +1008,7 @@ pub(super) fn build_context(
                     base_spell_damage: None,
                     keywords: None,
                     attached_scripts: Vec::new(),
+                    started_in_deck: false,
                 });
                 Ok(())
             },
@@ -1067,6 +1057,9 @@ pub(super) fn build_context(
                     base_spell_damage: spec.get("spell_damage")?,
                     keywords,
                     attached_scripts,
+                    started_in_deck: spec
+                        .get::<Option<bool>>("started_in_deck")?
+                        .unwrap_or_default(),
                 });
                 Ok(())
             },
@@ -1172,6 +1165,7 @@ pub(super) fn build_context(
                 base_spell_damage: None,
                 keywords: None,
                 attached_scripts: Vec::new(),
+                started_in_deck: false,
             });
             Ok(())
         })?,
@@ -1226,14 +1220,28 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "grant_public_player_keyword",
-        lua.create_function(move |_, (_ctx, player, keyword): (Table, u8, String)| {
+        "grant_public_player_status",
+        lua.create_function(move |_, (_ctx, player, status): (Table, u8, String)| {
             output
                 .borrow_mut()
-                .push(EffectSpec::GrantPublicPlayerKeyword {
+                .push(EffectSpec::GrantPublicPlayerStatus {
                     source,
                     player: parse_player(player)?,
-                    keyword,
+                    status,
+                });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "disable_public_player_status",
+        lua.create_function(move |_, (_ctx, player, status): (Table, u8, String)| {
+            output
+                .borrow_mut()
+                .push(EffectSpec::DisablePublicPlayerStatus {
+                    source,
+                    player: parse_player(player)?,
+                    status,
                 });
             Ok(())
         })?,

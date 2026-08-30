@@ -13,9 +13,9 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         ctx:draw(player, 1)
-        ctx:spend_corpses_and_continue(player, 2, "draw_again")
+        ctx:spend_resource_and_continue(player, "corpses", 2, 2, "draw_again")
     end,
-    draw_again = function(ctx, self)
-        ctx:draw(ctx:controller(self), 1)
+    draw_again = function(ctx, self, spent)
+        if spent > 0 then ctx:draw(ctx:controller(self), 1) end
     end,
 }

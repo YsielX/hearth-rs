@@ -24,11 +24,13 @@ card.action_effects = {
 
 function card.on_battlecry(ctx, self, target)
     ctx:set_data(self, "eulogizer_target", target)
-    ctx:spend_corpses_and_continue(ctx:controller(self), 3, "deal_eulogy_damage")
+    ctx:spend_resource_and_continue(ctx:controller(self), "corpses", 3, 3, "deal_eulogy_damage")
 end
 
-function card.deal_eulogy_damage(ctx, self)
-    cardlib.effects.damage_ignoring_spell_damage(ctx, ctx:get_data(self, "eulogizer_target"), 3)
+function card.deal_eulogy_damage(ctx, self, spent)
+    if spent > 0 then
+        cardlib.effects.damage_ignoring_spell_damage(ctx, ctx:get_data(self, "eulogizer_target"), 3)
+    end
 end
 
 card.tokens = {{
@@ -48,7 +50,7 @@ card.tokens = {{
     targets = function(ctx) return ctx:characters() end,
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self, target)
-        ctx:gain_corpses(ctx:controller(self), 3)
+        ctx:gain_resource(ctx:controller(self), "corpses", 3)
         cardlib.effects.damage_ignoring_spell_damage(ctx, target, 3)
     end,
 }}

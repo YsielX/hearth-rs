@@ -44,8 +44,19 @@ end
 
 function card.receive_weapon(ctx, self, card_id)
     local player = ctx:controller(self)
-    ctx:set_data(self, "buff_created_weapon", ctx:spend_corpses(player, 3) and 1 or 0)
     ctx:give_card(player, card_id)
+    ctx:spend_resource_and_continue(player, "corpses", 3, 3, "buff_created_weapon")
+end
+
+function card.buff_created_weapon(ctx, self, spent)
+    if spent == 0 then return end
+    for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
+        if ctx:get_data(entity, "runes_of_darkness_created") == 1 then
+            ctx:set_data(entity, "runes_of_darkness_created", 0)
+            ctx:buff(entity, 1, 1)
+            return
+        end
+    end
 end
 
 card.triggers = {{
@@ -53,11 +64,10 @@ card.triggers = {{
     timing = "after",
     active_zones = { "graveyard" },
     condition = function(ctx, self, event)
-        return event.source == self and ctx:get_data(self, "buff_created_weapon") == 1
+        return event.source == self
     end,
     effect = function(ctx, self, event)
-        ctx:set_data(self, "buff_created_weapon", 0)
-        ctx:buff(event.entity, 1, 1)
+        ctx:set_data(event.entity, "runes_of_darkness_created", 1)
     end,
 }}
 

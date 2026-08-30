@@ -1,4 +1,4 @@
-return {
+local card = {
     api_version = 1,
     id = "RLK_060",
     name = "Army of the Dead",
@@ -13,9 +13,17 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         local spaces = math.max(0, 7 - ctx:player(player).board_size)
-        local raised = ctx:spend_up_to_corpses(player, math.min(5, spaces))
+        local maximum = math.min(5, spaces)
+        if maximum > 0 then
+            ctx:spend_resource_and_continue(player, "corpses", 1, maximum, "raise_ghouls")
+        end
+    end,
+    raise_ghouls = function(ctx, self, raised)
+        local player = ctx:controller(self)
         for _ = 1, raised do
             ctx:summon(player, "RLK_008t")
         end
     end,
 }
+
+return card

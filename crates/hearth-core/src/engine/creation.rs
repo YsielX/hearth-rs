@@ -12,6 +12,7 @@ pub(super) struct CardCreation {
     pub base_spell_damage: Option<i32>,
     pub keywords: Option<Vec<String>>,
     pub attached_scripts: Vec<String>,
+    pub started_in_deck: bool,
 }
 
 impl<R: CardRuntime> Game<R> {
@@ -59,6 +60,7 @@ impl<R: CardRuntime> Game<R> {
             }
             entity.base_attached_cards = creation.attached_scripts.clone();
             entity.attached_cards = creation.attached_scripts;
+            entity.started_in_deck = creation.started_in_deck;
             Self::recompute_entity(entity);
         }
         self.install_created_card(card, creation.player, actual_destination, creation.position);

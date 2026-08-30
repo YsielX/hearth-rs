@@ -328,12 +328,34 @@ pub fn event_summary(
             format!("{}获得了 {amount} 点护甲", card(target)),
             format!("{}獲得了 {amount} 點護甲", card(target)),
         )),
-        PublicEvent::CorpsesGained {
-            player: id, amount, ..
-        } => Some(corpse_event_summary(locale, player(*id), *amount, true)),
-        PublicEvent::CorpsesSpent {
-            player: id, amount, ..
-        } => Some(corpse_event_summary(locale, player(*id), *amount, false)),
+        PublicEvent::PlayerResourceGained {
+            player: id,
+            resource,
+            amount,
+            ..
+        } if resource == "corpses" => {
+            Some(corpse_event_summary(locale, player(*id), *amount, true))
+        }
+        PublicEvent::PlayerResourceSpent {
+            player: id,
+            resource,
+            amount,
+            ..
+        } if resource == "corpses" => {
+            Some(corpse_event_summary(locale, player(*id), *amount, false))
+        }
+        PublicEvent::PlayerResourceGained {
+            player: id,
+            resource,
+            amount,
+            ..
+        } => Some(format!("{} gained {amount} {resource}", player(*id))),
+        PublicEvent::PlayerResourceSpent {
+            player: id,
+            resource,
+            amount,
+            ..
+        } => Some(format!("{} spent {amount} {resource}", player(*id))),
         PublicEvent::KeywordDisabled {
             target, keyword, ..
         } => Some(localized3(

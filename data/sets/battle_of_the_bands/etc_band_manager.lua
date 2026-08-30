@@ -27,7 +27,9 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.take_band_member(ctx, self, card_id)
-    ctx:take_sideboard_card(ctx:controller(self), card.id, card_id)
+    local player = ctx:controller(self)
+    ctx:consume_sideboard_card(player, card.id, card_id)
+    ctx:create_card(player, card_id, { destination = "hand", started_in_deck = true })
 end
 
 return card

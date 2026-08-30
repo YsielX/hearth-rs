@@ -16,9 +16,13 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    local spent = ctx:spend_up_to_corpses(ctx:controller(self), 5)
+    ctx:spend_resource_and_continue(ctx:controller(self), "corpses", 1, 5, "marrow_paid")
+end
+
+function card.marrow_paid(ctx, self, spent)
+    if spent == 0 then return end
     ctx:set_data(self, "marrow_hits_left", spent)
-    if spent > 0 then ctx:continue_with("marrow_choose") end
+    ctx:continue_with("marrow_choose")
 end
 
 function card.marrow_choose(ctx, self)

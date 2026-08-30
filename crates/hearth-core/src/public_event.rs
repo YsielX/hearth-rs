@@ -226,14 +226,16 @@ pub enum PublicEvent {
         amount: u8,
         temporary: u8,
     },
-    CorpsesGained {
+    PlayerResourceGained {
         player: PlayerId,
         source: Option<PublicEntity>,
+        resource: String,
         amount: u32,
     },
-    CorpsesSpent {
+    PlayerResourceSpent {
         player: PlayerId,
         source: Option<PublicEntity>,
+        resource: String,
         amount: u32,
     },
     KeywordDisabled {
@@ -642,22 +644,26 @@ impl GameState {
                 amount: *amount,
                 temporary: *temporary,
             },
-            GameEvent::CorpsesGained {
+            GameEvent::PlayerResourceGained {
                 source,
                 player,
+                resource,
                 amount,
-            } => PublicEvent::CorpsesGained {
-                player: *player,
-                source: source.and_then(visible),
-                amount: *amount,
-            },
-            GameEvent::CorpsesSpent {
-                source,
-                player,
-                amount,
-            } => PublicEvent::CorpsesSpent {
+            } => PublicEvent::PlayerResourceGained {
                 player: *player,
                 source: visible(*source),
+                resource: resource.clone(),
+                amount: *amount,
+            },
+            GameEvent::PlayerResourceSpent {
+                source,
+                player,
+                resource,
+                amount,
+            } => PublicEvent::PlayerResourceSpent {
+                player: *player,
+                source: visible(*source),
+                resource: resource.clone(),
                 amount: *amount,
             },
             GameEvent::KeywordDisabled {

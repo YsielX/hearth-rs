@@ -1,1 +1,1 @@
-return { api_version = 1, id = "HERO_03", name = "Valeera Sanguinar", text = "", set = "HERO_SKINS", type = "hero", class = "rogue", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_03bp" }
+return { api_version = 1, id = "HERO_03", name = "Valeera Sanguinar", text = "", set = "HERO_SKINS", type = "hero", class = "rogue", rarity = "free", collectible = true, starting_hero = true, cost = 0, health = 30, hero_power = "HERO_03bp" }

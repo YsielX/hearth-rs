@@ -140,7 +140,7 @@ fn battlefield_items(viewer: PlayerId, player: &PlayerStateView) -> Vec<Battlefi
             .map(BattlefieldItem::PublicObjective),
     );
     if player
-        .public_keywords
+        .public_statuses
         .iter()
         .any(|keyword| keyword == "unending_plagues")
     {
@@ -250,9 +250,9 @@ mod tests {
             mana: 3,
             max_mana: 3,
             temporary_mana: 0,
-            corpses: 0,
-            corpses_spent: 0,
-            public_keywords: Vec::new(),
+            resources: Default::default(),
+            resources_spent: Default::default(),
+            public_statuses: Vec::new(),
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,
@@ -298,7 +298,7 @@ mod tests {
     #[test]
     fn unending_plagues_are_visible_to_both_players() {
         let mut state = player(PlayerId::TWO);
-        state.public_keywords = vec!["unending_plagues".to_owned()];
+        state.public_statuses = vec!["unending_plagues".to_owned()];
 
         assert_eq!(
             battlefield_items(PlayerId::ONE, &state),

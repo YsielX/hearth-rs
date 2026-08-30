@@ -217,6 +217,8 @@ ctx:card_ids()                  -- 當前卡牌包的全部 ID，穩定排序
 ctx:collectible_cards()         -- 僅返回 collectible=true 的 ID
 ctx:card_definition(card_id)    -- 返回不可變卡牌定義快照
 ctx:get_player_data(player, key)
+ctx:resource(player, resource_id)
+ctx:resource_spent(player, resource_id)
 ctx:has_enchantment_from(entity, source)
 ```
 
@@ -234,7 +236,7 @@ cards_played_before, combo_active
 玩家快照欄位包括：
 
 ```text
-id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana, corpses, corpses_spent,
+id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, resources, resources_spent, mana, max_mana, temporary_mana, overload_pending, overloaded_mana,
 cards_played_this_turn, cards_played_this_game, spells_cast_this_game,
 minions_played_this_game, minions_summoned_this_game, weapons_played_this_game, locations_played_this_game,
 fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
@@ -278,15 +280,15 @@ ctx:fill_mana_crystals(player, amount)
 ctx:refresh_mana_crystals(player, amount?)
 ctx:destroy_mana_crystals(player, amount)
 ctx:spend_mana(player, amount)
-ctx:gain_corpses(player, amount)
-ctx:spend_corpses(player, amount) -- 精確預留成功時回傳 true
-ctx:spend_up_to_corpses(player, maximum) -- 回傳實際預留量
-ctx:spend_corpses_and_continue(player, amount, hook) -- 跨競爭觸發器原子消耗
+ctx:gain_resource(player, resource_id, amount)
+ctx:spend_resource_and_continue(player, resource_id, minimum, maximum, hook)
+-- hook(ctx, self, spent) 在解析時執行；資源不足 minimum 時 spent 為 0
 ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
 ctx:give_card_at(player, card_id, position)
 ctx:create_card(player, card_id, spec_or_nil)
+ctx:consume_sideboard_card(player, owner_card_id, card_id)
 ctx:give_copy(player, entity)
 ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
 ctx:give_base_copy(player, entity)
@@ -347,7 +349,8 @@ ctx:grant_keyword_until_end_of_turn(target, keyword)
 ctx:grant_keyword_until_next_turn(target, keyword)
 ctx:disable_keyword(target, keyword)
 ctx:grant_player_keyword(player, keyword)
-ctx:grant_public_player_keyword(player, keyword)
+ctx:grant_public_player_status(player, status)
+ctx:disable_public_player_status(player, status)
 ctx:disable_player_keyword(player, keyword)
 ctx:set_player_class(player, class_id)
 ctx:summon_fresh_copy(target, position_or_nil, health, without_keywords)
@@ -379,7 +382,7 @@ ctx:increment_player_data(player, key, delta)
 
 `spell_damage` 光環可以指向手下或英雄。玩家的法術傷害加成為己方場上手下與英雄所承載數值之和，因此雙方玩家級效果無需任何卡牌特判。
 
-`replace_hero` 要求目標定義為 Hero 且宣告有效的 `hero_power`：新英雄使用定義中的生命上限並回滿生命，保留原英雄的護甲、凍結狀態和本回合攻擊次數，同時替換英雄技能並釋出 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 與 `disable_player_keyword` 管理玩家級腳本機制；它們由當前英雄實體承載 Lua 光環和觸發器，但狀態屬於玩家，因此不受手下沉默、變形、死亡或英雄替換影響。明確屬於公開資訊的永久規則應使用 `grant_public_player_keyword`，其 ID 會同步進入雙方公開投影與 RL 觀察。
+`replace_hero` 要求目標定義為 Hero 且宣告有效的 `hero_power`：新英雄使用定義中的生命上限並回滿生命，保留原英雄的護甲、凍結狀態和本回合攻擊次數，同時替換英雄技能並釋出 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 與 `disable_player_keyword` 只管理可執行的玩家級腳本機制；公開展示與規則執行正交，由 `grant_public_player_status` 和 `disable_public_player_status` 管理並投影到雙方視圖與 RL 觀察。
 
 `destroy_all` 在同一個死亡檢查點摧毀所有目標，適用於「摧毀所有手下」一類同時結算；`move` 的目標區域包括 `hand`、`secret`、`deck_top`、`deck_bottom`、`deck_random`、`graveyard` 和 `removed`。移動到 `secret` 時會校驗該實體確實具有奧秘規則且奧秘區未滿。`shuffle_entity_into_deck` 使用 Rust 確定性隨機把原實體洗入指定玩家牌庫，同時轉移 owner/controller 並執行隱藏區重置。
 
@@ -387,7 +390,7 @@ ctx:increment_player_data(player, key, delta)
 
 `cast_spell` 從定義建立法術，`cast_existing_spell` 施放隱藏區或終止區中的既有實體；兩者都接受 `{ target = entity, skip_if_invalid = true, random_target = true, choice_policy = "random" }`。隨機目標和自動抉擇現在是顯式策略，不再借用隱藏指令碼資料。連續隨機施法由 Lua 組合，公共庫 `cardlib.random_spell` 重用權威 `random_value` 與 `cast_spell`。
 
-`create_card` 支援 `destination`、可選手牌 `position`、`attack`、`health`、`cost`、`spell_damage`、`keywords` 和 `attached_scripts`。屬性合成公式留在 Lua；`cardlib.fusion.create_minion` 是可重用的合成手下實作。宣告 `module_type = "library"` 的檔案會暴露為 `cardlib[id]`，參與校驗和確定性卡包雜湊，但不會註冊成卡牌。
+`create_card` 支援 `destination`、可選手牌 `position`、`attack`、`health`、`cost`、`spell_damage`、`keywords`、`attached_scripts` 和 `started_in_deck`。`consume_sideboard_card` 只移除指定身分；指令碼在同一個事務命令中把它與 `create_card(..., { started_in_deck = true })` 組合。屬性合成公式留在 Lua；`cardlib.fusion.create_minion` 是可重用的合成手下實作。宣告 `module_type = "library"` 的檔案會暴露為 `cardlib[id]`，參與校驗和確定性卡包雜湊，但不會註冊成卡牌。
 
 `damage_ignoring_spell_damage` 仍走普通順序傷害與事件流程，但不疊加來源控制者的法術傷害。`spend_mana` 原子地花費玩家當前可用法力（優先臨時法力），並按實際正數花費發布 `mana_spent`。`increment_player_data` 對玩家指令碼資料執行原子有符號累加，發布帶 `old/new/delta` 的 `player_script_data_changed`，避免同一快照收集出的多個觸發器互相覆蓋。死亡記錄保存卡牌定義是否原生具有死亡之聲：沉默不清除此標記，附加死亡之聲也不會設定它。
 
@@ -858,7 +861,7 @@ card_played, spell_targeted, spell_cast, minion_played, weapon_played, location_
 minion_summoned, magnetized, weapon_equipped, weapon_destroyed, location_used, location_destroyed,
 hero_power_used, hero_power_replaced, secret_played, secret_revealed, zone_changed, controller_changed, transformed, attack, damaged, damage_prevented, healed,
 armor_gained, overload_queued, mana_locked, mana_unlocked, temporary_mana_gained,
-temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent, corpses_gained, corpses_spent,
+temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent, player_resource_gained, player_resource_spent,
 keyword_disabled, frozen, entity_died, conceded, game_ended,
 choice_requested, choice_made, random_choice_made, random_cards_sampled, random_entities_sampled
 ```

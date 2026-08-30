@@ -15,8 +15,12 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
+    ctx:spend_resource_and_continue(ctx:controller(self), "corpses", 1, 1, "discover_blood_card")
+end
+
+function card.discover_blood_card(ctx, self, spent)
+    if spent == 0 then return end
     local player = ctx:controller(self)
-    if not ctx:spend_corpses(player, 1) then return end
     local pool = {}
     for _, card_id in ipairs(ctx:collectible_cards()) do
         local definition = ctx:card_definition(card_id)

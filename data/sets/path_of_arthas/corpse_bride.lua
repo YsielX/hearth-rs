@@ -17,7 +17,11 @@ local card = {
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     if #ctx:board(player) >= 7 then return end
-    local spent = ctx:spend_up_to_corpses(player, 10)
+    ctx:spend_resource_and_continue(player, "corpses", 0, 10, "summon_groom")
+end
+
+function card.summon_groom(ctx, self, spent)
+    local player = ctx:controller(self)
     ctx:summon_with_stats(player, "RLK_506t", spent, spent)
 end
 

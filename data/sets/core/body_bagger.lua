@@ -13,6 +13,6 @@ return {
     tags = { "undead" },
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        ctx:gain_corpses(ctx:controller(self), 1)
+        ctx:gain_resource(ctx:controller(self), "corpses", 1)
     end,
 }

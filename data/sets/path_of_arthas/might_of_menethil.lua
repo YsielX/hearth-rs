@@ -26,9 +26,17 @@ end
 
 function card.on_battlecry(ctx, self)
     local candidates = remaining_minions(ctx, self)
-    local spent = ctx:spend_up_to_corpses(ctx:controller(self), math.min(3, #candidates))
+    local maximum = math.min(3, #candidates)
+    if maximum > 0 then
+        ctx:spend_resource_and_continue(
+            ctx:controller(self), "corpses", 1, maximum, "menethil_paid"
+        )
+    end
+end
+
+function card.menethil_paid(ctx, self, spent)
     ctx:set_data(self, "menethil_freezes_left", spent)
-    if spent > 0 then ctx:continue_with("menethil_choose") end
+    ctx:continue_with("menethil_choose")
 end
 
 function card.menethil_choose(ctx, self)

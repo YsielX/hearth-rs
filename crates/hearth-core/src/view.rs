@@ -88,16 +88,29 @@ pub struct PlayerStateView {
     pub mana: u8,
     pub max_mana: u8,
     pub temporary_mana: u8,
-    /// Public Death Knight resource.
-    pub corpses: u32,
-    /// Public lifetime count used by cards that scale with Corpses spent.
-    pub corpses_spent: u32,
-    /// Public, persistent player rule markers such as Helya's unending Plagues.
-    pub public_keywords: Vec<String>,
+    /// Public script-defined resource balances.
+    pub resources: BTreeMap<String, u32>,
+    /// Public lifetime resource spending totals.
+    pub resources_spent: BTreeMap<String, u32>,
+    /// Public, persistent status labels, independent of executable rules.
+    pub public_statuses: Vec<String>,
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
     pub cards_played_this_turn: u32,
+}
+
+impl PlayerStateView {
+    pub fn resource(&self, resource: &str) -> u32 {
+        self.resources.get(resource).copied().unwrap_or_default()
+    }
+
+    pub fn resource_spent(&self, resource: &str) -> u32 {
+        self.resources_spent
+            .get(resource)
+            .copied()
+            .unwrap_or_default()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -209,9 +222,9 @@ impl GameState {
                 mana: player.mana,
                 max_mana: player.max_mana,
                 temporary_mana: player.temporary_mana,
-                corpses: player.corpses,
-                corpses_spent: player.corpses_spent,
-                public_keywords: player.public_keywords.clone(),
+                resources: player.resources.clone(),
+                resources_spent: player.resources_spent.clone(),
+                public_statuses: player.public_statuses.clone(),
                 overload_pending: player.overload_pending,
                 overloaded_mana: player.overloaded_mana,
                 fatigue: player.fatigue,

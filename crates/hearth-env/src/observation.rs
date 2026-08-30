@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use hearth_core::{
     CardKind, ChoiceOptionValueView, EntityId, PendingInputView, PlayerId, PlayerView,
@@ -90,9 +90,9 @@ pub struct PlayerObservation {
     pub mana: u8,
     pub max_mana: u8,
     pub temporary_mana: u8,
-    pub corpses: u32,
-    pub corpses_spent: u32,
-    pub public_keywords: Vec<String>,
+    pub resources: BTreeMap<String, u32>,
+    pub resources_spent: BTreeMap<String, u32>,
+    pub public_statuses: Vec<String>,
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
@@ -279,9 +279,9 @@ pub(crate) fn build_observation(
             mana: player.mana,
             max_mana: player.max_mana,
             temporary_mana: player.temporary_mana,
-            corpses: player.corpses,
-            corpses_spent: player.corpses_spent,
-            public_keywords: player.public_keywords.clone(),
+            resources: player.resources.clone(),
+            resources_spent: player.resources_spent.clone(),
+            public_statuses: player.public_statuses.clone(),
             overload_pending: player.overload_pending,
             overloaded_mana: player.overloaded_mana,
             fatigue: player.fatigue,

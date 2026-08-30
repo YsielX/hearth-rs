@@ -20,7 +20,8 @@ local card = {
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     ctx:increment_player_data(player, KEY, 3)
-    ctx:grant_public_player_keyword(player, "mograine")
+    ctx:grant_player_keyword(player, "mograine")
+    ctx:grant_public_player_status(player, "mograine")
 end
 
 return card

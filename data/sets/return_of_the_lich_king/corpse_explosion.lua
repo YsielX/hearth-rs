@@ -18,9 +18,13 @@ end
 
 function card.detonate_next_corpse(ctx, self)
     local minions = ctx:minions()
-    local player = ctx:controller(self)
-    if #minions == 0 or not ctx:spend_corpses(player, 1) then return end
-    cardlib.effects.damage_all(ctx, minions, 1)
+    if #minions == 0 then return end
+    ctx:spend_resource_and_continue(ctx:controller(self), "corpses", 1, 1, "detonate_paid_corpse")
+end
+
+function card.detonate_paid_corpse(ctx, self, spent)
+    if spent == 0 then return end
+    cardlib.effects.damage_all(ctx, ctx:minions(), 1)
     ctx:continue_with("detonate_next_corpse")
 end
 

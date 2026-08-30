@@ -479,6 +479,9 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
             .unwrap_or_default(),
         deck_size: module.get::<Option<u8>>("deck_size")?,
         starting_health: module.get::<Option<i32>>("starting_health")?,
+        starting_hero: module
+            .get::<Option<bool>>("starting_hero")?
+            .unwrap_or_default(),
         rune_cost,
         rarity: module.get::<Option<String>>("rarity")?,
         tags: module
@@ -583,9 +586,9 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
                 definition.id
             )));
         }
-    } else if definition.armor != 0 || definition.hero_power.is_some() {
+    } else if definition.armor != 0 || definition.hero_power.is_some() || definition.starting_hero {
         return Err(mlua::Error::runtime(format!(
-            "only hero cards may declare armor or hero_power ({})",
+            "only hero cards may declare armor, hero_power, or starting_hero ({})",
             definition.id
         )));
     }
@@ -779,6 +782,8 @@ pub(super) fn validate_triggers(module: &Table, owner: &str) -> mlua::Result<()>
                 | "mana_crystals_gained"
                 | "mana_crystals_destroyed"
                 | "mana_spent"
+                | "player_resource_gained"
+                | "player_resource_spent"
                 | "player_script_data_changed"
                 | "keyword_disabled"
                 | "frozen"

@@ -18,7 +18,14 @@ local card = {
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     local spaces = math.max(0, 7 - #ctx:board(player))
-    local raised = ctx:spend_up_to_corpses(player, math.min(6, spaces))
+    local maximum = math.min(6, spaces)
+    if maximum > 0 then
+        ctx:spend_resource_and_continue(player, "corpses", 1, maximum, "raise_footmen")
+    end
+end
+
+function card.raise_footmen(ctx, self, raised)
+    local player = ctx:controller(self)
     for _ = 1, raised do ctx:summon(player, "RLK_061t") end
 end
 

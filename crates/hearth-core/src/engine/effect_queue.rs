@@ -1246,37 +1246,51 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, generated);
                 Ok(false)
             }
-            EffectSpec::SpendCorpsesAndContinue {
+            EffectSpec::SpendPlayerResourceAndContinue {
                 source,
                 player,
-                amount,
+                resource,
+                minimum,
+                maximum,
                 hook,
+                continuation_owner,
             } => {
                 if hook.is_empty() || hook.len() > 64 {
                     return Err(GameError::InvalidContinuationHook);
                 }
-                let events = self.apply_effect(EffectSpec::SpendCorpses {
-                    source,
-                    player,
-                    amount,
-                })?;
-                if events.is_empty() {
-                    return Ok(false);
+                if resource.is_empty() || resource.len() > 64 {
+                    return Err(GameError::InvalidPlayerResource);
                 }
+                if minimum > maximum {
+                    return Err(GameError::InvalidPlayerResourceSpend);
+                }
+                let available = self.state.player(player).resource(&resource);
+                let candidate = available.min(maximum);
+                let amount = if candidate >= minimum { candidate } else { 0 };
                 Self::prepend_effects(
                     queue,
                     vec![EffectSpec::Continue {
                         source,
                         hook,
-                        payload: None,
-                        continuation_owner: None,
+                        payload: Some(ChoiceValue::Integer(i64::from(amount))),
+                        continuation_owner,
                     }],
                 );
-                queue.push_front(ResolutionItem::DeathCheck);
-                for event in events.into_iter().rev() {
-                    let triggered = self.publish(event)?;
-                    Self::prepend_effects(queue, triggered);
+                if amount == 0 {
+                    return Ok(false);
                 }
+                let state = self.state.player_mut(player);
+                *state.resources.get_mut(&resource).unwrap() -= amount;
+                let spent = state.resources_spent.entry(resource.clone()).or_default();
+                *spent = spent.saturating_add(amount);
+                queue.push_front(ResolutionItem::DeathCheck);
+                let triggered = self.publish(GameEvent::PlayerResourceSpent {
+                    source,
+                    player,
+                    resource,
+                    amount,
+                })?;
+                Self::prepend_effects(queue, triggered);
                 Ok(false)
             }
             EffectSpec::CancelEvent { source: _, event } => {

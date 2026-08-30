@@ -22,7 +22,7 @@ pub fn spawn_player_resources(
         })
         .with_children(|resources| {
             spawn_resource_badge(resources, &deck_label(state, locale), DECK_COLOR, 82.0);
-            if state.class.eq_ignore_ascii_case("death_knight") || state.corpses > 0 {
+            if state.class.eq_ignore_ascii_case("death_knight") || state.resource("corpses") > 0 {
                 spawn_resource_badge(resources, &corpse_label(state, locale), CORPSE_COLOR, 72.0);
             }
             spawn_resource_badge(resources, &mana_label(state, locale), MANA_COLOR, 118.0);
@@ -33,7 +33,7 @@ fn corpse_label(state: &PlayerStateView, locale: Locale) -> String {
     format!(
         "{}\n{}",
         pick(locale, "CORPSES", "残骸", "屍體"),
-        state.corpses
+        state.resource("corpses")
     )
 }
 
@@ -147,9 +147,9 @@ mod tests {
             mana: 3,
             max_mana: 5,
             temporary_mana: 0,
-            corpses: 0,
-            corpses_spent: 0,
-            public_keywords: Vec::new(),
+            resources: Default::default(),
+            resources_spent: Default::default(),
+            public_statuses: Vec::new(),
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,
@@ -185,7 +185,7 @@ mod tests {
     fn corpse_label_is_localized() {
         let mut state = player();
         state.class = "death_knight".to_owned();
-        state.corpses = 12;
+        state.resources.insert("corpses".to_owned(), 12);
         assert_eq!(corpse_label(&state, Locale::EnUs), "CORPSES\n12");
         assert_eq!(corpse_label(&state, Locale::ZhCn), "残骸\n12");
         assert_eq!(corpse_label(&state, Locale::ZhTw), "屍體\n12");

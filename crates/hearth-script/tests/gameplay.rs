@@ -722,6 +722,7 @@ fn catalog_contains_only_traceable_official_cards() {
         let actual_keywords = definition
             .keywords
             .iter()
+            .filter(|keyword| keyword.as_str() != "death_knight_corpses")
             .cloned()
             .collect::<std::collections::BTreeSet<_>>();
         if !actual_keywords.is_subset(&expected_keywords) {
@@ -993,15 +994,15 @@ fn death_knight_corpses_cover_deaths_public_views_spending_tokens_and_replay() {
     );
     advance_to_mana(&mut game, PlayerId::ONE, 1);
     let bagger = play(&mut game, PlayerId::ONE, "RLK_503", None);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
 
     advance_to_mana(&mut game, PlayerId::TWO, 4);
     play(&mut game, PlayerId::TWO, "CS2_029", Some(bagger));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 2);
     for viewer in [PlayerId::ONE, PlayerId::TWO] {
         let view = game.state().player_view(viewer);
-        assert_eq!(view.player(PlayerId::ONE).corpses, 2);
-        assert_eq!(view.player(PlayerId::ONE).corpses_spent, 0);
+        assert_eq!(view.player(PlayerId::ONE).resource("corpses"), 2);
+        assert_eq!(view.player(PlayerId::ONE).resource_spent("corpses"), 0);
     }
     assert!(
         game.state()
@@ -1009,12 +1010,13 @@ fn death_knight_corpses_cover_deaths_public_views_spending_tokens_and_replay() {
             .iter()
             .any(|record| {
                 matches!(
-                    record.event,
-                    PublicEvent::CorpsesGained {
+                    &record.event,
+                    PublicEvent::PlayerResourceGained {
                         player: PlayerId::ONE,
-                        source: None,
+                        resource,
                         amount: 1,
-                    }
+                        ..
+                    } if resource == "corpses"
                 )
             })
     );
@@ -1030,12 +1032,15 @@ fn death_knight_corpses_cover_deaths_public_views_spending_tokens_and_replay() {
         .filter(|entity| game.state().entity(*entity).unwrap().card_id == "RLK_008t")
         .collect::<Vec<_>>();
     assert_eq!(risen.len(), 2);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 
     advance_to_mana(&mut game, PlayerId::TWO, 4);
     play(&mut game, PlayerId::TWO, "CS2_029", Some(risen[0]));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
 
     let snapshot = game.snapshot();
     let encoded = serde_json::to_string(&snapshot).unwrap();
@@ -1385,7 +1390,7 @@ fn helya_plagues_are_public_unending_and_apply_all_draw_effects() {
             game.state()
                 .player_view(viewer)
                 .player(PlayerId::TWO)
-                .public_keywords,
+                .public_statuses,
             vec!["unending_plagues".to_owned()]
         );
     }
@@ -1590,15 +1595,24 @@ fn corpse_generation_batches_simultaneous_deaths_and_ignores_transform() {
     play(&mut deaths, PlayerId::ONE, "CS2_120", None);
     advance_to_mana(&mut deaths, PlayerId::TWO, 4);
     play(&mut deaths, PlayerId::TWO, "CS2_062", None);
-    assert_eq!(deaths.state().player(PlayerId::ONE).corpses, 2);
-    assert!(deaths.state().log.iter().any(|event| matches!(
-        event,
-        GameEvent::CorpsesGained {
-            player: PlayerId::ONE,
-            source: None,
-            amount: 2,
-        }
-    )));
+    assert_eq!(deaths.state().player(PlayerId::ONE).resource("corpses"), 2);
+    assert_eq!(
+        deaths
+            .state()
+            .log
+            .iter()
+            .filter(|event| matches!(
+                event,
+                GameEvent::PlayerResourceGained {
+                    player: PlayerId::ONE,
+                    resource,
+                    amount: 1,
+                    ..
+                } if resource == "corpses"
+            ))
+            .count(),
+        2
+    );
 
     let mut transformed = game_with_classes(
         repeated("CS2_120"),
@@ -1609,7 +1623,13 @@ fn corpse_generation_batches_simultaneous_deaths_and_ignores_transform() {
     let minion = play(&mut transformed, PlayerId::ONE, "CS2_120", None);
     advance_to_mana(&mut transformed, PlayerId::TWO, 4);
     play(&mut transformed, PlayerId::TWO, "CS2_022", Some(minion));
-    assert_eq!(transformed.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(
+        transformed
+            .state()
+            .player(PlayerId::ONE)
+            .resource("corpses"),
+        0
+    );
     assert_eq!(
         transformed.state().entity(minion).unwrap().zone,
         Zone::Board
@@ -1627,13 +1647,13 @@ fn reborn_minions_leave_a_corpse_each_time_they_die() {
     let original = play(&mut game, PlayerId::ONE, "ULD_208", None);
     advance_to_mana(&mut game, PlayerId::TWO, 4);
     play(&mut game, PlayerId::TWO, "CS2_029", Some(original));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
     let reborn = game.state().player(PlayerId::ONE).board[0];
 
     end_turn(&mut game);
     advance_to_mana(&mut game, PlayerId::TWO, 4);
     play(&mut game, PlayerId::TWO, "CS2_029", Some(reborn));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 2);
 }
 
 #[test]
@@ -1645,21 +1665,21 @@ fn exact_corpse_spending_is_atomic_when_defrost_cannot_afford_it() {
     );
     advance_to_mana(&mut game, PlayerId::ONE, 1);
     play(&mut game, PlayerId::ONE, "RLK_503", None);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
 
     advance_to_mana(&mut game, PlayerId::ONE, 2);
     let hand_before = game.state().player(PlayerId::ONE).hand.len();
     play(&mut game, PlayerId::ONE, "RLK_101", None);
     assert_eq!(game.state().player(PlayerId::ONE).hand.len(), hand_before);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 0);
-    assert!(
-        !game
-            .state()
-            .log
-            .iter()
-            .any(|event| matches!(event, GameEvent::CorpsesSpent { .. }))
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        0
     );
+    assert!(!game.state().log.iter().any(|event| matches!(
+        event,
+        GameEvent::PlayerResourceSpent { resource, .. } if resource == "corpses"
+    )));
 
     advance_to_mana(&mut game, PlayerId::ONE, 3);
     play(&mut game, PlayerId::ONE, "RLK_503", None);
@@ -1669,8 +1689,11 @@ fn exact_corpse_spending_is_atomic_when_defrost_cannot_afford_it() {
         game.state().player(PlayerId::ONE).hand.len(),
         hand_before + 1
     );
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 }
 
 #[test]
@@ -1702,13 +1725,16 @@ fn eulogizer_forge_gains_corpses_while_the_base_card_spends_them_atomically() {
     })
     .unwrap();
     assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 27);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 3);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 3);
 
     advance_to_mana(&mut game, PlayerId::ONE, 6);
     play(&mut game, PlayerId::ONE, "TTN_457", Some(enemy_hero));
     assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 24);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 3);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        3
+    );
 
     advance_to_mana(&mut game, PlayerId::ONE, 7);
     play(&mut game, PlayerId::ONE, "TTN_457", Some(enemy_hero));
@@ -2024,7 +2050,7 @@ fn the_primus_resolves_all_three_runes_and_discovers_from_the_matching_pool() {
 
 fn gain_body_bagger_corpses(game: &mut Game<LuaCardRuntime>, amount: u32) {
     let mut turns = 0;
-    while game.state().player(PlayerId::ONE).corpses < amount {
+    while game.state().player(PlayerId::ONE).resource("corpses") < amount {
         if game.state().active_player == PlayerId::ONE
             && let Some(action) = game.legal_actions().unwrap().into_iter().find(|action| {
                 matches!(action, PlayerCommand::PlayCard { card, target: None }
@@ -2101,7 +2127,10 @@ fn runes_of_darkness_discovers_a_legal_weapon_and_spends_only_for_the_buff() {
         definition.health
     );
     assert_eq!(
-        without_corpses.state().player(PlayerId::ONE).corpses_spent,
+        without_corpses
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
         0
     );
 
@@ -2127,8 +2156,14 @@ fn runes_of_darkness_discovers_a_legal_weapon_and_spends_only_for_the_buff() {
         buffed.state().entity(weapon).unwrap().max_health,
         definition.health + 1
     );
-    assert_eq!(buffed.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(buffed.state().player(PlayerId::ONE).corpses_spent, 3);
+    assert_eq!(buffed.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        buffed
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        3
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -2190,7 +2225,13 @@ fn sinister_soulcage_always_buffs_and_copies_only_after_spending_five_corpses() 
     );
     advance_to_mana(&mut insufficient, PlayerId::ONE, 5);
     let target = play(&mut insufficient, PlayerId::ONE, "RLK_503", None);
-    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(
+        insufficient
+            .state()
+            .player(PlayerId::ONE)
+            .resource("corpses"),
+        1
+    );
     let board_before = insufficient.state().player(PlayerId::ONE).board.len();
     play(&mut insufficient, PlayerId::ONE, "YOG_513", Some(target));
     assert_eq!(insufficient.state().entity(target).unwrap().attack, 3);
@@ -2199,8 +2240,20 @@ fn sinister_soulcage_always_buffs_and_copies_only_after_spending_five_corpses() 
         insufficient.state().player(PlayerId::ONE).board.len(),
         board_before
     );
-    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses, 1);
-    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert_eq!(
+        insufficient
+            .state()
+            .player(PlayerId::ONE)
+            .resource("corpses"),
+        1
+    );
+    assert_eq!(
+        insufficient
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        0
+    );
 
     let mut copied = game_with_classes(
         mixed(&["RLK_503", "YOG_513"]),
@@ -2235,8 +2288,14 @@ fn sinister_soulcage_always_buffs_and_copies_only_after_spending_five_corpses() 
         2,
         "the summon should copy the post-buff state"
     );
-    assert_eq!(copied.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(copied.state().player(PlayerId::ONE).corpses_spent, 5);
+    assert_eq!(copied.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        copied
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        5
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -2475,8 +2534,14 @@ fn marrow_manipulator_spends_up_to_five_corpses_and_fires_once_for_each() {
     let enemy_hero = partial.state().player(PlayerId::TWO).hero;
     play(&mut partial, PlayerId::ONE, "RLK_505", None);
     assert_eq!(partial.state().entity(enemy_hero).unwrap().health(), 24);
-    assert_eq!(partial.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(partial.state().player(PlayerId::ONE).corpses_spent, 3);
+    assert_eq!(partial.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        partial
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        3
+    );
 
     let mut capped = game_with_classes(
         mixed(&["RLK_503", "RLK_505"]),
@@ -2488,8 +2553,14 @@ fn marrow_manipulator_spends_up_to_five_corpses_and_fires_once_for_each() {
     let enemy_hero = capped.state().player(PlayerId::TWO).hero;
     play(&mut capped, PlayerId::ONE, "RLK_505", None);
     assert_eq!(capped.state().entity(enemy_hero).unwrap().health(), 20);
-    assert_eq!(capped.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(capped.state().player(PlayerId::ONE).corpses_spent, 5);
+    assert_eq!(capped.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        capped
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        5
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -2616,8 +2687,11 @@ fn might_of_menethil_spends_only_for_distinct_enemy_minions_it_can_freeze() {
 
     assert!(game.state().entity(first).unwrap().frozen);
     assert!(game.state().entity(second).unwrap().frozen);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -2653,8 +2727,11 @@ fn hematurge_spends_one_corpse_before_discovering_only_blood_rune_cards() {
         assert_eq!(definition.class, "death_knight");
         assert!(definition.rune_cost.blood > 0, "{card_id}");
     }
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        1
+    );
     game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
 
     let replayed = Game::from_replay(
@@ -2672,7 +2749,13 @@ fn hematurge_spends_one_corpse_before_discovering_only_blood_rune_cards() {
     advance_to_mana(&mut empty, PlayerId::ONE, 2);
     play(&mut empty, PlayerId::ONE, "RLK_066", None);
     assert!(empty.state().pending_input.is_none());
-    assert_eq!(empty.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert_eq!(
+        empty
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        0
+    );
 }
 
 #[test]
@@ -2748,8 +2831,11 @@ fn blood_tap_buffs_every_hand_minion_and_doubles_only_after_spending_two_corpses
         assert_eq!(buffed.attack, attack + 2, "{entity}");
         assert_eq!(buffed.max_health, health + 2, "{entity}");
     }
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(paid.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        paid.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 
     let mut unpaid = game_with_classes(
         mixed(&["RLK_712", "CS2_120"]),
@@ -2764,7 +2850,13 @@ fn blood_tap_buffs_every_hand_minion_and_doubles_only_after_spending_two_corpses
         assert_eq!(buffed.attack, attack + 1, "{entity}");
         assert_eq!(buffed.max_health, health + 1, "{entity}");
     }
-    assert_eq!(unpaid.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert_eq!(
+        unpaid
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        0
+    );
 }
 
 #[test]
@@ -2790,8 +2882,11 @@ fn darkfallen_neophyte_buffs_hand_attack_only_after_exact_corpse_spending() {
         assert_eq!(buffed.attack, attack + 2, "{entity}");
         assert_eq!(buffed.max_health, health, "{entity}");
     }
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(paid.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        paid.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3065,8 +3160,11 @@ fn tomb_guardians_spends_corpses_only_when_it_can_summon_and_grants_reborn() {
             && zombie.has_keyword("taunt")
             && zombie.has_keyword("reborn")
     }));
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 4);
+    assert_eq!(paid.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        paid.state().player(PlayerId::ONE).resource_spent("corpses"),
+        4
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3094,7 +3192,13 @@ fn tomb_guardians_spends_corpses_only_when_it_can_summon_and_grants_reborn() {
                 zombie.has_keyword("taunt") && !zombie.has_keyword("reborn")
             })
     );
-    assert_eq!(unpaid.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert_eq!(
+        unpaid
+            .state()
+            .player(PlayerId::ONE)
+            .resource_spent("corpses"),
+        0
+    );
 
     let mut one_space = game_with_classes(
         mixed(&["RLK_503", "CS2_120", "RLK_118"]),
@@ -3122,7 +3226,10 @@ fn tomb_guardians_spends_corpses_only_when_it_can_summon_and_grants_reborn() {
             .unwrap()
             .has_keyword("reborn")
     );
-    assert_eq!(one_space.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(
+        one_space.state().player(PlayerId::ONE).resource("corpses"),
+        0
+    );
 }
 
 #[test]
@@ -3222,13 +3329,16 @@ fn corpse_bride_spends_up_to_ten_corpses_and_raises_a_corpseless_scaled_groom() 
     assert_eq!((groom_state.attack, groom_state.health()), (3, 3));
     assert!(groom_state.has_keyword("taunt"));
     assert!(groom_state.has_keyword("no_corpse"));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 3);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        3
+    );
 
     advance_to_mana(&mut game, PlayerId::TWO, 1);
     play(&mut game, PlayerId::TWO, "EX1_161", Some(groom));
     assert_eq!(game.state().entity(groom).unwrap().zone, Zone::Graveyard);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3275,8 +3385,11 @@ fn malignant_horror_spends_once_per_existing_trigger_and_copies_its_current_stat
             && horror.has_keyword("reborn")
             && horror.has_keyword("taunt")
     }));
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 4);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        4
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3284,6 +3397,51 @@ fn malignant_horror_spends_once_per_existing_trigger_and_copies_its_current_stat
     )
     .unwrap();
     assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn competing_malignant_horror_triggers_cannot_share_one_corpse_payment() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_745", "RLK_745"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut game, 4);
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    play(&mut game, PlayerId::ONE, "RLK_745", None);
+    play(&mut game, PlayerId::ONE, "RLK_745", None);
+
+    end_turn(&mut game);
+
+    let horrors = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter(|entity| game.state().entity(**entity).unwrap().card_id == "RLK_745")
+        .count();
+    assert_eq!(horrors, 3);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        4
+    );
+}
+
+#[test]
+fn explicit_concede_rejects_invalid_player_without_mutating_state() {
+    let mut game = game("CS2_120", "CS2_120");
+    let checkpoint = game.state().clone();
+    let error = game
+        .dispatch(PlayerCommand::ConcedePlayer {
+            player: PlayerId(2),
+        })
+        .unwrap_err();
+    assert!(matches!(
+        error,
+        hearth_core::GameError::InvalidCommandPlayer(PlayerId(2))
+    ));
+    assert_eq!(game.state(), &checkpoint);
 }
 
 #[test]
@@ -3389,7 +3547,7 @@ fn soulbreaker_gains_corpses_for_combat_kills_including_final_durability() {
         })
         .unwrap();
         assert_eq!(
-            game.state().player(PlayerId::ONE).corpses,
+            game.state().player(PlayerId::ONE).resource("corpses"),
             2 * (index as u32 + 1)
         );
         if index == 0 {
@@ -3426,8 +3584,11 @@ fn vampiric_blood_always_grants_five_health_and_doubles_only_after_exact_spendin
         paid.state().player(PlayerId::ONE).deck.len(),
         deck_before - 1
     );
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 3);
+    assert_eq!(paid.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        paid.state().player(PlayerId::ONE).resource_spent("corpses"),
+        3
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3526,7 +3687,7 @@ fn meat_grinder_removes_one_random_deck_minion_and_gains_four_corpses() {
             .count(),
         1
     );
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 4);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 4);
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3572,7 +3733,7 @@ fn boneguard_commander_spends_only_for_available_footman_slots() {
     advance_to_mana(&mut game, PlayerId::TWO, 7);
     play(&mut game, PlayerId::TWO, "CS2_032", None);
     assert!(game.state().player(PlayerId::ONE).board.is_empty());
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 12);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 12);
     advance_to_mana(&mut game, PlayerId::ONE, 8);
     let commander = play(&mut game, PlayerId::ONE, "RLK_506", None);
 
@@ -3586,8 +3747,11 @@ fn boneguard_commander_spends_only_for_available_footman_slots() {
         assert!(state.has_keyword("taunt"));
         assert!(state.has_keyword("no_corpse"));
     }
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 6);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 6);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 6);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        6
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3613,7 +3777,7 @@ fn mograine_persists_after_death_is_public_and_stacks_once_per_battlecry() {
         game.state()
             .player_view(PlayerId::TWO)
             .player(PlayerId::ONE)
-            .public_keywords
+            .public_statuses
             .contains(&"mograine".to_owned())
     );
 
@@ -3661,8 +3825,11 @@ fn soulstealer_destroys_all_others_and_gains_extra_corpses_for_enemies() {
             .all(|enemy| game.state().entity(*enemy).unwrap().zone == Zone::Graveyard)
     );
     assert_eq!(game.state().player(PlayerId::ONE).board, vec![soulstealer]);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 3);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 3);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        0
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3682,7 +3849,7 @@ fn corpse_explosion_spends_per_wave_and_can_reuse_a_corpse_created_mid_cast() {
     advance_to_mana(&mut game, PlayerId::ONE, 3);
     let bagger = play(&mut game, PlayerId::ONE, "RLK_503", None);
     let wisp = play(&mut game, PlayerId::ONE, "CS2_231", None);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 1);
     advance_to_mana(&mut game, PlayerId::TWO, 4);
     let yeti = play(&mut game, PlayerId::TWO, "CS2_182", None);
     advance_to_mana(&mut game, PlayerId::ONE, 5);
@@ -3691,8 +3858,11 @@ fn corpse_explosion_spends_per_wave_and_can_reuse_a_corpse_created_mid_cast() {
     assert_eq!(game.state().entity(wisp).unwrap().zone, Zone::Graveyard);
     assert_eq!(game.state().entity(bagger).unwrap().health(), 1);
     assert_eq!(game.state().entity(yeti).unwrap().health(), 3);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
-    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+    assert_eq!(game.state().player(PlayerId::ONE).resource("corpses"), 0);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).resource_spent("corpses"),
+        2
+    );
 
     let replayed = Game::from_replay(
         LuaCardRuntime::load_dir(data_path()).unwrap(),
@@ -3939,6 +4109,10 @@ fn keyword_catalog_matches_the_constructed_hearthstone_glossary() {
     assert!(actual.remove("weapon_durability_immune"));
     assert!(actual.remove("hero_power_disabled"));
     assert!(actual.remove("end_of_turn_repeater"));
+    assert!(
+        actual.remove("death_knight_corpses"),
+        "the Death Knight starting hero installs corpse rules through an internal helper"
+    );
     assert!(
         actual.remove("no_corpse"),
         "printed tokens that do not leave Corpses use an internal marker"

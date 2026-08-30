@@ -379,6 +379,10 @@ pub struct CardDefinition {
     /// Hero Health established before start-of-game effects resolve.
     #[serde(default)]
     pub starting_health: Option<i32>,
+    /// Marks the catalog-defined portrait used when a class does not supply an
+    /// explicit starting Hero. At most one definition per class may opt in.
+    #[serde(default)]
+    pub starting_hero: bool,
     /// Death Knight rune slots required to include this card.
     #[serde(default)]
     pub rune_cost: RuneCost,
@@ -615,12 +619,12 @@ pub struct PlayerState {
     pub max_mana: u8,
     #[serde(default)]
     pub temporary_mana: u8,
-    /// Unspent Death Knight Corpses. This resource is public information.
+    /// Public, script-defined counters such as Death Knight Corpses.
     #[serde(default)]
-    pub corpses: u32,
-    /// Lifetime number of Corpses successfully spent by this player.
+    pub resources: BTreeMap<String, u32>,
+    /// Lifetime successfully-spent totals for each public resource.
     #[serde(default)]
-    pub corpses_spent: u32,
+    pub resources_spent: BTreeMap<String, u32>,
     #[serde(default)]
     pub overload_pending: u8,
     #[serde(default)]
@@ -662,14 +666,27 @@ pub struct PlayerState {
     /// survive minion silence, transformation, death, and hero replacement.
     #[serde(default)]
     pub keywords: Vec<String>,
-    /// Player-scoped mechanics that are intentionally visible to both players.
-    /// Kept separate so hidden discounts and internal rule markers never leak.
+    /// Script-defined status labels intentionally visible to both players.
+    /// Visibility is independent from executable player keywords.
     #[serde(default)]
-    pub public_keywords: Vec<String>,
+    pub public_statuses: Vec<String>,
     #[serde(default)]
     pub script_data: BTreeMap<String, i64>,
     #[serde(default)]
     pub extra_turns: u8,
+}
+
+impl PlayerState {
+    pub fn resource(&self, resource: &str) -> u32 {
+        self.resources.get(resource).copied().unwrap_or_default()
+    }
+
+    pub fn resource_spent(&self, resource: &str) -> u32 {
+        self.resources_spent
+            .get(resource)
+            .copied()
+            .unwrap_or_default()
+    }
 }
 
 fn default_player_class() -> String {
@@ -760,6 +777,21 @@ impl GameState {
                 > player.max_mana
             {
                 return Err(format!("{expected} has mana exceeding unlocked crystals"));
+            }
+            if player
+                .resources
+                .keys()
+                .chain(player.resources_spent.keys())
+                .any(|resource| resource.is_empty() || resource.len() > 64)
+            {
+                return Err(format!("{expected} has an invalid player resource"));
+            }
+            if player
+                .public_statuses
+                .iter()
+                .any(|status| status.is_empty() || status.len() > 64)
+            {
+                return Err(format!("{expected} has an invalid public status"));
             }
 
             let mut check = |id: EntityId, zone: Zone| -> Result<(), String> {
@@ -1146,25 +1178,23 @@ pub enum EffectSpec {
         player: PlayerId,
         amount: u8,
     },
-    GainCorpses {
+    GainPlayerResource {
         source: EntityId,
         player: PlayerId,
+        resource: String,
         amount: u32,
     },
-    /// Spend exactly `amount`, or do nothing when the player cannot afford it.
-    SpendCorpses {
+    /// Attempt to spend between `minimum` and `maximum` units at resolution
+    /// time, then always invoke `hook` with the actual amount (zero on failure).
+    SpendPlayerResourceAndContinue {
         source: EntityId,
         player: PlayerId,
-        amount: u32,
-    },
-    /// Atomically spend the exact amount, then invoke `hook` only on success.
-    /// This prevents independently collected triggers from applying follow-up
-    /// effects when another trigger consumed the same Corpses first.
-    SpendCorpsesAndContinue {
-        source: EntityId,
-        player: PlayerId,
-        amount: u32,
+        resource: String,
+        minimum: u32,
+        maximum: u32,
         hook: String,
+        #[serde(default)]
+        continuation_owner: Option<CardId>,
     },
     Draw {
         #[serde(default)]
@@ -1199,10 +1229,12 @@ pub enum EffectSpec {
         keywords: Option<Vec<String>>,
         #[serde(default)]
         attached_scripts: Vec<CardId>,
+        /// Marks generated cards that inherit constructed-deck provenance.
+        #[serde(default)]
+        started_in_deck: bool,
     },
-    /// Remove one card from a constructed sideboard and put it into its
-    /// controller's hand. Sideboard cards count as having started in the deck.
-    TakeSideboardCard {
+    /// Consume one card identity from a constructed sideboard.
+    ConsumeSideboardCard {
         source: EntityId,
         player: PlayerId,
         owner: CardId,
@@ -1241,10 +1273,15 @@ pub enum EffectSpec {
         player: PlayerId,
         keyword: String,
     },
-    GrantPublicPlayerKeyword {
+    GrantPublicPlayerStatus {
         source: EntityId,
         player: PlayerId,
-        keyword: String,
+        status: String,
+    },
+    DisablePublicPlayerStatus {
+        source: EntityId,
+        player: PlayerId,
+        status: String,
     },
     DisablePlayerKeyword {
         source: EntityId,
@@ -1982,16 +2019,16 @@ pub enum GameEvent {
         amount: u8,
         temporary: u8,
     },
-    CorpsesGained {
-        /// `None` denotes the normal resource generated by friendly deaths.
-        #[serde(default)]
-        source: Option<EntityId>,
-        player: PlayerId,
-        amount: u32,
-    },
-    CorpsesSpent {
+    PlayerResourceGained {
         source: EntityId,
         player: PlayerId,
+        resource: String,
+        amount: u32,
+    },
+    PlayerResourceSpent {
+        source: EntityId,
+        player: PlayerId,
+        resource: String,
         amount: u32,
     },
     PlayerScriptDataChanged {
@@ -2105,8 +2142,8 @@ impl GameEvent {
             Self::ManaCrystalsGained { .. } => "mana_crystals_gained",
             Self::ManaCrystalsDestroyed { .. } => "mana_crystals_destroyed",
             Self::ManaSpent { .. } => "mana_spent",
-            Self::CorpsesGained { .. } => "corpses_gained",
-            Self::CorpsesSpent { .. } => "corpses_spent",
+            Self::PlayerResourceGained { .. } => "player_resource_gained",
+            Self::PlayerResourceSpent { .. } => "player_resource_spent",
             Self::PlayerScriptDataChanged { .. } => "player_script_data_changed",
             Self::KeywordDisabled { .. } => "keyword_disabled",
             Self::Frozen { .. } => "frozen",

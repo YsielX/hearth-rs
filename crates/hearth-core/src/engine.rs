@@ -41,25 +41,6 @@ pub const DEFAULT_COIN: &str = "GAME_005";
 /// 45th turn, then the game ends in a draw without starting turn 90.
 pub const MAX_GAME_TURNS: u32 = 89;
 
-/// Returns the canonical base portrait for a constructed class. Custom and
-/// neutral mechanics sandboxes intentionally keep the built-in generic Hero.
-pub fn default_hero_for_class(class: &str) -> Option<&'static str> {
-    match class {
-        "warrior" => Some("HERO_01"),
-        "shaman" => Some("HERO_02"),
-        "rogue" => Some("HERO_03"),
-        "paladin" => Some("HERO_04"),
-        "hunter" => Some("HERO_05"),
-        "druid" => Some("HERO_06"),
-        "warlock" => Some("HERO_07"),
-        "mage" => Some("HERO_08"),
-        "priest" => Some("HERO_09"),
-        "demon_hunter" => Some("HERO_10"),
-        "death_knight" => Some("HERO_11"),
-        _ => None,
-    }
-}
-
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum GameError {
     #[error("game is already over")]
@@ -101,6 +82,10 @@ pub enum GameError {
     InvalidPlayerClass { player: PlayerId, class: String },
     #[error("invalid starting player {0}")]
     InvalidStartingPlayer(PlayerId),
+    #[error("invalid command player {0}")]
+    InvalidCommandPlayer(PlayerId),
+    #[error("multiple catalog starting Heroes are defined for class {0}")]
+    AmbiguousStartingHero(String),
     #[error("unknown entity: {0}")]
     UnknownEntity(EntityId),
     #[error("entity {0} is not in the active player's hand")]
@@ -211,6 +196,12 @@ pub enum GameError {
     Invariant(String),
     #[error("continuation hook must contain between 1 and 64 bytes")]
     InvalidContinuationHook,
+    #[error("player resource name must contain between 1 and 64 bytes")]
+    InvalidPlayerResource,
+    #[error("player resource spend requires minimum <= maximum")]
+    InvalidPlayerResourceSpend,
+    #[error("public player status must contain between 1 and 64 bytes")]
+    InvalidPublicPlayerStatus,
     #[error("sideboard {owner} for player {player} is invalid: {message}")]
     InvalidSideboard {
         player: PlayerId,
@@ -538,50 +529,13 @@ impl<R: CardRuntime> Game<R> {
                 .position(|candidate| *candidate == entity)
                 .expect("mortal minion must be present on its controller's board");
             let source = self.state.entities[&entity].death_source;
-            let leaves_corpse = !self.state.entities[&entity].has_keyword("no_corpse");
-            death_info.push((
-                entity,
-                controller,
-                position,
-                repetitions,
-                source,
-                leaves_corpse,
-            ));
+            death_info.push((entity, controller, position, repetitions, source));
             self.kill(entity);
         }
         self.refresh_auras()?;
 
-        let mut corpse_counts = [0_u32; 2];
-        for (_, player, _, _, _, leaves_corpse) in &death_info {
-            if self
-                .state
-                .player(*player)
-                .class
-                .eq_ignore_ascii_case("death_knight")
-                && *leaves_corpse
-            {
-                corpse_counts[player.index()] = corpse_counts[player.index()].saturating_add(1);
-            }
-        }
-        let mut events = Vec::with_capacity(deaths.len() + 2);
-        for player in [PlayerId::ONE, PlayerId::TWO] {
-            let amount = corpse_counts[player.index()];
-            if amount > 0 {
-                let state = self.state.player_mut(player);
-                let old = state.corpses;
-                state.corpses = old.saturating_add(amount);
-                let gained = state.corpses - old;
-                if gained > 0 {
-                    let event = self.begin_event(GameEvent::CorpsesGained {
-                        source: None,
-                        player,
-                        amount: gained,
-                    })?;
-                    events.push((event.id, event.event));
-                }
-            }
-        }
-        for (entity, player, position, repetitions, source, _) in death_info {
+        let mut events = Vec::with_capacity(deaths.len());
+        for (entity, player, position, repetitions, source) in death_info {
             let event = self.begin_event(GameEvent::EntityDied {
                 entity,
                 player,
@@ -591,9 +545,10 @@ impl<R: CardRuntime> Game<R> {
             })?;
             events.push((event.id, event.event));
         }
-        let mut items = Vec::with_capacity(2);
-        items.push(ResolutionItem::PublishAfterGroup { events });
-        items.push(ResolutionItem::DeathCheck);
+        let items = vec![
+            ResolutionItem::PublishAfterGroup { events },
+            ResolutionItem::DeathCheck,
+        ];
         for item in items.into_iter().rev() {
             queue.push_front(item);
         }

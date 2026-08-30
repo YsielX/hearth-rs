@@ -16,8 +16,12 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
+    ctx:spend_resource_and_continue(ctx:controller(self), "corpses", 2, 2, "buff_hand")
+end
+
+function card.buff_hand(ctx, self, spent)
+    if spent == 0 then return end
     local player = ctx:controller(self)
-    if not ctx:spend_corpses(player, 2) then return end
     for _, entity in ipairs(ctx:hand(player)) do
         if ctx:entity(entity).type == "minion" then ctx:buff(entity, 2, 0) end
     end

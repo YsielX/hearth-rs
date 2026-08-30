@@ -559,6 +559,9 @@ impl<R: CardRuntime> Game<R> {
     }
 
     fn concede_player(&mut self, loser: PlayerId) -> Result<(), GameError> {
+        if !matches!(loser, PlayerId::ONE | PlayerId::TWO) {
+            return Err(GameError::InvalidCommandPlayer(loser));
+        }
         let effects = self.publish(GameEvent::Conceded { player: loser })?;
         self.resolve_effects(effects)?;
         self.finish_game(GameOutcome::Winner(loser.opponent()));

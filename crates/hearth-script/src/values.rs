@@ -260,6 +260,7 @@ pub(super) fn card_definition_to_table(lua: &Lua, card: &CardDefinition) -> mlua
     table.set("health", card.health)?;
     table.set("armor", card.armor)?;
     table.set("hero_power", card.hero_power.as_deref())?;
+    table.set("starting_hero", card.starting_hero)?;
     table.set("secret", card.secret)?;
     table.set("target_mode", card.target_mode.as_str())?;
     table.set("requires_target", card.target_mode == TargetMode::Required)?;
@@ -589,22 +590,26 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             table.set("amount", *amount)?;
             table.set("temporary", *temporary)?;
         }
-        GameEvent::CorpsesGained {
+        GameEvent::PlayerResourceGained {
             source,
             player,
-            amount,
-        } => {
-            table.set("source", source.map(|entity| entity.0))?;
-            table.set("player", player.0)?;
-            table.set("amount", *amount)?;
-        }
-        GameEvent::CorpsesSpent {
-            source,
-            player,
+            resource,
             amount,
         } => {
             table.set("source", source.0)?;
             table.set("player", player.0)?;
+            table.set("resource", resource.as_str())?;
+            table.set("amount", *amount)?;
+        }
+        GameEvent::PlayerResourceSpent {
+            source,
+            player,
+            resource,
+            amount,
+        } => {
+            table.set("source", source.0)?;
+            table.set("player", player.0)?;
+            table.set("resource", resource.as_str())?;
             table.set("amount", *amount)?;
         }
         GameEvent::PlayerScriptDataChanged {

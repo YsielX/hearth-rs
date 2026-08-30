@@ -25,7 +25,7 @@ card.triggers = {{
             and defender.health <= 0
     end,
     effect = function(ctx, self)
-        ctx:gain_corpses(ctx:controller(self), 2)
+        ctx:gain_resource(ctx:controller(self), "corpses", 2)
     end,
 }}
 

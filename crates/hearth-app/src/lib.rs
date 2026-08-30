@@ -1026,22 +1026,9 @@ fn invalid_deck<T>(deck: &DeckList, message: impl Into<String>) -> Result<T, App
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hearth_core::default_hero_for_class;
 
     #[test]
-    fn every_constructed_class_has_its_canonical_hero_and_hero_power() {
-        assert_eq!(default_hero_for_class("warrior"), Some("HERO_01"));
-        assert_eq!(default_hero_for_class("shaman"), Some("HERO_02"));
-        assert_eq!(default_hero_for_class("rogue"), Some("HERO_03"));
-        assert_eq!(default_hero_for_class("paladin"), Some("HERO_04"));
-        assert_eq!(default_hero_for_class("hunter"), Some("HERO_05"));
-        assert_eq!(default_hero_for_class("druid"), Some("HERO_06"));
-        assert_eq!(default_hero_for_class("warlock"), Some("HERO_07"));
-        assert_eq!(default_hero_for_class("mage"), Some("HERO_08"));
-        assert_eq!(default_hero_for_class("priest"), Some("HERO_09"));
-        assert_eq!(default_hero_for_class("demon_hunter"), Some("HERO_10"));
-        assert_eq!(default_hero_for_class("death_knight"), Some("HERO_11"));
-        assert_eq!(default_hero_for_class("future_class"), None);
+    fn every_constructed_class_has_its_canonical_hero_power() {
         assert_eq!(basic_hero_power_for_class("warrior"), "HERO_01bp");
         assert_eq!(basic_hero_power_for_class("shaman"), "HERO_02bp");
         assert_eq!(basic_hero_power_for_class("rogue"), "HERO_03bp");

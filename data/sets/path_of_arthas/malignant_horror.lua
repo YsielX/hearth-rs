@@ -23,10 +23,14 @@ card.triggers = {{
     end,
     effect = function(ctx, self)
         local player = ctx:controller(self)
-        if #ctx:board(player) < 7 and ctx:spend_corpses(player, 4) then
-            ctx:summon_copy(player, self)
+        if #ctx:board(player) < 7 then
+            ctx:spend_resource_and_continue(player, "corpses", 4, 4, "summon_horror_copy")
         end
     end,
 }}
+
+function card.summon_horror_copy(ctx, self, spent)
+    if spent > 0 then ctx:summon_copy(ctx:controller(self), self) end
+end
 
 return card

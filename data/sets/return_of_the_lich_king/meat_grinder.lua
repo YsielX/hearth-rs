@@ -25,7 +25,7 @@ end
 
 function card.shred_minion(ctx, self, minion)
     ctx:move(minion, "removed")
-    ctx:gain_corpses(ctx:controller(self), 4)
+    ctx:gain_resource(ctx:controller(self), "corpses", 4)
 end
 
 return card

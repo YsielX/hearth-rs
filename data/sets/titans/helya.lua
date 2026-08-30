@@ -20,7 +20,8 @@ function card.on_battlecry(ctx, self)
     for _, plague in ipairs(cardlib.plagues.ids) do
         cardlib.plagues.shuffle(ctx, player, opponent, plague)
     end
-    ctx:grant_public_player_keyword(opponent, "unending_plagues")
+    ctx:grant_player_keyword(opponent, "unending_plagues")
+    ctx:grant_public_player_status(opponent, "unending_plagues")
 end
 
 local function plague_damage(ctx, self, card_id)

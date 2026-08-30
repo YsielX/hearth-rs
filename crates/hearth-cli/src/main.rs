@@ -1044,8 +1044,8 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
                 player.temporary_mana,
                 player.overloaded_mana,
                 player.overload_pending,
-                player.corpses,
-                player.corpses_spent,
+                player.resource("corpses"),
+                player.resource_spent("corpses"),
                 player.cards_played_this_turn,
                 player.hand.len(),
                 player.deck.len()
@@ -1674,18 +1674,40 @@ fn display_public_event(
             "{player} 花费 {amount} 点法力（临时 {temporary}）",
             "{player} 花費 {amount} 點法力（暫時 {temporary}）"
         ),
-        PublicEvent::CorpsesGained { player, amount, .. } => lf!(
+        PublicEvent::PlayerResourceGained {
+            player,
+            resource,
+            amount,
+            ..
+        } if resource == "corpses" => lf!(
             locale,
             "{player} gained {amount} Corpses",
             "{player} 获得 {amount} 份残骸",
             "{player} 獲得 {amount} 具屍體"
         ),
-        PublicEvent::CorpsesSpent { player, amount, .. } => lf!(
+        PublicEvent::PlayerResourceSpent {
+            player,
+            resource,
+            amount,
+            ..
+        } if resource == "corpses" => lf!(
             locale,
             "{player} spent {amount} Corpses",
             "{player} 消耗 {amount} 份残骸",
             "{player} 消耗 {amount} 具屍體"
         ),
+        PublicEvent::PlayerResourceGained {
+            player,
+            resource,
+            amount,
+            ..
+        } => format!("{player} gained {amount} {resource}"),
+        PublicEvent::PlayerResourceSpent {
+            player,
+            resource,
+            amount,
+            ..
+        } => format!("{player} spent {amount} {resource}"),
         PublicEvent::KeywordDisabled {
             source,
             target,

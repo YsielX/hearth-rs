@@ -1,1 +1,1 @@
-return { api_version = 1, id = "HERO_04", name = "Uther Lightbringer", text = "", set = "HERO_SKINS", type = "hero", class = "paladin", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_04bp" }
+return { api_version = 1, id = "HERO_04", name = "Uther Lightbringer", text = "", set = "HERO_SKINS", type = "hero", class = "paladin", rarity = "free", collectible = true, starting_hero = true, cost = 0, health = 30, hero_power = "HERO_04bp" }

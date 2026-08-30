@@ -1,5 +1,7 @@
 use super::*;
 
+const GAME_FORMAT_VERSION: u32 = 4;
+
 struct GameSetupOptions {
     hero_powers: [String; 2],
     classes: [String; 2],
@@ -273,8 +275,8 @@ impl<R: CardRuntime> Game<R> {
             mana: 0,
             max_mana: 0,
             temporary_mana: 0,
-            corpses: 0,
-            corpses_spent: 0,
+            resources: BTreeMap::new(),
+            resources_spent: BTreeMap::new(),
             overload_pending: 0,
             overloaded_mana: 0,
             overload_queued_total: 0,
@@ -292,7 +294,7 @@ impl<R: CardRuntime> Game<R> {
             locations_played_history: Vec::new(),
             fatigue: 0,
             keywords: Vec::new(),
-            public_keywords: Vec::new(),
+            public_statuses: Vec::new(),
             script_data: Default::default(),
             extra_turns: 0,
         };
@@ -335,17 +337,25 @@ impl<R: CardRuntime> Game<R> {
             command_history: Vec::new(),
         };
         for player in [PlayerId::ONE, PlayerId::TWO] {
-            let Some(hero_card_id) = default_hero_for_class(&game.state.player(player).class)
-            else {
-                continue;
-            };
-            // Small unit-test runtimes are allowed to omit cosmetic starting
-            // Hero definitions. The full game pack contains all eleven.
-            let Some(definition) = game.runtime.definition(hero_card_id).cloned() else {
+            let class = game.state.player(player).class.clone();
+            let heroes = game
+                .runtime
+                .card_ids()
+                .into_iter()
+                .filter_map(|card_id| game.runtime.definition(&card_id))
+                .filter(|definition| {
+                    definition.starting_hero && definition.class.eq_ignore_ascii_case(&class)
+                })
+                .cloned()
+                .collect::<Vec<_>>();
+            if heroes.len() > 1 {
+                return Err(GameError::AmbiguousStartingHero(class));
+            }
+            let Some(definition) = heroes.into_iter().next() else {
                 continue;
             };
             if definition.kind != CardKind::Hero {
-                return Err(GameError::InvalidHero(hero_card_id.to_owned()));
+                return Err(GameError::InvalidHero(definition.id));
             }
             let hero = game.state.player(player).hero;
             let timestamp = game.state.entities[&hero].timestamp;
@@ -401,7 +411,7 @@ impl<R: CardRuntime> Game<R> {
     }
 
     pub fn from_replay(runtime: R, replay: &Replay) -> Result<Self, GameError> {
-        if replay.format_version != 3 {
+        if replay.format_version != GAME_FORMAT_VERSION {
             return Err(GameError::ReplayCommandFailed {
                 index: 0,
                 message: format!("unsupported replay format {}", replay.format_version),
@@ -453,7 +463,7 @@ impl<R: CardRuntime> Game<R> {
 
     pub fn replay(&self) -> Replay {
         Replay {
-            format_version: 3,
+            format_version: GAME_FORMAT_VERSION,
             card_pack_hash: self.runtime.pack_hash().to_owned(),
             seed: self.state.rng_seed,
             starting_player: self.state.starting_player,
@@ -470,14 +480,14 @@ impl<R: CardRuntime> Game<R> {
     /// so corrupted or hand-edited authoritative state is rejected rather than trusted.
     pub fn snapshot(&self) -> GameSnapshot {
         GameSnapshot {
-            format_version: 3,
+            format_version: GAME_FORMAT_VERSION,
             replay: self.replay(),
             state: self.state.clone(),
         }
     }
 
     pub fn from_snapshot(runtime: R, snapshot: &GameSnapshot) -> Result<Self, GameError> {
-        if snapshot.format_version != 3 {
+        if snapshot.format_version != GAME_FORMAT_VERSION {
             return Err(GameError::UnsupportedSnapshot(snapshot.format_version));
         }
         let game = Self::from_replay(runtime, &snapshot.replay)?;

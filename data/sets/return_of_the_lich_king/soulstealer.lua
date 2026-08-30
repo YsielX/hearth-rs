@@ -41,7 +41,7 @@ card.triggers = {{
             and dead.controller ~= ctx:controller(self)
     end,
     effect = function(ctx, self)
-        ctx:gain_corpses(ctx:controller(self), 1)
+        ctx:gain_resource(ctx:controller(self), "corpses", 1)
     end,
 }}
 

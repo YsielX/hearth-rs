@@ -64,8 +64,8 @@ pub enum EventKind {
     ManaCrystalsGained,
     ManaCrystalsDestroyed,
     ManaSpent,
-    CorpsesGained,
-    CorpsesSpent,
+    PlayerResourceGained,
+    PlayerResourceSpent,
     KeywordDisabled,
     Frozen,
     EntityDied,
@@ -158,6 +158,8 @@ pub struct EventObservation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyword: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filled: Option<bool>,
@@ -187,6 +189,7 @@ impl EventObservation {
             from_card_id: None,
             to_card_id: None,
             keyword: None,
+            resource: None,
             reason: None,
             filled: None,
             outcome: None,
@@ -752,24 +755,28 @@ fn encode_record(
             push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
             output
         }
-        PublicEvent::CorpsesGained {
+        PublicEvent::PlayerResourceGained {
             player,
             source,
+            resource,
             amount,
         } => {
-            let mut output = EventObservation::new(EventKind::CorpsesGained);
+            let mut output = EventObservation::new(EventKind::PlayerResourceGained);
             output.player = Some(relative(*player, viewer));
+            output.resource = Some(resource.clone());
             output.amount = Some(i64::from(*amount));
             push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
             output
         }
-        PublicEvent::CorpsesSpent {
+        PublicEvent::PlayerResourceSpent {
             player,
             source,
+            resource,
             amount,
         } => {
-            let mut output = EventObservation::new(EventKind::CorpsesSpent);
+            let mut output = EventObservation::new(EventKind::PlayerResourceSpent);
             output.player = Some(relative(*player, viewer));
+            output.resource = Some(resource.clone());
             output.amount = Some(i64::from(*amount));
             push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
             output

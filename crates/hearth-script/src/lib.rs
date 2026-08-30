@@ -1055,6 +1055,9 @@ fn bind_continuation_owner(effects: &mut [EffectSpec], owner: &str) {
             }
             | EffectSpec::RandomChoice {
                 continuation_owner, ..
+            }
+            | EffectSpec::SpendPlayerResourceAndContinue {
+                continuation_owner, ..
             } => continuation_owner,
             _ => continue,
         };
@@ -1840,6 +1843,29 @@ mod tests {
         assert!(runtime.definition("CS2_022").unwrap().collectible);
         assert!(!runtime.definition("CS2_tk1").unwrap().collectible);
         assert!(runtime.card_ids().len() >= 4);
+    }
+
+    #[test]
+    fn resource_spend_continuations_keep_the_emitting_script_owner() {
+        let mut effects = vec![EffectSpec::SpendPlayerResourceAndContinue {
+            source: EntityId(7),
+            player: PlayerId::ONE,
+            resource: "test_resource".to_owned(),
+            minimum: 1,
+            maximum: 1,
+            hook: "after_payment".to_owned(),
+            continuation_owner: None,
+        }];
+
+        bind_continuation_owner(&mut effects, "OWNER_CARD");
+
+        assert!(matches!(
+            &effects[0],
+            EffectSpec::SpendPlayerResourceAndContinue {
+                continuation_owner: Some(owner),
+                ..
+            } if owner == "OWNER_CARD"
+        ));
     }
 
     #[test]
