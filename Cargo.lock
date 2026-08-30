@@ -2436,11 +2436,10 @@ dependencies = [
 name = "hearth-cli"
 version = "0.1.0"
 dependencies = [
+ "hearth-app",
  "hearth-bot",
  "hearth-core",
  "hearth-fuzz",
- "hearth-script",
- "serde",
  "serde_json",
 ]
 

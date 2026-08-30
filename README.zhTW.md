@@ -18,7 +18,9 @@ data/
 crates/
 ├── hearth-core/           # 狀態機、區域、事件佇列、確定性 RNG、replay
 ├── hearth-script/         # Lua 沙箱、模組載入、規則鉤子與效果橋接
+├── hearth-app/            # CLI/GUI 共用的對局工作階段、牌組庫與應用服務
 ├── hearth-cli/            # `play` 和 `fuzz` 子命令
+├── hearth-client-bevy/    # Bevy 0.19 原生圖形客戶端
 ├── hearth-bot/            # 不讀取隱藏資訊的確定性基礎 Bot
 └── hearth-fuzz/           # 狀態機 Fuzzer 函式庫（無獨立二進位）
 decks/demo.json            # 官方卡演示牌組
@@ -28,6 +30,8 @@ decks/quest_rogue.json     # Dog 2017 經典洞穴任務賊
 Rust 負責不能交給指令碼隨意修改的原子能力：實體身份、區域容器、法力支付、攻擊/傷害提交、死亡檢查點、效果佇列、輸入暫停、確定性隨機、事務回滾與 replay。
 
 Lua 負責卡牌語義和關鍵詞語義：目標選擇、戰吼、亡語、奧秘、發現、觸發條件、觸發效果，以及攻擊規則修飾。Rust 引擎裡不再按 `"taunt"`、`"divine_shield"`、`"reborn"` 等字串執行具體規則。
+
+`hearth-app` 是 CLI 與圖形客戶端共用、且不依賴具體 UI 技術的應用層。controller-neutral 的 `MatchSession` 統一負責 runtime/牌組建構、sideboard、種子先手、replay/snapshot 和公開檢視；`GameSession` 在其上增加熱座與 Bot 策略。公共事件/操作文字和逾時策略也在這裡共用，終端 I/O 與 Bevy ECS/渲染仍由各前端負責。
 
 ## 官方卡牌資料
 

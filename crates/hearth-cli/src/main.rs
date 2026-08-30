@@ -6,15 +6,13 @@ use std::sync::mpsc::{self, RecvTimeoutError};
 use std::thread;
 use std::time::{Duration, Instant};
 
+use hearth_app::{MatchSession, MatchSetup};
 use hearth_bot::SimpleBot;
 use hearth_core::{
-    CardKind, CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameOutcome, GameSnapshot,
-    LegalAction, Locale, PlayerCommand, PlayerController, PlayerId, PlayerView, PublicEntity,
-    PublicEvent, Replay,
+    CardKind, CardRuntime, EntityId, GameOutcome, GameSnapshot, LegalAction, Locale, PlayerCommand,
+    PlayerController, PlayerId, PlayerView, PublicEvent, Replay,
 };
 use hearth_fuzz::{FuzzController, FuzzOptions, run_campaign};
-use hearth_script::LuaCardRuntime;
-use serde::Deserialize;
 
 macro_rules! lt {
     ($locale:expr, $en:literal, $zh_cn:literal, $zh_tw:literal) => {
@@ -110,39 +108,6 @@ enum CliInvocation {
     Fuzz { data: PathBuf, options: FuzzOptions },
 }
 
-#[derive(Debug, Deserialize)]
-struct DeckFile {
-    name: String,
-    #[serde(default = "default_deck_class")]
-    class: String,
-    cards: Vec<String>,
-    #[serde(default)]
-    hero_power: Option<String>,
-    /// Explicit escape hatch for showcase/sandbox decks that intentionally mix classes.
-    #[serde(default)]
-    unrestricted: bool,
-}
-
-fn default_deck_class() -> String {
-    "mage".to_owned()
-}
-
-fn turn_time_limit_seconds(game: &Game<LuaCardRuntime>) -> Result<Option<u64>, String> {
-    let mut limit = 0;
-    for player in [PlayerId::ONE, PlayerId::TWO] {
-        for entity in &game.state().player(player).board {
-            limit = game.runtime().keyword_i32_rule(
-                game.state(),
-                *entity,
-                "turn_time_limit_seconds",
-                limit,
-                None,
-            )?;
-        }
-    }
-    Ok((limit > 0).then_some(limit as u64))
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     let Some(invocation) = parse_options()? else {
         return Ok(());
@@ -166,19 +131,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     };
     let locale = options.locale;
-    let runtime = LuaCardRuntime::load_dir_with_locale(&options.data, locale)?;
-    println!(
-        "{}",
-        lf!(
-            locale,
-            "Loaded {0} Lua card and Hero Power definitions from {1}.",
-            "已从 {1} 加载 {0} 个 Lua 卡牌与英雄技能定义。",
-            "已從 {1} 載入 {0} 個 Lua 卡牌與英雄能力定義。",
-            runtime.card_ids().len(),
-            options.data.display()
-        )
-    );
-
     let mut game = if let Some(path) = &options.snapshot {
         let snapshot: GameSnapshot = serde_json::from_str(&std::fs::read_to_string(path)?)?;
         println!(
@@ -193,7 +145,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 snapshot.replay.commands.len()
             )
         );
-        Game::from_snapshot(runtime, &snapshot)?
+        MatchSession::from_snapshot(&options.data, locale, &snapshot)?
     } else if let Some(path) = &options.replay {
         let replay: Replay = serde_json::from_str(&std::fs::read_to_string(path)?)?;
         println!(
@@ -208,12 +160,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                 replay.card_pack_hash
             )
         );
-        Game::from_replay(runtime, &replay)?
+        MatchSession::from_replay(&options.data, locale, &replay)?
     } else {
-        let deck_one = load_deck(&options.deck_one)?;
-        let deck_two = load_deck(&options.deck_two)?;
-        validate_deck(&runtime, &deck_one, locale)?;
-        validate_deck(&runtime, &deck_two, locale)?;
+        let session = MatchSession::load(&MatchSetup {
+            data_dir: options.data.clone(),
+            deck_one: options.deck_one.clone(),
+            deck_two: options.deck_two.clone(),
+            seed: options.seed,
+            locale,
+        })?;
         println!(
             "{}",
             lf!(
@@ -221,9 +176,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 "P1 deck: {} [{}] ({} cards)",
                 "P1 牌组：{} [{}]（{}张）",
                 "P1 牌組：{} [{}]（{}張）",
-                deck_one.name,
-                deck_one.class,
-                deck_one.cards.len()
+                session.deck_name(PlayerId::ONE),
+                session.state().player(PlayerId::ONE).class,
+                session.state().player(PlayerId::ONE).starting_deck.len()
             )
         );
         println!(
@@ -233,44 +188,28 @@ fn main() -> Result<(), Box<dyn Error>> {
                 "P2 deck: {} [{}] ({} cards)",
                 "P2 牌组：{} [{}]（{}张）",
                 "P2 牌組：{} [{}]（{}張）",
-                deck_two.name,
-                deck_two.class,
-                deck_two.cards.len()
+                session.deck_name(PlayerId::TWO),
+                session.state().player(PlayerId::TWO).class,
+                session.state().player(PlayerId::TWO).starting_deck.len()
             )
         );
-        let hero_powers = [
-            deck_one
-                .hero_power
-                .unwrap_or_else(|| DEFAULT_HERO_POWER.to_owned()),
-            deck_two
-                .hero_power
-                .unwrap_or_else(|| DEFAULT_HERO_POWER.to_owned()),
-        ];
-        let unrestricted = deck_one.unrestricted || deck_two.unrestricted;
-        let classes = [deck_one.class, deck_two.class];
-        if unrestricted {
-            Game::new_unrestricted_with_hero_powers_and_classes(
-                runtime,
-                deck_one.cards,
-                deck_two.cards,
-                options.seed,
-                hero_powers,
-                classes,
-            )?
-        } else {
-            Game::new_with_hero_powers_and_classes(
-                runtime,
-                deck_one.cards,
-                deck_two.cards,
-                options.seed,
-                hero_powers,
-                classes,
-            )?
-        }
+        session
     };
+    println!(
+        "{}",
+        lf!(
+            locale,
+            "Loaded {0} Lua card and Hero Power definitions from {1}.",
+            "已从 {1} 加载 {0} 个 Lua 卡牌与英雄技能定义。",
+            "已從 {1} 載入 {0} 個 Lua 卡牌與英雄能力定義。",
+            game.runtime().card_ids().len(),
+            options.data.display()
+        )
+    );
+    let match_seed = game.state().rng_seed;
     let mut controllers = [
-        Controller::from_kind(options.controllers[0], options.seed ^ 0x243f_6a88_85a3_08d3),
-        Controller::from_kind(options.controllers[1], options.seed ^ 0x1319_8a2e_0370_7344),
+        Controller::from_kind(options.controllers[0], match_seed ^ 0x243f_6a88_85a3_08d3),
+        Controller::from_kind(options.controllers[1], match_seed ^ 0x1319_8a2e_0370_7344),
     ];
     print_help(locale);
     let initial_viewer = observer_for(&controllers, game.state().input_player());
@@ -325,7 +264,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             print_state(&game, input_player, locale);
             last_interactive_player = Some(input_player);
         }
-        let time_limit = turn_time_limit_seconds(&game).map_err(io::Error::other)?;
+        let time_limit = game.turn_time_limit_seconds()?;
         let timer_key = (game.state().turn, input_player, time_limit.unwrap_or(0));
         if time_limit.is_none() {
             turn_deadline = None;
@@ -359,7 +298,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             let before = game.state().public_history(viewer).len();
             game.dispatch(command)?;
             for record in &game.state().public_history(viewer)[before..] {
-                println!("  {}", display_public_event(&game, &record.event, locale));
+                if let Some(summary) = display_public_event(&game, viewer, &record.event) {
+                    println!("  {summary}");
+                }
             }
             print_state(&game, viewer, locale);
             if let Some(outcome) = game.state().outcome {
@@ -385,16 +326,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                             seconds
                         )
                     );
-                    let actions = game
-                        .legal_actions()?
-                        .into_iter()
-                        .filter(|action| !matches!(action, PlayerCommand::Concede))
-                        .collect::<Vec<_>>();
-                    let command = actions
-                        .iter()
-                        .find(|action| matches!(action, PlayerCommand::EndTurn))
-                        .cloned()
-                        .or_else(|| actions.first().cloned())
+                    let command = hearth_app::timeout_command(&game.legal_action_options()?)
                         .ok_or_else(|| io::Error::other("timed turn has no legal action"))?;
                     game.dispatch(command)?;
                     print_state(
@@ -845,124 +777,8 @@ fn required_value(
     })
 }
 
-fn load_deck(path: &PathBuf) -> Result<DeckFile, Box<dyn Error>> {
-    let source = std::fs::read_to_string(path)?;
-    Ok(serde_json::from_str(&source)?)
-}
-
-fn validate_deck(
-    runtime: &LuaCardRuntime,
-    deck: &DeckFile,
-    locale: Locale,
-) -> Result<(), Box<dyn Error>> {
-    if deck.class.trim().is_empty() || deck.class.len() > 64 {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidData,
-            lf!(
-                locale,
-                "deck {:?} class must contain 1 to 64 bytes",
-                "牌组“{}”的 class 必须包含 1 到 64 个字节",
-                "牌組「{}」的 class 必須包含 1 到 64 個位元組",
-                deck.name
-            ),
-        )
-        .into());
-    }
-    let mut allowances = Vec::new();
-    for card in &deck.cards {
-        let valid = runtime.definition(card).is_some_and(|definition| {
-            definition.collectible
-                && matches!(
-                    definition.kind,
-                    CardKind::Hero
-                        | CardKind::Minion
-                        | CardKind::Spell
-                        | CardKind::Weapon
-                        | CardKind::Location
-                )
-        });
-        if !valid {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                lf!(
-                    locale,
-                    "deck {:?} references non-deckable card {card}",
-                    "牌组“{}”引用了不可加入牌组的卡牌 {card}",
-                    "牌組「{}」引用了不可加入牌組的卡牌 {card}",
-                    deck.name
-                ),
-            )
-            .into());
-        }
-        allowances.extend(
-            runtime
-                .deck_allowances(card)
-                .map_err(|message| io::Error::new(io::ErrorKind::InvalidData, message))?,
-        );
-    }
-    if !deck.unrestricted {
-        for card in &deck.cards {
-            let definition = runtime.definition(card).unwrap();
-            let own_class = if definition.classes.is_empty() {
-                definition.class.eq_ignore_ascii_case("neutral")
-                    || definition.class.eq_ignore_ascii_case(&deck.class)
-            } else {
-                definition
-                    .classes
-                    .iter()
-                    .any(|class| class.eq_ignore_ascii_case(&deck.class))
-            };
-            let allowed_by_tourist = allowances.iter().any(|allowance| {
-                definition.class.eq_ignore_ascii_case(&allowance.class)
-                    && definition.set.eq_ignore_ascii_case(&allowance.set)
-                    && allowance.excluded_keywords.iter().all(|excluded| {
-                        !definition
-                            .keywords
-                            .iter()
-                            .any(|keyword| keyword == excluded)
-                    })
-            });
-            if !own_class && !allowed_by_tourist {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidData,
-                    lf!(
-                        locale,
-                        "deck {:?} with class {} cannot include {} ({})",
-                        "牌组“{}”的职业 {} 不能加入 {}（{}）",
-                        "牌組「{}」的職業 {} 不能加入 {}（{}）",
-                        deck.name,
-                        deck.class,
-                        definition.name,
-                        definition.class
-                    ),
-                )
-                .into());
-            }
-        }
-    }
-    if let Some(hero_power) = deck.hero_power.as_deref() {
-        let valid = runtime
-            .definition(hero_power)
-            .is_some_and(|definition| definition.kind == CardKind::HeroPower);
-        if !valid {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                lf!(
-                    locale,
-                    "deck {:?} references invalid hero power {hero_power}",
-                    "牌组“{}”引用了无效英雄技能 {hero_power}",
-                    "牌組「{}」引用了無效英雄能力 {hero_power}",
-                    deck.name
-                ),
-            )
-            .into());
-        }
-    }
-    Ok(())
-}
-
 fn run_command(
-    game: &mut Game<LuaCardRuntime>,
+    game: &mut MatchSession,
     command: Result<PlayerCommand, String>,
     viewer: PlayerId,
     locale: Locale,
@@ -972,7 +788,9 @@ fn run_command(
         Ok(command) => match game.dispatch(command) {
             Ok(()) => {
                 for record in &game.state().public_history(viewer)[before..] {
-                    println!("  {}", display_public_event(game, &record.event, locale));
+                    if let Some(summary) = display_public_event(game, viewer, &record.event) {
+                        println!("  {summary}");
+                    }
                 }
                 print_state(game, viewer, locale);
             }
@@ -999,7 +817,7 @@ fn parse_entity(value: &str, locale: Locale) -> Result<EntityId, String> {
     })
 }
 
-fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
+fn print_state(game: &MatchSession, viewer: PlayerId, locale: Locale) {
     let state = game.state();
     if state.mulligan.is_some() {
         println!(
@@ -1208,7 +1026,7 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
     println!();
 }
 
-fn print_hand(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
+fn print_hand(game: &MatchSession, viewer: PlayerId, locale: Locale) {
     let state = game.state();
     let player = state.player(viewer);
     print!(
@@ -1247,7 +1065,7 @@ fn print_hand(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
     println!();
 }
 
-fn localized_entity_name(game: &Game<LuaCardRuntime>, id: EntityId, locale: Locale) -> String {
+fn localized_entity_name(game: &MatchSession, id: EntityId, locale: Locale) -> String {
     let Some(entity) = game.state().entity(id) else {
         return format!("Entity {id}");
     };
@@ -1258,514 +1076,20 @@ fn localized_entity_name(game: &Game<LuaCardRuntime>, id: EntityId, locale: Loca
 }
 
 fn display_public_event(
-    game: &Game<LuaCardRuntime>,
+    game: &MatchSession,
+    viewer: PlayerId,
     event: &PublicEvent,
-    locale: Locale,
-) -> String {
-    let name = |entity: &PublicEntity| {
-        let label = game
-            .runtime()
-            .definition(&entity.card_id)
-            .map(|definition| definition.localized(locale).name)
-            .unwrap_or_else(|| entity.card_id.clone());
-        format!("{}[{}]", label, entity.id)
-    };
-    let effect = |source: &Option<PublicEntity>| {
-        source
-            .as_ref()
-            .map(&name)
-            .unwrap_or_else(|| lt!(locale, "an effect", "一个效果", "一個效果").to_owned())
-    };
-    match event {
-        PublicEvent::GameStarted => lt!(locale, "Game started", "对战开始", "對戰開始").to_owned(),
-        PublicEvent::TurnStarted { player, turn } => lf!(
-            locale,
-            "Turn {turn} started: {player}",
-            "回合 {turn} 开始：{player}",
-            "回合 {turn} 開始：{player}"
-        ),
-        PublicEvent::TurnEnded { player, .. } => lf!(
-            locale,
-            "{player} ended the turn",
-            "{player} 结束回合",
-            "{player} 結束回合"
-        ),
-        PublicEvent::CardDrawn { player, card, .. } => match card {
-            Some(card) => lf!(
-                locale,
-                "{player} drew {}",
-                "{player} 抽到 {}",
-                "{player} 抽到 {}",
-                name(card)
-            ),
-            None => lf!(
-                locale,
-                "{player} drew a card",
-                "{player} 抽了一张牌",
-                "{player} 抽了一張牌"
-            ),
+) -> Option<String> {
+    hearth_app::presentation::event_text::event_summary_with_options(
+        game,
+        viewer,
+        event,
+        hearth_app::presentation::event_text::EventTextOptions {
+            players: hearth_app::presentation::event_text::PlayerTextStyle::Absolute,
+            entities: hearth_app::presentation::event_text::EntityTextStyle::NameAndId,
+            verbosity: hearth_app::presentation::event_text::EventVerbosity::Detailed,
         },
-        PublicEvent::CardBurned { player, card, .. } => lf!(
-            locale,
-            "{player} burned {}",
-            "{player} 爆掉 {}",
-            "{player} 爆掉 {}",
-            name(card)
-        ),
-        PublicEvent::CardCreated { player, card, .. } => match card {
-            Some(card) => lf!(
-                locale,
-                "{player} received {}",
-                "{player} 获得 {}",
-                "{player} 獲得 {}",
-                name(card)
-            ),
-            None => lf!(
-                locale,
-                "{player} received a hidden card",
-                "{player} 获得了一张隐藏卡牌",
-                "{player} 獲得了一張隱藏卡牌"
-            ),
-        },
-        PublicEvent::Fatigue { player, amount } => lf!(
-            locale,
-            "{player} took {amount} Fatigue damage",
-            "{player} 受到 {amount} 点疲劳伤害",
-            "{player} 受到 {amount} 點疲勞傷害"
-        ),
-        PublicEvent::CardPlayed { player, card, .. } => lf!(
-            locale,
-            "{player} played {}",
-            "{player} 打出 {}",
-            "{player} 打出 {}",
-            name(card)
-        ),
-        PublicEvent::SpellCast { player, spell, .. } => lf!(
-            locale,
-            "{player} cast {}",
-            "{player} 施放 {}",
-            "{player} 施放 {}",
-            name(spell)
-        ),
-        PublicEvent::SpellTargeted {
-            player,
-            spell,
-            target,
-            ..
-        } => lf!(
-            locale,
-            "{player} targeted {1} with {0}",
-            "{player} 用 {0} 选中了 {1}",
-            "{player} 用 {0} 選中了 {1}",
-            name(spell),
-            name(target)
-        ),
-        PublicEvent::MinionPlayed { player, minion } => lf!(
-            locale,
-            "{player} played minion {}",
-            "{player} 打出随从 {}",
-            "{player} 打出手下 {}",
-            name(minion)
-        ),
-        PublicEvent::WeaponPlayed { player, weapon } => lf!(
-            locale,
-            "{player} played weapon {}",
-            "{player} 打出武器 {}",
-            "{player} 打出武器 {}",
-            name(weapon)
-        ),
-        PublicEvent::LocationPlayed { player, location } => lf!(
-            locale,
-            "{player} played Location {}",
-            "{player} 打出地标 {}",
-            "{player} 打出地標 {}",
-            name(location)
-        ),
-        PublicEvent::CardCountered { player, card } => lf!(
-            locale,
-            "{player}'s {} was Countered",
-            "{player} 的 {} 被反制",
-            "{player} 的 {} 被反制",
-            name(card)
-        ),
-        PublicEvent::CardDiscarded { player, card, .. } => lf!(
-            locale,
-            "{player} discarded {}",
-            "{player} 弃掉 {}",
-            "{player} 棄掉 {}",
-            name(card)
-        ),
-        PublicEvent::CardTraded { player, card } => match card {
-            Some(card) => lf!(
-                locale,
-                "{player} Traded {}",
-                "{player} 交易了 {}",
-                "{player} 交易了 {}",
-                name(card)
-            ),
-            None => lf!(
-                locale,
-                "{player} Traded a card",
-                "{player} 交易了一张牌",
-                "{player} 交易了一張牌"
-            ),
-        },
-        PublicEvent::TradeDraw { player } => lf!(
-            locale,
-            "{player} completed the Trade draw",
-            "{player} 完成交易抽牌",
-            "{player} 完成交易抽牌"
-        ),
-        PublicEvent::MinionSummoned { player, entity } => lf!(
-            locale,
-            "{player} summoned {}",
-            "{player} 召唤 {}",
-            "{player} 召喚 {}",
-            name(entity)
-        ),
-        PublicEvent::Magnetized {
-            player,
-            attachment,
-            target,
-        } => lf!(
-            locale,
-            "{player} Magnetized {} onto {}",
-            "{player} 将 {} 磁化到 {}",
-            "{player} 將 {} 磁化到 {}",
-            name(attachment),
-            name(target)
-        ),
-        PublicEvent::WeaponEquipped { player, weapon } => lf!(
-            locale,
-            "{player} equipped {}",
-            "{player} 装备 {}",
-            "{player} 裝備 {}",
-            name(weapon)
-        ),
-        PublicEvent::WeaponDestroyed { player, weapon } => lf!(
-            locale,
-            "{player}'s {} was destroyed",
-            "{player} 的 {} 被摧毁",
-            "{player} 的 {} 被摧毀",
-            name(weapon)
-        ),
-        PublicEvent::LocationUsed {
-            player, location, ..
-        } => lf!(
-            locale,
-            "{player} used Location {}",
-            "{player} 激活地标 {}",
-            "{player} 啟用地標 {}",
-            name(location)
-        ),
-        PublicEvent::LocationDestroyed { player, location } => lf!(
-            locale,
-            "{player}'s Location {} was depleted",
-            "{player} 的地标 {} 耗尽",
-            "{player} 的地標 {} 耗盡",
-            name(location)
-        ),
-        PublicEvent::HeroPowerUsed {
-            player, hero_power, ..
-        } => lf!(
-            locale,
-            "{player} used {}",
-            "{player} 使用 {}",
-            "{player} 使用 {}",
-            name(hero_power)
-        ),
-        PublicEvent::HeroPowerReplaced {
-            player, old, new, ..
-        } => lf!(
-            locale,
-            "{player} replaced Hero Power {} with {}",
-            "{player} 将英雄技能 {} 替换为 {}",
-            "{player} 將英雄能力 {} 替換為 {}",
-            name(old),
-            name(new)
-        ),
-        PublicEvent::HeroReplaced { player, old, new } => lf!(
-            locale,
-            "{player} replaced Hero {} with {}",
-            "{player} 将英雄 {} 替换为 {}",
-            "{player} 將英雄 {} 替換為 {}",
-            name(old),
-            name(new)
-        ),
-        PublicEvent::SecretPlayed { player, secret } => match secret {
-            Some(secret) => lf!(
-                locale,
-                "{player} played Secret {}",
-                "{player} 挂上奥秘 {}",
-                "{player} 掛上秘密 {}",
-                name(secret)
-            ),
-            None => lf!(
-                locale,
-                "{player} played a Secret",
-                "{player} 挂上了一个奥秘",
-                "{player} 掛上了一個秘密"
-            ),
-        },
-        PublicEvent::SecretRevealed { player, secret } => lf!(
-            locale,
-            "{player}'s Secret {} triggered",
-            "{player} 的奥秘 {} 被触发",
-            "{player} 的秘密 {} 被觸發",
-            name(secret)
-        ),
-        PublicEvent::ZoneChanged { entity, from, to } => lf!(
-            locale,
-            "{} moved from {from:?} to {to:?}",
-            "{} 从 {from:?} 移动到 {to:?}",
-            "{} 從 {from:?} 移動到 {to:?}",
-            name(entity)
-        ),
-        PublicEvent::ControllerChanged {
-            entity, from, to, ..
-        } => lf!(
-            locale,
-            "control of {} moved from {from} to {to}",
-            "{} 的控制权从 {from} 转移给 {to}",
-            "{} 的控制權從 {from} 轉移給 {to}",
-            name(entity)
-        ),
-        PublicEvent::Transformed {
-            entity,
-            from_card,
-            to_card,
-            ..
-        } => lf!(
-            locale,
-            "{} transformed from {from_card} into {to_card}",
-            "{} 从 {from_card} 变形为 {to_card}",
-            "{} 從 {from_card} 變形為 {to_card}",
-            name(entity)
-        ),
-        PublicEvent::Attack {
-            attacker, defender, ..
-        } => lf!(
-            locale,
-            "{} attacked {}",
-            "{} 攻击 {}",
-            "{} 攻擊 {}",
-            name(attacker),
-            name(defender)
-        ),
-        PublicEvent::Damaged {
-            source,
-            target,
-            amount,
-        } => lf!(
-            locale,
-            "{} dealt {amount} damage to {}",
-            "{} 对 {} 造成 {amount} 点伤害",
-            "{} 對 {} 造成 {amount} 點傷害",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::DamagePrevented {
-            source,
-            target,
-            reason,
-        } => lf!(
-            locale,
-            "damage from {} to {} was prevented ({reason})",
-            "{} 对 {} 的伤害被阻止（{reason}）",
-            "{} 對 {} 的傷害被阻止（{reason}）",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::Healed {
-            source,
-            target,
-            amount,
-        } => lf!(
-            locale,
-            "{} restored {amount} Health to {}",
-            "{} 为 {} 恢复 {amount} 点生命",
-            "{} 為 {} 恢復 {amount} 點生命",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::ArmorGained {
-            source,
-            target,
-            amount,
-        } => lf!(
-            locale,
-            "{} gave {} {amount} Armor",
-            "{} 使 {} 获得 {amount} 点护甲",
-            "{} 使 {} 獲得 {amount} 點護甲",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::OverloadQueued { player, amount, .. } => lf!(
-            locale,
-            "{player} queued Overload: ({amount})",
-            "{player} 下回合过载 {amount}",
-            "{player} 下回合超載 {amount}"
-        ),
-        PublicEvent::ManaLocked { player, amount } => lf!(
-            locale,
-            "{player} has {amount} Mana Crystals locked this turn",
-            "{player} 本回合锁定 {amount} 个法力水晶",
-            "{player} 本回合鎖定 {amount} 個法力水晶"
-        ),
-        PublicEvent::ManaUnlocked { player, amount, .. } => lf!(
-            locale,
-            "{player} unlocked {amount} Mana Crystals",
-            "{player} 解锁 {amount} 个法力水晶",
-            "{player} 解鎖 {amount} 個法力水晶"
-        ),
-        PublicEvent::OverloadCleared {
-            player,
-            pending,
-            locked,
-            ..
-        } => lf!(
-            locale,
-            "{player}'s Overload was cleared (locked {locked}, pending {pending})",
-            "{player} 的过载被清除（当前 {locked}，待生效 {pending}）",
-            "{player} 的超載被清除（目前 {locked}，待生效 {pending}）"
-        ),
-        PublicEvent::TemporaryManaGained { player, amount, .. } => lf!(
-            locale,
-            "{player} gained {amount} temporary Mana",
-            "{player} 获得 {amount} 点临时法力",
-            "{player} 獲得 {amount} 點暫時法力"
-        ),
-        PublicEvent::TemporaryManaExpired { player, amount } => lf!(
-            locale,
-            "{player}'s {amount} temporary Mana expired",
-            "{player} 的 {amount} 点临时法力过期",
-            "{player} 的 {amount} 點暫時法力失效"
-        ),
-        PublicEvent::ManaCrystalsGained {
-            player,
-            amount,
-            filled,
-            ..
-        } => lf!(
-            locale,
-            "{player} gained {amount} {} Mana Crystals",
-            "{player} 获得 {amount} 个{}法力水晶",
-            "{player} 獲得 {amount} 個{}法力水晶",
-            if *filled {
-                lt!(locale, "full", "已充能", "已充能")
-            } else {
-                lt!(locale, "empty", "空", "空")
-            }
-        ),
-        PublicEvent::ManaCrystalsDestroyed { player, amount, .. } => lf!(
-            locale,
-            "{player} lost {amount} Mana Crystals",
-            "{player} 失去 {amount} 个法力水晶",
-            "{player} 失去 {amount} 個法力水晶"
-        ),
-        PublicEvent::ManaSpent {
-            player,
-            amount,
-            temporary,
-            ..
-        } => lf!(
-            locale,
-            "{player} spent {amount} Mana ({temporary} temporary)",
-            "{player} 花费 {amount} 点法力（临时 {temporary}）",
-            "{player} 花費 {amount} 點法力（暫時 {temporary}）"
-        ),
-        PublicEvent::PlayerResourceGained {
-            player,
-            resource,
-            amount,
-            ..
-        } if resource == "corpses" => lf!(
-            locale,
-            "{player} gained {amount} Corpses",
-            "{player} 获得 {amount} 份残骸",
-            "{player} 獲得 {amount} 具屍體"
-        ),
-        PublicEvent::PlayerResourceSpent {
-            player,
-            resource,
-            amount,
-            ..
-        } if resource == "corpses" => lf!(
-            locale,
-            "{player} spent {amount} Corpses",
-            "{player} 消耗 {amount} 份残骸",
-            "{player} 消耗 {amount} 具屍體"
-        ),
-        PublicEvent::PlayerResourceGained {
-            player,
-            resource,
-            amount,
-            ..
-        } => format!("{player} gained {amount} {resource}"),
-        PublicEvent::PlayerResourceSpent {
-            player,
-            resource,
-            amount,
-            ..
-        } => format!("{player} spent {amount} {resource}"),
-        PublicEvent::KeywordDisabled {
-            source,
-            target,
-            keyword,
-        } => lf!(
-            locale,
-            "{} removed keyword {keyword} from {}",
-            "{} 使 {} 失去关键词 {keyword}",
-            "{} 使 {} 失去關鍵字 {keyword}",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::Frozen { source, target } => lf!(
-            locale,
-            "{} Froze {}",
-            "{} 冻结了 {}",
-            "{} 凍結了 {}",
-            effect(source),
-            name(target)
-        ),
-        PublicEvent::EntityDied { entity, .. } => {
-            lf!(locale, "{} died", "{} 死亡", "{} 死亡", name(entity))
-        }
-        PublicEvent::Conceded { player } => lf!(
-            locale,
-            "{player} conceded",
-            "{player} 认输",
-            "{player} 投降"
-        ),
-        PublicEvent::GameEnded { outcome } => match outcome {
-            GameOutcome::Winner(winner) => {
-                lf!(locale, "{winner} won", "{winner} 获胜", "{winner} 獲勝")
-            }
-            GameOutcome::Draw => lt!(locale, "Draw", "平局", "平手").to_owned(),
-        },
-        PublicEvent::ChoiceRequested {
-            player, options, ..
-        } => lf!(
-            locale,
-            "{player} must choose from {options} options",
-            "{player} 需要从 {options} 个选项中选择",
-            "{player} 需要從 {options} 個選項中選擇"
-        ),
-        PublicEvent::ChoiceMade { player, index, .. } => match index {
-            Some(index) => lf!(
-                locale,
-                "{player} chose option {index}",
-                "{player} 选择了选项 {index}",
-                "{player} 選擇了選項 {index}"
-            ),
-            None => lf!(
-                locale,
-                "{player} made a hidden choice",
-                "{player} 完成了一次隐藏选择",
-                "{player} 完成了一次隱藏選擇"
-            ),
-        },
-    }
+    )
 }
 
 fn display_ids(ids: &[EntityId]) -> String {
@@ -1912,105 +1236,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn nozdormu_exposes_the_generic_fifteen_second_turn_limit() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
-        let mut game = Game::new_unrestricted(
-            LuaCardRuntime::load_dir(root.join("data")).unwrap(),
-            std::iter::repeat_n("EX1_560".to_owned(), 20).collect(),
-            std::iter::repeat_n("CS2_120".to_owned(), 20).collect(),
-            7,
-        )
-        .unwrap();
-        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
-            .unwrap();
-        game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
-            .unwrap();
-        assert_eq!(turn_time_limit_seconds(&game).unwrap(), None);
-        while game.state().active_player != PlayerId::ONE
-            || game.state().player(PlayerId::ONE).max_mana < 9
-        {
-            game.dispatch(PlayerCommand::EndTurn).unwrap();
-        }
-        let nozdormu = game.state().player(PlayerId::ONE).hand[0];
-        game.dispatch(PlayerCommand::PlayCard {
-            card: nozdormu,
-            target: None,
-        })
-        .unwrap();
-        assert_eq!(turn_time_limit_seconds(&game).unwrap(), Some(15));
-    }
-
-    #[test]
-    fn public_events_render_without_reintroducing_hidden_details() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
-        let mut game = Game::new_unrestricted(
-            LuaCardRuntime::load_dir(root.join("data")).unwrap(),
-            std::iter::repeat_n("CS2_120".to_owned(), 20).collect(),
-            std::iter::repeat_n("CFM_800".to_owned(), 20).collect(),
-            7,
-        )
-        .unwrap();
-        let draw_event = game
-            .state()
-            .public_history(PlayerId::ONE)
-            .iter()
-            .find_map(|record| match &record.event {
-                event @ PublicEvent::CardDrawn {
-                    player: PlayerId::TWO,
-                    card: None,
-                    ..
-                } => Some(event),
-                _ => None,
-            })
-            .unwrap();
-        let draw = display_public_event(&game, draw_event, Locale::EnUs);
-        assert_eq!(draw, "P2 drew a card");
-        assert!(!draw.contains("Getaway Kodo"));
-
-        game.dispatch(PlayerCommand::Mulligan {
-            replace: Vec::new(),
-        })
-        .unwrap();
-        game.dispatch(PlayerCommand::Mulligan {
-            replace: Vec::new(),
-        })
-        .unwrap();
-        game.dispatch(PlayerCommand::EndTurn).unwrap();
-        let secret_play = game
-            .legal_actions()
-            .unwrap()
-            .into_iter()
-            .find(|command| matches!(command, PlayerCommand::PlayCard { .. }))
-            .unwrap();
-        game.dispatch(secret_play).unwrap();
-        let secret_event = game
-            .state()
-            .public_history(PlayerId::ONE)
-            .iter()
-            .rev()
-            .find_map(|record| match &record.event {
-                event @ PublicEvent::SecretPlayed {
-                    player: PlayerId::TWO,
-                    secret: None,
-                } => Some(event),
-                _ => None,
-            })
-            .unwrap();
-        let secret = display_public_event(&game, secret_event, Locale::EnUs);
-        assert_eq!(secret, "P2 played a Secret");
-        assert!(!secret.contains("Getaway Kodo"));
-
-        let choice = display_public_event(
-            &game,
-            &PublicEvent::ChoiceMade {
-                player: PlayerId::TWO,
-                source: None,
-                index: None,
-            },
-            Locale::EnUs,
-        );
-        assert_eq!(choice, "P2 made a hidden choice");
-
+    fn automated_hidden_actions_do_not_leak_entity_ids() {
         let mulligan = PlayerCommand::Mulligan {
             replace: vec![EntityId(40), EntityId(41)],
         };

@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
 use hearth_app::GameSession;
-use hearth_core::{LegalAction, Locale, PlayerCommand, PlayerId};
+use hearth_core::{Locale, PlayerId};
 
 use crate::frontend::{ClientScene, FrontendState};
 use crate::i18n::pick;
@@ -192,9 +192,8 @@ pub fn update_turn_timer(
     render_clock(&clock, session.locale(), &mut display);
     if expired {
         let acting_player = session.human_player();
-        let starting_turn = view.turn;
-        if let Err(message) = dispatch_timeout_actions(&mut session, starting_turn) {
-            ui.error = Some(message);
+        if let Err(error) = session.dispatch_timeout_actions(MAX_TIMEOUT_ACTIONS) {
+            ui.error = Some(error.to_string());
         } else {
             ui.error = None;
             ui.interaction.reset_after_dispatch();
@@ -211,40 +210,6 @@ pub fn update_turn_timer(
 
 fn effective_seconds(rule_seconds: Option<u64>, default_seconds: u64) -> Option<u64> {
     rule_seconds.or_else(|| (default_seconds > 0).then_some(default_seconds))
-}
-
-fn dispatch_timeout_actions(session: &mut GameSession, starting_turn: u32) -> Result<(), String> {
-    for _ in 0..MAX_TIMEOUT_ACTIONS {
-        let legal = session.legal_actions().map_err(|error| error.to_string())?;
-        let Some(command) = timeout_command(&legal) else {
-            return Err("turn timer expired with no non-concede legal action".to_owned());
-        };
-        let ends_turn = matches!(command, PlayerCommand::EndTurn);
-        session
-            .dispatch_human_only(command)
-            .map_err(|error| error.to_string())?;
-        let view = session.view();
-        if ends_turn || view.outcome.is_some() || view.turn != starting_turn {
-            return Ok(());
-        }
-    }
-    Err(format!(
-        "turn timer exceeded {MAX_TIMEOUT_ACTIONS} forced actions"
-    ))
-}
-
-fn timeout_command(legal: &[LegalAction]) -> Option<PlayerCommand> {
-    legal
-        .iter()
-        .map(|action| &action.command)
-        .find(|command| matches!(command, PlayerCommand::EndTurn))
-        .or_else(|| {
-            legal
-                .iter()
-                .map(|action| &action.command)
-                .find(|command| !matches!(command, PlayerCommand::Concede))
-        })
-        .cloned()
 }
 
 fn hide_clock(clock: &mut TurnClock, display: &mut TurnTimerUi<'_, '_>) {
@@ -287,33 +252,11 @@ fn render_clock(clock: &TurnClock, locale: Locale, display: &mut TurnTimerUi<'_,
 mod tests {
     use super::*;
 
-    fn legal(command: PlayerCommand) -> LegalAction {
-        LegalAction {
-            command,
-            mana_cost: 0,
-        }
-    }
-
     #[test]
     fn runtime_rule_overrides_the_default_and_zero_disables_only_the_default() {
         assert_eq!(effective_seconds(None, 75), Some(75));
         assert_eq!(effective_seconds(Some(15), 75), Some(15));
         assert_eq!(effective_seconds(None, 0), None);
         assert_eq!(effective_seconds(Some(15), 0), Some(15));
-    }
-
-    #[test]
-    fn timeout_prefers_end_turn_and_never_concedes() {
-        let choices = vec![
-            legal(PlayerCommand::Concede),
-            legal(PlayerCommand::Choose { index: 0 }),
-            legal(PlayerCommand::EndTurn),
-        ];
-        assert_eq!(timeout_command(&choices), Some(PlayerCommand::EndTurn));
-        assert_eq!(
-            timeout_command(&choices[..2]),
-            Some(PlayerCommand::Choose { index: 0 })
-        );
-        assert_eq!(timeout_command(&choices[..1]), None);
     }
 }

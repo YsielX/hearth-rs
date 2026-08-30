@@ -5,9 +5,8 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
+hearth-app = { path = "../hearth-app" }
 hearth-bot = { path = "../hearth-bot" }
 hearth-core = { path = "../hearth-core" }
 hearth-fuzz = { path = "../hearth-fuzz" }
-hearth-script = { path = "../hearth-script" }
-serde.workspace = true
 serde_json.workspace = true

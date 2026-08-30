@@ -18,7 +18,9 @@ data/
 crates/
 ├── hearth-core/           # State machine, zones, event queue, RNG, replay
 ├── hearth-script/         # Lua sandbox, module loader, rules/effect bridge
+├── hearth-app/            # Shared match sessions, deck services, and presentation text
 ├── hearth-cli/            # `play` and `fuzz` commands
+├── hearth-client-bevy/    # Bevy 0.19 native graphical client
 ├── hearth-bot/            # Non-cheating deterministic baseline Bot
 └── hearth-fuzz/           # State-machine fuzzing library (no binary)
 decks/demo.json            # Mixed-class mechanics showcase
@@ -29,6 +31,8 @@ decks/frozen_throne/       # 354 sourced 2017 decks plus runnable adaptations
 Rust owns state that scripts must not mutate directly: entity identity, zone containers, mana payment, combat and damage commits, death checkpoints, the resolution queue, pending input, deterministic randomness, transaction rollback, snapshots, and replay.
 
 Lua owns card and keyword semantics: target selection, Battlecries, Deathrattles, Secrets, Discover pools, triggers, effects, and rule modifiers. The engine does not implement keyword behavior with branches such as `if keyword == "taunt"`.
+
+`hearth-app` is the UI-independent application layer used by both local clients. Its controller-neutral `MatchSession` owns runtime/deck construction, sideboards, seeded opening order, replay/snapshot access, and public projections. The managed `GameSession` adds hotseat and Bot policy. Shared localized event/action text and timeout policy also live there; terminal I/O and Bevy ECS/rendering remain frontend-specific.
 
 ## Official cards
 
