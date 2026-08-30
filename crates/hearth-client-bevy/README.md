@@ -41,8 +41,8 @@ Available launch options:
 
 `--locale` switches both card data and the complete client interface between
 `enUS`, `zhCN`, and `zhTW`. This includes the menu, deck browser, collection,
-match controls, resource/status labels, choices, previews, event toasts, Battle
-log, common interaction errors, and game results. User-authored deck names and
+match controls, resource/status labels, choices, previews, Battle log, common
+interaction errors, and game results. User-authored deck names and
 canonical engine identifiers are preserved verbatim.
 
 The Settings screen applies windowed or borderless-fullscreen mode and 80%,
@@ -146,8 +146,7 @@ a centered option overlay; revealed card/entity options support full preview;
 - track the opponent's public hand size through identity-free card backs, and
   read both players' deck, next Fatigue, current/temporary mana, locked/pending
   Overload, and Hero Power; the opponent's known Hero Power is preview-only;
-- watch viewer-safe public events as queued color-coded toasts and in the
-  Battle log.
+- read viewer-safe public events immediately in the right-side Battle log.
 
 When a source/target/placement combination maps to one legal command it is
 dispatched immediately. If multiple commands remain (for example, a card with

@@ -214,8 +214,8 @@ and Hard also mulligans expensive cards and prioritizes advantageous trades. Eve
 only the current player projection and legal-action list, remains deterministic, and survives
 autosave/resume. Hot-seat matches
 use separate Player 1/Player 2 decks and show a full-screen privacy handoff before the opening
-mulligan, every turn, and any other input-player change. Hands, card previews, and event toasts
-remain hidden, and the turn timer is paused, until the next player confirms they are ready. Use
+mulligan, every turn, and any other input-player change. Hands and card previews remain hidden,
+and the turn timer is paused, until the next player confirms they are ready. Use
 `--hotseat` to select this mode from the command line; it can be combined with `--quick-start`.
 
 Each new graphical match deterministically randomizes the first player from its seed. The first

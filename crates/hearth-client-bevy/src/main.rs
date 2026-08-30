@@ -27,7 +27,6 @@ use crate::card_preview::{
 use crate::choice_overlay::spawn_choice_overlay;
 use crate::combat_feedback::{CombatFeedbackState, update_combat_feedback};
 use crate::emotes::{EmoteKind, EmoteState, update_emotes};
-use crate::event_animation::{EventAnimationState, spawn_event_toast, update_event_toast};
 use crate::event_log::recent_event_lines;
 use crate::frontend::{ClientCatalog, ClientScene, FrontendState, spawn_frontend};
 use crate::game_art::{GameArt, GameArtPlugin};
@@ -54,7 +53,6 @@ mod card_preview;
 mod choice_overlay;
 mod combat_feedback;
 mod emotes;
-mod event_animation;
 mod event_log;
 mod frontend;
 mod game_art;
@@ -241,7 +239,6 @@ pub(crate) struct MatchResumeStore {
 #[derive(SystemParam)]
 struct FrontendOptions<'w, 's> {
     timer: ResMut<'w, TurnTimerConfig>,
-    animations: ResMut<'w, EventAnimationState>,
     settings: Res<'w, ClientSettingsStore>,
     resume: ResMut<'w, MatchResumeStore>,
     display: ResMut<'w, DisplaySettings>,
@@ -359,7 +356,6 @@ fn main() {
             path: settings_path,
         })
         .insert_resource(resume_store)
-        .insert_resource(EventAnimationState::default())
         .insert_resource(CombatFeedbackState::default())
         .insert_resource(BotPlaybackState::default())
         .insert_resource(EmoteState::default())
@@ -403,7 +399,6 @@ fn main() {
                 update_targeting_guide,
                 update_combat_feedback,
                 update_card_preview,
-                update_event_toast,
                 capture_requested_screenshot,
             )
                 .chain(),
@@ -894,7 +889,6 @@ fn required_path(args: &mut impl Iterator<Item = String>, option: &str) -> Resul
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2d);
     commands.insert_resource(GameArt::load(&asset_server));
-    spawn_event_toast(&mut commands);
     spawn_card_preview(&mut commands);
     spawn_targeting_guide(&mut commands);
 }
@@ -1073,7 +1067,6 @@ fn handle_ui_click(
             frontend.pending_delete_deck = None;
             ui.interaction = InteractionState::default();
             ui.error = None;
-            *options.animations = EventAnimationState::default();
             None
         }
         UiAction::QuitApplication => {
@@ -1090,7 +1083,6 @@ fn handle_ui_click(
             frontend.pending_delete_deck = None;
             ui.interaction = InteractionState::default();
             ui.error = None;
-            *options.animations = EventAnimationState::default();
             None
         }
         UiAction::PauseMatch => {
@@ -1113,7 +1105,6 @@ fn handle_ui_click(
             }));
             ui.interaction = InteractionState::default();
             ui.error = None;
-            *options.animations = EventAnimationState::default();
             None
         }
         UiAction::OpenMatchMenu => {
@@ -1542,13 +1533,9 @@ fn handle_ui_click(
             None
         }
         UiAction::StartMatch | UiAction::Rematch => {
-            if let Err(message) = start_selected_match(
-                &mut frontend,
-                &catalog,
-                &mut session,
-                &mut ui,
-                &mut options.animations,
-            ) {
+            if let Err(message) =
+                start_selected_match(&mut frontend, &catalog, &mut session, &mut ui)
+            {
                 frontend.status = Some(format!(
                     "{}: {message}",
                     pick(frontend.config.locale, "Error", "错误", "錯誤")
@@ -1887,7 +1874,6 @@ fn start_selected_match(
     catalog: &ClientCatalog,
     session: &mut GameSession,
     ui: &mut UiState,
-    animations: &mut EventAnimationState,
 ) -> Result<(), String> {
     frontend.apply_selected_decks(&catalog.0)?;
     let next = GameSession::load(&frontend.config).map_err(|error| error.to_string())?;
@@ -1896,7 +1882,6 @@ fn start_selected_match(
     frontend.pending_concede = false;
     frontend.settings_return = ClientScene::MainMenu;
     *session = next;
-    *animations = EventAnimationState::default();
     ui.interaction = InteractionState::default();
     ui.page = 0;
     ui.error = None;
