@@ -3,16 +3,21 @@ use hearth_app::GameSession;
 use hearth_core::{ChoiceOptionValueView, PendingInputView, PlayerCommand};
 
 use crate::card_preview::{InspectableCard, hide_card_preview, show_card_preview};
+use crate::frontend::ClientCatalog;
+use crate::game_art::GameArt;
 use crate::i18n::pick;
 use crate::{
-    ACTION, ACTION_HOVER, BACKGROUND, ButtonColors, CARD, CARD_SELECTED, MUTED_TEXT, TEXT,
-    UiAction, handle_ui_click, shorten, text_font,
+    ACTION, ACTION_HOVER, ButtonColors, CARD, CARD_SELECTED, MUTED_TEXT, StatCorner, TEXT,
+    UiAction, handle_ui_click, shorten, spawn_art_layer, spawn_corner_stat, text_font,
 };
 
 pub fn spawn_choice_overlay(
     parent: &mut ChildSpawnerCommands,
     session: &GameSession,
     pending: &PendingInputView,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let card_options = pending
         .options
@@ -70,7 +75,15 @@ pub fn spawn_choice_overlay(
                 })
                 .with_children(|options| {
                     for (index, option) in pending.options.iter().enumerate() {
-                        spawn_choice_option(options, session, index, option);
+                        spawn_choice_option(
+                            options,
+                            session,
+                            index,
+                            option,
+                            art,
+                            asset_server,
+                            catalog,
+                        );
                     }
                 });
             overlay.spawn((
@@ -93,6 +106,9 @@ fn spawn_choice_option(
     session: &GameSession,
     index: usize,
     option: &hearth_core::ChoiceOptionView,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let card_id = choice_card_id(&option.value);
     let mut button = parent.spawn((
@@ -132,25 +148,41 @@ fn spawn_choice_option(
             .observe(hide_card_preview);
     }
     button.observe(handle_ui_click).with_children(|choice| {
-        choice.spawn((
-            Text::new(format!("{}. {}", index + 1, option.label)),
-            text_font(if card_id.is_some() { 18.0 } else { 17.0 }),
-            TextColor(if card_id.is_some() { BACKGROUND } else { TEXT }),
-            TextLayout::justify(Justify::Center),
-            Pickable::IGNORE,
-        ));
         if let Some(card_id) = card_id {
+            spawn_art_layer(choice, art.card(asset_server, card_id), 5.0);
             choice.spawn((
-                Text::new(format!(
-                    "{}\n\n{}",
-                    session.card_name(card_id),
-                    shorten(&session.card_text(card_id), 160)
-                )),
-                text_font(13.0),
-                TextColor(Color::srgb(0.13, 0.10, 0.065)),
+                Text::new(shorten(&session.card_name(card_id), 24)),
+                text_font(15.0),
+                TextColor(TEXT),
                 TextLayout::justify(Justify::Center),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: px(5),
+                    right: px(5),
+                    top: px(5),
+                    min_height: px(30),
+                    padding: UiRect::all(px(4)),
+                    border_radius: BorderRadius::all(px(6)),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.84)),
                 Pickable::IGNORE,
             ));
+            if let Some(definition) = catalog.0.definition(card_id) {
+                spawn_corner_stat(choice, definition.cost, CARD_SELECTED, StatCorner::TopLeft);
+                match definition.kind {
+                    hearth_core::CardKind::Minion | hearth_core::CardKind::Weapon => {
+                        spawn_corner_stat(choice, definition.attack, TEXT, StatCorner::BottomLeft);
+                        spawn_corner_stat(choice, definition.health, TEXT, StatCorner::BottomRight);
+                    }
+                    hearth_core::CardKind::Location => {
+                        spawn_corner_stat(choice, definition.health, TEXT, StatCorner::BottomRight)
+                    }
+                    _ => {}
+                }
+            }
             choice.spawn((
                 Text::new(pick(
                     session.locale(),
@@ -159,7 +191,26 @@ fn spawn_choice_option(
                     "懸停查看完整卡牌詳情",
                 )),
                 text_font(11.0),
-                TextColor(Color::srgb(0.28, 0.22, 0.12)),
+                TextColor(TEXT),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: px(35),
+                    right: px(35),
+                    bottom: px(7),
+                    padding: UiRect::all(px(3)),
+                    border_radius: BorderRadius::all(px(5)),
+                    justify_content: JustifyContent::Center,
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.84)),
+                Pickable::IGNORE,
+            ));
+        } else {
+            choice.spawn((
+                Text::new(format!("{}. {}", index + 1, option.label)),
+                text_font(17.0),
+                TextColor(TEXT),
+                TextLayout::justify(Justify::Center),
                 Pickable::IGNORE,
             ));
         }

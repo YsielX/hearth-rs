@@ -13,11 +13,14 @@ bevy = { version = "0.19.1", default-features = false, features = [
     "bevy_ui_widgets",
     "bevy_winit",
     "default_font",
+    "https",
+    "jpeg",
     "multi_threaded",
     "picking",
     "png",
     "system_clipboard",
     "system_font_discovery",
+    "web_asset_cache",
     "x11",
 ] }
 hearth-app = { path = "../hearth-app" }

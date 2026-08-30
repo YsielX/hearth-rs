@@ -9,12 +9,13 @@ use bevy::text::{EditableText, TextCursorStyle, TextEditChange};
 use hearth_app::{BotDifficulty, CardCatalogEntry, DeckLibrary, DeckList, MatchConfig, MatchMode};
 
 use crate::card_preview::{InspectableCard, hide_card_preview, show_card_preview};
+use crate::game_art::GameArt;
 use crate::i18n::{bot_difficulty_label, class_label, kind_label, pick};
 use crate::turn_timer::TurnTimerConfig;
 
 use super::{
     ACTION, ACTION_HOVER, BACKGROUND, ButtonColors, CARD_SELECTED, DisplaySettings, ENEMY,
-    FRIENDLY, MUTED_TEXT, PANEL, TEXT, UiAction, handle_ui_click, text_font,
+    FRIENDLY, MUTED_TEXT, OfficialCardArt, PANEL, TEXT, UiAction, handle_ui_click, text_font,
 };
 
 const DECKS_PER_PAGE: usize = 6;
@@ -345,12 +346,14 @@ pub fn spawn_frontend(
     catalog: &ClientCatalog,
     timer: &TurnTimerConfig,
     display: &DisplaySettings,
+    art: &GameArt,
+    asset_server: &AssetServer,
 ) {
     match state.scene {
         ClientScene::MainMenu => spawn_main_menu(root, state, &catalog.0),
         ClientScene::Settings => spawn_settings(root, state, timer, display),
         ClientScene::DeckSelect => spawn_deck_select(root, state, &catalog.0),
-        ClientScene::DeckBuilder => spawn_deck_builder(root, state, &catalog.0),
+        ClientScene::DeckBuilder => spawn_deck_builder(root, state, &catalog.0, art, asset_server),
         ClientScene::DeckCode => spawn_deck_code(root, state),
         ClientScene::Match => {}
     }
@@ -1037,6 +1040,8 @@ fn spawn_deck_builder(
     root: &mut ChildSpawnerCommands,
     state: &FrontendState,
     library: &DeckLibrary,
+    art: &GameArt,
+    asset_server: &AssetServer,
 ) {
     let locale = state.config.locale;
     let Some(draft) = &state.draft else {
@@ -1090,8 +1095,8 @@ fn spawn_deck_builder(
                 ..default()
             })
             .with_children(|columns| {
-                spawn_catalog_column(columns, state, library, draft);
-                spawn_draft_column(columns, state, library, draft);
+                spawn_catalog_column(columns, state, library, draft, art, asset_server);
+                spawn_draft_column(columns, state, library, draft, art, asset_server);
             });
         screen
             .spawn(Node {
@@ -1359,6 +1364,8 @@ fn spawn_catalog_column(
     state: &FrontendState,
     library: &DeckLibrary,
     draft: &DeckList,
+    art: &GameArt,
+    asset_server: &AssetServer,
 ) {
     let locale = state.config.locale;
     let cards = library
@@ -1427,14 +1434,26 @@ fn spawn_catalog_column(
                     .observe(hide_card_preview)
                     .with_children(|row| {
                         row.spawn((
+                            OfficialCardArt,
+                            ImageNode::new(art.card(asset_server, &card.id))
+                                .with_mode(NodeImageMode::Stretch),
+                            Node {
+                                width: px(72),
+                                height: px(48),
+                                flex_shrink: 0.0,
+                                border_radius: BorderRadius::all(px(5)),
+                                ..default()
+                            },
+                            Pickable::IGNORE,
+                        ));
+                        row.spawn((
                             Text::new(format!(
-                                "[{}] {}{}  ·  {}  ·  {}\n{}",
+                                "[{}] {}{}  ·  {}  ·  {}",
                                 card.cost,
                                 card.name,
                                 card_rune_suffix(card.rune_cost),
                                 kind_label(locale, card.kind),
-                                card.set,
-                                shorten_text(&card.text, 88)
+                                card.set
                             )),
                             text_font(13.0),
                             TextColor(TEXT),
@@ -1474,6 +1493,8 @@ fn spawn_draft_column(
     state: &FrontendState,
     library: &DeckLibrary,
     draft: &DeckList,
+    art: &GameArt,
+    asset_server: &AssetServer,
 ) {
     let locale = state.config.locale;
     let required_size = library.required_deck_size(draft);
@@ -1566,6 +1587,19 @@ fn spawn_draft_column(
                     .observe(show_card_preview)
                     .observe(hide_card_preview)
                     .with_children(|row| {
+                        row.spawn((
+                            OfficialCardArt,
+                            ImageNode::new(art.card(asset_server, card_id))
+                                .with_mode(NodeImageMode::Stretch),
+                            Node {
+                                width: px(48),
+                                height: px(32),
+                                flex_shrink: 0.0,
+                                border_radius: BorderRadius::all(px(4)),
+                                ..default()
+                            },
+                            Pickable::IGNORE,
+                        ));
                         row.spawn((
                             Text::new(format!("[{cost}] {name}  ×{count}")),
                             text_font(13.0),
@@ -2167,19 +2201,6 @@ fn card_sort_key(library: &DeckLibrary, card_id: &str) -> (u8, String, String) {
         .find(|card| card.id == card_id)
         .map(|card| (card.cost, card.name.to_lowercase(), card.id.clone()))
         .unwrap_or((0, card_id.to_owned(), card_id.to_owned()))
-}
-
-fn shorten_text(value: &str, max_chars: usize) -> String {
-    let plain = value
-        .replace(['\n', '\r'], " ")
-        .replace(['<', '>', '$'], "");
-    let mut characters = plain.chars();
-    let shortened = characters.by_ref().take(max_chars).collect::<String>();
-    if characters.next().is_some() {
-        format!("{shortened}…")
-    } else {
-        shortened
-    }
 }
 
 #[cfg(test)]

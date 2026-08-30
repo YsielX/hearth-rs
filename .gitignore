@@ -1,4 +1,5 @@
 /target/
+/.web-asset-cache/
 *.log
 .venv/
 __pycache__/

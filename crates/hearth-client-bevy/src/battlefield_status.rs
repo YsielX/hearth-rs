@@ -3,8 +3,13 @@ use hearth_app::GameSession;
 use hearth_core::{EntityId, PlayerId, PlayerStateView, PlayerView};
 
 use crate::card_preview::{InspectableCard, hide_card_preview, show_card_preview};
+use crate::frontend::ClientCatalog;
+use crate::game_art::GameArt;
 use crate::i18n::pick;
-use crate::{ACTION_HOVER, ButtonColors, CARD_SELECTED, MUTED_TEXT, TEXT, text_font};
+use crate::{
+    ACTION_HOVER, ButtonColors, CARD_SELECTED, MUTED_TEXT, StatCorner, TEXT, buff_color,
+    health_color, spawn_art_layer, spawn_corner_stat, text_font,
+};
 
 const WEAPON_COLOR: Color = Color::srgb(0.48, 0.20, 0.12);
 const SECRET_COLOR: Color = Color::srgb(0.14, 0.30, 0.54);
@@ -25,6 +30,9 @@ pub fn spawn_battlefield_status(
     session: &GameSession,
     view: &PlayerView,
     player: PlayerId,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let items = battlefield_items(view.viewer, view.player(player));
     if items.is_empty() {
@@ -49,18 +57,7 @@ pub fn spawn_battlefield_status(
                         let Some(entity) = view.entity(entity_id) else {
                             continue;
                         };
-                        spawn_known_badge(
-                            status,
-                            &format!(
-                                "{}\n{} / {}",
-                                pick(session.locale(), "WEAPON", "武器", "武器"),
-                                entity.attack,
-                                entity.health()
-                            ),
-                            &entity.card_id,
-                            WEAPON_COLOR,
-                            74.0,
-                        );
+                        spawn_weapon(status, session, entity, art, asset_server, catalog);
                     }
                     BattlefieldItem::KnownSecret(entity_id) => {
                         let Some(entity) = view.entity(entity_id) else {
@@ -76,6 +73,8 @@ pub fn spawn_battlefield_status(
                             &entity.card_id,
                             SECRET_COLOR,
                             92.0,
+                            art,
+                            asset_server,
                         );
                     }
                     BattlefieldItem::HiddenSecret => {
@@ -95,6 +94,8 @@ pub fn spawn_battlefield_status(
                             &entity.card_id,
                             OBJECTIVE_COLOR,
                             108.0,
+                            art,
+                            asset_server,
                         );
                     }
                     BattlefieldItem::UnendingPlagues => {
@@ -111,6 +112,76 @@ pub fn spawn_battlefield_status(
                     }
                 }
             }
+        });
+}
+
+fn spawn_weapon(
+    parent: &mut ChildSpawnerCommands,
+    session: &GameSession,
+    entity: &hearth_core::EntityView,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
+) {
+    parent
+        .spawn((
+            Button,
+            InspectableCard(entity.card_id.clone()),
+            ButtonColors {
+                normal: WEAPON_COLOR,
+                hovered: ACTION_HOVER,
+                pressed: CARD_SELECTED,
+            },
+            Node {
+                width: px(92),
+                height: px(92),
+                border: UiRect::all(px(2)),
+                border_radius: BorderRadius::all(px(14)),
+                ..default()
+            },
+            BorderColor::all(CARD_SELECTED),
+            BackgroundColor(WEAPON_COLOR),
+            Pickable::default(),
+        ))
+        .observe(show_card_preview)
+        .observe(hide_card_preview)
+        .with_children(|weapon| {
+            spawn_art_layer(weapon, art.card(asset_server, &entity.card_id), 4.0);
+            weapon.spawn((
+                Text::new(crate::shorten(&session.card_name(&entity.card_id), 13)),
+                text_font(10.0),
+                TextColor(TEXT),
+                TextLayout::justify(Justify::Center),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: px(4),
+                    right: px(4),
+                    top: px(4),
+                    min_height: px(23),
+                    padding: UiRect::all(px(3)),
+                    border_radius: BorderRadius::all(px(5)),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.84)),
+                Pickable::IGNORE,
+            ));
+            let definition = catalog.0.definition(&entity.card_id);
+            let base_attack = definition.map_or(entity.attack, |card| card.attack);
+            let base_health = definition.map_or(entity.max_health, |card| card.health);
+            spawn_corner_stat(
+                weapon,
+                entity.attack,
+                buff_color(entity.attack, base_attack),
+                StatCorner::BottomLeft,
+            );
+            spawn_corner_stat(
+                weapon,
+                entity.health(),
+                health_color(entity, base_health),
+                StatCorner::BottomRight,
+            );
         });
 }
 
@@ -168,6 +239,8 @@ fn spawn_known_badge(
     card_id: &str,
     normal: Color,
     width: f32,
+    art: &GameArt,
+    asset_server: &AssetServer,
 ) {
     parent
         .spawn((
@@ -184,13 +257,29 @@ fn spawn_known_badge(
         ))
         .observe(show_card_preview)
         .observe(hide_card_preview)
-        .with_child((
-            Text::new(label),
-            text_font(10.0),
-            TextColor(TEXT),
-            TextLayout::justify(Justify::Center),
-            Pickable::IGNORE,
-        ));
+        .with_children(|badge| {
+            spawn_art_layer(badge, art.card(asset_server, card_id), 2.0);
+            badge.spawn((
+                Text::new(label),
+                text_font(10.0),
+                TextColor(TEXT),
+                TextLayout::justify(Justify::Center),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: px(2),
+                    right: px(2),
+                    bottom: px(2),
+                    min_height: px(23),
+                    padding: UiRect::all(px(2)),
+                    border_radius: BorderRadius::all(px(5)),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.84)),
+                Pickable::IGNORE,
+            ));
+        });
 }
 
 fn spawn_hidden_secret(parent: &mut ChildSpawnerCommands, locale: hearth_core::Locale) {

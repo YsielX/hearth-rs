@@ -7,10 +7,15 @@ action enumerator. It now includes a main menu, a repository-wide deck browser,
 a simple collection/deck editor, match setup, results, and rematches.
 
 The match scene uses original embedded artwork for a painterly tavern board and
-identity-free opponent card backs. The executable carries the PNG data itself,
-while solid-color layers remain as a safe loading fallback. No official game art
-is redistributed; generation prompts and provenance live in
-[`assets/ui/README.md`](assets/ui/README.md).
+identity-free opponent card backs. Known cards, Minions, Heroes, Hero Powers,
+and Weapons load their official 512px artwork on demand from HearthstoneJSON.
+Bevy caches successful HTTPS downloads in `.web-asset-cache/`, which is ignored
+by Git; the executable and repository do not redistribute those images. An
+unavailable image leaves the colored, named frame visible, so offline play still
+works after the first download and remains usable even with an empty cache.
+Official artwork remains property of its respective owner and is intended here
+for personal, non-commercial use. The embedded-board generation prompts and
+provenance live in [`assets/ui/README.md`](assets/ui/README.md).
 
 Open the main menu:
 
@@ -101,8 +106,11 @@ class, and a deck without an explicit Hero Power receives that class's canonical
 basic power. Saved custom decks can be permanently deleted from the selector
 after an explicit confirmation step; repository decks never expose deletion and
 the persistence layer independently rejects paths outside `decks/custom/`.
-Hovering a catalog entry, deck row, hand card, board entity, hero, or Hero Power
-opens the same full-text card preview;
+Hovering a catalog entry, deck row, hand card, board entity, Hero, Hero Power, or
+Weapon opens the same illustrated full-text card preview. Runtime entity IDs are
+not displayed. Card rules stay in this hover preview instead of being repeated
+over the battlefield artwork; attack and Health/Durability occupy the lower
+corners, buffs are green, and damaged Health is red;
 uncollectible tokens are resolved from the complete Lua definition catalog too.
 Custom decks are validated against their card-driven required size and saved under `decks/custom/`;
 normal decks enforce two copies per card and one copy per legendary. Prince

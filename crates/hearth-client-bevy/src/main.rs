@@ -4,6 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use bevy::asset::io::web::WebAssetPlugin;
 use bevy::ecs::system::SystemParam;
 use bevy::input_focus::tab_navigation::TabNavigationPlugin;
 use bevy::prelude::*;
@@ -82,6 +83,9 @@ const ACTIONS_PER_PAGE: usize = 7;
 
 #[derive(Component)]
 struct GameUiRoot;
+
+#[derive(Component)]
+pub(crate) struct OfficialCardArt;
 
 #[derive(Component, Clone, Copy)]
 struct GameEntity(EntityId);
@@ -255,6 +259,7 @@ struct RebuildResources<'w> {
     art: Res<'w, GameArt>,
     display: Res<'w, DisplaySettings>,
     emotes: Res<'w, EmoteState>,
+    asset_server: Res<'w, AssetServer>,
 }
 
 struct LaunchOptions {
@@ -365,22 +370,26 @@ fn main() {
         })
         .insert_resource(ClearColor(BACKGROUND))
         .add_plugins(
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    title: pick(
-                        config.locale,
-                        "hearth-rs — Bevy client",
-                        "hearth-rs — Bevy 图形客户端",
-                        "hearth-rs — Bevy 圖形客戶端",
-                    )
-                    .to_owned(),
-                    resolution: WindowResolution::new(1440, 900),
-                    resizable: true,
-                    mode: window_mode(display.fullscreen),
+            DefaultPlugins
+                .set(WebAssetPlugin {
+                    silence_startup_warning: true,
+                })
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: pick(
+                            config.locale,
+                            "hearth-rs — Bevy client",
+                            "hearth-rs — Bevy 图形客户端",
+                            "hearth-rs — Bevy 圖形客戶端",
+                        )
+                        .to_owned(),
+                        resolution: WindowResolution::new(1440, 900),
+                        resizable: true,
+                        mode: window_mode(display.fullscreen),
+                        ..default()
+                    }),
                     ..default()
                 }),
-                ..default()
-            }),
         )
         .add_plugins(GameArtPlugin)
         .add_plugins(TabNavigationPlugin)
@@ -896,16 +905,27 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn capture_requested_screenshot(
     mut commands: Commands,
     request: Option<Res<ScreenshotRequest>>,
+    asset_server: Res<AssetServer>,
+    art_nodes: Query<&ImageNode, With<OfficialCardArt>>,
     mut frames: Local<u8>,
 ) {
     let Some(request) = request else {
         return;
     };
     *frames = frames.saturating_add(1);
-    if *frames == 8 {
+    let art_settled = art_nodes.iter().all(|image| {
+        matches!(
+            asset_server.load_state(image.image.id()),
+            bevy::asset::LoadState::Loaded | bevy::asset::LoadState::Failed(_)
+        )
+    });
+    // Give asynchronous artwork and the UI layout time to settle so automated
+    // screenshots represent what a player actually sees after the scene opens.
+    if *frames >= 240 && (art_settled || *frames == u8::MAX) {
         commands
             .spawn(Screenshot::primary_window())
             .observe(save_to_disk(request.0.clone()));
+        commands.remove_resource::<ScreenshotRequest>();
     }
 }
 
@@ -982,6 +1002,7 @@ fn is_board_placement_source(view: &PlayerView, source: Option<ActionSource>) ->
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 fn handle_ui_click(
     mut event: On<Pointer<Click>>,
     mut commands: Commands,
@@ -2418,6 +2439,7 @@ fn rebuild_ui(
         art,
         display,
         emotes,
+        asset_server,
     } = resources;
     if !ui.dirty {
         return;
@@ -2436,7 +2458,17 @@ fn rebuild_ui(
                 },
                 BackgroundColor(BACKGROUND),
             ))
-            .with_children(|root| spawn_frontend(root, &frontend, &catalog, &timer, &display));
+            .with_children(|root| {
+                spawn_frontend(
+                    root,
+                    &frontend,
+                    &catalog,
+                    &timer,
+                    &display,
+                    &art,
+                    &asset_server,
+                )
+            });
         ui.dirty = false;
         return;
     }
@@ -2504,6 +2536,8 @@ fn rebuild_ui(
                     &legal,
                     &ui.interaction,
                     &art,
+                    &asset_server,
+                    &catalog,
                     &emotes,
                 )
             });
@@ -2840,6 +2874,7 @@ fn spawn_handoff_screen(root: &mut ChildSpawnerCommands, session: &GameSession, 
     });
 }
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_board(
     parent: &mut ChildSpawnerCommands,
     session: &GameSession,
@@ -2847,6 +2882,8 @@ fn spawn_board(
     legal: &[LegalAction],
     interaction: &InteractionState,
     art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
     emotes: &EmoteState,
 ) {
     let human = session.human_player();
@@ -2856,7 +2893,18 @@ fn spawn_board(
         state: interaction,
         mulligan_eligible: &view.mulligan_eligible,
     };
-    spawn_player_header(parent, session, view, &hints, enemy, true, emotes);
+    spawn_player_header(
+        parent,
+        session,
+        view,
+        &hints,
+        enemy,
+        true,
+        emotes,
+        art,
+        asset_server,
+        catalog,
+    );
     spawn_opponent_hand(
         parent,
         view.player(enemy).hand_size,
@@ -2870,6 +2918,9 @@ fn spawn_board(
         &hints,
         &view.player(enemy).board,
         ZoneArea::EnemyBoard,
+        art,
+        asset_server,
+        catalog,
     );
 
     let locale = session.locale();
@@ -2967,8 +3018,22 @@ fn spawn_board(
         &hints,
         &view.player(human).board,
         ZoneArea::FriendlyBoard,
+        art,
+        asset_server,
+        catalog,
     );
-    spawn_player_header(parent, session, view, &hints, human, false, emotes);
+    spawn_player_header(
+        parent,
+        session,
+        view,
+        &hints,
+        human,
+        false,
+        emotes,
+        art,
+        asset_server,
+        catalog,
+    );
     spawn_zone(
         parent,
         session,
@@ -2976,12 +3041,16 @@ fn spawn_board(
         &hints,
         &view.player(human).hand,
         ZoneArea::Hand,
+        art,
+        asset_server,
+        catalog,
     );
     if let Some(pending) = &view.pending_input {
-        spawn_choice_overlay(parent, session, pending);
+        spawn_choice_overlay(parent, session, pending, art, asset_server, catalog);
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_player_header(
     parent: &mut ChildSpawnerCommands,
     session: &GameSession,
@@ -2990,6 +3059,9 @@ fn spawn_player_header(
     player: PlayerId,
     enemy: bool,
     emotes: &EmoteState,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let state = view.player(player);
     let hero = view.hero(player);
@@ -3029,25 +3101,20 @@ fn spawn_player_header(
             } else {
                 session.card_name(&hero.card_id)
             };
-            let hero_label = format!(
-                "{}\n{}/{}  +{} {}",
-                hero_name,
-                hero.health(),
-                hero.max_health,
-                hero.armor,
-                pick(session.locale(), "Armor", "护甲", "護甲")
-            );
             spawn_header_entity_button(
                 header,
-                &hero_label,
-                hero.id,
-                &hero.card_id,
+                hero,
+                &hero_name,
+                &state.class,
                 hints.highlight(hero.id),
+                art,
+                asset_server,
+                catalog,
             );
             if let Some(kind) = emotes.visible_for(player, session.human_player()) {
                 spawn_emote_bubble(header, kind.phrase(session.locale()), enemy);
             }
-            spawn_battlefield_status(header, session, view, player);
+            spawn_battlefield_status(header, session, view, player, art, asset_server, catalog);
             header.spawn((
                 Text::new(title),
                 text_font(15.0),
@@ -3060,34 +3127,16 @@ fn spawn_player_header(
                 },
             ));
             spawn_player_resources(header, state, session.locale());
-            let power_label = format!(
-                "{}\n{} {}{}",
-                session.card_name(&power.card_id),
-                power.cost,
-                pick(session.locale(), "Mana", "法力", "法力"),
-                if state.hero_power_used {
-                    pick(session.locale(), " · used", " · 已使用", " · 已使用")
-                } else {
-                    ""
-                }
+            spawn_hero_power_button(
+                header,
+                session,
+                power,
+                enemy,
+                state.hero_power_used,
+                hints,
+                art,
+                asset_server,
             );
-            if enemy {
-                spawn_passive_card_button(header, &power_label, ACTION, &power.card_id);
-            } else {
-                spawn_quick_button(
-                    header,
-                    &power_label,
-                    UiAction::HeroPower,
-                    if hints.state.source == Some(ActionSource::HeroPower) {
-                        CARD_SELECTED
-                    } else if is_legal_source(hints.legal, ActionSource::HeroPower) {
-                        SOURCE_HINT
-                    } else {
-                        ACTION
-                    },
-                    Some(&power.card_id),
-                );
-            }
         });
 }
 
@@ -3117,6 +3166,7 @@ fn spawn_emote_bubble(parent: &mut ChildSpawnerCommands, phrase: &str, enemy: bo
     ));
 }
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_zone(
     parent: &mut ChildSpawnerCommands,
     session: &GameSession,
@@ -3124,6 +3174,9 @@ fn spawn_zone(
     hints: &InteractionHints<'_>,
     entities: &[EntityId],
     area: ZoneArea,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let mut zone = parent.spawn((
         Node {
@@ -3161,7 +3214,15 @@ fn spawn_zone(
                 spawn_board_drop_slot(zone, BoardPlacement::Before(position));
             }
             if let Some(entity) = view.entity(*entity_id) {
-                spawn_card(zone, session, entity, hints.highlight(*entity_id));
+                spawn_card(
+                    zone,
+                    session,
+                    entity,
+                    hints.highlight(*entity_id),
+                    art,
+                    asset_server,
+                    catalog,
+                );
             }
         }
         if area == ZoneArea::FriendlyBoard {
@@ -3270,22 +3331,14 @@ fn spawn_card(
     session: &GameSession,
     entity: &EntityView,
     highlight: EntityHighlight,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
-    let stats = match entity.kind {
-        CardKind::Minion => format!("{} / {}", entity.attack, entity.health()),
-        CardKind::Location => format!(
-            "{} {}",
-            pick(session.locale(), "Durability", "耐久度", "耐久度"),
-            entity.health()
-        ),
-        CardKind::Weapon => format!("{} / {}", entity.attack, entity.health()),
-        _ => String::new(),
-    };
     let frozen_solid = entity
         .keywords
         .iter()
         .any(|keyword| keyword == "frozen_solid");
-    let keywords = runtime_keyword_labels(&entity.keywords, session.locale());
     let selected = matches!(
         highlight,
         EntityHighlight::SelectedSource
@@ -3349,45 +3402,139 @@ fn spawn_card(
         .observe(show_card_preview)
         .observe(hide_card_preview);
     card.with_children(|card| {
+        spawn_art_layer(card, art.card(asset_server, &entity.card_id), 4.0);
         card.spawn((
-            Text::new(format!(
-                "{}  [{}]",
-                session.card_name(&entity.card_id),
-                entity.cost
-            )),
-            text_font(14.0),
-            TextColor(BACKGROUND),
+            Text::new(shorten(&session.card_name(&entity.card_id), 24)),
+            text_font(13.0),
+            TextColor(TEXT),
+            TextLayout::justify(Justify::Center),
+            Node {
+                position_type: PositionType::Absolute,
+                left: px(5),
+                right: px(5),
+                top: px(5),
+                min_height: px(27),
+                padding: UiRect::axes(px(4), px(3)),
+                border_radius: BorderRadius::all(px(6)),
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::Center,
+                ..default()
+            },
+            BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.82)),
             Pickable::IGNORE,
         ));
-        card.spawn((
-            Text::new(shorten(&session.card_text(&entity.card_id), 95)),
-            text_font(11.0),
-            TextColor(Color::srgb(0.12, 0.10, 0.07)),
-            Pickable::IGNORE,
-        ));
-        card.spawn((
-            Text::new(format!("{stats}\n{keywords}\n#{}", entity.id)),
-            text_font(12.0),
-            TextColor(BACKGROUND),
-            Pickable::IGNORE,
-        ));
+        spawn_corner_stat(card, entity.cost, CARD_SELECTED, StatCorner::TopLeft);
+        let definition = catalog.0.definition(&entity.card_id);
+        match entity.kind {
+            CardKind::Minion | CardKind::Weapon => {
+                let base_attack = definition.map_or(entity.attack, |card| card.attack);
+                let base_health = definition.map_or(entity.max_health, |card| card.health);
+                spawn_corner_stat(
+                    card,
+                    entity.attack,
+                    buff_color(entity.attack, base_attack),
+                    StatCorner::BottomLeft,
+                );
+                spawn_corner_stat(
+                    card,
+                    entity.health(),
+                    health_color(entity, base_health),
+                    StatCorner::BottomRight,
+                );
+            }
+            CardKind::Location => {
+                let base_health = definition.map_or(entity.max_health, |card| card.health);
+                spawn_corner_stat(
+                    card,
+                    entity.health(),
+                    health_color(entity, base_health),
+                    StatCorner::BottomRight,
+                );
+            }
+            CardKind::Spell | CardKind::Hero | CardKind::HeroPower => {}
+        }
     });
 }
 
-fn runtime_keyword_labels(keywords: &[String], locale: hearth_core::Locale) -> String {
-    keywords
-        .iter()
-        .map(|keyword| match keyword.as_str() {
-            "frozen_solid" => pick(
-                locale,
-                "LOCKED THIS TURN",
-                "本回合不可使用",
-                "本回合無法打出",
-            ),
-            other => other,
-        })
-        .collect::<Vec<_>>()
-        .join(", ")
+#[derive(Clone, Copy)]
+enum StatCorner {
+    TopLeft,
+    BottomLeft,
+    BottomRight,
+}
+
+fn spawn_art_layer(parent: &mut ChildSpawnerCommands, image: Handle<Image>, inset: f32) {
+    parent.spawn((
+        OfficialCardArt,
+        ImageNode::new(image).with_mode(NodeImageMode::Stretch),
+        Node {
+            position_type: PositionType::Absolute,
+            left: px(inset),
+            right: px(inset),
+            top: px(inset),
+            bottom: px(inset),
+            border_radius: BorderRadius::all(px(8)),
+            ..default()
+        },
+        Pickable::IGNORE,
+    ));
+}
+
+fn spawn_corner_stat(
+    parent: &mut ChildSpawnerCommands,
+    value: impl ToString,
+    color: Color,
+    corner: StatCorner,
+) {
+    let (left, right, top, bottom) = match corner {
+        StatCorner::TopLeft => (px(4), Val::Auto, px(4), Val::Auto),
+        StatCorner::BottomLeft => (px(4), Val::Auto, Val::Auto, px(4)),
+        StatCorner::BottomRight => (Val::Auto, px(4), Val::Auto, px(4)),
+    };
+    parent.spawn((
+        Text::new(value.to_string()),
+        text_font(18.0),
+        TextColor(color),
+        TextLayout::justify(Justify::Center),
+        Node {
+            position_type: PositionType::Absolute,
+            left,
+            right,
+            top,
+            bottom,
+            min_width: px(30),
+            height: px(30),
+            padding: UiRect::horizontal(px(5)),
+            border: UiRect::all(px(2)),
+            border_radius: BorderRadius::all(px(15)),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            ..default()
+        },
+        BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.90)),
+        BorderColor::all(color),
+        Pickable::IGNORE,
+    ));
+}
+
+fn buff_color(current: i32, printed: i32) -> Color {
+    if current > printed {
+        Color::srgb(0.22, 0.95, 0.34)
+    } else {
+        TEXT
+    }
+}
+
+fn health_color(entity: &EntityView, printed_health: i32) -> Color {
+    health_stat_color(entity.max_health, entity.damage, printed_health)
+}
+
+fn health_stat_color(max_health: i32, damage: i32, printed_health: i32) -> Color {
+    if damage > 0 {
+        Color::srgb(1.0, 0.24, 0.20)
+    } else {
+        buff_color(max_health, printed_health)
+    }
 }
 
 fn spawn_action_panel(
@@ -3428,13 +3575,17 @@ fn spawn_action_panel(
             let source = view
                 .entity(entity)
                 .map(|entity| session.card_name(&entity.card_id))
-                .unwrap_or_else(|| format!("#{entity}"));
+                .unwrap_or_else(|| {
+                    pick(locale, "Unknown source", "未知来源", "未知來源").to_owned()
+                });
             match ui.interaction.target {
                 Some(target) => {
                     let target = view
                         .entity(target)
                         .map(|entity| session.card_name(&entity.card_id))
-                        .unwrap_or_else(|| format!("#{target}"));
+                        .unwrap_or_else(|| {
+                            pick(locale, "Unknown target", "未知目标", "未知目標").to_owned()
+                        });
                     format!("{source} → {target}")
                 }
                 None => match locale {
@@ -3701,12 +3852,16 @@ fn spawn_action_panel(
     ));
 }
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_header_entity_button(
     parent: &mut ChildSpawnerCommands,
+    entity: &EntityView,
     label: &str,
-    entity: EntityId,
-    card_id: &str,
+    class: &str,
     highlight: EntityHighlight,
+    art: &GameArt,
+    asset_server: &AssetServer,
+    catalog: &ClientCatalog,
 ) {
     let normal = match highlight {
         EntityHighlight::Normal => ACTION,
@@ -3714,9 +3869,9 @@ fn spawn_header_entity_button(
     };
     let mut hero = parent.spawn((
         Button,
-        GameEntity(entity),
-        InspectableCard(card_id.to_owned()),
-        UiAction::Entity(entity),
+        GameEntity(entity.id),
+        InspectableCard(art.hero_card_id(&entity.card_id, class).to_owned()),
+        UiAction::Entity(entity.id),
         ButtonColors {
             normal,
             hovered: ACTION_HOVER,
@@ -3724,8 +3879,8 @@ fn spawn_header_entity_button(
         },
         Node {
             width: px(132),
-            min_height: px(42),
-            padding: UiRect::all(px(5)),
+            height: px(92),
+            padding: UiRect::all(px(4)),
             border: UiRect::all(px(2)),
             border_radius: BorderRadius::all(px(8)),
             justify_content: JustifyContent::Center,
@@ -3755,13 +3910,155 @@ fn spawn_header_entity_button(
         .observe(handle_drag_drop)
         .observe(show_card_preview)
         .observe(hide_card_preview);
-    hero.with_child((
-        Text::new(label),
-        text_font(13.0),
-        TextColor(TEXT),
-        TextLayout::justify(Justify::Center),
-        Pickable::IGNORE,
+    hero.with_children(|hero| {
+        spawn_art_layer(hero, art.hero(asset_server, &entity.card_id, class), 4.0);
+        hero.spawn((
+            Text::new(shorten(label, 18)),
+            text_font(12.0),
+            TextColor(TEXT),
+            TextLayout::justify(Justify::Center),
+            Node {
+                position_type: PositionType::Absolute,
+                left: px(4),
+                right: px(4),
+                top: px(4),
+                min_height: px(24),
+                padding: UiRect::horizontal(px(3)),
+                border_radius: BorderRadius::all(px(5)),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.82)),
+            Pickable::IGNORE,
+        ));
+        let definition = catalog
+            .0
+            .definition(art.hero_card_id(&entity.card_id, class));
+        let base_attack = definition.map_or(entity.attack, |card| card.attack);
+        let base_health = definition.map_or(entity.max_health, |card| card.health.max(1));
+        spawn_corner_stat(
+            hero,
+            entity.attack,
+            buff_color(entity.attack, base_attack),
+            StatCorner::BottomLeft,
+        );
+        spawn_corner_stat(
+            hero,
+            entity.health(),
+            health_color(entity, base_health),
+            StatCorner::BottomRight,
+        );
+        if entity.armor > 0 {
+            hero.spawn((
+                Text::new(format!("+{}", entity.armor)),
+                text_font(14.0),
+                TextColor(Color::srgb(0.62, 0.82, 1.0)),
+                Node {
+                    position_type: PositionType::Absolute,
+                    right: px(5),
+                    top: px(31),
+                    padding: UiRect::axes(px(5), px(2)),
+                    border_radius: BorderRadius::all(px(8)),
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.05, 0.14, 0.28, 0.90)),
+                Pickable::IGNORE,
+            ));
+        }
+    });
+}
+
+#[allow(clippy::too_many_arguments)]
+fn spawn_hero_power_button(
+    parent: &mut ChildSpawnerCommands,
+    session: &GameSession,
+    power: &EntityView,
+    enemy: bool,
+    used: bool,
+    hints: &InteractionHints<'_>,
+    art: &GameArt,
+    asset_server: &AssetServer,
+) {
+    let normal = if enemy {
+        ACTION
+    } else if hints.state.source == Some(ActionSource::HeroPower) {
+        CARD_SELECTED
+    } else if is_legal_source(hints.legal, ActionSource::HeroPower) {
+        SOURCE_HINT
+    } else {
+        ACTION
+    };
+    let mut button = parent.spawn((
+        Button,
+        InspectableCard(power.card_id.clone()),
+        ButtonColors {
+            normal,
+            hovered: ACTION_HOVER,
+            pressed: CARD_SELECTED,
+        },
+        Node {
+            width: px(112),
+            height: px(92),
+            border: UiRect::all(px(2)),
+            border_radius: BorderRadius::all(px(12)),
+            ..default()
+        },
+        BorderColor::all(if used { MUTED_TEXT } else { CARD_SELECTED }),
+        BackgroundColor(normal),
+        Pickable::default(),
     ));
+    if !enemy {
+        button
+            .insert((UiAction::HeroPower, HeroPowerTargetingSource))
+            .observe(handle_ui_click);
+    }
+    button
+        .observe(show_card_preview)
+        .observe(hide_card_preview)
+        .with_children(|power_ui| {
+            spawn_art_layer(power_ui, art.card(asset_server, &power.card_id), 4.0);
+            power_ui.spawn((
+                Text::new(shorten(&session.card_name(&power.card_id), 15)),
+                text_font(11.0),
+                TextColor(TEXT),
+                TextLayout::justify(Justify::Center),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: px(4),
+                    right: px(4),
+                    bottom: px(4),
+                    min_height: px(25),
+                    padding: UiRect::all(px(3)),
+                    border_radius: BorderRadius::all(px(5)),
+                    align_items: AlignItems::Center,
+                    justify_content: JustifyContent::Center,
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.025, 0.025, 0.035, 0.84)),
+                Pickable::IGNORE,
+            ));
+            spawn_corner_stat(power_ui, power.cost, CARD_SELECTED, StatCorner::TopLeft);
+            if used {
+                power_ui.spawn((
+                    Text::new(pick(session.locale(), "USED", "已使用", "已使用")),
+                    text_font(12.0),
+                    TextColor(MUTED_TEXT),
+                    Node {
+                        position_type: PositionType::Absolute,
+                        left: px(24),
+                        right: px(4),
+                        top: px(4),
+                        padding: UiRect::all(px(3)),
+                        border_radius: BorderRadius::all(px(5)),
+                        justify_content: JustifyContent::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgba(0.03, 0.03, 0.04, 0.88)),
+                    Pickable::IGNORE,
+                ));
+            }
+        });
 }
 
 fn spawn_quick_button(
@@ -3772,15 +4069,6 @@ fn spawn_quick_button(
     card_id: Option<&str>,
 ) {
     spawn_compact_button(parent, label, Some(action), normal, card_id);
-}
-
-fn spawn_passive_card_button(
-    parent: &mut ChildSpawnerCommands,
-    label: &str,
-    normal: Color,
-    card_id: &str,
-) {
-    spawn_compact_button(parent, label, None, normal, Some(card_id));
 }
 
 fn spawn_compact_button(
@@ -4104,20 +4392,11 @@ mod tests {
     }
 
     #[test]
-    fn frozen_over_hand_lock_has_a_localized_runtime_label() {
-        let keywords = vec!["frozen_solid".to_owned(), "forge".to_owned()];
-        assert_eq!(
-            runtime_keyword_labels(&keywords, hearth_core::Locale::EnUs),
-            "LOCKED THIS TURN, forge"
-        );
-        assert_eq!(
-            runtime_keyword_labels(&keywords, hearth_core::Locale::ZhCn),
-            "本回合不可使用, forge"
-        );
-        assert_eq!(
-            runtime_keyword_labels(&keywords, hearth_core::Locale::ZhTw),
-            "本回合無法打出, forge"
-        );
+    fn runtime_stat_colors_prioritize_damage_over_buffs() {
+        assert_eq!(buff_color(4, 3), Color::srgb(0.22, 0.95, 0.34));
+        assert_eq!(buff_color(3, 3), TEXT);
+        assert_eq!(health_stat_color(5, 0, 3), Color::srgb(0.22, 0.95, 0.34));
+        assert_eq!(health_stat_color(5, 2, 3), Color::srgb(1.0, 0.24, 0.20));
     }
 
     #[test]

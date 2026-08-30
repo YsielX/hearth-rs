@@ -4,11 +4,12 @@ use hearth_core::CardKind;
 
 use crate::frontend::ClientCatalog;
 use crate::frontend::FrontendState;
+use crate::game_art::GameArt;
 use crate::i18n::{class_label, kind_label, pick, rarity_label};
 use crate::{CARD_SELECTED, MUTED_TEXT, TEXT, text_font};
 
 const PREVIEW_WIDTH: f32 = 320.0;
-const PREVIEW_HEIGHT: f32 = 300.0;
+const PREVIEW_HEIGHT: f32 = 460.0;
 const CURSOR_GAP: f32 = 24.0;
 const WINDOW_MARGIN: f32 = 8.0;
 
@@ -23,6 +24,9 @@ pub struct CardPreviewState {
 
 #[derive(Component)]
 pub struct CardPreviewRoot;
+
+#[derive(Component)]
+pub(crate) struct CardPreviewImage;
 
 #[derive(Component, Clone, Copy)]
 pub(crate) enum CardPreviewText {
@@ -58,6 +62,18 @@ pub fn spawn_card_preview(commands: &mut Commands) {
             Pickable::IGNORE,
         ))
         .with_children(|preview| {
+            preview.spawn((
+                CardPreviewImage,
+                ImageNode::default().with_mode(NodeImageMode::Stretch),
+                Node {
+                    width: percent(100),
+                    height: px(175),
+                    flex_shrink: 0.0,
+                    border_radius: BorderRadius::all(px(9)),
+                    ..default()
+                },
+                Pickable::IGNORE,
+            ));
             preview.spawn((
                 CardPreviewText::Title,
                 Text::new(""),
@@ -109,14 +125,18 @@ pub fn hide_card_preview(event: On<Pointer<Out>>, mut state: ResMut<CardPreviewS
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn update_card_preview(
     windows: Query<&Window>,
     catalog: Res<ClientCatalog>,
     frontend: Res<FrontendState>,
+    art: Res<GameArt>,
+    asset_server: Res<AssetServer>,
     cards: Query<(), With<InspectableCard>>,
     mut state: ResMut<CardPreviewState>,
     mut preview: Query<(&mut Node, &mut BorderColor, &mut Visibility), With<CardPreviewRoot>>,
     mut text: Query<(&CardPreviewText, &mut Text)>,
+    mut image: Query<&mut ImageNode, With<CardPreviewImage>>,
 ) {
     if frontend.handoff_player.is_some() {
         state.owner = None;
@@ -157,20 +177,17 @@ pub fn update_card_preview(
     let meta_text = preview_meta(definition, locale);
     let body_text = plain_card_text(&definition.text);
     let keywords_text = if definition.keywords.is_empty() {
-        format!(
-            "{}: {}",
-            pick(locale, "Card ID", "卡牌 ID", "卡牌 ID"),
-            definition.id
-        )
+        String::new()
     } else {
         format!(
-            "{}: {}\n{}: {}",
+            "{}: {}",
             pick(locale, "Keywords", "关键词", "關鍵字"),
             definition.keywords.join(", "),
-            pick(locale, "Card ID", "卡牌 ID", "卡牌 ID"),
-            definition.id
         )
     };
+    if let Ok(mut preview_image) = image.single_mut() {
+        preview_image.image = art.card(&asset_server, &definition.id);
+    }
     for (slot, mut value) in &mut text {
         **value = match slot {
             CardPreviewText::Title => title_text.clone(),
