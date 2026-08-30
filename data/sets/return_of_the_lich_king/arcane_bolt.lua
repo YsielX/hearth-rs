@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "RLK_843",
+    id = "RLK_843", spell_school = "arcane", rarity = "common",
     name = "Arcane Bolt",
     text = "Deal $2 damage. <b>Manathirst (8):</b> Deal $3 damage instead.",
     set = "RETURN_OF_THE_LICH_KING",

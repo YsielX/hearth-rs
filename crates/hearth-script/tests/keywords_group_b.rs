@@ -1,6 +1,9 @@
 use std::path::PathBuf;
 
-use hearth_core::{CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, PlayerCommand, PlayerId};
+use hearth_core::{
+    CardRuntime, DEFAULT_HERO_POWER, EntityId, Game, GameOutcome, MAX_GAME_TURNS, PlayerCommand,
+    PlayerId,
+};
 use hearth_script::LuaCardRuntime;
 
 fn data_path() -> PathBuf {
@@ -318,6 +321,37 @@ fn immune_malganis_protects_the_hero_and_buffs_other_demons() {
     end_turn(&mut game);
     let frostbolt = hand_card(&game, PlayerId::TWO, "CS2_024");
     assert!(!game.valid_targets(frostbolt).unwrap().contains(&hero));
+}
+
+#[test]
+fn turn_89_ends_in_a_draw_without_starting_turn_90() {
+    let mut game = game_with(
+        repeated("GVG_021"),
+        repeated("GVG_021"),
+        [DEFAULT_HERO_POWER, DEFAULT_HERO_POWER],
+        ["warlock", "warlock"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 9);
+    play(&mut game, PlayerId::ONE, "GVG_021", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 9);
+    play(&mut game, PlayerId::TWO, "GVG_021", None);
+
+    while game.state().turn < MAX_GAME_TURNS {
+        end_turn(&mut game);
+    }
+    assert_eq!(game.state().active_player, PlayerId::ONE);
+    assert_eq!(game.state().outcome, None);
+    let second_player_fatigue = game.state().player(PlayerId::TWO).fatigue;
+
+    end_turn(&mut game);
+
+    assert_eq!(game.state().turn, MAX_GAME_TURNS);
+    assert_eq!(game.state().outcome, Some(GameOutcome::Draw));
+    assert_eq!(
+        game.state().player(PlayerId::TWO).fatigue,
+        second_player_fatigue,
+        "turn 90 must not draw a card or deal fatigue damage"
+    );
 }
 
 #[test]

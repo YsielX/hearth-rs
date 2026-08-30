@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "GDB_860",
+    id = "GDB_860", rarity = "common",
     name = "Starscale Constellar",
     text = "<b><b>Spellburst</b>:</b> Double this minion's Attack.",
     set = "SPACE",

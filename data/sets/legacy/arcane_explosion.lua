@@ -1,1 +1,1 @@
-return { api_version=1, id="CS2_025", name="Arcane Explosion", text="Deal $1 damage to all enemy minions.", set="LEGACY", type="spell", class="mage", spell_school="arcane", cost=2, on_play=function(ctx,self) cardlib.effects.damage_all(ctx, ctx:enemy_minions(self),1) end }
+return { api_version=1, id="CS2_025", rarity = "free", name="Arcane Explosion", text="Deal $1 damage to all enemy minions.", set="LEGACY", type="spell", class="mage", spell_school="arcane", cost=2, on_play=function(ctx,self) cardlib.effects.damage_all(ctx, ctx:enemy_minions(self),1) end }

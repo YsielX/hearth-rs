@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_125",
+    id = "CS2_125", rarity = "free",
     name = "Ironfur Grizzly",
     text = "<b>Taunt</b>",
     set = "LEGACY",

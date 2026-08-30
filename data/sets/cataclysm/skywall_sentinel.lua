@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "CATA_565",
+    id = "CATA_565", rarity = "rare",
     name = "Skywall Sentinel",
     text = "<b>Taunt</b>\n<b>Battlecry:</b> <b>Herald</b> {0}.",
     set = "CATACLYSM",

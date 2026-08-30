@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TTN_812",
+    id = "TTN_812", rarity = "common",
     name = "Victorious Vrykul",
     text = "After this attacks, get a 2/3 Val'kyr that costs (1).",
     set = "TITANS",

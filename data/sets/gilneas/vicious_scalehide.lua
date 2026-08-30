@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "GIL_143",
+    id = "GIL_143", rarity = "common",
     name = "Vicious Scalehide",
     text = "<b>Lifesteal</b>\n<b>Rush</b>",
     set = "GILNEAS",

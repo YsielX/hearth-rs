@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "TSC_909",
+    id = "TSC_909", rarity = "common",
     name = "Tuskarrrr Trawler",
     text = "<b>Battlecry:</b> <b>Dredge</b>.",
     set = "THE_SUNKEN_CITY",

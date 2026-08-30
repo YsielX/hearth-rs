@@ -11,7 +11,7 @@ end
 
 return {
     api_version = 1,
-    id = "RLK_038",
+    id = "RLK_038", rarity = "common",
     name = "Icy Touch",
     text = "Deal $2 damage to an enemy and <b>Freeze</b> it.",
     set = "PATH_OF_ARTHAS",

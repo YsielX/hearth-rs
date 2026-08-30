@@ -11,7 +11,7 @@ end
 
 return {
     api_version = 1,
-    id = "EX1_581",
+    id = "EX1_581", rarity = "free",
     name = "Sap",
     text = "Return an enemy minion to your opponent's hand.",
     set = "LEGACY",

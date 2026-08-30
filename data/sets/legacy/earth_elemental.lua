@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_250",
+    id = "EX1_250", rarity = "epic",
     name = "Earth Elemental",
     text = "<b>Taunt</b>\n<b><b>Overload</b>:</b> (2)",
     set = "EXPERT1",

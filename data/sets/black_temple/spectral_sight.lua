@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "BT_491",
+    id = "BT_491", rarity = "common",
     name = "Spectral Sight",
     text = "[x]Draw a card.\n<b>Outcast:</b> Draw another.",
     set = "BLACK_TEMPLE",

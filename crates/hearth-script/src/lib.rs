@@ -10,7 +10,8 @@ use hearth_core::{
     ChoiceValue, DeckAllowance, EffectDuration, EffectSpec, EntityId, EntityStatModification,
     EventId, EventTiming, GameEvent, GameOutcome, GameState, Locale, LocalizedCardText,
     MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES, MAX_CHOICE_VALUE_STRING_BYTES,
-    ModifierOperation, PlayerId, ScriptEvent, Stat, StatModifier, TargetMode, Zone, ZonePlacement,
+    ModifierOperation, PlayerId, RuneCost, ScriptEvent, Stat, StatModifier, TargetMode, Zone,
+    ZonePlacement,
 };
 use mlua::{Function, HookTriggers, Lua, RegistryKey, Table, Value, VmState};
 use thiserror::Error;
@@ -1780,6 +1781,18 @@ impl CardRuntime for LuaCardRuntime {
                     ),
                     _ => return Err("aura cost_set must be an integer or function".to_owned()),
                 };
+                let cost_cap = match aura.get::<Value>("cost_cap").map_err(|e| e.to_string())? {
+                    Value::Nil => None,
+                    Value::Integer(value) => Some(i32::try_from(value).map_err(|_| {
+                        "aura cost_cap must fit in a signed 32-bit value".to_owned()
+                    })?),
+                    Value::Function(function) => Some(
+                        function
+                            .call((ctx.clone(), source.0))
+                            .map_err(|error| error.to_string())?,
+                    ),
+                    _ => return Err("aura cost_cap must be an integer or function".to_owned()),
+                };
                 let spell_damage = aura_stat_value(&aura, "spell_damage", &ctx, source)
                     .map_err(|error| error.to_string())?;
                 if !emitted.borrow().is_empty() {
@@ -1805,6 +1818,7 @@ impl CardRuntime for LuaCardRuntime {
                     health,
                     cost,
                     cost_set,
+                    cost_cap,
                     spell_damage,
                     keywords,
                 });
@@ -1826,6 +1840,44 @@ mod tests {
         assert!(runtime.definition("CS2_022").unwrap().collectible);
         assert!(!runtime.definition("CS2_tk1").unwrap().collectible);
         assert!(runtime.card_ids().len() >= 4);
+    }
+
+    #[test]
+    fn rejects_invalid_death_knight_rune_cost_metadata() {
+        let unique = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!(
+            "hearth-script-invalid-runes-{}-{unique}",
+            std::process::id()
+        ));
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::write(
+            root.join("card.lua"),
+            r#"return {
+                api_version = 1,
+                id = "INVALID_RUNES",
+                name = "Invalid Runes",
+                set = "TEST",
+                type = "spell",
+                class = "death_knight",
+                cost = 1,
+                rune_cost = { blood = 2, frost = 2 },
+            }"#,
+        )
+        .unwrap();
+
+        let error = match LuaCardRuntime::load_dir(&root) {
+            Ok(_) => panic!("four-slot Death Knight card unexpectedly loaded"),
+            Err(error) => error,
+        };
+        std::fs::remove_dir_all(&root).unwrap();
+        assert!(
+            error
+                .to_string()
+                .contains("INVALID_RUNES has an invalid Death Knight rune_cost")
+        );
     }
 
     #[test]

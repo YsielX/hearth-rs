@@ -2,7 +2,7 @@
 
 [English](../README.md) | [简体中文](README.md) | [繁體中文](../zhTW/README.md)
 
-`selected.enUS.json` 是截至 2026-08-14 的 248 个已实现官方定义的默认英文来源快照，数据来自：
+`selected.enUS.json` 是截至 2026-08-30 的 1921 个已实现官方定义的默认英文来源快照，数据来自：
 
 ```text
 https://api.hearthstonejson.com/v1/latest/enUS/cards.json

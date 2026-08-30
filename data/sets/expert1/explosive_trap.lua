@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_610",
+    id = "EX1_610", spell_school = "fire", rarity = "common",
     name = "Explosive Trap",
     text = "<b>Secret:</b> When your hero is attacked, deal $2 damage to all enemies.",
     set = "EXPERT1",

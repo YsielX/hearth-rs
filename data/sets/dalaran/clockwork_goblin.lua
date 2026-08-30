@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "DAL_060",
+    id = "DAL_060", rarity = "rare",
     name = "Clockwork Goblin",
     text = "[x]<b>Battlecry:</b> Shuffle a Bomb\ninto your opponent's deck.\nWhen drawn, it explodes\nfor 5 damage.",
     set = "DALARAN",

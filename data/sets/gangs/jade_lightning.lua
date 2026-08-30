@@ -1,5 +1,5 @@
 local card = {
-    api_version = 1, id = "CFM_707", name = "Jade Lightning",
+    api_version = 1, id = "CFM_707", spell_school = "nature", name = "Jade Lightning",
     text = "Deal $3 damage. Summon a{1} {0} <b>Jade Golem</b>.", set = "GANGS",
     type = "spell", class = "shaman", rarity = "common", cost = 3,
     target_mode = "required", targets = function(ctx) return ctx:characters() end,

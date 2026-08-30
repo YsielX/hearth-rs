@@ -1246,6 +1246,39 @@ impl<R: CardRuntime> Game<R> {
                 Self::prepend_effects(queue, generated);
                 Ok(false)
             }
+            EffectSpec::SpendCorpsesAndContinue {
+                source,
+                player,
+                amount,
+                hook,
+            } => {
+                if hook.is_empty() || hook.len() > 64 {
+                    return Err(GameError::InvalidContinuationHook);
+                }
+                let events = self.apply_effect(EffectSpec::SpendCorpses {
+                    source,
+                    player,
+                    amount,
+                })?;
+                if events.is_empty() {
+                    return Ok(false);
+                }
+                Self::prepend_effects(
+                    queue,
+                    vec![EffectSpec::Continue {
+                        source,
+                        hook,
+                        payload: None,
+                        continuation_owner: None,
+                    }],
+                );
+                queue.push_front(ResolutionItem::DeathCheck);
+                for event in events.into_iter().rev() {
+                    let triggered = self.publish(event)?;
+                    Self::prepend_effects(queue, triggered);
+                }
+                Ok(false)
+            }
             EffectSpec::CancelEvent { source: _, event } => {
                 let pending = Self::find_pending_event_mut(queue, event)
                     .ok_or(GameError::EventNotPending(event))?;

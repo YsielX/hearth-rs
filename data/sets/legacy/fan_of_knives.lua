@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_129",
+    id = "EX1_129", rarity = "free",
     name = "Fan of Knives",
     text = "Deal $1 damage to all enemy minions. Draw a card.",
     set = "LEGACY",

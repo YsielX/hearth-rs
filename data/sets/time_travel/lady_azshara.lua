@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "TIME_211",
+    id = "TIME_211", rarity = "legendary",
     name = "Lady Azshara",
     text = "[x]<b>Fabled</b>. <b>Choose One -</b>\nEmpower Zin-Azshari; or\nThe Well of Eternity. <i>(The\n  other gets destroyed!)</i>",
     set = "TIME_TRAVEL",

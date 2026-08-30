@@ -15,7 +15,7 @@ end
 local function spellstone(id, name, text, token, next_id)
     local result = {
         id = id, name = name, text = text, set = "LOOTAPALOOZA", type = "spell",
-        class = "paladin", collectible = false, spell_school = "holy", cost = 2,
+        class = "paladin", collectible = false, rarity = "rare", spell_school = "holy", cost = 2,
         on_play = function(ctx, self) ctx:summon(ctx:controller(self), token) end,
     }
     if next_id then result.triggers = healing_trigger(next_id) end

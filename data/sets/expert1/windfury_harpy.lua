@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_033",
+    id = "EX1_033", rarity = "common",
     name = "Windfury Harpy",
     text = "<b>Windfury</b>",
     set = "EXPERT1",

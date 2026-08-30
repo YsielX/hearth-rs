@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_091",
+    id = "CS2_091", rarity = "free",
     name = "Light's Justice",
     text = "",
     set = "LEGACY",

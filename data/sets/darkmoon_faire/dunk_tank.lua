@@ -12,7 +12,7 @@ end
 
 local card = {
     api_version = 1,
-    id = "DMF_701",
+    id = "DMF_701", spell_school = "nature", rarity = "rare",
     name = "Dunk Tank",
     text = "Deal $4 damage.\n<b>Corrupt:</b> Then deal $2 damage to all enemy minions.",
     set = "DARKMOON_FAIRE",
@@ -29,7 +29,7 @@ function card.on_corrupt(ctx, self) cardlib.effects.transform(ctx, self, "DMF_70
 
 card.tokens = {
     {
-        id = "DMF_701t",
+        id = "DMF_701t", spell_school = "nature", rarity = "rare",
         name = "Dunk Tank",
         text = "<b>Corrupted</b>\nDeal $4 damage, then\ndeal $2 damage to all enemy minions.",
         set = "DARKMOON_FAIRE",

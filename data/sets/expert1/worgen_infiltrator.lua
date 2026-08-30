@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_010",
+    id = "EX1_010", rarity = "common",
     name = "Worgen Infiltrator",
     text = "<b>Stealth</b>",
     set = "EXPERT1",

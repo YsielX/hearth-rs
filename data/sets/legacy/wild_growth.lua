@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_013",
+    id = "CS2_013", spell_school = "nature", rarity = "free",
     name = "Wild Growth",
     text = "Gain an empty Mana Crystal.",
     set = "LEGACY",

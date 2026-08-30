@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_01bp",
+    id = "HERO_01bp", rarity = "free",
     name = "Armor Up!",
     text = "<b>Hero Power</b>\nGain $d2 Armor.",
     set = "LEGACY",

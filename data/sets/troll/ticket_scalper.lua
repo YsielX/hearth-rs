@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TRL_015",
+    id = "TRL_015", rarity = "common",
     name = "Ticket Scalper",
     text = "<b>Overkill</b>: Draw 2 cards.",
     set = "TROLL",

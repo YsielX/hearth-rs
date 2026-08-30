@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "TSC_026",
+    id = "TSC_026", rarity = "legendary",
     name = "Colaque",
     text = "[x]<b>Colossal +1</b>\n <b>Immune</b> while you control\nColaque's Shell.",
     set = "THE_SUNKEN_CITY",

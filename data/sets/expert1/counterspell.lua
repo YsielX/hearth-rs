@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_287",
+    id = "EX1_287", spell_school = "arcane", rarity = "rare",
     name = "Counterspell",
     text = "<b>Secret:</b> When your opponent casts a spell, <b>Counter</b> it.",
     set = "EXPERT1",

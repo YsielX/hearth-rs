@@ -10,8 +10,8 @@ use crate::{
     EffectSpec, Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId,
     EventTiming, GameEvent, GameOutcome, GameSnapshot, GameState, LegalAction, MinionDeathRecord,
     ModifierOperation, PendingEvent, PlayerCommand, PlayerId, PlayerState, Replay,
-    ReservedSummonOrigin, ResolutionItem, ScriptEvent, SpellCastRecord, Stat, StatModifier, Zone,
-    ZonePlacement,
+    ReservedSummonOrigin, ResolutionItem, RuneCost, ScriptEvent, SpellCastRecord, Stat,
+    StatModifier, Zone, ZonePlacement,
 };
 
 mod casting;
@@ -37,6 +37,28 @@ const MAX_CHOICE_PROMPT_BYTES: usize = 4 * 1024;
 const MAX_CHOICE_LABEL_BYTES: usize = 1024;
 pub const DEFAULT_HERO_POWER: &str = "HERO_08bp";
 pub const DEFAULT_COIN: &str = "GAME_005";
+/// The official constructed-game limit: player one completes turn 89 as their
+/// 45th turn, then the game ends in a draw without starting turn 90.
+pub const MAX_GAME_TURNS: u32 = 89;
+
+/// Returns the canonical base portrait for a constructed class. Custom and
+/// neutral mechanics sandboxes intentionally keep the built-in generic Hero.
+pub fn default_hero_for_class(class: &str) -> Option<&'static str> {
+    match class {
+        "warrior" => Some("HERO_01"),
+        "shaman" => Some("HERO_02"),
+        "rogue" => Some("HERO_03"),
+        "paladin" => Some("HERO_04"),
+        "hunter" => Some("HERO_05"),
+        "druid" => Some("HERO_06"),
+        "warlock" => Some("HERO_07"),
+        "mage" => Some("HERO_08"),
+        "priest" => Some("HERO_09"),
+        "demon_hunter" => Some("HERO_10"),
+        "death_knight" => Some("HERO_11"),
+        _ => None,
+    }
+}
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum GameError {
@@ -46,8 +68,12 @@ pub enum GameError {
     UnknownCard(String),
     #[error("{0} deck is empty")]
     EmptyDeck(PlayerId),
-    #[error("{player} deck has {cards} cards; the maximum is 30")]
-    DeckTooLarge { player: PlayerId, cards: usize },
+    #[error("{player} deck has {cards} cards; the maximum is {maximum}")]
+    DeckTooLarge {
+        player: PlayerId,
+        cards: usize,
+        maximum: usize,
+    },
     #[error("{player} deck contains non-collectible or non-deck card {card}")]
     InvalidDeckCard { player: PlayerId, card: String },
     #[error("{player} {class} deck cannot include {card} ({card_class})")]
@@ -57,12 +83,24 @@ pub enum GameError {
         card: String,
         card_class: String,
     },
+    #[error(
+        "{player} Death Knight deck needs {total} rune slots (Blood {blood}, Frost {frost}, Unholy {unholy}); only 3 are available"
+    )]
+    InvalidDeckRunes {
+        player: PlayerId,
+        total: u8,
+        blood: u8,
+        frost: u8,
+        unholy: u8,
+    },
     #[error("card {0} is not a hero power")]
     InvalidHeroPower(String),
     #[error("card {0} is not a hero")]
     InvalidHero(String),
     #[error("{player} has invalid class {class:?}")]
     InvalidPlayerClass { player: PlayerId, class: String },
+    #[error("invalid starting player {0}")]
+    InvalidStartingPlayer(PlayerId),
     #[error("unknown entity: {0}")]
     UnknownEntity(EntityId),
     #[error("entity {0} is not in the active player's hand")]
@@ -173,6 +211,18 @@ pub enum GameError {
     Invariant(String),
     #[error("continuation hook must contain between 1 and 64 bytes")]
     InvalidContinuationHook,
+    #[error("sideboard {owner} for player {player} is invalid: {message}")]
+    InvalidSideboard {
+        player: PlayerId,
+        owner: String,
+        message: String,
+    },
+    #[error("card {card_id} is not available in sideboard {owner} for player {player}")]
+    SideboardCardMissing {
+        player: PlayerId,
+        owner: String,
+        card_id: String,
+    },
 }
 
 pub struct Game<R> {
@@ -180,6 +230,7 @@ pub struct Game<R> {
     state: GameState,
     rng: ChaCha8Rng,
     initial_decks: [Vec<String>; 2],
+    initial_sideboards: [BTreeMap<String, Vec<String>>; 2],
     initial_hero_powers: [String; 2],
     initial_classes: [String; 2],
     enforce_deck_classes: [bool; 2],
@@ -487,13 +538,50 @@ impl<R: CardRuntime> Game<R> {
                 .position(|candidate| *candidate == entity)
                 .expect("mortal minion must be present on its controller's board");
             let source = self.state.entities[&entity].death_source;
-            death_info.push((entity, controller, position, repetitions, source));
+            let leaves_corpse = !self.state.entities[&entity].has_keyword("no_corpse");
+            death_info.push((
+                entity,
+                controller,
+                position,
+                repetitions,
+                source,
+                leaves_corpse,
+            ));
             self.kill(entity);
         }
         self.refresh_auras()?;
 
-        let mut events = Vec::with_capacity(deaths.len());
-        for (entity, player, position, repetitions, source) in death_info {
+        let mut corpse_counts = [0_u32; 2];
+        for (_, player, _, _, _, leaves_corpse) in &death_info {
+            if self
+                .state
+                .player(*player)
+                .class
+                .eq_ignore_ascii_case("death_knight")
+                && *leaves_corpse
+            {
+                corpse_counts[player.index()] = corpse_counts[player.index()].saturating_add(1);
+            }
+        }
+        let mut events = Vec::with_capacity(deaths.len() + 2);
+        for player in [PlayerId::ONE, PlayerId::TWO] {
+            let amount = corpse_counts[player.index()];
+            if amount > 0 {
+                let state = self.state.player_mut(player);
+                let old = state.corpses;
+                state.corpses = old.saturating_add(amount);
+                let gained = state.corpses - old;
+                if gained > 0 {
+                    let event = self.begin_event(GameEvent::CorpsesGained {
+                        source: None,
+                        player,
+                        amount: gained,
+                    })?;
+                    events.push((event.id, event.event));
+                }
+            }
+        }
+        for (entity, player, position, repetitions, source, _) in death_info {
             let event = self.begin_event(GameEvent::EntityDied {
                 entity,
                 player,

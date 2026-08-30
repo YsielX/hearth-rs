@@ -2745,6 +2745,11 @@
     "text": "<b>Battlecry:</b> Get a Wisp. <b>Imbue</b> your Hero Power."
   },
   {
+    "id": "ETC_080",
+    "name": "E.T.C., Band Manager",
+    "text": "[x]While building your deck,\nassemble a band of 3 cards.\n <b>Battlecry: Discover</b> one!"
+  },
+  {
     "id": "ETC_088",
     "name": "Ghost Writer",
     "text": "<b>Battlecry:</b> <b>Discover</b> a spell. <b>Finale:</b> <b>Discover</b> another."
@@ -3337,7 +3342,7 @@
   {
     "id": "EX1_302",
     "name": "Mortal Coil",
-    "text": "[x]Deal $1 damage to a minion.\n If it dies, draw a card."
+    "text": "Deal $1 damage to a minion. If it dies,\ndraw a card."
   },
   {
     "id": "EX1_303",
@@ -4895,6 +4900,11 @@
     "text": "<b>Spell Damage +1</b>\n<b>Battlecry:</b> If you control\nanother Mech, get a random Fire spell."
   },
   {
+    "id": "HERO_01",
+    "name": "Garrosh Hellscream",
+    "text": ""
+  },
+  {
     "id": "HERO_01bp",
     "name": "Armor Up!",
     "text": "<b>Hero Power</b>\nGain $d2 Armor."
@@ -4903,6 +4913,11 @@
     "id": "HERO_01bp2",
     "name": "Tank Up!",
     "text": "<b>Hero Power</b>\nGain $d4 Armor."
+  },
+  {
+    "id": "HERO_02",
+    "name": "Thrall",
+    "text": ""
   },
   {
     "id": "HERO_02bp",
@@ -4915,6 +4930,11 @@
     "text": "<b>Hero Power</b>\nSummon a Totem of your choice."
   },
   {
+    "id": "HERO_03",
+    "name": "Valeera Sanguinar",
+    "text": ""
+  },
+  {
     "id": "HERO_03bp",
     "name": "Dagger Mastery",
     "text": "<b>Hero Power</b>\nEquip a 1/2 Dagger."
@@ -4923,6 +4943,11 @@
     "id": "HERO_03bp2",
     "name": "Poisoned Daggers",
     "text": "<b>Hero Power</b>\nEquip a 2/2 Weapon."
+  },
+  {
+    "id": "HERO_04",
+    "name": "Uther Lightbringer",
+    "text": ""
   },
   {
     "id": "HERO_04bp",
@@ -4935,6 +4960,11 @@
     "text": "<b>Hero Power</b>\nSummon two {0} Recruits."
   },
   {
+    "id": "HERO_05",
+    "name": "Rexxar",
+    "text": ""
+  },
+  {
     "id": "HERO_05bp",
     "name": "Steady Shot",
     "text": "<b>Hero Power</b>\nDeal $2 damage to the enemy hero."
@@ -4943,6 +4973,11 @@
     "id": "HERO_05bp2",
     "name": "Ballista Shot",
     "text": "<b>Hero Power</b>\nDeal $3 damage to the enemy hero."
+  },
+  {
+    "id": "HERO_06",
+    "name": "Malfurion Stormrage",
+    "text": ""
   },
   {
     "id": "HERO_06bp",
@@ -4955,6 +4990,11 @@
     "text": "<b>Hero Power</b>\n+$a2 Attack this turn.\n+$d2 Armor."
   },
   {
+    "id": "HERO_07",
+    "name": "Gul'dan",
+    "text": ""
+  },
+  {
     "id": "HERO_07bp",
     "name": "Life Tap",
     "text": "<b>Hero Power</b>\nDraw a card and take $2 damage."
@@ -4963,6 +5003,11 @@
     "id": "HERO_07bp2",
     "name": "Soul Tap",
     "text": "<b>Hero Power</b>\nDraw a card."
+  },
+  {
+    "id": "HERO_08",
+    "name": "Jaina Proudmoore",
+    "text": ""
   },
   {
     "id": "HERO_08bp",
@@ -4975,6 +5020,11 @@
     "text": "<b>Hero Power</b>\nDeal $2 damage."
   },
   {
+    "id": "HERO_09",
+    "name": "Anduin Wrynn",
+    "text": ""
+  },
+  {
     "id": "HERO_09bp",
     "name": "Lesser Heal",
     "text": "<b>Hero Power</b>\nRestore #2 Health."
@@ -4985,6 +5035,11 @@
     "text": "<b>Hero Power</b>\nRestore #4 Health."
   },
   {
+    "id": "HERO_10",
+    "name": "Illidan Stormrage",
+    "text": ""
+  },
+  {
     "id": "HERO_10bp",
     "name": "Demon Claws",
     "text": "[x]<b>Hero Power</b>\n+$a1 Attack this turn."
@@ -4993,6 +5048,11 @@
     "id": "HERO_10bp2",
     "name": "Demon's Bite",
     "text": "[x]<b>Hero Power</b>\n+$a2 Attack this turn."
+  },
+  {
+    "id": "HERO_11",
+    "name": "The Lich King",
+    "text": ""
   },
   {
     "id": "HERO_11bp",
@@ -7455,6 +7515,36 @@
     "text": "<b>Battlecry:</b> Destroy a random enemy minion with 2 or less Attack."
   },
   {
+    "id": "NX2_035",
+    "name": "Rimescale Siren",
+    "text": "[x]<b>Battlecry:</b> If you've cast three\nspells while holding this,\n<b>Freeze</b> 3 random enemy\nminions.@ <i>({0} left!)</i>@ <i>(Ready!)</i>"
+  },
+  {
+    "id": "NX2_036",
+    "name": "Construct Quarter",
+    "text": "[x]Destroy a friendly\nminion to summon a\n4/5 Undead with <b>Rush</b>."
+  },
+  {
+    "id": "NX2_036t",
+    "name": "Shambling Horror",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "NX2_037",
+    "name": "Frost Queen Sindragosa",
+    "text": "<b>Colossal +2</b>\nAfter an enemy minion is <b>Frozen</b>, destroy it."
+  },
+  {
+    "id": "NX2_037t",
+    "name": "Sindragosa's Wing",
+    "text": "<b>Rush</b>\n<b>Freeze</b> any character damaged by this minion."
+  },
+  {
+    "id": "NX2_037t2",
+    "name": "Sindragosa's Wing",
+    "text": "<b>Rush</b>\n<b>Freeze</b> any character damaged by this minion."
+  },
+  {
     "id": "OG_006",
     "name": "Vilefin Inquisitor",
     "text": "<b>Battlecry:</b> Your Hero Power becomes 'Summon a   1/1 Murloc.'"
@@ -8285,14 +8375,264 @@
     "text": "Give a minion +1 Attack."
   },
   {
+    "id": "REV_018",
+    "name": "Prince Renathal",
+    "text": "Your deck size and\nstarting Health are 40."
+  },
+  {
     "id": "REV_956",
     "name": "Priest of the Deceased",
     "text": "<b>Taunt</b>\n<b>Infuse (3):</b> Gain +2/+2."
   },
   {
+    "id": "RLK_008t",
+    "name": "Risen Ghoul",
+    "text": "<b>Rush</b>\n<i>Doesn't leave a <b>Corpse</b>.</i>"
+  },
+  {
+    "id": "RLK_012",
+    "name": "Soulbreaker",
+    "text": "After your hero attacks and kills a minion, gain 2 <b>Corpses</b>."
+  },
+  {
+    "id": "RLK_015",
+    "name": "Howling Blast",
+    "text": "[x]Deal $3 damage to an\nenemy and <b>Freeze</b> it.\nDeal $1 damage to all\nother enemies."
+  },
+  {
+    "id": "RLK_018",
+    "name": "Plague Strike",
+    "text": "[x]Deal $3 damage\nto a minion. If it dies,\nsummon a 2/2 Zombie\nwith <b>Rush</b>."
+  },
+  {
+    "id": "RLK_018t",
+    "name": "Rampaging Zombie",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "RLK_024",
+    "name": "Death Strike",
+    "text": "<b>Lifesteal</b>\nDeal $6 damage\nto a minion."
+  },
+  {
+    "id": "RLK_035",
+    "name": "Corpse Explosion",
+    "text": "Detonate a <b>Corpse</b> to deal $1 damage to all minions. If any are still alive, repeat this."
+  },
+  {
     "id": "RLK_038",
     "name": "Icy Touch",
     "text": "Deal $2 damage to an enemy and <b>Freeze</b> it."
+  },
+  {
+    "id": "RLK_042",
+    "name": "Horn of Winter",
+    "text": "Refresh 2 Mana Crystals."
+  },
+  {
+    "id": "RLK_048",
+    "name": "Anti-Magic Shell",
+    "text": "Give your minions +1/+1 and <b>Elusive</b>."
+  },
+  {
+    "id": "RLK_051",
+    "name": "Vampiric Blood",
+    "text": "[x]Give your hero +5 Health.\nSpend 3 <b>Corpses</b> to gain\n5 more and draw a card."
+  },
+  {
+    "id": "RLK_056",
+    "name": "Unholy Frenzy",
+    "text": "[x]Choose an enemy minion.\nYour minions attack it.\nResummon any that die."
+  },
+  {
+    "id": "RLK_057",
+    "name": "Dark Transformation",
+    "text": "Transform an Undead into a 4/5 Undead Monstrosity with <b>Rush</b>."
+  },
+  {
+    "id": "RLK_057t",
+    "name": "Undead Monstrosity",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "RLK_060",
+    "name": "Army of the Dead",
+    "text": "Raise up to 5 <b>Corpses</b> as 2/2 Risen Ghouls with <b>Rush</b>."
+  },
+  {
+    "id": "RLK_061t",
+    "name": "Risen Footman",
+    "text": "<b>Taunt</b>\n<i>Doesn't leave a <b>Corpse</b>.</i>"
+  },
+  {
+    "id": "RLK_062",
+    "name": "Nerubian Swarmguard",
+    "text": "[x]<b>Taunt</b>\n<b>Battlecry:</b> Summon two\ncopies of this minion."
+  },
+  {
+    "id": "RLK_063",
+    "name": "Frostwyrm's Fury",
+    "text": "Deal $5 damage. <b>Freeze</b> all enemy minions.\nSummon a 5/5 Frostwyrm."
+  },
+  {
+    "id": "RLK_063t",
+    "name": "Frostwyrm",
+    "text": ""
+  },
+  {
+    "id": "RLK_066",
+    "name": "Hematurge",
+    "text": "<b>Battlecry:</b> Spend a\n<b>Corpse</b> to <b>Discover</b> a\nBlood Rune card."
+  },
+  {
+    "id": "RLK_067",
+    "name": "Corrupted Ashbringer",
+    "text": "<b>Lifesteal</b>"
+  },
+  {
+    "id": "RLK_070t",
+    "name": "Undead Peasant",
+    "text": ""
+  },
+  {
+    "id": "RLK_083",
+    "name": "Deathchiller",
+    "text": "[x]After you cast a spell,\ndeal 1 damage to two\nrandom enemies."
+  },
+  {
+    "id": "RLK_086",
+    "name": "Frostmourne",
+    "text": "<b>Deathrattle:</b> Summon every minion killed by this weapon."
+  },
+  {
+    "id": "RLK_087",
+    "name": "Asphyxiate",
+    "text": "Destroy the highest Attack enemy minion."
+  },
+  {
+    "id": "RLK_101",
+    "name": "Defrost",
+    "text": "Draw a card.\nSpend 2 <b>Corpses</b> to draw another."
+  },
+  {
+    "id": "RLK_110",
+    "name": "Ymirjar Frostbreaker",
+    "text": "<b>Battlecry:</b> Gain +1 Attack for each Frost spell\nin your hand."
+  },
+  {
+    "id": "RLK_116",
+    "name": "Necrotic Mortician",
+    "text": "<b>Battlecry:</b> If a friendly Undead died after your\nlast turn, <b>Discover</b> an Unholy Rune card."
+  },
+  {
+    "id": "RLK_118",
+    "name": "Tomb Guardians",
+    "text": "Summon two 2/2 Zombies with <b>Taunt</b>. Spend 4 <b>Corpses</b> to\ngive them <b>Reborn</b>."
+  },
+  {
+    "id": "RLK_118t3",
+    "name": "Menacing Zombie",
+    "text": "<b>Taunt</b>"
+  },
+  {
+    "id": "RLK_120",
+    "name": "Meat Grinder",
+    "text": "<b>Battlecry:</b> Shred a random minion in your deck to gain 4 <b>Corpses.</b>"
+  },
+  {
+    "id": "RLK_121",
+    "name": "Acolyte of Death",
+    "text": "After a friendly Undead dies, draw a card."
+  },
+  {
+    "id": "RLK_122",
+    "name": "The Scourge",
+    "text": "Fill your board with random Undead."
+  },
+  {
+    "id": "RLK_225",
+    "name": "Blightfang",
+    "text": "[x]<b>Battlecry:</b> Infect all enemy\nminions. When they die,\nyou summon a 2/2\nZombie with <b>Taunt</b>."
+  },
+  {
+    "id": "RLK_503",
+    "name": "Body Bagger",
+    "text": "<b>Battlecry</b>: Gain a <b>Corpse</b>."
+  },
+  {
+    "id": "RLK_504",
+    "name": "Corpse Bride",
+    "text": "[x]<b>Battlecry:</b> Spend up to 10\n <b>Corpses</b> to summon a Risen \nGroom with <b>Taunt</b> and that\n much Attack and Health."
+  },
+  {
+    "id": "RLK_505",
+    "name": "Marrow Manipulator",
+    "text": "[x]<b>Battlecry:</b> Spend up to 5\n<b>Corpses</b>. Deal 2 damage to\na random enemy for each."
+  },
+  {
+    "id": "RLK_506",
+    "name": "Boneguard Commander",
+    "text": "<b>Taunt</b>\n<b>Battlecry:</b> Raise up to\n6 <b>Corpses</b> as 1/3 Risen Footmen with <b>Taunt</b>."
+  },
+  {
+    "id": "RLK_506t",
+    "name": "Risen Groom",
+    "text": "<b>Taunt</b>\n<i>Doesn't leave a <b>Corpse</b>.</i>"
+  },
+  {
+    "id": "RLK_512",
+    "name": "Glacial Advance",
+    "text": "Deal $4 damage.\nYour next spell this turn costs (2) less."
+  },
+  {
+    "id": "RLK_516",
+    "name": "Bone Breaker",
+    "text": "[x]After your hero attacks a\nminion, deal 2 damage\nto the enemy hero."
+  },
+  {
+    "id": "RLK_706",
+    "name": "Alexandros Mograine",
+    "text": "<b>Battlecry:</b> For the rest of the game, deal 3 damage to your opponent at the end of your turns."
+  },
+  {
+    "id": "RLK_711",
+    "name": "Vicious Bloodworm",
+    "text": "[x]<b>Battlecry:</b> Give a minion in\nyour hand Attack equal to\nthis minion's Attack."
+  },
+  {
+    "id": "RLK_712",
+    "name": "Blood Tap",
+    "text": "Give all minions in your hand +1/+1.\nSpend 2 <b>Corpses</b> to give them +1/+1 more."
+  },
+  {
+    "id": "RLK_713",
+    "name": "Lady Deathwhisper",
+    "text": "<b>Deathrattle:</b> Copy all\nFrost spells in your hand."
+  },
+  {
+    "id": "RLK_730",
+    "name": "Blood Boil",
+    "text": "<b>Lifesteal</b>\nInfect all enemy minions. At the end of your turns, they take 2 damage."
+  },
+  {
+    "id": "RLK_731",
+    "name": "Darkfallen Neophyte",
+    "text": "[x]<b>Battlecry:</b> Spend 2 <b>Corpses</b>\nto give all minions in your\nhand +2 Attack."
+  },
+  {
+    "id": "RLK_740",
+    "name": "Might of Menethil",
+    "text": "<b>Battlecry:</b> Spend\nup to 3 <b>Corpses</b>.\n<b>Freeze</b> that many\nenemy minions."
+  },
+  {
+    "id": "RLK_741",
+    "name": "Soulstealer",
+    "text": "[x]<b>Battlecry:</b> Destroy all other\nminions. Gain 1 <b>Corpse</b> for\neach enemy destroyed."
+  },
+  {
+    "id": "RLK_745",
+    "name": "Malignant Horror",
+    "text": "[x]<b>Reborn</b>\nAt the end of your turn,\nspend 4 <b>Corpses</b> to summon\na copy of this minion."
   },
   {
     "id": "RLK_833",
@@ -8460,9 +8800,94 @@
     "text": "<b>Summoned When Drawn</b>"
   },
   {
+    "id": "TTN_450",
+    "name": "Distressed Kvaldir",
+    "text": "<b>Deathrattle:</b> Shuffle two random Plagues into your opponent's deck."
+  },
+  {
+    "id": "TTN_450t",
+    "name": "Blood Plague",
+    "text": "<b>Casts When Drawn</b>\nTake 2 damage.\nRestore 2 Health\nto the enemy hero."
+  },
+  {
+    "id": "TTN_450t2",
+    "name": "Unholy Plague",
+    "text": "<b>Casts When Drawn</b>\nTake 2 damage.\nSummon a 2/2 Undead for your opponent."
+  },
+  {
+    "id": "TTN_450t3",
+    "name": "Frost Plague",
+    "text": "[x]<b>Casts When Drawn</b>\nTake 2 damage.\nYour next card costs\n(1) more <i>(up to 10)</i>."
+  },
+  {
+    "id": "TTN_454",
+    "name": "Down with the Ship",
+    "text": "Deal $3 damage. Shuffle two random Plagues into your opponent's deck."
+  },
+  {
+    "id": "TTN_455",
+    "name": "Tomb Traitor",
+    "text": "<b>Battlecry:</b> Destroy a Plague in your opponent's deck to deal 3 damage to all enemy minions."
+  },
+  {
+    "id": "TTN_457",
+    "name": "Eulogizer",
+    "text": "[x]<b>Battlecry:</b> Spend 3 <b>Corpses</b>\nto deal 3 damage.\n<b>Forge:</b> Gain them instead."
+  },
+  {
+    "id": "TTN_457t",
+    "name": "Eulogizer",
+    "text": "<b>Forged</b>\n<b>Battlecry:</b> Gain 3 <b>Corpses</b>. Deal 3 damage."
+  },
+  {
+    "id": "TTN_459",
+    "name": "Chained Guardian",
+    "text": "[x]<b><b>Rush</b>, Reborn</b>\nCosts (1) less for each\nPlague shuffled into the\n enemy deck this game."
+  },
+  {
     "id": "TTN_724",
     "name": "Storm Giant",
     "text": "<b>Taunt</b>\n<b>Forge:</b> Costs (2) less. Can be <b>Forged</b> endlessly."
+  },
+  {
+    "id": "TTN_735",
+    "name": "Northern Navigation",
+    "text": "<b>Discover</b> a spell from your deck. If it's\na Frost spell, <b>Freeze</b> a random enemy minion."
+  },
+  {
+    "id": "TTN_736",
+    "name": "Staff of the Primus",
+    "text": "After your hero attacks, shuffle a random\nPlague into your opponent's deck."
+  },
+  {
+    "id": "TTN_737",
+    "name": "The Primus",
+    "text": "<b>Titan</b>\nAfter this uses an ability, <b>Discover</b> a card with that Rune."
+  },
+  {
+    "id": "TTN_737t",
+    "name": "Runes of Blood",
+    "text": "Destroy an enemy minion. This minion and your hero gain its Health."
+  },
+  {
+    "id": "TTN_737t1",
+    "name": "Runes of the Unholy",
+    "text": "Summon two 3/3 Undead with <b>Taunt</b>\nand <b>Reborn</b>."
+  },
+  {
+    "id": "TTN_737t2",
+    "name": "Servant of the Primus",
+    "text": "<b>Taunt</b>\n<b>Reborn</b>"
+  },
+  {
+    "id": "TTN_737t3",
+    "name": "Runes of Frost",
+    "text": "The next spell you cast\ncosts (3) less and has <b>Spell Damage +3</b>."
+  },
+  {
+    "id": "TTN_744",
+    "name": "Frozen Over",
+    "text": "[x]Both players draw 2\ncards. Your opponent can\nnot play them next turn."
   },
   {
     "id": "TTN_812",
@@ -8473,6 +8898,11 @@
     "id": "TTN_812t",
     "name": "Victorious Val'kyr",
     "text": ""
+  },
+  {
+    "id": "TTN_850",
+    "name": "Helya",
+    "text": "[x]<b>Battlecry:</b> Shuffle all three\nPlagues into your opponent's\ndeck. Plagues they draw this\ngame are unending."
   },
   {
     "id": "TTN_858",
@@ -9523,6 +9953,21 @@
     "id": "WW_382",
     "name": "Walking Mountain",
     "text": "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)"
+  },
+  {
+    "id": "YOG_511",
+    "name": "Runes of Darkness",
+    "text": "<b>Discover</b> a weapon. Spend 3 <b>Corpses</b> to give it +1/+1."
+  },
+  {
+    "id": "YOG_512",
+    "name": "Sickly Grimewalker",
+    "text": "[x]After you summon an\n Undead, give it <b>Poisonous</b>."
+  },
+  {
+    "id": "YOG_513",
+    "name": "Sinister Soulcage",
+    "text": "[x]Give a friendly Undead\n+2/+2. Spend 5 <b>Corpses</b>\nto summon a copy of it."
   },
   {
     "id": "hexfrog",

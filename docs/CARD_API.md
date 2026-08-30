@@ -19,6 +19,7 @@ Every `.lua` file returns one table. The loader sandbox does not expose `io`, `o
 | `class` | string | no | Defaults to `neutral` |
 | `rarity` | string | no | Printed rarity, normalized to lowercase for generation filters |
 | `spell_school` | string | no | Printed spell school, normalized to lowercase for generation filters |
+| `rune_cost` | table | no | Printed Death Knight Rune requirement: optional `blood`, `frost`, and `unholy` counts |
 | `tags` | string[] | no | Tribes or pack-defined pool tags |
 | `cost` | integer | yes | Base Mana Cost |
 | `attack` | integer | minion/weapon | Base Attack |
@@ -245,15 +246,18 @@ ctx:collectible_cards()
 ctx:card_definition(card_id)
 ctx:get_data(entity, key)
 ctx:get_player_data(player, key)
+ctx:has_enchantment_from(entity, source)
 ```
 
 Entity snapshots include identity, definition, owner/controller, zone/type, Attack, current/max Health, damage, Armor, Cost, Spell Damage, keywords, Silence, Freeze, attacks used this turn, `attack_at_death`, `started_in_deck`, Location cooldown, enchantments, attached scripts/Deathrattles, hand-entry/play context, and script data relevant to rules. `starting_deck` remains frozen when cards move or transform; `cards_added_to_hand` records successful draws, generated cards, and zone moves into Hand.
 
-Player snapshots include class, hero, Hero Power, weapon, player keywords, mana fields, overload fields, played/summoned histories and counts, fatigue, zone sizes, current-turn Hero Power state, and lifetime Hero Power uses.
+Player snapshots include class, hero, Hero Power, weapon, player keywords, mana fields, overload fields, current `corpses` and lifetime `corpses_spent`, played/summoned histories and counts, fatigue, zone sizes, current-turn Hero Power state, and lifetime Hero Power uses.
 
-Card definition snapshots returned by `ctx:card_definition` include `classes` for multi-class cards, plus `rarity` and `spell_school` when declared. `card_created` events include both the created `entity` and the creating effect's `source`, allowing generated-card mechanics to identify only their own output.
+Card definition snapshots returned by `ctx:card_definition` include `classes` for multi-class cards, plus `rarity` and `spell_school` when declared. They also include `rune_cost = { blood, frost, unholy }`, with zeroes for cards without a printed Death Knight Rune requirement. `card_created` events include both the created `entity` and the creating effect's `source`, allowing generated-card mechanics to identify only their own output.
 
 Returned arrays/tables are snapshots. Lua cannot mutate Rust containers. Scripts are trusted server rules and may query hidden zones; UI clients do not receive those values automatically.
+
+`has_enchantment_from` reports whether an entity still has an enchantment emitted by the exact source entity. It supports source-owned persistent effects that stack independently and disappear when their silenciable enchantment is removed.
 
 ## Effect output
 
@@ -272,9 +276,13 @@ ctx:clear_overload(player)
 ctx:gain_temporary_mana(player, amount)
 ctx:gain_mana_crystals(player, amount, filled)
 ctx:fill_mana_crystals(player, amount)
-ctx:refresh_mana_crystals(player)
+ctx:refresh_mana_crystals(player, amount?)
 ctx:destroy_mana_crystals(player, amount)
 ctx:spend_mana(player, amount)
+ctx:gain_corpses(player, amount)
+ctx:spend_corpses(player, amount) -- true when the exact spend was reserved
+ctx:spend_up_to_corpses(player, maximum) -- reserved amount
+ctx:spend_corpses_and_continue(player, amount, hook) -- atomic across competing triggers
 
 ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
@@ -349,6 +357,7 @@ ctx:grant_keyword_until_end_of_turn(entity, keyword_id)
 ctx:grant_keyword_until_next_turn(entity, keyword_id)
 ctx:disable_keyword(entity, keyword_id)
 ctx:grant_player_keyword(player, keyword_id)
+ctx:grant_public_player_keyword(player, keyword_id)
 ctx:disable_player_keyword(player, keyword_id)
 ctx:set_player_class(player, class_id)
 ctx:silence(entity)
@@ -396,7 +405,7 @@ The current hook entity is automatically recorded as the effect source.
 
 `damage_batch` atomically commits different damage amounts against a frozen target set; its spell-damage-immune variant skips Spell Damage, while `damage_batch_from` explicitly identifies the entity dealing the whole batch. `set_spell_target` is valid only while a `spell_targeted` event's trigger effects are still resolving; it replaces the target with a minion that remains on the board, and the spell body is generated afterward against that new target. `modify_all` applies one stat specification to a frozen group; `modify_batch` accepts per-entity specifications, including a `modifiers` array when each stat needs a different operation. Both support `reset_damage = true`. `force_attack` starts a full attack event without requiring a ready attacker, while `take_extra_turn` queues a replayable extra turn for the specified player. `grant_keyword_until_next_turn` expires at the start of that minion controller's next turn and survives loss of its source.
 
-`refresh_mana_crystals` fills only the player's existing unlocked permanent crystals. It preserves temporary Mana and both current and pending Overload. `change_controller_until_end_of_turn` records a reversible board-minion control change: Silence immediately returns the minion, transformation makes the current controller permanent, and end of turn returns it or destroys it when the original board is full.
+`refresh_mana_crystals` fills up to the optional amount of the player's existing unlocked permanent crystals, or all of them when omitted. It preserves temporary Mana and both current and pending Overload. `change_controller_until_end_of_turn` records a reversible board-minion control change: Silence immediately returns the minion, transformation makes the current controller permanent, and end of turn returns it or destroys it when the original board is full.
 
 `modify` supports:
 
@@ -467,7 +476,7 @@ zone_changed, controller_changed, transformed,
 attack, damaged, damage_prevented, healed, entity_died,
 armor_gained, overload_queued, mana_locked, mana_unlocked,
 overload_cleared, temporary_mana_gained, temporary_mana_expired,
-mana_crystals_gained, mana_crystals_destroyed, mana_spent,
+mana_crystals_gained, mana_crystals_destroyed, mana_spent, corpses_gained, corpses_spent,
 keyword_disabled, frozen, fatigue,
 choice_requested, choice_made, random_choice_made,
 random_cards_sampled, random_entities_sampled,
@@ -491,6 +500,8 @@ auras = {
         attack = 1,
         health = 1,
         cost = 0,
+        cost_set = nil,
+        cost_cap = nil,
         spell_damage = 0,
         keywords = { "taunt" },
         targets = function(ctx, self)
@@ -500,7 +511,9 @@ auras = {
 }
 ```
 
-Numeric aura fields may be integers or read-only `(ctx, self) -> integer` functions. Aura selectors and dynamic values cannot emit effects. Recalculation removes old aura layers, collects every source against one stable no-aura snapshot, aggregates targets, applies the result, then performs invariant/death checks.
+Numeric aura fields may be integers or read-only `(ctx, self) -> integer` functions. `cost_set` replaces the pre-aura cost, additive `cost` applies next, and `cost_cap` clamps the resulting cost. Aura selectors and dynamic values cannot emit effects. Recalculation removes old aura layers, collects every source against one stable no-aura snapshot, aggregates targets, applies the result, then performs invariant/death checks.
+
+`grant_player_keyword` creates a private player-scoped rule. Use `grant_public_player_keyword` when the persistent rule is public information: it activates the same Lua keyword module and also projects its ID through both player views and RL observations. `disable_player_keyword` removes either form.
 
 `spell_damage` auras may target minions or heroes. A player's spell bonus is the sum on their board minions and hero, which allows symmetric player-level effects without card-specific engine logic.
 

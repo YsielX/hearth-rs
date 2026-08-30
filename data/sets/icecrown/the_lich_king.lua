@@ -30,18 +30,20 @@ local frostmourne = {
     keywords = { "deathrattle" },
     triggers = {
         {
-            event = "entity_died",
+            event = "attack",
             timing = "after",
-            active_zones = { "weapon", "graveyard" },
+            active_zones = { "weapon" },
             condition = function(ctx, self, event)
                 local me = ctx:entity(self)
-                return event.source == self
-                    or event.source == ctx:player(me.controller).hero
+                local defender = ctx:entity(event.defender)
+                return event.attacker == ctx:player(me.controller).hero
+                    and defender.type == "minion"
+                    and defender.health <= 0
             end,
             effect = function(ctx, self, event)
                 local count = ctx:get_data(self, "frostmourne_kill_count") + 1
                 ctx:set_data(self, "frostmourne_kill_count", count)
-                ctx:set_data(self, "frostmourne_kill_" .. count, event.entity)
+                ctx:set_data(self, "frostmourne_kill_" .. count, event.defender)
             end,
         },
     },

@@ -14,7 +14,7 @@ local card = {
 }
 function card.reveal_elixir(ctx, self, id) cardlib.effects.transform(ctx, self, id) end
 local function elixir(id, name, text, school, effect)
-    return { id=id, name=name, text=text, set="LOOTAPALOOZA", type="spell", class="priest", collectible=false,
+    return { id=id, name=name, text=text, set="LOOTAPALOOZA", type="spell", class="priest", collectible=false, rarity="common",
         spell_school=school, cost=3, target_mode="required", targets=function(ctx) return ctx:minions() end, on_play=effect }
 end
 local life = elixir("LOOT_278t1", "Elixir of Life", "Give a minion +2/+2 and <b>Lifesteal</b>.", "holy", function(ctx,self,target) ctx:buff(target,2,2);ctx:grant_keyword(target,"lifesteal") end)

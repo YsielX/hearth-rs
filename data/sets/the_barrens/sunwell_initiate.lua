@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "BAR_025",
+    id = "BAR_025", rarity = "common",
     name = "Sunwell Initiate",
     text = "<b>Frenzy:</b> Gain <b>Divine Shield</b>.",
     set = "THE_BARRENS",

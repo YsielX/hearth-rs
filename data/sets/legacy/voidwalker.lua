@@ -1,1 +1,1 @@
-return { api_version = 1, id = "CS2_065", name = "Voidwalker", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", class = "warlock", cost = 1, attack = 1, health = 3, tags = { "demon" }, keywords = { "taunt" } }
+return { api_version = 1, id = "CS2_065", rarity = "free", name = "Voidwalker", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", class = "warlock", cost = 1, attack = 1, health = 3, tags = { "demon" }, keywords = { "taunt" } }

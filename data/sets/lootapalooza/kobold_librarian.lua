@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "LOOT_014",
+    id = "LOOT_014", rarity = "common",
     name = "Kobold Librarian",
     text = "<b>Battlecry:</b> Draw a card. Deal 2 damage to your hero.",
     set = "LOOTAPALOOZA",

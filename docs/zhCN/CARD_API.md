@@ -34,6 +34,7 @@ local prompt = ctx:localize(
 | `class` | string | 否 | 卡牌职业，默认 `neutral`；Lua 可自行定义命名体系 |
 | `rarity` | string | 否 | 印刷稀有度，统一为小写，用于动态牌池过滤 |
 | `spell_school` | string | 否 | 印刷法术派系，统一为小写，用于动态牌池过滤 |
+| `rune_cost` | table | 否 | 印刷死亡骑士符文需求，可填写 `blood`、`frost`、`unholy` 数量 |
 | `tags` | string[] | 否 | 种族或卡牌包自定义标签，用于 Lua 牌池过滤 |
 | `cost` | integer | 是 | 基础费用 |
 | `attack` | integer | 随从/武器必需 | 随从或武器的基础攻击力 |
@@ -218,7 +219,10 @@ ctx:card_ids()                  -- 当前卡牌包的全部 ID，稳定排序
 ctx:collectible_cards()         -- 仅返回 collectible=true 的 ID
 ctx:card_definition(card_id)    -- 返回不可变卡牌定义快照
 ctx:get_player_data(player, key)
+ctx:has_enchantment_from(entity, source)
 ```
+
+`has_enchantment_from` 判断实体是否仍保留由指定来源实体产生的附魔，适用于按来源独立叠加、并在可沉默附魔被移除后失效的持续效果。
 
 实体快照字段包括：
 
@@ -232,7 +236,7 @@ cards_played_before, combo_active
 玩家快照字段包括：
 
 ```text
-id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana,
+id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana, corpses, corpses_spent,
 cards_played_this_turn, cards_played_this_game, spells_cast_this_game,
 minions_played_this_game, minions_summoned_this_game, weapons_played_this_game, locations_played_this_game,
 fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
@@ -244,7 +248,7 @@ fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
 
 五个历史查询返回按发生顺序冻结的卡牌定义 ID 数组，而不是动态反查实体：随从即使后来变形，历史中仍保留它打出时的原定义。`cards_played` 在费用支付并离手时记录，因此反制牌也存在；四个类型历史在相应 `spell_cast/minion_played/weapon_played/location_played` 成功时记录。法术自己的 `on_play` 结算期间尚未进入 `spells_cast`，完成正文后才成为 `last_spell_cast`。只有玩家实际施放的法术进入成功施法历史；由 `cast_spell` 或 `cast_existing_spell` 效果施放的法术带有 `generated_by`，既不进入该历史，也不触发“每当你施放法术”。这些数组属于 Rust 权威状态并进入 snapshot/replay，不应由 Lua 全局变量代替。
 
-卡牌定义快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用于三职业等多职业牌。其中 `requires_target` 只作为旧脚本兼容字段；新逻辑应读取 `target_mode`。例如可以完全在 Lua 中构造动态发现池：
+卡牌定义快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, rune_cost, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用于三职业等多职业牌；`rune_cost = { blood, frost, unholy }` 暴露印刷符文需求，无符文牌的三个值均为 0。其中 `requires_target` 只作为旧脚本兼容字段；新逻辑应读取 `target_mode`。例如可以完全在 Lua 中构造动态发现池：
 
 ```lua
 local candidates = {}
@@ -273,9 +277,13 @@ ctx:clear_overload(player)
 ctx:gain_temporary_mana(player, amount)
 ctx:gain_mana_crystals(player, amount, filled)
 ctx:fill_mana_crystals(player, amount)
-ctx:refresh_mana_crystals(player)
+ctx:refresh_mana_crystals(player, amount?)
 ctx:destroy_mana_crystals(player, amount)
 ctx:spend_mana(player, amount)
+ctx:gain_corpses(player, amount)
+ctx:spend_corpses(player, amount) -- 精确预留成功时返回 true
+ctx:spend_up_to_corpses(player, maximum) -- 返回实际预留量
+ctx:spend_corpses_and_continue(player, amount, hook) -- 跨竞争触发器原子消费
 ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
@@ -342,6 +350,7 @@ ctx:grant_keyword_until_end_of_turn(target, keyword)
 ctx:grant_keyword_until_next_turn(target, keyword)
 ctx:disable_keyword(target, keyword)
 ctx:grant_player_keyword(player, keyword)
+ctx:grant_public_player_keyword(player, keyword)
 ctx:disable_player_keyword(player, keyword)
 ctx:set_player_class(player, class_id)
 ctx:summon_fresh_copy(target, position_or_nil, health, without_keywords)
@@ -370,11 +379,11 @@ ctx:increment_player_data(player, key, delta)
 
 `cardlib.effects` 是卡牌层的 Lua 便捷库。其单体和等量群体函数最终折叠成一次原子批处理：`ctx:damage_batch(hits, options_or_nil)`、`ctx:heal_batch(hits)`、`ctx:destroy_batch(targets)`、`ctx:transform_batch(transforms, options_or_nil)`、`ctx:modify_batch(modifications)`。伤害 options 支持 `source` 和 `apply_spell_damage`；事件数值包装统一调用 `ctx:modify_event_amount(event, { operation = "set" | "add" | "multiply", value = n })`。
 
-光环中的 `cost` 是加法层；卡牌文字写“费用为（1）”时使用 `cost_set = 1`（也可为函数）。属性层顺序为 `SET → ADD → MULTIPLY → FINAL SET → Aura SET → Aura ADD`，同层多个持续 SET 按光环时间戳顺序由后者覆盖。
+光环中的 `cost` 是加法层；卡牌文字写“费用为（1）”时使用 `cost_set = 1`（也可为函数），需要限制最终费用时使用 `cost_cap`。费用光环顺序为 `Aura SET → Aura ADD → Aura CAP`。
 
 `spell_damage` 光环可以指向随从或英雄。玩家的法术伤害加成为己方场上随从与英雄所承载数值之和，因此双方玩家级效果无需任何卡牌特判。
 
-`replace_hero` 要求目标定义为 Hero 且声明有效的 `hero_power`：新英雄使用定义中的生命上限并回满生命，保留原英雄的护甲、冻结状态和本回合攻击次数，同时替换英雄技能并发布 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 与 `disable_player_keyword` 管理玩家级脚本机制；它们由当前英雄实体承载 Lua 光环和触发器，但状态属于玩家，因此不受随从沉默、变形、死亡或英雄替换影响。
+`replace_hero` 要求目标定义为 Hero 且声明有效的 `hero_power`：新英雄使用定义中的生命上限并回满生命，保留原英雄的护甲、冻结状态和本回合攻击次数，同时替换英雄技能并发布 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 与 `disable_player_keyword` 管理玩家级脚本机制；它们由当前英雄实体承载 Lua 光环和触发器，但状态属于玩家，因此不受随从沉默、变形、死亡或英雄替换影响。明确属于公开信息的永久规则应使用 `grant_public_player_keyword`，其 ID 会同步进入双方公开视图与 RL 观察。
 
 `destroy_all` 在同一个死亡检查点摧毁所有目标，适用于“摧毁所有随从”一类同时结算；`move` 的目标区域包括 `hand`、`secret`、`deck_top`、`deck_bottom`、`deck_random`、`graveyard` 和 `removed`。移动到 `secret` 时会校验该实体确实具有奥秘规则且奥秘区未满。`shuffle_entity_into_deck` 使用 Rust 确定性随机把原实体洗入指定玩家牌库，同时转移 owner/controller 并执行隐藏区重置。
 
@@ -459,7 +468,7 @@ hand, board, secret, deck_top, deck_bottom, deck_random, graveyard, removed
 
 `change_controller` 对战场随从和奥秘生效。目标玩家对应区域已满、目标已经离场或控制权已经相同时不产生变化；随从成功时移动到新控制者战场最右侧并进入休眠，再由关键词的 `ready_on_summon` 规则决定是否解除休眠；奥秘则移动到新控制者的奥秘区。该操作发布可取消的 `controller_changed/before`，提交后发布 `controller_changed/after`。实体的拥有者 `owner` 不变，之后返回手牌或牌库仍回到拥有者一方。
 
-`change_controller_until_end_of_turn` 记录可逆的战场随从控制权：沉默会立即把随从归还原控制者，变形会清除归还标记并让当前控制权永久化；回合结束时若原方战场已满，该随从会被消灭。`refresh_mana_crystals` 只补满现有且未被过载锁定的永久水晶，同时保留临时法力、当前过载和待结算过载。`summon_with_stats` 使用可沉默的最终属性层，`summon_with_base_stats` 则直接设置召唤物基础攻血，沉默不会把青玉魔像等成长衍生物还原。
+`change_controller_until_end_of_turn` 记录可逆的战场随从控制权：沉默会立即把随从归还原控制者，变形会清除归还标记并让当前控制权永久化；回合结束时若原方战场已满，该随从会被消灭。`refresh_mana_crystals` 只刷新现有且未被过载锁定的永久水晶；可选数量省略时补满，并始终保留临时法力、当前过载和待结算过载。`summon_with_stats` 使用可沉默的最终属性层，`summon_with_base_stats` 则直接设置召唤物基础攻血，沉默不会把青玉魔像等成长衍生物还原。
 
 `transform` 只接受战场随从和另一张随从定义。变形保留实体 ID、拥有者、控制者、战场位置、休眠状态和本回合攻击次数；基础属性与卡牌脚本替换为新定义，并清除伤害、冻结、沉默、enchantment、已消耗关键字状态和 `script_data`。变形不算死亡或召唤，发布可取消的 `transformed/before`，提交后发布 `transformed/after`。`transform_all` 对整组应用同一定义，`transform_batch` 对每个实体应用各自定义，二者都统一提交并只重算一次光环。`transform_into_copy` 复制模板实体完整状态，再施加可沉默的最终攻血值。
 
@@ -853,7 +862,7 @@ card_played, spell_targeted, spell_cast, minion_played, weapon_played, location_
 minion_summoned, magnetized, weapon_equipped, weapon_destroyed, location_used, location_destroyed,
 hero_power_used, hero_power_replaced, secret_played, secret_revealed, zone_changed, controller_changed, transformed, attack, damaged, damage_prevented, healed,
 armor_gained, overload_queued, mana_locked, mana_unlocked, temporary_mana_gained,
-temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent,
+temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent, corpses_gained, corpses_spent,
 keyword_disabled, frozen, entity_died, conceded, game_ended,
 choice_requested, choice_made, random_choice_made, random_cards_sampled, random_entities_sampled
 ```

@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_03bp",
+    id = "HERO_03bp", rarity = "free",
     name = "Dagger Mastery",
     text = "<b>Hero Power</b>\nEquip a 1/2 Dagger.",
     set = "LEGACY",
@@ -12,7 +12,7 @@ return {
     end,
     tokens = {
         {
-            id = "CS2_082", name = "Wicked Knife", text = "",
+            id = "CS2_082", rarity = "free", name = "Wicked Knife", text = "",
             set = "LEGACY", type = "weapon", class = "rogue",
             cost = 1, attack = 1, health = 2,
         },

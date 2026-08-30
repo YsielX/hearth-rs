@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "AV_219",
+    id = "AV_219", rarity = "common",
     name = "Ram Commander",
     text = "[x]<b>Battlecry:</b> Add two\n1/1 Rams with <b>Rush</b>\nto your hand.",
     set = "ALTERAC_VALLEY",

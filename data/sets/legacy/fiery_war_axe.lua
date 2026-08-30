@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_106",
+    id = "CS2_106", rarity = "free",
     name = "Fiery War Axe",
     text = "",
     set = "LEGACY",

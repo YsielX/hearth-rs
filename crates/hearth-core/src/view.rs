@@ -72,6 +72,8 @@ pub struct PlayerStateView {
     pub hand_size: usize,
     /// Populated only for the viewing player.
     pub hand: Vec<EntityId>,
+    /// Remaining constructed sideboards, populated only for the viewing player.
+    pub sideboards: BTreeMap<CardId, Vec<CardId>>,
     pub board: Vec<EntityId>,
     pub weapon: Option<EntityId>,
     pub hero_power: EntityId,
@@ -86,6 +88,12 @@ pub struct PlayerStateView {
     pub mana: u8,
     pub max_mana: u8,
     pub temporary_mana: u8,
+    /// Public Death Knight resource.
+    pub corpses: u32,
+    /// Public lifetime count used by cards that scale with Corpses spent.
+    pub corpses_spent: u32,
+    /// Public, persistent player rule markers such as Helya's unending Plagues.
+    pub public_keywords: Vec<String>,
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
@@ -185,6 +193,9 @@ impl GameState {
                 hand: (player_id == viewer)
                     .then(|| player.hand.clone())
                     .unwrap_or_default(),
+                sideboards: (player_id == viewer)
+                    .then(|| player.sideboards.clone())
+                    .unwrap_or_default(),
                 board: player.board.clone(),
                 weapon: player.weapon,
                 hero_power: player.hero_power,
@@ -198,6 +209,9 @@ impl GameState {
                 mana: player.mana,
                 max_mana: player.max_mana,
                 temporary_mana: player.temporary_mana,
+                corpses: player.corpses,
+                corpses_spent: player.corpses_spent,
+                public_keywords: player.public_keywords.clone(),
                 overload_pending: player.overload_pending,
                 overloaded_mana: player.overloaded_mana,
                 fatigue: player.fatigue,

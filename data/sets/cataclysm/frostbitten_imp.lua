@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CATA_612",
+    id = "CATA_612", rarity = "common",
     name = "Frostbitten Imp",
     text = "<b>Battlecry:</b> <b>Freeze</b> this.",
     set = "CATACLYSM",

@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_332",
+    id = "EX1_332", spell_school = "shadow", rarity = "common",
     name = "Silence",
     text = "<b>Silence</b> a minion.",
     set = "EXPERT1",

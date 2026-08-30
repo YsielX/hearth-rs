@@ -1,1 +1,1 @@
-return { api_version = 1, id = "CS2_155", name = "Archmage", text = "<b>Spell Damage +1</b>", set = "LEGACY", type = "minion", cost = 6, attack = 4, health = 7, keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 } }
+return { api_version = 1, id = "CS2_155", rarity = "free", name = "Archmage", text = "<b>Spell Damage +1</b>", set = "LEGACY", type = "minion", cost = 6, attack = 4, health = 7, keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 } }

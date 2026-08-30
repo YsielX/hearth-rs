@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "FP1_002",
+    id = "FP1_002", rarity = "common",
     name = "Haunted Creeper",
     text = "<b>Deathrattle:</b> Summon two 1/1 Spectral Spiders.",
     set = "NAXX",

@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "WW_376",
+    id = "WW_376", rarity = "common",
     name = "Cactus Rager",
     text = "<b>Poisonous</b>",
     set = "WILD_WEST",

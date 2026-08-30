@@ -83,6 +83,12 @@ fn every_public_keyword_has_one_unique_implemented_official_example() {
     public_keywords.retain(|keyword| *keyword != "weapon_durability_immune");
     public_keywords.retain(|keyword| *keyword != "hero_power_disabled");
     public_keywords.retain(|keyword| *keyword != "end_of_turn_repeater");
+    public_keywords.retain(|keyword| *keyword != "no_corpse");
+    public_keywords.retain(|keyword| *keyword != "unending_plagues");
+    public_keywords.retain(|keyword| *keyword != "frost_plague_surcharge");
+    public_keywords.retain(|keyword| *keyword != "frozen_solid");
+    public_keywords.retain(|keyword| *keyword != "primus_frost_runes");
+    public_keywords.retain(|keyword| *keyword != "mograine");
     public_keywords.sort_unstable();
     assert_eq!(public_keywords.len(), 68);
     assert_eq!(

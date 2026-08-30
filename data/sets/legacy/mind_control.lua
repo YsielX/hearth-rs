@@ -11,7 +11,7 @@ end
 
 return {
     api_version = 1,
-    id = "CS1_113",
+    id = "CS1_113", rarity = "free",
     name = "Mind Control",
     text = "Take control of an enemy minion.",
     set = "LEGACY",

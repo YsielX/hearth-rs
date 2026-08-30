@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "GIL_622",
+    id = "GIL_622", rarity = "rare",
     name = "Lifedrinker",
     text = "[x]<b>Battlecry:</b> Deal 3 damage to\nthe enemy hero. Restore\n#3 Health to your hero.",
     set = "GILNEAS",

@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "REV_018",
+    name = "Prince Renathal",
+    text = "Your deck size and\nstarting Health are 40.",
+    set = "REVENDRETH",
+    type = "minion",
+    class = "neutral",
+    rarity = "legendary",
+    cost = 3,
+    attack = 3,
+    health = 4,
+    deck_size = 40,
+    starting_health = 40,
+}

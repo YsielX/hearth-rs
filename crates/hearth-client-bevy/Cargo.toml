@@ -1,0 +1,26 @@
+[package]
+name = "hearth-client-bevy"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+bevy = { version = "0.19.1", default-features = false, features = [
+    "default_app",
+    "2d_bevy_render",
+    "ui_bevy_render",
+    "bevy_ui_widgets",
+    "bevy_winit",
+    "default_font",
+    "multi_threaded",
+    "picking",
+    "png",
+    "system_clipboard",
+    "system_font_discovery",
+    "x11",
+] }
+hearth-app = { path = "../hearth-app" }
+hearth-core = { path = "../hearth-core" }
+serde.workspace = true
+serde_json.workspace = true

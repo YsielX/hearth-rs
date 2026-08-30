@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "DAL_743",
+    id = "DAL_743", rarity = "common",
     name = "Hench-Clan Hogsteed",
     text = "<b>Rush</b>\n<b>Deathrattle:</b> Summon a 1/1 Murloc.",
     set = "DALARAN",

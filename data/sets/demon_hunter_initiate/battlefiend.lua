@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "BT_351",
+    id = "BT_351", rarity = "common",
     name = "Battlefiend",
     text = "After your hero attacks, gain +1 Attack.",
     set = "DEMON_HUNTER_INITIATE",

@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TOY_811",
+    id = "TOY_811", rarity = "common",
     name = "Tigress Plushy",
     text = "<b>Miniaturize</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>",
     set = "WHIZBANGS_WORKSHOP",
@@ -16,7 +16,7 @@ return {
     end,
     tokens = {
         {
-            id = "TOY_811t",
+            id = "TOY_811t", rarity = "common",
             name = "Tigress Plushy",
             text = "<b>Mini</b>\n<b>Rush</b>, <b>Lifesteal</b>,\n<b>Divine Shield</b>",
             set = "WHIZBANGS_WORKSHOP",

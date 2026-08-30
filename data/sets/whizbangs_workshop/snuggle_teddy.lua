@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "MIS_300",
+    id = "MIS_300", rarity = "common",
     name = "Snuggle Teddy",
     text = "<b>Gigantify</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>",
     set = "WHIZBANGS_WORKSHOP",
@@ -19,7 +19,7 @@ end
 
 card.tokens = {
     {
-        id = "MIS_300t", name = "Snuggle Teddy",
+        id = "MIS_300t", rarity = "common", name = "Snuggle Teddy",
         text = "<b>Gigantic</b>\n<b>Elusive</b>, <b>Lifesteal</b>, <b>Taunt</b>",
         set = "WHIZBANGS_WORKSHOP", type = "minion", class = "druid",
         cost = 8, attack = 8, health = 8, tags = { "beast" },

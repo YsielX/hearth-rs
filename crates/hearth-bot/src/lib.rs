@@ -3,6 +3,60 @@ use std::collections::BTreeMap;
 use hearth_core::{
     CardKind, EntityId, EntityView, LegalAction, PlayerCommand, PlayerController, PlayerView,
 };
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BotDifficulty {
+    Easy,
+    #[default]
+    Normal,
+    Hard,
+}
+
+impl std::str::FromStr for BotDifficulty {
+    type Err = String;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value.to_ascii_lowercase().as_str() {
+            "easy" => Ok(Self::Easy),
+            "normal" => Ok(Self::Normal),
+            "hard" => Ok(Self::Hard),
+            _ => Err("bot difficulty expects easy, normal, or hard".to_owned()),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct DifficultyBot {
+    difficulty: BotDifficulty,
+}
+
+impl DifficultyBot {
+    pub fn new(difficulty: BotDifficulty) -> Self {
+        Self { difficulty }
+    }
+
+    pub fn difficulty(&self) -> BotDifficulty {
+        self.difficulty
+    }
+}
+
+impl Default for DifficultyBot {
+    fn default() -> Self {
+        Self::new(BotDifficulty::Normal)
+    }
+}
+
+impl PlayerController for DifficultyBot {
+    fn choose_action(
+        &mut self,
+        view: &PlayerView,
+        legal_actions: &[LegalAction],
+    ) -> Result<PlayerCommand, String> {
+        choose_action_for(self.difficulty, view, legal_actions)
+    }
+}
 
 #[derive(Clone, Debug, Default)]
 pub struct SimpleBot;
@@ -21,6 +75,14 @@ pub fn choose_action(
     view: &PlayerView,
     legal_actions: &[LegalAction],
 ) -> Result<PlayerCommand, String> {
+    choose_action_for(BotDifficulty::Normal, view, legal_actions)
+}
+
+pub fn choose_action_for(
+    difficulty: BotDifficulty,
+    view: &PlayerView,
+    legal_actions: &[LegalAction],
+) -> Result<PlayerCommand, String> {
     if view.input_player != view.viewer {
         return Err(format!(
             "{} cannot choose an action for {}",
@@ -31,6 +93,24 @@ pub fn choose_action(
         return Err("no legal actions are available".to_owned());
     }
     if !view.mulligan_eligible.is_empty() {
+        if difficulty == BotDifficulty::Hard {
+            let replace = view
+                .mulligan_eligible
+                .iter()
+                .copied()
+                .filter(|entity| view.entity(*entity).is_some_and(|card| card.cost >= 4))
+                .collect::<Vec<_>>();
+            if !replace.is_empty()
+                && let Some(action) = legal_actions.iter().find(|action| {
+                    matches!(
+                        &action.command,
+                        PlayerCommand::Mulligan { replace: candidate } if candidate == &replace
+                    )
+                })
+            {
+                return Ok(action.command.clone());
+            }
+        }
         return legal_actions
             .iter()
             .find(|action| {
@@ -56,6 +136,17 @@ pub fn choose_action(
             .ok_or_else(|| "no choice action is available".to_owned());
     }
 
+    match difficulty {
+        BotDifficulty::Easy => choose_easy_action(legal_actions),
+        BotDifficulty::Normal => choose_normal_action(view, legal_actions),
+        BotDifficulty::Hard => choose_hard_action(view, legal_actions),
+    }
+}
+
+fn choose_normal_action(
+    view: &PlayerView,
+    legal_actions: &[LegalAction],
+) -> Result<PlayerCommand, String> {
     if let Some(lethal) = lethal_attack(view, legal_actions) {
         return Ok(lethal);
     }
@@ -78,9 +169,69 @@ pub fn choose_action(
         .iter()
         .find(|action| matches!(action.command, PlayerCommand::EndTurn))
         .or_else(|| {
+            legal_actions.iter().find(|action| {
+                !matches!(
+                    action.command,
+                    PlayerCommand::Concede | PlayerCommand::ConcedePlayer { .. }
+                )
+            })
+        })
+        .map(|action| action.command.clone())
+        .ok_or_else(|| "only Concede is available".to_owned())
+}
+
+fn choose_easy_action(legal_actions: &[LegalAction]) -> Result<PlayerCommand, String> {
+    legal_actions
+        .iter()
+        .find(|action| {
+            !matches!(
+                action.command,
+                PlayerCommand::EndTurn
+                    | PlayerCommand::Concede
+                    | PlayerCommand::ConcedePlayer { .. }
+            )
+        })
+        .or_else(|| {
             legal_actions
                 .iter()
-                .find(|action| !matches!(action.command, PlayerCommand::Concede))
+                .find(|action| matches!(action.command, PlayerCommand::EndTurn))
+        })
+        .map(|action| action.command.clone())
+        .ok_or_else(|| "only Concede is available".to_owned())
+}
+
+fn choose_hard_action(
+    view: &PlayerView,
+    legal_actions: &[LegalAction],
+) -> Result<PlayerCommand, String> {
+    if let Some(lethal) = lethal_attack(view, legal_actions) {
+        return Ok(lethal);
+    }
+    if let Some(trade) = best_advantageous_trade(view, legal_actions) {
+        return Ok(trade);
+    }
+    if let Some(spend) = spending_action(view, legal_actions) {
+        return Ok(spend);
+    }
+    if let Some(location) = best_location_action(view, legal_actions) {
+        return Ok(location);
+    }
+    if let Some(face) = face_attack(view, legal_actions) {
+        return Ok(face);
+    }
+    if let Some(forced) = best_forced_trade(view, legal_actions) {
+        return Ok(forced);
+    }
+    legal_actions
+        .iter()
+        .find(|action| matches!(action.command, PlayerCommand::EndTurn))
+        .or_else(|| {
+            legal_actions.iter().find(|action| {
+                !matches!(
+                    action.command,
+                    PlayerCommand::Concede | PlayerCommand::ConcedePlayer { .. }
+                )
+            })
         })
         .map(|action| action.command.clone())
         .ok_or_else(|| "only Concede is available".to_owned())
@@ -344,7 +495,7 @@ mod tests {
         PlayerView, Zone,
     };
 
-    use super::choose_action;
+    use super::{BotDifficulty, choose_action, choose_action_for};
 
     fn entity(
         id: u64,
@@ -400,6 +551,7 @@ mod tests {
             deck_size: 20,
             hand_size: 0,
             hand: Vec::new(),
+            sideboards: BTreeMap::new(),
             board: entities
                 .values()
                 .filter(|entity| entity.controller == id && entity.kind == CardKind::Minion)
@@ -415,6 +567,9 @@ mod tests {
             mana: if id == PlayerId::ONE { mana } else { 0 },
             max_mana: mana,
             temporary_mana: 0,
+            corpses: 0,
+            corpses_spent: 0,
+            public_keywords: Vec::new(),
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,
@@ -583,5 +738,94 @@ mod tests {
             command,
             PlayerCommand::PlayCard { card, .. } if card == EntityId(11)
         ));
+    }
+
+    #[test]
+    fn easy_is_naive_while_normal_still_takes_board_lethal() {
+        let mut view = view(
+            1,
+            vec![
+                entity(10, CardKind::Minion, PlayerId::ONE, 5, 5, 5),
+                entity(11, CardKind::Minion, PlayerId::ONE, 1, 1, 1),
+            ],
+        );
+        view.entities.get_mut(&EntityId(2)).unwrap().max_health = 5;
+        let play = PlayerCommand::PlayCard {
+            card: EntityId(11),
+            target: None,
+        };
+        let lethal = PlayerCommand::Attack {
+            attacker: EntityId(10),
+            defender: EntityId(2),
+        };
+        let actions = vec![legal(play.clone(), 1), legal(lethal.clone(), 0)];
+
+        assert_eq!(
+            choose_action_for(BotDifficulty::Easy, &view, &actions).unwrap(),
+            play
+        );
+        assert_eq!(
+            choose_action_for(BotDifficulty::Normal, &view, &actions).unwrap(),
+            lethal
+        );
+    }
+
+    #[test]
+    fn hard_prioritizes_a_clean_trade_before_spending_mana() {
+        let view = view(
+            3,
+            vec![
+                entity(10, CardKind::Minion, PlayerId::ONE, 3, 4, 3),
+                entity(11, CardKind::Minion, PlayerId::ONE, 3, 3, 3),
+                entity(20, CardKind::Minion, PlayerId::TWO, 2, 3, 2),
+            ],
+        );
+        let spend = PlayerCommand::PlayCard {
+            card: EntityId(11),
+            target: None,
+        };
+        let trade = PlayerCommand::Attack {
+            attacker: EntityId(10),
+            defender: EntityId(20),
+        };
+        let actions = vec![legal(spend.clone(), 3), legal(trade.clone(), 0)];
+
+        assert_eq!(
+            choose_action_for(BotDifficulty::Normal, &view, &actions).unwrap(),
+            spend
+        );
+        assert_eq!(
+            choose_action_for(BotDifficulty::Hard, &view, &actions).unwrap(),
+            trade
+        );
+    }
+
+    #[test]
+    fn hard_mulligan_replaces_cards_costing_four_or_more() {
+        let mut view = view(
+            0,
+            vec![
+                entity(10, CardKind::Minion, PlayerId::ONE, 1, 1, 2),
+                entity(11, CardKind::Minion, PlayerId::ONE, 4, 4, 4),
+                entity(12, CardKind::Minion, PlayerId::ONE, 7, 7, 7),
+            ],
+        );
+        view.mulligan_eligible = vec![EntityId(10), EntityId(11), EntityId(12)];
+        let keep = PlayerCommand::Mulligan {
+            replace: Vec::new(),
+        };
+        let replace = PlayerCommand::Mulligan {
+            replace: vec![EntityId(11), EntityId(12)],
+        };
+        let actions = vec![legal(keep.clone(), 0), legal(replace.clone(), 0)];
+
+        assert_eq!(
+            choose_action_for(BotDifficulty::Normal, &view, &actions).unwrap(),
+            keep
+        );
+        assert_eq!(
+            choose_action_for(BotDifficulty::Hard, &view, &actions).unwrap(),
+            replace
+        );
     }
 }

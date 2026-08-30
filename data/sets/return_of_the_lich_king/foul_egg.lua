@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "RLK_833",
+    id = "RLK_833", rarity = "common",
     name = "Foul Egg",
     text = "<b>Deathrattle:</b> Summon a 3/3 Undead Chicken.",
     set = "RETURN_OF_THE_LICH_KING",

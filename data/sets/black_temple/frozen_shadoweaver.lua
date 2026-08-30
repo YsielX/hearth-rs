@@ -11,7 +11,7 @@ end
 
 return {
     api_version = 1,
-    id = "BT_714",
+    id = "BT_714", rarity = "common",
     name = "Frozen Shadoweaver",
     text = "<b>Battlecry:</b> <b>Freeze</b> an enemy.",
     set = "BLACK_TEMPLE",

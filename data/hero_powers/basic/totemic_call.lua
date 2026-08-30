@@ -3,7 +3,7 @@ local totems = { "NEW1_009", "CS2_050", "CS2_051", "CS2_052" }
 local power = {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_02bp",
+    id = "HERO_02bp", rarity = "free",
     name = "Totemic Call",
     text = "<b>Hero Power</b>\nSummon a random basic Totem.",
     set = "LEGACY",
@@ -30,7 +30,7 @@ end
 
 power.tokens = {
     {
-        id = "NEW1_009", name = "Healing Totem",
+        id = "NEW1_009", rarity = "free", name = "Healing Totem",
         text = "At the end of your turn, restore #1 Health to all friendly minions.",
         set = "LEGACY", type = "minion", class = "shaman",
         cost = 1, attack = 0, health = 2, tags = { "totem" },
@@ -49,17 +49,17 @@ power.tokens = {
         },
     },
     {
-        id = "CS2_050", name = "Searing Totem", text = "",
+        id = "CS2_050", rarity = "free", name = "Searing Totem", text = "",
         set = "LEGACY", type = "minion", class = "shaman",
         cost = 1, attack = 1, health = 1, tags = { "totem" },
     },
     {
-        id = "CS2_051", name = "Stoneclaw Totem", text = "<b>Taunt</b>",
+        id = "CS2_051", rarity = "free", name = "Stoneclaw Totem", text = "<b>Taunt</b>",
         set = "LEGACY", type = "minion", class = "shaman",
         cost = 1, attack = 0, health = 2, tags = { "totem" }, keywords = { "taunt" },
     },
     {
-        id = "CS2_052", name = "Wrath of Air Totem", text = "<b>Spell Damage +1</b>",
+        id = "CS2_052", rarity = "free", name = "Wrath of Air Totem", text = "<b>Spell Damage +1</b>",
         set = "LEGACY", type = "minion", class = "shaman",
         cost = 1, attack = 0, health = 2, tags = { "totem" },
         keywords = { "spell_damage" }, keyword_params = { spell_damage = 1 },

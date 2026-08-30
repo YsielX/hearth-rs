@@ -1,0 +1,15 @@
+[package]
+name = "hearth-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+base64.workspace = true
+hearth-bot = { path = "../hearth-bot" }
+hearth-core = { path = "../hearth-core" }
+hearth-script = { path = "../hearth-script" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

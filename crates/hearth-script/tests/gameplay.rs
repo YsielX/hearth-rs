@@ -1,8 +1,9 @@
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 use hearth_core::{
     CardKind, CardRuntime, ChoiceOptionValueView, ChoiceValue, DEFAULT_HERO_POWER, Game, GameError,
-    GameEvent, Locale, PlayerCommand, PlayerId, PublicEvent, Zone,
+    GameEvent, Locale, PlayerCommand, PlayerId, PublicEvent, RuneCost, Zone,
 };
 use hearth_script::LuaCardRuntime;
 
@@ -246,6 +247,118 @@ fn deck_ids(game: &Game<LuaCardRuntime>, player: PlayerId) -> Vec<String> {
 }
 
 #[test]
+fn etc_band_manager_consumes_a_private_replayable_sideboard_card() {
+    let sideboard = BTreeMap::from([(
+        "ETC_080".to_owned(),
+        ["EX1_008", "CS2_171", "CS2_120"]
+            .map(str::to_owned)
+            .to_vec(),
+    )]);
+    let mut game = Game::new_with_sideboards_hero_powers_classes_and_starting_player(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        repeated("ETC_080"),
+        repeated("CS2_120"),
+        [sideboard.clone(), BTreeMap::new()],
+        7,
+        [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()],
+        ["mage".to_owned(), "mage".to_owned()],
+        PlayerId::ONE,
+        true,
+    )
+    .unwrap();
+
+    assert_eq!(
+        game.state()
+            .player_view(PlayerId::ONE)
+            .player(PlayerId::ONE)
+            .sideboards,
+        sideboard
+    );
+    assert!(
+        game.state()
+            .player_view(PlayerId::TWO)
+            .player(PlayerId::ONE)
+            .sideboards
+            .is_empty()
+    );
+
+    game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+        .unwrap();
+    game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+        .unwrap();
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "ETC_080", None);
+    let pending = game.state().pending_input.as_ref().unwrap();
+    assert_eq!(pending.options.len(), 3);
+    let index = pending
+        .options
+        .iter()
+        .position(
+            |option| matches!(&option.value, ChoiceValue::Card(card_id) if card_id == "EX1_008"),
+        )
+        .unwrap();
+    game.dispatch(PlayerCommand::Choose { index }).unwrap();
+
+    let argent_squire = hand_card(&game, PlayerId::ONE, "EX1_008");
+    assert!(game.state().entity(argent_squire).unwrap().started_in_deck);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).sideboards["ETC_080"],
+        ["CS2_171", "CS2_120"].map(str::to_owned)
+    );
+
+    let replay = game.replay();
+    assert_eq!(replay.sideboards[0], sideboard);
+    let replayed =
+        Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay).unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn prince_renathal_grants_forty_card_capacity_and_starting_health() {
+    let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
+    let Err(too_large) = Game::new_unrestricted(
+        runtime,
+        std::iter::repeat_n("CS2_120".to_owned(), 31).collect(),
+        repeated("CS2_120"),
+        7,
+    ) else {
+        panic!("a 31-card deck without a modifier must be rejected");
+    };
+    assert!(matches!(
+        too_large,
+        GameError::DeckTooLarge {
+            player: PlayerId::ONE,
+            cards: 31,
+            maximum: 30,
+        }
+    ));
+
+    let mut game = Game::new_unrestricted(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        std::iter::repeat_n("REV_018".to_owned(), 40).collect(),
+        repeated("CS2_120"),
+        7,
+    )
+    .unwrap();
+    let hero = game.state().player(PlayerId::ONE).hero;
+    assert_eq!(game.state().entity(hero).unwrap().health(), 40);
+    let player = game.state().player(PlayerId::ONE);
+    assert_eq!(player.starting_deck.len(), 40);
+    assert_eq!(player.deck.len() + player.hand.len(), 40);
+
+    game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+        .unwrap();
+    game.dispatch(PlayerCommand::Mulligan { replace: vec![] })
+        .unwrap();
+    assert_eq!(game.state().entity(hero).unwrap().health(), 40);
+
+    let replay = game.replay();
+    let replayed =
+        Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay).unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
 fn lootapalooza_special_cards_use_generic_lua_primitives() {
     let mut ripper = game_with_decks(mixed(&["LOOT_529", "CS2_120"]), repeated("CS2_120"));
     while !ripper
@@ -328,6 +441,7 @@ fn catalog_contains_only_traceable_official_cards() {
             );
         }
     }
+    manifested_keywords.insert("RLK_008t".to_owned(), "no_corpse".to_owned());
     let definition_ids = definitions
         .iter()
         .map(|definition| definition.id.as_str())
@@ -422,6 +536,31 @@ fn catalog_contains_only_traceable_official_cards() {
         if definition.collectible != record["collectible"].as_bool().unwrap_or(false) {
             metadata_mismatches.push(format!("{} collectible", definition.id));
         }
+        let expected_rarity = record["rarity"].as_str().map(str::to_ascii_lowercase);
+        if definition.rarity != expected_rarity {
+            metadata_mismatches.push(format!(
+                "{} rarity: {:?} != {:?}",
+                definition.id, definition.rarity, expected_rarity
+            ));
+        }
+        let expected_spell_school = record["spellSchool"].as_str().map(str::to_ascii_lowercase);
+        if definition.spell_school != expected_spell_school {
+            metadata_mismatches.push(format!(
+                "{} spell school: {:?} != {:?}",
+                definition.id, definition.spell_school, expected_spell_school
+            ));
+        }
+        let expected_rune_cost = RuneCost {
+            blood: record["runeCost"]["blood"].as_u64().unwrap_or(0) as u8,
+            frost: record["runeCost"]["frost"].as_u64().unwrap_or(0) as u8,
+            unholy: record["runeCost"]["unholy"].as_u64().unwrap_or(0) as u8,
+        };
+        if definition.rune_cost != expected_rune_cost {
+            metadata_mismatches.push(format!(
+                "{} rune_cost: {:?} != {:?}",
+                definition.id, definition.rune_cost, expected_rune_cost
+            ));
+        }
         let expected_kind = match record["type"].as_str().unwrap() {
             "MINION" => CardKind::Minion,
             "SPELL" => CardKind::Spell,
@@ -486,6 +625,7 @@ fn catalog_contains_only_traceable_official_cards() {
             ("BATTLECRY", "battlecry"),
             ("CHARGE", "charge"),
             ("CHOOSE_ONE", "choose_one"),
+            ("COLOSSAL", "colossal"),
             ("COMBO", "combo"),
             ("DEATHRATTLE", "deathrattle"),
             ("DIVINE_SHIELD", "divine_shield"),
@@ -505,6 +645,7 @@ fn catalog_contains_only_traceable_official_cards() {
             ("SPELLBURST", "spellburst"),
             ("STEALTH", "stealth"),
             ("TAUNT", "taunt"),
+            ("TITAN", "titan"),
             ("TRADEABLE", "tradeable"),
             ("UNTOUCHABLE", "dormant"),
             ("WINDFURY", "windfury"),
@@ -554,6 +695,12 @@ fn catalog_contains_only_traceable_official_cards() {
                     .as_str()
                     .filter(|text| text.starts_with("<b>Taunt</b>"))
                     .map(|_| "taunt".to_owned()),
+            )
+            .chain(
+                record["text"]
+                    .as_str()
+                    .filter(|text| text.contains("Doesn't leave a <b>Corpse</b>"))
+                    .map(|_| "no_corpse".to_owned()),
             )
             .chain((definition.id == "CS2_146").then(|| "conditional_charge".to_owned()))
             .chain((definition.id == "EX1_287").then(|| "counter".to_owned()))
@@ -702,6 +849,3050 @@ fn core_game_construction_rejects_off_class_decks() {
 }
 
 #[test]
+fn core_game_construction_enforces_three_death_knight_rune_slots() {
+    let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
+    let hero_powers = [DEFAULT_HERO_POWER.to_owned(), DEFAULT_HERO_POWER.to_owned()];
+    let classes = ["death_knight".to_owned(), "mage".to_owned()];
+    let valid = Game::new_with_hero_powers_and_classes(
+        runtime,
+        mixed(&["RLK_067", "RLK_048"]),
+        repeated("CS2_120"),
+        107,
+        hero_powers.clone(),
+        classes.clone(),
+    );
+    assert!(valid.is_ok(), "two Blood plus one Unholy is legal");
+
+    let invalid = Game::new_with_hero_powers_and_classes(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        mixed(&["RLK_067", "RLK_063"]),
+        repeated("CS2_120"),
+        109,
+        hero_powers.clone(),
+        classes.clone(),
+    );
+    assert!(matches!(
+        invalid,
+        Err(GameError::InvalidDeckRunes {
+            player: PlayerId::ONE,
+            total: 5,
+            blood: 2,
+            frost: 3,
+            unholy: 0,
+        })
+    ));
+
+    let sideboard_invalid = Game::new_with_sideboards_hero_powers_classes_and_starting_player(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        mixed(&["ETC_080", "RLK_067"]),
+        repeated("CS2_120"),
+        [
+            BTreeMap::from([(
+                "ETC_080".to_owned(),
+                ["RLK_063", "CS2_120", "CS2_171"]
+                    .map(str::to_owned)
+                    .to_vec(),
+            )]),
+            BTreeMap::new(),
+        ],
+        109,
+        hero_powers.clone(),
+        classes.clone(),
+        PlayerId::ONE,
+        false,
+    );
+    assert!(matches!(
+        sideboard_invalid,
+        Err(GameError::InvalidDeckRunes {
+            player: PlayerId::ONE,
+            total: 5,
+            ..
+        })
+    ));
+
+    let unrestricted = Game::new_unrestricted_with_hero_powers_and_classes(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        mixed(&["RLK_067", "RLK_063"]),
+        repeated("CS2_120"),
+        109,
+        hero_powers,
+        classes,
+    );
+    assert!(
+        unrestricted.is_ok(),
+        "mechanics sandboxes explicitly bypass constructed rune limits"
+    );
+}
+
+#[test]
+fn death_knight_rune_cards_apply_their_printed_gameplay() {
+    let mut shell_game = game_with_decks(mixed(&["CS2_120", "RLK_048"]), repeated("CS2_120"));
+    advance_to_mana(&mut shell_game, PlayerId::ONE, 5);
+    let minion = play(&mut shell_game, PlayerId::ONE, "CS2_120", None);
+    play(&mut shell_game, PlayerId::ONE, "RLK_048", None);
+    let minion_state = shell_game.state().entity(minion).unwrap();
+    assert_eq!((minion_state.attack, minion_state.health()), (3, 4));
+    assert!(minion_state.has_keyword("elusive"));
+
+    let mut strike_game = game("RLK_024", "CS2_120");
+    advance_to_mana(&mut strike_game, PlayerId::TWO, 2);
+    let victim = play(&mut strike_game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut strike_game, PlayerId::ONE, 4);
+    play(&mut strike_game, PlayerId::ONE, "RLK_024", Some(victim));
+    assert_eq!(
+        strike_game.state().entity(victim).unwrap().zone,
+        Zone::Graveyard
+    );
+
+    let mut weapon_game = game("RLK_067", "CS2_120");
+    advance_to_mana(&mut weapon_game, PlayerId::ONE, 6);
+    let ashbringer = play(&mut weapon_game, PlayerId::ONE, "RLK_067", None);
+    assert_eq!(
+        weapon_game.state().player(PlayerId::ONE).weapon,
+        Some(ashbringer)
+    );
+    assert!(
+        weapon_game
+            .state()
+            .entity(ashbringer)
+            .unwrap()
+            .has_keyword("lifesteal")
+    );
+
+    let mut fury_game = game("RLK_063", "CS2_120");
+    advance_to_mana(&mut fury_game, PlayerId::TWO, 4);
+    let first = play(&mut fury_game, PlayerId::TWO, "CS2_120", None);
+    let second = play(&mut fury_game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut fury_game, PlayerId::ONE, 7);
+    let enemy_hero = fury_game.state().player(PlayerId::TWO).hero;
+    play(&mut fury_game, PlayerId::ONE, "RLK_063", Some(enemy_hero));
+    assert_eq!(fury_game.state().entity(enemy_hero).unwrap().health(), 25);
+    assert!(fury_game.state().entity(first).unwrap().frozen);
+    assert!(fury_game.state().entity(second).unwrap().frozen);
+    assert!(
+        fury_game
+            .state()
+            .player(PlayerId::ONE)
+            .board
+            .iter()
+            .any(|entity| fury_game.state().entity(*entity).unwrap().card_id == "RLK_063t")
+    );
+
+    let replay = fury_game.replay();
+    let replayed =
+        Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay).unwrap();
+    assert_eq!(replayed.state(), fury_game.state());
+}
+
+#[test]
+fn death_knight_corpses_cover_deaths_public_views_spending_tokens_and_replay() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_060"]),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 1);
+    let bagger = play(&mut game, PlayerId::ONE, "RLK_503", None);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(bagger));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 2);
+    for viewer in [PlayerId::ONE, PlayerId::TWO] {
+        let view = game.state().player_view(viewer);
+        assert_eq!(view.player(PlayerId::ONE).corpses, 2);
+        assert_eq!(view.player(PlayerId::ONE).corpses_spent, 0);
+    }
+    assert!(
+        game.state()
+            .public_history(PlayerId::TWO)
+            .iter()
+            .any(|record| {
+                matches!(
+                    record.event,
+                    PublicEvent::CorpsesGained {
+                        player: PlayerId::ONE,
+                        source: None,
+                        amount: 1,
+                    }
+                )
+            })
+    );
+
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    play(&mut game, PlayerId::ONE, "RLK_060", None);
+    let risen = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .copied()
+        .filter(|entity| game.state().entity(*entity).unwrap().card_id == "RLK_008t")
+        .collect::<Vec<_>>();
+    assert_eq!(risen.len(), 2);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(risen[0]));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+
+    let snapshot = game.snapshot();
+    let encoded = serde_json::to_string(&snapshot).unwrap();
+    let portable = serde_json::from_str(&encoded).unwrap();
+    let restored =
+        Game::from_snapshot(LuaCardRuntime::load_dir(data_path()).unwrap(), &portable).unwrap();
+    assert_eq!(restored.state(), game.state());
+
+    let replay = game.replay();
+    let replayed =
+        Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay).unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+fn plague_count(game: &Game<LuaCardRuntime>, player: PlayerId) -> usize {
+    deck_ids(game, player)
+        .iter()
+        .filter(|card_id| matches!(card_id.as_str(), "TTN_450t" | "TTN_450t2" | "TTN_450t3"))
+        .count()
+}
+
+fn plague_spells_cast(game: &Game<LuaCardRuntime>, player: PlayerId) -> Vec<String> {
+    game.state()
+        .log
+        .iter()
+        .filter_map(|event| {
+            let GameEvent::SpellCast {
+                player: caster,
+                spell,
+                ..
+            } = event
+            else {
+                return None;
+            };
+            if *caster != player {
+                return None;
+            }
+            let card_id = &game.state().entity(*spell)?.card_id;
+            matches!(card_id.as_str(), "TTN_450t" | "TTN_450t2" | "TTN_450t3")
+                .then(|| card_id.clone())
+        })
+        .collect()
+}
+
+#[test]
+fn plague_generators_shuffle_exactly_two_replayable_random_plagues() {
+    let mut spell = game_with_classes(
+        mixed(&["TTN_454", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut spell, PlayerId::ONE, 2);
+    let enemy_hero = spell.state().player(PlayerId::TWO).hero;
+    play(&mut spell, PlayerId::ONE, "TTN_454", Some(enemy_hero));
+    assert_eq!(
+        plague_count(&spell, PlayerId::TWO),
+        2,
+        "deck={:?}, source_data={:?}",
+        deck_ids(&spell, PlayerId::TWO),
+        spell.state().player(PlayerId::ONE).script_data
+    );
+    assert_eq!(
+        spell
+            .state()
+            .player(PlayerId::ONE)
+            .script_data
+            .get("plagues_shuffled_into_enemy"),
+        Some(&2)
+    );
+    assert_eq!(
+        spell
+            .state()
+            .player(PlayerId::TWO)
+            .script_data
+            .get("plague_source_player"),
+        Some(&1)
+    );
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &spell.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), spell.state());
+
+    let mut deathrattle = game_with_classes(
+        mixed(&["TTN_450", "CS2_120"]),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut deathrattle, PlayerId::ONE, 2);
+    let kvaldir = play(&mut deathrattle, PlayerId::ONE, "TTN_450", None);
+    advance_to_mana(&mut deathrattle, PlayerId::TWO, 4);
+    play(&mut deathrattle, PlayerId::TWO, "CS2_029", Some(kvaldir));
+    assert_eq!(
+        plague_count(&deathrattle, PlayerId::TWO),
+        2,
+        "zone={:?}, entity_data={:?}, player_data={:?}, recent={:?}",
+        deathrattle.state().entity(kvaldir).unwrap().zone,
+        deathrattle.state().entity(kvaldir).unwrap().script_data,
+        deathrattle.state().player(PlayerId::ONE).script_data,
+        deathrattle
+            .state()
+            .log
+            .iter()
+            .rev()
+            .take(12)
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(
+        deathrattle
+            .state()
+            .player(PlayerId::ONE)
+            .script_data
+            .get("plagues_shuffled_into_enemy"),
+        Some(&2)
+    );
+}
+
+#[test]
+fn tomb_traitor_consumes_one_plague_before_damaging_all_enemy_minions() {
+    let mut game = game_with_classes(
+        mixed(&["TTN_850", "TTN_455"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "TTN_850", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_120", None);
+    play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    play(&mut game, PlayerId::ONE, "TTN_455", None);
+
+    assert_eq!(plague_count(&game, PlayerId::TWO), 2);
+    assert!(game.state().player(PlayerId::TWO).board.is_empty());
+    assert_eq!(
+        game.state()
+            .player(PlayerId::ONE)
+            .script_data
+            .get("plagues_shuffled_into_enemy"),
+        Some(&3),
+        "destroying a Plague must not rewrite the historical shuffle count"
+    );
+    assert_eq!(
+        game.state()
+            .entities
+            .values()
+            .filter(|entity| {
+                matches!(
+                    entity.card_id.as_str(),
+                    "TTN_450t" | "TTN_450t2" | "TTN_450t3"
+                ) && entity.zone == Zone::Removed
+            })
+            .count(),
+        1
+    );
+
+    let mut no_plague = game_with_classes(
+        repeated("TTN_455"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut no_plague, PlayerId::TWO, 2);
+    let croc = play(&mut no_plague, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut no_plague, PlayerId::ONE, 4);
+    play(&mut no_plague, PlayerId::ONE, "TTN_455", None);
+    assert_eq!(no_plague.state().entity(croc).unwrap().health(), 3);
+}
+
+#[test]
+fn staff_of_the_primus_shuffles_after_every_attack_including_final_durability() {
+    let mut game = game_with_classes(
+        repeated("TTN_736"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 1);
+    let staff = play(&mut game, PlayerId::ONE, "TTN_736", None);
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+
+    for expected in 1..=3 {
+        let own_hero = game.state().player(PlayerId::ONE).hero;
+        game.dispatch(PlayerCommand::Attack {
+            attacker: own_hero,
+            defender: enemy_hero,
+        })
+        .unwrap();
+        assert_eq!(plague_count(&game, PlayerId::TWO), expected);
+        assert_eq!(
+            game.state()
+                .player(PlayerId::ONE)
+                .script_data
+                .get("plagues_shuffled_into_enemy"),
+            Some(&(expected as i64))
+        );
+        if expected < 3 {
+            end_turn(&mut game);
+            end_turn(&mut game);
+        }
+    }
+
+    assert_eq!(game.state().entity(staff).unwrap().zone, Zone::Graveyard);
+    assert!(game.state().player(PlayerId::ONE).weapon.is_none());
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn chained_guardian_tracks_initial_and_unending_plague_shuffles_then_rushes_and_reborns() {
+    let mut game = game_with_classes(
+        mixed(&["TTN_850", "TTN_459"]),
+        mixed(&["EX1_169", "CS2_200"]),
+        ["death_knight", "druid"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "TTN_850", None);
+
+    let guardian = hand_card(&game, PlayerId::ONE, "TTN_459");
+    assert_eq!(game.state().entity(guardian).unwrap().cost, 8);
+
+    let mut ogre = None;
+    for _ in 0..50 {
+        assert!(game.state().outcome.is_none());
+        if game.state().active_player == PlayerId::TWO {
+            while let Some(innervate) = game.legal_actions().unwrap().into_iter().find(|action| {
+                matches!(action, PlayerCommand::PlayCard { card, target: None }
+                    if game.state().entity(*card).unwrap().card_id == "EX1_169")
+            }) {
+                game.dispatch(innervate).unwrap();
+            }
+            let shuffled = game
+                .state()
+                .player(PlayerId::ONE)
+                .script_data
+                .get("plagues_shuffled_into_enemy")
+                .copied()
+                .unwrap_or(0);
+            if shuffled >= 4 && game.state().player(PlayerId::TWO).max_mana >= 6 {
+                if let Some(action) = game.legal_actions().unwrap().into_iter().find(|action| {
+                    matches!(action, PlayerCommand::PlayCard { card, target: None }
+                        if game.state().entity(*card).unwrap().card_id == "CS2_200")
+                }) {
+                    let PlayerCommand::PlayCard { card, .. } = action else {
+                        unreachable!()
+                    };
+                    game.dispatch(action).unwrap();
+                    ogre = Some(card);
+                    end_turn(&mut game);
+                    break;
+                }
+            }
+        }
+        end_turn(&mut game);
+    }
+
+    let ogre = ogre.expect("an enemy Boulderfist Ogre should be available after an unending draw");
+    let shuffled = *game
+        .state()
+        .player(PlayerId::ONE)
+        .script_data
+        .get("plagues_shuffled_into_enemy")
+        .unwrap();
+    assert!(
+        shuffled >= 4,
+        "an unending reshuffle must count toward the discount"
+    );
+    assert_eq!(
+        game.state().entity(guardian).unwrap().cost,
+        (11 - shuffled).max(0) as u8
+    );
+
+    play(&mut game, PlayerId::ONE, "TTN_459", None);
+    assert!(
+        game.legal_actions()
+            .unwrap()
+            .contains(&PlayerCommand::Attack {
+                attacker: guardian,
+                defender: ogre,
+            })
+    );
+    game.dispatch(PlayerCommand::Attack {
+        attacker: guardian,
+        defender: ogre,
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(guardian).unwrap().zone, Zone::Graveyard);
+    let reborn = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .copied()
+        .find(|entity| game.state().entity(*entity).unwrap().card_id == "TTN_459")
+        .expect("Chained Guardian should return with Reborn");
+    assert_eq!(game.state().entity(reborn).unwrap().health(), 1);
+    assert!(
+        !game
+            .state()
+            .entity(reborn)
+            .unwrap()
+            .keywords
+            .contains(&"reborn".to_owned())
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn helya_plagues_are_public_unending_and_apply_all_draw_effects() {
+    let mut game = game_with_classes(
+        mixed(&["TTN_850", "CS2_062"]),
+        mixed(&["AT_055", "NEW1_030"]),
+        ["death_knight", "priest"],
+    );
+
+    let helya_hero = game.state().player(PlayerId::ONE).hero;
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    play(&mut game, PlayerId::ONE, "CS2_062", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "TTN_850", None);
+
+    assert_eq!(plague_count(&game, PlayerId::TWO), 3);
+    assert_eq!(
+        game.state()
+            .player(PlayerId::ONE)
+            .script_data
+            .get("plagues_shuffled_into_enemy"),
+        Some(&3)
+    );
+    assert!(
+        game.state()
+            .player(PlayerId::TWO)
+            .keywords
+            .contains(&"unending_plagues".to_owned())
+    );
+    for viewer in [PlayerId::ONE, PlayerId::TWO] {
+        assert_eq!(
+            game.state()
+                .player_view(viewer)
+                .player(PlayerId::TWO)
+                .public_keywords,
+            vec!["unending_plagues".to_owned()]
+        );
+    }
+
+    let mut turns = 0;
+    while plague_spells_cast(&game, PlayerId::TWO)
+        .iter()
+        .collect::<std::collections::BTreeSet<_>>()
+        .len()
+        < 3
+    {
+        assert!(
+            game.state().outcome.is_none(),
+            "game ended before all Plagues were drawn: casts={:?}, deck={:?}, health={}, victim={:?}, source={:?}",
+            plague_spells_cast(&game, PlayerId::TWO),
+            deck_ids(&game, PlayerId::TWO),
+            game.state()
+                .entity(game.state().player(PlayerId::TWO).hero)
+                .unwrap()
+                .health(),
+            game.state().player(PlayerId::TWO).script_data,
+            game.state().player(PlayerId::ONE).script_data
+        );
+        end_turn(&mut game);
+        turns += 1;
+        assert!(
+            turns < 80,
+            "all three Plagues were not drawn deterministically"
+        );
+
+        if game.state().active_player == PlayerId::TWO {
+            let own_hero = game.state().player(PlayerId::TWO).hero;
+            if let Some(heal) = game.legal_actions().unwrap().into_iter().find(|action| {
+                matches!(action, PlayerCommand::PlayCard { card, target: Some(target) }
+                    if *target == own_hero
+                        && game.state().entity(*card).unwrap().card_id == "AT_055")
+            }) {
+                game.dispatch(heal).unwrap();
+            }
+        }
+    }
+
+    let cast = plague_spells_cast(&game, PlayerId::TWO)
+        .into_iter()
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(
+        cast,
+        ["TTN_450t", "TTN_450t2", "TTN_450t3"]
+            .map(str::to_owned)
+            .into_iter()
+            .collect()
+    );
+    assert_eq!(plague_count(&game, PlayerId::TWO), 3);
+    assert!(
+        game.state()
+            .player(PlayerId::ONE)
+            .script_data
+            .get("plagues_shuffled_into_enemy")
+            .is_some_and(|count| *count > 3)
+    );
+    assert!(
+        game.state()
+            .player(PlayerId::ONE)
+            .board
+            .iter()
+            .any(|entity| { game.state().entity(*entity).unwrap().card_id == "RLK_070t" })
+    );
+    assert!(game.state().log.iter().any(|event| {
+        matches!(event, GameEvent::Healed { source, target, .. }
+            if *target == helya_hero
+                && game.state().entity(*source).unwrap().card_id == "TTN_450t")
+    }));
+
+    let snapshot = game.snapshot();
+    let restored = Game::from_snapshot(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &serde_json::from_str(&serde_json::to_string(&snapshot).unwrap()).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(restored.state(), game.state());
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn frost_plague_stacks_caps_at_ten_and_is_consumed_by_the_next_card() {
+    let mut game = game_with_classes(
+        mixed(&["TTN_850", "CS2_120"]),
+        mixed(&["AT_055", "NEW1_030"]),
+        ["death_knight", "priest"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "TTN_850", None);
+
+    let mut turns = 0;
+    loop {
+        end_turn(&mut game);
+        turns += 1;
+        assert!(turns < 50, "Frost Plague was not drawn deterministically");
+        assert!(game.state().outcome.is_none());
+        if game.state().active_player != PlayerId::TWO {
+            continue;
+        }
+        let layers = game
+            .state()
+            .player(PlayerId::TWO)
+            .script_data
+            .get("frost_plague_surcharge")
+            .copied()
+            .unwrap_or(0);
+        if layers > 0 {
+            break;
+        }
+        let own_hero = game.state().player(PlayerId::TWO).hero;
+        let action = game
+            .legal_actions()
+            .unwrap()
+            .into_iter()
+            .find(|action| {
+                matches!(action, PlayerCommand::PlayCard { card, target: Some(target) }
+                    if *target == own_hero
+                        && game.state().entity(*card).unwrap().card_id == "AT_055")
+            })
+            .expect("the victim should keep hand space with Flash Heal");
+        game.dispatch(action).unwrap();
+    }
+
+    let layers = *game
+        .state()
+        .player(PlayerId::TWO)
+        .script_data
+        .get("frost_plague_surcharge")
+        .unwrap();
+    assert!(layers > 0);
+    let capped = game
+        .state()
+        .player(PlayerId::TWO)
+        .hand
+        .iter()
+        .copied()
+        .find(|entity| game.state().entity(*entity).unwrap().card_id == "NEW1_030")
+        .expect("the victim should retain a 10-Cost card for the surcharge cap check");
+    assert_eq!(game.state().entity(capped).unwrap().cost, 10);
+
+    let own_hero = game.state().player(PlayerId::TWO).hero;
+    let (card, action) = game
+        .legal_actions()
+        .unwrap()
+        .into_iter()
+        .find_map(|action| match action {
+            PlayerCommand::PlayCard {
+                card,
+                target: Some(target),
+            } if target == own_hero && game.state().entity(card).unwrap().card_id == "AT_055" => {
+                Some((card, action))
+            }
+            _ => None,
+        })
+        .expect("the surcharged Flash Heal should remain playable");
+    assert_eq!(
+        game.state().entity(card).unwrap().cost,
+        (1 + layers).min(10) as u8
+    );
+    game.dispatch(action).unwrap();
+    assert_eq!(
+        game.state()
+            .player(PlayerId::TWO)
+            .script_data
+            .get("frost_plague_surcharge"),
+        Some(&0)
+    );
+    assert!(
+        !game
+            .state()
+            .player(PlayerId::TWO)
+            .keywords
+            .contains(&"frost_plague_surcharge".to_owned())
+    );
+    assert_eq!(game.state().entity(capped).unwrap().cost, 10);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn corpse_generation_batches_simultaneous_deaths_and_ignores_transform() {
+    let mut deaths = game_with_classes(
+        repeated("CS2_120"),
+        repeated("CS2_062"),
+        ["death_knight", "warlock"],
+    );
+    advance_to_mana(&mut deaths, PlayerId::ONE, 4);
+    play(&mut deaths, PlayerId::ONE, "CS2_120", None);
+    play(&mut deaths, PlayerId::ONE, "CS2_120", None);
+    advance_to_mana(&mut deaths, PlayerId::TWO, 4);
+    play(&mut deaths, PlayerId::TWO, "CS2_062", None);
+    assert_eq!(deaths.state().player(PlayerId::ONE).corpses, 2);
+    assert!(deaths.state().log.iter().any(|event| matches!(
+        event,
+        GameEvent::CorpsesGained {
+            player: PlayerId::ONE,
+            source: None,
+            amount: 2,
+        }
+    )));
+
+    let mut transformed = game_with_classes(
+        repeated("CS2_120"),
+        repeated("CS2_022"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut transformed, PlayerId::ONE, 2);
+    let minion = play(&mut transformed, PlayerId::ONE, "CS2_120", None);
+    advance_to_mana(&mut transformed, PlayerId::TWO, 4);
+    play(&mut transformed, PlayerId::TWO, "CS2_022", Some(minion));
+    assert_eq!(transformed.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(
+        transformed.state().entity(minion).unwrap().zone,
+        Zone::Board
+    );
+}
+
+#[test]
+fn reborn_minions_leave_a_corpse_each_time_they_die() {
+    let mut game = game_with_classes(
+        repeated("ULD_208"),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let original = play(&mut game, PlayerId::ONE, "ULD_208", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(original));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    let reborn = game.state().player(PlayerId::ONE).board[0];
+
+    end_turn(&mut game);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(reborn));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 2);
+}
+
+#[test]
+fn exact_corpse_spending_is_atomic_when_defrost_cannot_afford_it() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_101"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 1);
+    play(&mut game, PlayerId::ONE, "RLK_503", None);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let hand_before = game.state().player(PlayerId::ONE).hand.len();
+    play(&mut game, PlayerId::ONE, "RLK_101", None);
+    assert_eq!(game.state().player(PlayerId::ONE).hand.len(), hand_before);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 0);
+    assert!(
+        !game
+            .state()
+            .log
+            .iter()
+            .any(|event| matches!(event, GameEvent::CorpsesSpent { .. }))
+    );
+
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    play(&mut game, PlayerId::ONE, "RLK_503", None);
+    let hand_before = game.state().player(PlayerId::ONE).hand.len();
+    play(&mut game, PlayerId::ONE, "RLK_101", None);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).hand.len(),
+        hand_before + 1
+    );
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+}
+
+#[test]
+fn eulogizer_forge_gains_corpses_while_the_base_card_spends_them_atomically() {
+    let mut game = game_with_classes(
+        repeated("TTN_457"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let forged = hand_card(&game, PlayerId::ONE, "TTN_457");
+    game.dispatch(PlayerCommand::UseCardAction {
+        card: forged,
+        action: "forge".to_owned(),
+        target: None,
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(forged).unwrap().card_id, "TTN_457t");
+    assert_eq!(game.state().player(PlayerId::ONE).mana, 3);
+    assert!(!game.legal_actions().unwrap().iter().any(|action| {
+        matches!(action, PlayerCommand::UseCardAction { card, action, .. }
+            if *card == forged && action == "forge")
+    }));
+
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    game.dispatch(PlayerCommand::PlayCard {
+        card: forged,
+        target: Some(enemy_hero),
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 27);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 3);
+
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    play(&mut game, PlayerId::ONE, "TTN_457", Some(enemy_hero));
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 24);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 3);
+
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    play(&mut game, PlayerId::ONE, "TTN_457", Some(enemy_hero));
+    assert_eq!(
+        game.state().entity(enemy_hero).unwrap().health(),
+        24,
+        "the un-forged Battlecry must not deal damage when three Corpses cannot be spent"
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+fn choose_deck_entity(game: &mut Game<LuaCardRuntime>, card_id: &str) -> hearth_core::EntityId {
+    let (index, entity) = game
+        .state()
+        .pending_input
+        .as_ref()
+        .expect("a deck Discover should be pending")
+        .options
+        .iter()
+        .enumerate()
+        .find_map(|(index, option)| match &option.value {
+            ChoiceValue::Entity(entity)
+                if game.state().entity(*entity).unwrap().card_id == card_id =>
+            {
+                Some((index, *entity))
+            }
+            _ => None,
+        })
+        .unwrap_or_else(|| panic!("Discover did not offer {card_id}"));
+    game.dispatch(PlayerCommand::Choose { index }).unwrap();
+    entity
+}
+
+#[test]
+fn northern_navigation_draws_the_discovered_deck_spell_and_only_frost_freezes() {
+    let mut frost = game_with_classes(
+        mixed(&["TTN_735", "CS2_024"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut frost, PlayerId::TWO, 2);
+    let enemy = play(&mut frost, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut frost, PlayerId::ONE, 3);
+    play(&mut frost, PlayerId::ONE, "TTN_735", None);
+    let selected = choose_deck_entity(&mut frost, "CS2_024");
+    assert_eq!(frost.state().entity(selected).unwrap().zone, Zone::Hand);
+    assert!(frost.state().entity(enemy).unwrap().frozen);
+
+    let mut fire = game_with_classes(
+        mixed(&["TTN_735", "CS2_029"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut fire, PlayerId::TWO, 2);
+    let enemy = play(&mut fire, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut fire, PlayerId::ONE, 3);
+    play(&mut fire, PlayerId::ONE, "TTN_735", None);
+    let selected = choose_deck_entity(&mut fire, "CS2_029");
+    assert_eq!(fire.state().entity(selected).unwrap().zone, Zone::Hand);
+    assert!(!fire.state().entity(enemy).unwrap().frozen);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &frost.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), frost.state());
+}
+
+#[test]
+fn frozen_over_locks_only_the_opponents_direct_draws_for_their_next_turn() {
+    let mut game = game_with_classes(
+        mixed(&["TTN_744", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let log_start = game.state().log.len();
+    let frozen_over = play(&mut game, PlayerId::ONE, "TTN_744", None);
+
+    let drawn_for = |player| {
+        game.state().log[log_start..]
+            .iter()
+            .filter_map(|event| match event {
+                GameEvent::CardDrawn {
+                    player: drawing_player,
+                    card,
+                    source: Some(source),
+                } if *drawing_player == player && *source == frozen_over => Some(*card),
+                _ => None,
+            })
+            .collect::<Vec<_>>()
+    };
+    let own_draws = drawn_for(PlayerId::ONE);
+    let locked = drawn_for(PlayerId::TWO);
+    assert_eq!(own_draws.len(), 2);
+    assert_eq!(locked.len(), 2);
+    assert!(own_draws.iter().all(|entity| {
+        !game
+            .state()
+            .entity(*entity)
+            .unwrap()
+            .keywords
+            .contains(&"frozen_solid".to_owned())
+    }));
+    assert!(locked.iter().all(|entity| {
+        game.state()
+            .entity(*entity)
+            .unwrap()
+            .keywords
+            .contains(&"frozen_solid".to_owned())
+    }));
+
+    end_turn(&mut game);
+    let next_turn_actions = game.legal_actions().unwrap();
+    assert!(locked.iter().all(|entity| {
+        !next_turn_actions
+            .iter()
+            .any(|action| matches!(action, PlayerCommand::PlayCard { card, .. } if card == entity))
+    }));
+
+    end_turn(&mut game);
+    end_turn(&mut game);
+    let following_turn_actions = game.legal_actions().unwrap();
+    assert!(locked.iter().all(|entity| {
+        following_turn_actions
+            .iter()
+            .any(|action| matches!(action, PlayerCommand::PlayCard { card, .. } if card == entity))
+    }));
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+fn choose_primus_rune_card(game: &mut Game<LuaCardRuntime>, rune: &str) -> String {
+    let pending = game
+        .state()
+        .pending_input
+        .as_ref()
+        .expect("The Primus should Discover after its ability");
+    assert!((1..=3).contains(&pending.options.len()));
+    assert!(pending.prompt.contains(match rune {
+        "blood" => "Blood",
+        "frost" => "Frost",
+        "unholy" => "Unholy",
+        other => panic!("unsupported test Rune {other}"),
+    }));
+    let cards = pending
+        .options
+        .iter()
+        .map(|option| match &option.value {
+            ChoiceValue::Card(card_id) => card_id.clone(),
+            other => panic!("Rune Discover returned {other:?}"),
+        })
+        .collect::<Vec<_>>();
+    for card_id in &cards {
+        let definition = game.runtime().definition(card_id).unwrap();
+        assert_eq!(definition.class, "death_knight");
+        let requirement = match rune {
+            "blood" => definition.rune_cost.blood,
+            "frost" => definition.rune_cost.frost,
+            "unholy" => definition.rune_cost.unholy,
+            _ => unreachable!(),
+        };
+        assert!(
+            requirement > 0,
+            "{card_id} lacks the discovered {rune} Rune"
+        );
+    }
+    let selected = cards[0].clone();
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    assert!(
+        game.state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| { game.state().entity(*entity).unwrap().card_id == selected })
+    );
+    selected
+}
+
+#[test]
+fn the_primus_resolves_all_three_runes_and_discovers_from_the_matching_pool() {
+    let mut blood = game_with_classes(
+        repeated("TTN_737"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut blood, PlayerId::TWO, 2);
+    let victim = play(&mut blood, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut blood, PlayerId::ONE, 8);
+    let primus = play(&mut blood, PlayerId::ONE, "TTN_737", None);
+    blood
+        .dispatch(PlayerCommand::UseCardAction {
+            card: primus,
+            action: "titan_1".to_owned(),
+            target: Some(victim),
+        })
+        .unwrap();
+    assert_eq!(blood.state().entity(victim).unwrap().zone, Zone::Graveyard);
+    assert_eq!(blood.state().entity(primus).unwrap().max_health, 12);
+    let hero = blood.state().player(PlayerId::ONE).hero;
+    assert_eq!(blood.state().entity(hero).unwrap().max_health, 33);
+    assert_eq!(blood.state().entity(hero).unwrap().health(), 33);
+    choose_primus_rune_card(&mut blood, "blood");
+    assert!(
+        !blood.legal_actions().unwrap().iter().any(|action| matches!(
+            action,
+            PlayerCommand::UseCardAction { card, .. } if *card == primus
+        ))
+    );
+
+    let mut unholy = game_with_classes(
+        repeated("TTN_737"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut unholy, PlayerId::ONE, 8);
+    let primus = play(&mut unholy, PlayerId::ONE, "TTN_737", None);
+    unholy
+        .dispatch(PlayerCommand::UseCardAction {
+            card: primus,
+            action: "titan_2".to_owned(),
+            target: None,
+        })
+        .unwrap();
+    let servants = unholy
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            (unholy.state().entity(*entity).unwrap().card_id == "TTN_737t2").then_some(*entity)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(servants.len(), 2);
+    assert!(servants.iter().all(|entity| {
+        let servant = unholy.state().entity(*entity).unwrap();
+        servant.has_keyword("taunt")
+            && servant.has_keyword("reborn")
+            && unholy
+                .runtime()
+                .definition(&servant.card_id)
+                .unwrap()
+                .tags
+                .contains(&"undead".to_owned())
+    }));
+    choose_primus_rune_card(&mut unholy, "unholy");
+
+    let mut frost = game_with_classes(
+        mixed(&["TTN_737", "CS2_024"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut frost, PlayerId::ONE, 8);
+    let primus = play(&mut frost, PlayerId::ONE, "TTN_737", None);
+    frost
+        .dispatch(PlayerCommand::UseCardAction {
+            card: primus,
+            action: "titan_3".to_owned(),
+            target: None,
+        })
+        .unwrap();
+    choose_primus_rune_card(&mut frost, "frost");
+    let first_frostbolt = hand_card(&frost, PlayerId::ONE, "CS2_024");
+    assert_eq!(frost.state().entity(first_frostbolt).unwrap().cost, 0);
+    assert_eq!(
+        frost
+            .state()
+            .entity(frost.state().player(PlayerId::ONE).hero)
+            .unwrap()
+            .spell_damage,
+        3
+    );
+    let enemy_hero = frost.state().player(PlayerId::TWO).hero;
+    frost
+        .dispatch(PlayerCommand::PlayCard {
+            card: first_frostbolt,
+            target: Some(enemy_hero),
+        })
+        .unwrap();
+    assert_eq!(frost.state().entity(enemy_hero).unwrap().health(), 24);
+    let second_frostbolt = hand_card(&frost, PlayerId::ONE, "CS2_024");
+    assert_eq!(frost.state().entity(second_frostbolt).unwrap().cost, 2);
+    assert_eq!(
+        frost
+            .state()
+            .entity(frost.state().player(PlayerId::ONE).hero)
+            .unwrap()
+            .spell_damage,
+        0
+    );
+
+    for completed in [&blood, &unholy, &frost] {
+        let replayed = Game::from_replay(
+            LuaCardRuntime::load_dir(data_path()).unwrap(),
+            &completed.replay(),
+        )
+        .unwrap();
+        assert_eq!(replayed.state(), completed.state());
+    }
+}
+
+fn gain_body_bagger_corpses(game: &mut Game<LuaCardRuntime>, amount: u32) {
+    let mut turns = 0;
+    while game.state().player(PlayerId::ONE).corpses < amount {
+        if game.state().active_player == PlayerId::ONE
+            && let Some(action) = game.legal_actions().unwrap().into_iter().find(|action| {
+                matches!(action, PlayerCommand::PlayCard { card, target: None }
+                    if game.state().entity(*card).unwrap().card_id == "RLK_503")
+            })
+        {
+            game.dispatch(action).unwrap();
+            continue;
+        }
+        end_turn(game);
+        turns += 1;
+        assert!(turns < 30, "Body Baggers did not generate enough Corpses");
+    }
+}
+
+fn choose_created_weapon(
+    game: &mut Game<LuaCardRuntime>,
+    source: hearth_core::EntityId,
+) -> hearth_core::EntityId {
+    let pending = game
+        .state()
+        .pending_input
+        .as_ref()
+        .expect("Runes of Darkness should Discover a weapon");
+    assert_eq!(pending.prompt, "Discover a weapon");
+    assert!((1..=3).contains(&pending.options.len()));
+    for option in &pending.options {
+        let ChoiceValue::Card(card_id) = &option.value else {
+            panic!("weapon Discover returned a non-card option")
+        };
+        let definition = game.runtime().definition(card_id).unwrap();
+        assert_eq!(definition.kind, CardKind::Weapon);
+        assert!(matches!(
+            definition.class.as_str(),
+            "death_knight" | "neutral"
+        ));
+    }
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+    game.state()
+        .log
+        .iter()
+        .rev()
+        .find_map(|event| match event {
+            GameEvent::CardCreated {
+                source: event_source,
+                player: PlayerId::ONE,
+                card,
+            } if *event_source == source => Some(*card),
+            _ => None,
+        })
+        .expect("the discovered weapon should be created by Runes of Darkness")
+}
+
+#[test]
+fn runes_of_darkness_discovers_a_legal_weapon_and_spends_only_for_the_buff() {
+    let mut without_corpses = game_with_classes(
+        repeated("YOG_511"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut without_corpses, PlayerId::ONE, 1);
+    let runes = play(&mut without_corpses, PlayerId::ONE, "YOG_511", None);
+    let weapon = choose_created_weapon(&mut without_corpses, runes);
+    let definition = without_corpses
+        .runtime()
+        .definition(&without_corpses.state().entity(weapon).unwrap().card_id)
+        .unwrap();
+    assert_eq!(
+        without_corpses.state().entity(weapon).unwrap().attack,
+        definition.attack
+    );
+    assert_eq!(
+        without_corpses.state().entity(weapon).unwrap().max_health,
+        definition.health
+    );
+    assert_eq!(
+        without_corpses.state().player(PlayerId::ONE).corpses_spent,
+        0
+    );
+
+    let mut buffed = game_with_classes(
+        mixed(&["RLK_503", "YOG_511"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut buffed, 3);
+    end_turn(&mut buffed);
+    advance_to_mana(&mut buffed, PlayerId::ONE, 1);
+    let runes = play(&mut buffed, PlayerId::ONE, "YOG_511", None);
+    let weapon = choose_created_weapon(&mut buffed, runes);
+    let definition = buffed
+        .runtime()
+        .definition(&buffed.state().entity(weapon).unwrap().card_id)
+        .unwrap();
+    assert_eq!(
+        buffed.state().entity(weapon).unwrap().attack,
+        definition.attack + 1
+    );
+    assert_eq!(
+        buffed.state().entity(weapon).unwrap().max_health,
+        definition.health + 1
+    );
+    assert_eq!(buffed.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(buffed.state().player(PlayerId::ONE).corpses_spent, 3);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &buffed.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), buffed.state());
+}
+
+#[test]
+fn sickly_grimewalker_marks_later_friendly_undead_but_not_itself_or_other_tribes() {
+    let mut game = game_with_classes(
+        mixed(&["YOG_512", "RLK_503", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    let grimewalker = play(&mut game, PlayerId::ONE, "YOG_512", None);
+    assert!(
+        !game
+            .state()
+            .entity(grimewalker)
+            .unwrap()
+            .has_keyword("poisonous")
+    );
+    let undead = play(&mut game, PlayerId::ONE, "RLK_503", None);
+    assert!(
+        game.state()
+            .entity(undead)
+            .unwrap()
+            .has_keyword("poisonous")
+    );
+
+    end_turn(&mut game);
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let crocolisk = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    assert!(
+        !game
+            .state()
+            .entity(crocolisk)
+            .unwrap()
+            .has_keyword("poisonous")
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn sinister_soulcage_always_buffs_and_copies_only_after_spending_five_corpses() {
+    let mut insufficient = game_with_classes(
+        mixed(&["RLK_503", "YOG_513"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut insufficient, PlayerId::ONE, 5);
+    let target = play(&mut insufficient, PlayerId::ONE, "RLK_503", None);
+    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses, 1);
+    let board_before = insufficient.state().player(PlayerId::ONE).board.len();
+    play(&mut insufficient, PlayerId::ONE, "YOG_513", Some(target));
+    assert_eq!(insufficient.state().entity(target).unwrap().attack, 3);
+    assert_eq!(insufficient.state().entity(target).unwrap().max_health, 5);
+    assert_eq!(
+        insufficient.state().player(PlayerId::ONE).board.len(),
+        board_before
+    );
+    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(insufficient.state().player(PlayerId::ONE).corpses_spent, 0);
+
+    let mut copied = game_with_classes(
+        mixed(&["RLK_503", "YOG_513"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut copied, 5);
+    let target = copied.state().player(PlayerId::ONE).board[0];
+    let board_before = copied.state().player(PlayerId::ONE).board.len();
+    end_turn(&mut copied);
+    advance_to_mana(&mut copied, PlayerId::ONE, 4);
+    play(&mut copied, PlayerId::ONE, "YOG_513", Some(target));
+    assert_eq!(
+        copied.state().player(PlayerId::ONE).board.len(),
+        board_before + 1
+    );
+    let copies = copied
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            let entity_state = copied.state().entity(*entity).unwrap();
+            (entity_state.card_id == "RLK_503"
+                && entity_state.attack == 3
+                && entity_state.max_health == 5)
+                .then_some(*entity)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(
+        copies.len(),
+        2,
+        "the summon should copy the post-buff state"
+    );
+    assert_eq!(copied.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(copied.state().player(PlayerId::ONE).corpses_spent, 5);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &copied.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), copied.state());
+}
+
+#[test]
+fn howling_blast_hits_all_enemies_in_one_spell_damage_batch_and_freezes_only_its_target() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_015", "CS2_142"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let geomancer = play(&mut game, PlayerId::ONE, "CS2_142", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let first = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let second = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    let friendly_hero = game.state().player(PlayerId::ONE).hero;
+    play(&mut game, PlayerId::ONE, "RLK_015", Some(enemy_hero));
+
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 26);
+    assert!(game.state().entity(enemy_hero).unwrap().frozen);
+    assert_eq!(game.state().entity(first).unwrap().health(), 1);
+    assert_eq!(game.state().entity(second).unwrap().health(), 1);
+    assert!(!game.state().entity(first).unwrap().frozen);
+    assert!(!game.state().entity(second).unwrap().frozen);
+    assert_eq!(game.state().entity(friendly_hero).unwrap().health(), 30);
+    assert_eq!(game.state().entity(geomancer).unwrap().health(), 2);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn horn_of_winter_refreshes_at_most_two_existing_mana_crystals() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_042", "CS2_125"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "CS2_125", None);
+    assert_eq!(game.state().player(PlayerId::ONE).mana, 1);
+
+    play(&mut game, PlayerId::ONE, "RLK_042", None);
+    assert_eq!(game.state().player(PlayerId::ONE).mana, 3);
+    play(&mut game, PlayerId::ONE, "RLK_042", None);
+    assert_eq!(game.state().player(PlayerId::ONE).mana, 4);
+    assert_eq!(game.state().player(PlayerId::ONE).max_mana, 4);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn glacial_advance_discounts_only_the_next_spell_this_turn() {
+    let mut consumed = game_with_classes(
+        mixed(&["RLK_512", "CS2_029"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut consumed, PlayerId::ONE, 7);
+    let enemy_hero = consumed.state().player(PlayerId::TWO).hero;
+    play(&mut consumed, PlayerId::ONE, "RLK_512", Some(enemy_hero));
+    assert_eq!(consumed.state().entity(enemy_hero).unwrap().health(), 26);
+
+    let fireball = hand_card(&consumed, PlayerId::ONE, "CS2_029");
+    assert_eq!(consumed.state().entity(fireball).unwrap().cost, 2);
+    consumed
+        .dispatch(PlayerCommand::PlayCard {
+            card: fireball,
+            target: Some(enemy_hero),
+        })
+        .unwrap();
+    assert_eq!(consumed.state().player(PlayerId::ONE).mana, 2);
+    assert_eq!(consumed.state().entity(enemy_hero).unwrap().health(), 20);
+    let next_fireball = hand_card(&consumed, PlayerId::ONE, "CS2_029");
+    assert_eq!(consumed.state().entity(next_fireball).unwrap().cost, 4);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &consumed.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), consumed.state());
+
+    let mut expired = game_with_classes(
+        mixed(&["RLK_512", "CS2_029"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut expired, PlayerId::ONE, 3);
+    let enemy_hero = expired.state().player(PlayerId::TWO).hero;
+    play(&mut expired, PlayerId::ONE, "RLK_512", Some(enemy_hero));
+    assert_eq!(
+        expired
+            .state()
+            .entity(hand_card(&expired, PlayerId::ONE, "CS2_029"))
+            .unwrap()
+            .cost,
+        2
+    );
+    end_turn(&mut expired);
+    end_turn(&mut expired);
+    assert_eq!(
+        expired
+            .state()
+            .entity(hand_card(&expired, PlayerId::ONE, "CS2_029"))
+            .unwrap()
+            .cost,
+        4
+    );
+}
+
+#[test]
+fn deathchiller_fires_twice_only_after_its_controllers_player_cast_spell() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_083", "RLK_042"]),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    play(&mut game, PlayerId::ONE, "RLK_083", None);
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    play(&mut game, PlayerId::ONE, "RLK_042", None);
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 28);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let friendly_hero = game.state().player(PlayerId::ONE).hero;
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(friendly_hero));
+    assert_eq!(game.state().entity(friendly_hero).unwrap().health(), 24);
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 28);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn ymirjar_frostbreaker_counts_only_frost_spells_remaining_in_hand() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_110", "RLK_015", "CS2_029"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    let mut turns = 0;
+    while game.state().active_player != PlayerId::ONE
+        || !game
+            .state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| game.state().entity(*entity).unwrap().card_id == "RLK_110")
+        || !game
+            .state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| game.state().entity(*entity).unwrap().card_id == "RLK_015")
+        || !game
+            .state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| game.state().entity(*entity).unwrap().card_id == "CS2_029")
+    {
+        end_turn(&mut game);
+        turns += 1;
+        assert!(turns < 20, "the mixed deck did not expose all test cards");
+    }
+    let ymirjar = hand_card(&game, PlayerId::ONE, "RLK_110");
+    let frost_spells = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| {
+            let entity = game.state().entity(**entity).unwrap();
+            let definition = game.runtime().definition(&entity.card_id).unwrap();
+            definition.kind == CardKind::Spell
+                && definition.spell_school.as_deref() == Some("frost")
+        })
+        .count() as i32;
+    assert!(frost_spells > 0);
+    let all_spells = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| {
+            let card_id = &game.state().entity(**entity).unwrap().card_id;
+            game.runtime().definition(card_id).unwrap().kind == CardKind::Spell
+        })
+        .count() as i32;
+    assert!(all_spells > frost_spells);
+
+    game.dispatch(PlayerCommand::PlayCard {
+        card: ymirjar,
+        target: None,
+    })
+    .unwrap();
+    assert_eq!(
+        game.state().entity(ymirjar).unwrap().attack,
+        1 + frost_spells
+    );
+    assert_eq!(game.state().entity(ymirjar).unwrap().max_health, 2);
+}
+
+#[test]
+fn marrow_manipulator_spends_up_to_five_corpses_and_fires_once_for_each() {
+    let mut partial = game_with_classes(
+        mixed(&["RLK_503", "RLK_505"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut partial, 3);
+    advance_to_mana(&mut partial, PlayerId::ONE, 6);
+    let enemy_hero = partial.state().player(PlayerId::TWO).hero;
+    play(&mut partial, PlayerId::ONE, "RLK_505", None);
+    assert_eq!(partial.state().entity(enemy_hero).unwrap().health(), 24);
+    assert_eq!(partial.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(partial.state().player(PlayerId::ONE).corpses_spent, 3);
+
+    let mut capped = game_with_classes(
+        mixed(&["RLK_503", "RLK_505"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut capped, 5);
+    advance_to_mana(&mut capped, PlayerId::ONE, 6);
+    let enemy_hero = capped.state().player(PlayerId::TWO).hero;
+    play(&mut capped, PlayerId::ONE, "RLK_505", None);
+    assert_eq!(capped.state().entity(enemy_hero).unwrap().health(), 20);
+    assert_eq!(capped.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(capped.state().player(PlayerId::ONE).corpses_spent, 5);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &capped.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), capped.state());
+}
+
+#[test]
+fn bone_breaker_burns_the_enemy_hero_after_minion_attacks_even_on_final_durability() {
+    let mut game = game_with_classes(
+        repeated("RLK_516"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 1);
+    let weapon = play(&mut game, PlayerId::ONE, "RLK_516", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    let first = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    end_turn(&mut game);
+
+    let hero = game.state().player(PlayerId::ONE).hero;
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    game.dispatch(PlayerCommand::Attack {
+        attacker: hero,
+        defender: first,
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 28);
+    assert_eq!(game.state().entity(weapon).unwrap().health(), 1);
+
+    end_turn(&mut game);
+    let second = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    end_turn(&mut game);
+    game.dispatch(PlayerCommand::Attack {
+        attacker: hero,
+        defender: second,
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 26);
+    assert_eq!(game.state().entity(weapon).unwrap().zone, Zone::Graveyard);
+    assert!(game.state().player(PlayerId::ONE).weapon.is_none());
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn lady_deathwhisper_copies_every_frost_spell_but_no_other_hand_card() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_713", "RLK_015", "CS2_029"]),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    let lady = play(&mut game, PlayerId::ONE, "RLK_713", None);
+    let is_frost_spell = |game: &Game<LuaCardRuntime>, entity: &hearth_core::EntityId| {
+        let card_id = &game.state().entity(*entity).unwrap().card_id;
+        let definition = game.runtime().definition(card_id).unwrap();
+        definition.kind == CardKind::Spell && definition.spell_school.as_deref() == Some("frost")
+    };
+    let frost_before = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| is_frost_spell(&game, entity))
+        .count();
+    let fireballs_before = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| game.state().entity(**entity).unwrap().card_id == "CS2_029")
+        .count();
+    assert!(frost_before > 0);
+    assert!(fireballs_before > 0);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(lady));
+    let frost_after = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| is_frost_spell(&game, entity))
+        .count();
+    let fireballs_after = game
+        .state()
+        .player(PlayerId::ONE)
+        .hand
+        .iter()
+        .filter(|entity| game.state().entity(**entity).unwrap().card_id == "CS2_029")
+        .count();
+    assert_eq!(frost_after, frost_before * 2);
+    assert_eq!(fireballs_after, fireballs_before);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn might_of_menethil_spends_only_for_distinct_enemy_minions_it_can_freeze() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_740"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut game, 3);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let first = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let second = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    play(&mut game, PlayerId::ONE, "RLK_740", None);
+
+    assert!(game.state().entity(first).unwrap().frozen);
+    assert!(game.state().entity(second).unwrap().frozen);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn hematurge_spends_one_corpse_before_discovering_only_blood_rune_cards() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_066"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut game, 1);
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let hematurge = play(&mut game, PlayerId::ONE, "RLK_066", None);
+    let pending = game
+        .state()
+        .pending_input
+        .as_ref()
+        .expect("Hematurge should Discover after spending its Corpse");
+    assert_eq!(pending.source, hematurge);
+    assert_eq!(pending.prompt, "Discover a Blood Rune card");
+    assert!((1..=3).contains(&pending.options.len()));
+    for option in &pending.options {
+        let ChoiceValue::Card(card_id) = &option.value else {
+            panic!("Hematurge returned a non-card option")
+        };
+        let definition = game.runtime().definition(card_id).unwrap();
+        assert_eq!(definition.class, "death_knight");
+        assert!(definition.rune_cost.blood > 0, "{card_id}");
+    }
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 1);
+    game.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+
+    let mut empty = game_with_classes(
+        repeated("RLK_066"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut empty, PlayerId::ONE, 2);
+    play(&mut empty, PlayerId::ONE, "RLK_066", None);
+    assert!(empty.state().pending_input.is_none());
+    assert_eq!(empty.state().player(PlayerId::ONE).corpses_spent, 0);
+}
+
+#[test]
+fn vicious_bloodworm_targets_a_real_minion_entity_in_its_own_hand() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_711", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let bloodworm = hand_card(&game, PlayerId::ONE, "RLK_711");
+    let target = hand_card(&game, PlayerId::ONE, "CS2_120");
+    assert!(game.legal_actions().unwrap().iter().any(|action| {
+        matches!(
+            action,
+            PlayerCommand::PlayCard {
+                card,
+                target: Some(candidate),
+            } | PlayerCommand::PlayCardAt {
+                card,
+                target: Some(candidate),
+                ..
+            } if *card == bloodworm && *candidate == target
+        )
+    }));
+    game.dispatch(PlayerCommand::PlayCard {
+        card: bloodworm,
+        target: Some(target),
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(target).unwrap().zone, Zone::Hand);
+    assert_eq!(game.state().entity(target).unwrap().attack, 5);
+    assert_eq!(game.state().entity(target).unwrap().max_health, 3);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+fn hand_minion_stats(
+    game: &Game<LuaCardRuntime>,
+    player: PlayerId,
+) -> BTreeMap<hearth_core::EntityId, (i32, i32)> {
+    game.state()
+        .player(player)
+        .hand
+        .iter()
+        .filter_map(|entity| {
+            let state = game.state().entity(*entity).unwrap();
+            (state.kind == CardKind::Minion).then_some((*entity, (state.attack, state.max_health)))
+        })
+        .collect()
+}
+
+#[test]
+fn blood_tap_buffs_every_hand_minion_and_doubles_only_after_spending_two_corpses() {
+    let mut paid = game_with_classes(
+        mixed(&["RLK_503", "RLK_712"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut paid, 2);
+    end_turn(&mut paid);
+    advance_to_mana(&mut paid, PlayerId::ONE, 2);
+    let before = hand_minion_stats(&paid, PlayerId::ONE);
+    assert!(!before.is_empty());
+    play(&mut paid, PlayerId::ONE, "RLK_712", None);
+    for (entity, (attack, health)) in before {
+        let buffed = paid.state().entity(entity).unwrap();
+        assert_eq!(buffed.attack, attack + 2, "{entity}");
+        assert_eq!(buffed.max_health, health + 2, "{entity}");
+    }
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 2);
+
+    let mut unpaid = game_with_classes(
+        mixed(&["RLK_712", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut unpaid, PlayerId::ONE, 2);
+    let before = hand_minion_stats(&unpaid, PlayerId::ONE);
+    play(&mut unpaid, PlayerId::ONE, "RLK_712", None);
+    for (entity, (attack, health)) in before {
+        let buffed = unpaid.state().entity(entity).unwrap();
+        assert_eq!(buffed.attack, attack + 1, "{entity}");
+        assert_eq!(buffed.max_health, health + 1, "{entity}");
+    }
+    assert_eq!(unpaid.state().player(PlayerId::ONE).corpses_spent, 0);
+}
+
+#[test]
+fn darkfallen_neophyte_buffs_hand_attack_only_after_exact_corpse_spending() {
+    let mut paid = game_with_classes(
+        mixed(&["RLK_503", "RLK_731"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut paid, 2);
+    end_turn(&mut paid);
+    advance_to_mana(&mut paid, PlayerId::ONE, 3);
+    let neophyte = hand_card(&paid, PlayerId::ONE, "RLK_731");
+    let mut before = hand_minion_stats(&paid, PlayerId::ONE);
+    before.remove(&neophyte);
+    paid.dispatch(PlayerCommand::PlayCard {
+        card: neophyte,
+        target: None,
+    })
+    .unwrap();
+    for (entity, (attack, health)) in before {
+        let buffed = paid.state().entity(entity).unwrap();
+        assert_eq!(buffed.attack, attack + 2, "{entity}");
+        assert_eq!(buffed.max_health, health, "{entity}");
+    }
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 2);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &paid.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), paid.state());
+}
+
+#[test]
+fn blood_boil_infections_tick_with_lifesteal_ignore_later_minions_and_are_silenciable() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_730", "EX1_332"]),
+        mixed(&["CS2_120", "CS2_029"]),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 8);
+    let infected = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let cleansed = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let friendly_hero = game.state().player(PlayerId::ONE).hero;
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(friendly_hero));
+    assert_eq!(game.state().entity(friendly_hero).unwrap().health(), 24);
+
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let blood_boil = play(&mut game, PlayerId::ONE, "RLK_730", None);
+    assert!(
+        game.state()
+            .entity(infected)
+            .unwrap()
+            .enchantments
+            .iter()
+            .any(|enchantment| enchantment.source == blood_boil)
+    );
+    play(&mut game, PlayerId::ONE, "EX1_332", Some(cleansed));
+    assert!(
+        game.state()
+            .entity(cleansed)
+            .unwrap()
+            .enchantments
+            .is_empty()
+    );
+    end_turn(&mut game);
+
+    assert_eq!(game.state().entity(infected).unwrap().health(), 1);
+    assert_eq!(game.state().entity(cleansed).unwrap().health(), 3);
+    assert_eq!(game.state().entity(friendly_hero).unwrap().health(), 26);
+
+    let later = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    end_turn(&mut game);
+    end_turn(&mut game);
+    assert_eq!(game.state().entity(infected).unwrap().zone, Zone::Graveyard);
+    assert_eq!(game.state().entity(cleansed).unwrap().health(), 3);
+    assert_eq!(game.state().entity(later).unwrap().health(), 3);
+    assert_eq!(game.state().entity(friendly_hero).unwrap().health(), 28);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn asphyxiate_destroys_exactly_one_random_member_of_the_highest_attack_tie() {
+    let mut game = game_with_classes(
+        repeated("RLK_087"),
+        mixed(&["CS2_182", "CS2_120"]),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 10);
+    let first_yeti = play(&mut game, PlayerId::TWO, "CS2_182", None);
+    let second_yeti = play(&mut game, PlayerId::TWO, "CS2_182", None);
+    let crocolisk = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    play(&mut game, PlayerId::ONE, "RLK_087", None);
+
+    let destroyed_yetis = [first_yeti, second_yeti]
+        .into_iter()
+        .filter(|entity| game.state().entity(*entity).unwrap().zone == Zone::Graveyard)
+        .count();
+    assert_eq!(destroyed_yetis, 1);
+    assert_eq!(game.state().entity(crocolisk).unwrap().zone, Zone::Board);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn nerubian_swarmguard_summons_two_exact_copies_of_its_hand_buffed_state() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_062", "RLK_712"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let swarmguard = hand_card(&game, PlayerId::ONE, "RLK_062");
+    play(&mut game, PlayerId::ONE, "RLK_712", None);
+    assert_eq!(game.state().entity(swarmguard).unwrap().attack, 2);
+    assert_eq!(game.state().entity(swarmguard).unwrap().max_health, 4);
+    game.dispatch(PlayerCommand::PlayCard {
+        card: swarmguard,
+        target: None,
+    })
+    .unwrap();
+
+    let copies = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            let state = game.state().entity(*entity).unwrap();
+            (state.card_id == "RLK_062").then_some(state)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(copies.len(), 3);
+    assert!(copies.iter().all(|entity| {
+        entity.attack == 2
+            && entity.max_health == 4
+            && entity.has_keyword("taunt")
+            && entity.has_keyword("battlecry")
+    }));
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn plague_strike_summons_a_rushing_zombie_only_when_its_damage_kills() {
+    let mut game = game_with_classes(
+        repeated("RLK_018"),
+        mixed(&["CS2_120", "CS2_182"]),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 6);
+    let crocolisk = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let yeti = play(&mut game, PlayerId::TWO, "CS2_182", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+
+    play(&mut game, PlayerId::ONE, "RLK_018", Some(crocolisk));
+    assert_eq!(
+        game.state().entity(crocolisk).unwrap().zone,
+        Zone::Graveyard
+    );
+    let zombie = game.state().player(PlayerId::ONE).board[0];
+    let zombie_state = game.state().entity(zombie).unwrap();
+    assert_eq!(zombie_state.card_id, "RLK_018t");
+    assert_eq!((zombie_state.attack, zombie_state.health()), (2, 2));
+    assert!(zombie_state.has_keyword("rush"));
+
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    let legal = game.legal_actions().unwrap();
+    assert!(legal.contains(&PlayerCommand::Attack {
+        attacker: zombie,
+        defender: yeti,
+    }));
+    assert!(!legal.contains(&PlayerCommand::Attack {
+        attacker: zombie,
+        defender: enemy_hero,
+    }));
+
+    play(&mut game, PlayerId::ONE, "RLK_018", Some(yeti));
+    assert_eq!(game.state().entity(yeti).unwrap().health(), 2);
+    assert_eq!(game.state().player(PlayerId::ONE).board, vec![zombie]);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn dark_transformation_targets_any_undead_and_preserves_its_side_and_position() {
+    let mut game = game_with_classes(
+        repeated("RLK_057"),
+        mixed(&["RLK_503", "CS2_120"]),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 3);
+    let undead = play(&mut game, PlayerId::TWO, "RLK_503", None);
+    let beast = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    assert_eq!(
+        game.state().player(PlayerId::TWO).board,
+        vec![undead, beast]
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+
+    let transformation = hand_card(&game, PlayerId::ONE, "RLK_057");
+    let legal = game.legal_actions().unwrap();
+    assert!(legal.iter().any(|action| matches!(
+        action,
+        PlayerCommand::PlayCard {
+            card,
+            target: Some(target),
+        } | PlayerCommand::PlayCardAt {
+            card,
+            target: Some(target),
+            ..
+        } if *card == transformation && *target == undead
+    )));
+    assert!(!legal.iter().any(|action| matches!(
+        action,
+        PlayerCommand::PlayCard {
+            card,
+            target: Some(target),
+        } | PlayerCommand::PlayCardAt {
+            card,
+            target: Some(target),
+            ..
+        } if *card == transformation && *target == beast
+    )));
+    game.dispatch(PlayerCommand::PlayCard {
+        card: transformation,
+        target: Some(undead),
+    })
+    .unwrap();
+
+    let transformed = game.state().entity(undead).unwrap();
+    assert_eq!(transformed.card_id, "RLK_057t");
+    assert_eq!(transformed.controller, PlayerId::TWO);
+    assert_eq!((transformed.attack, transformed.health()), (4, 5));
+    assert!(transformed.has_keyword("rush"));
+    assert_eq!(
+        game.state().player(PlayerId::TWO).board,
+        vec![undead, beast]
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn tomb_guardians_spends_corpses_only_when_it_can_summon_and_grants_reborn() {
+    let mut paid = game_with_classes(
+        mixed(&["RLK_503", "RLK_118"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut paid, 4);
+    advance_to_mana(&mut paid, PlayerId::ONE, 4);
+    play(&mut paid, PlayerId::ONE, "RLK_118", None);
+    let zombies = paid
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            let state = paid.state().entity(*entity).unwrap();
+            (state.card_id == "RLK_118t3").then_some(state)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(zombies.len(), 2);
+    assert!(zombies.iter().all(|zombie| {
+        zombie.attack == 2
+            && zombie.health() == 2
+            && zombie.has_keyword("taunt")
+            && zombie.has_keyword("reborn")
+    }));
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 4);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &paid.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), paid.state());
+
+    let mut unpaid = game_with_classes(
+        repeated("RLK_118"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut unpaid, PlayerId::ONE, 4);
+    play(&mut unpaid, PlayerId::ONE, "RLK_118", None);
+    assert_eq!(unpaid.state().player(PlayerId::ONE).board.len(), 2);
+    assert!(
+        unpaid
+            .state()
+            .player(PlayerId::ONE)
+            .board
+            .iter()
+            .all(|entity| {
+                let zombie = unpaid.state().entity(*entity).unwrap();
+                zombie.has_keyword("taunt") && !zombie.has_keyword("reborn")
+            })
+    );
+    assert_eq!(unpaid.state().player(PlayerId::ONE).corpses_spent, 0);
+
+    let mut one_space = game_with_classes(
+        mixed(&["RLK_503", "CS2_120", "RLK_118"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut one_space, 4);
+    advance_to_mana(&mut one_space, PlayerId::ONE, 10);
+    play(&mut one_space, PlayerId::ONE, "CS2_120", None);
+    play(&mut one_space, PlayerId::ONE, "CS2_120", None);
+    assert_eq!(one_space.state().player(PlayerId::ONE).board.len(), 6);
+    play(&mut one_space, PlayerId::ONE, "RLK_118", None);
+    assert_eq!(one_space.state().player(PlayerId::ONE).board.len(), 7);
+    let last = *one_space
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .last()
+        .unwrap();
+    assert_eq!(one_space.state().entity(last).unwrap().card_id, "RLK_118t3");
+    assert!(
+        one_space
+            .state()
+            .entity(last)
+            .unwrap()
+            .has_keyword("reborn")
+    );
+    assert_eq!(one_space.state().player(PlayerId::ONE).corpses, 0);
+}
+
+#[test]
+fn unholy_frenzy_attacks_left_to_right_and_resummons_friendly_minions_that_die() {
+    let mut game = game_with_classes(
+        mixed(&["CS2_120", "CS2_182", "RLK_056"]),
+        repeated("CS2_182"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let crocolisk = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    let yeti = play(&mut game, PlayerId::ONE, "CS2_182", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let target = play(&mut game, PlayerId::TWO, "CS2_182", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    play(&mut game, PlayerId::ONE, "RLK_056", Some(target));
+
+    assert_eq!(game.state().entity(target).unwrap().zone, Zone::Graveyard);
+    assert_eq!(
+        game.state().entity(crocolisk).unwrap().zone,
+        Zone::Graveyard
+    );
+    assert_eq!(game.state().entity(yeti).unwrap().zone, Zone::Board);
+    assert_eq!(game.state().entity(yeti).unwrap().health(), 1);
+    let board = &game.state().player(PlayerId::ONE).board;
+    assert_eq!(board.len(), 2);
+    let resummoned = board[0];
+    assert_ne!(resummoned, crocolisk);
+    assert_eq!(game.state().entity(resummoned).unwrap().card_id, "CS2_120");
+    assert_eq!(
+        (
+            game.state().entity(resummoned).unwrap().attack,
+            game.state().entity(resummoned).unwrap().health(),
+        ),
+        (2, 3)
+    );
+    assert_eq!(board[1], yeti);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn the_scourge_fills_every_open_board_slot_with_replayable_random_undead() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_122", "CS2_120"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let existing = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 9);
+    play(&mut game, PlayerId::ONE, "RLK_122", None);
+
+    let board = &game.state().player(PlayerId::ONE).board;
+    assert_eq!(board.len(), 7);
+    assert_eq!(board[0], existing);
+    for entity in &board[1..] {
+        let state = game.state().entity(*entity).unwrap();
+        let definition = game.runtime().definition(&state.card_id).unwrap();
+        assert_eq!(definition.kind, CardKind::Minion);
+        assert!(
+            definition
+                .tags
+                .iter()
+                .any(|tag| tag == "undead" || tag == "all"),
+            "{} is not Undead",
+            state.card_id
+        );
+    }
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn corpse_bride_spends_up_to_ten_corpses_and_raises_a_corpseless_scaled_groom() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_504"]),
+        repeated("EX1_161"),
+        ["death_knight", "druid"],
+    );
+    gain_body_bagger_corpses(&mut game, 3);
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    play(&mut game, PlayerId::ONE, "RLK_504", None);
+    let groom = *game.state().player(PlayerId::ONE).board.last().unwrap();
+    let groom_state = game.state().entity(groom).unwrap();
+    assert_eq!(groom_state.card_id, "RLK_506t");
+    assert_eq!((groom_state.attack, groom_state.health()), (3, 3));
+    assert!(groom_state.has_keyword("taunt"));
+    assert!(groom_state.has_keyword("no_corpse"));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 3);
+
+    advance_to_mana(&mut game, PlayerId::TWO, 1);
+    play(&mut game, PlayerId::TWO, "EX1_161", Some(groom));
+    assert_eq!(game.state().entity(groom).unwrap().zone, Zone::Graveyard);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn malignant_horror_spends_once_per_existing_trigger_and_copies_its_current_state() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_745", "CS2_009"]),
+        repeated("CS2_120"),
+        ["death_knight", "druid"],
+    );
+    gain_body_bagger_corpses(&mut game, 4);
+    advance_to_mana(&mut game, PlayerId::ONE, 10);
+    let horror = play(&mut game, PlayerId::ONE, "RLK_745", None);
+    play(&mut game, PlayerId::ONE, "CS2_009", Some(horror));
+    assert_eq!(
+        (
+            game.state().entity(horror).unwrap().attack,
+            game.state().entity(horror).unwrap().health(),
+        ),
+        (4, 7)
+    );
+    end_turn(&mut game);
+
+    let horrors = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            let state = game.state().entity(*entity).unwrap();
+            (state.card_id == "RLK_745").then_some(state)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(horrors.len(), 2);
+    assert!(horrors.iter().all(|horror| {
+        horror.attack == 4
+            && horror.health() == 7
+            && horror.has_keyword("reborn")
+            && horror.has_keyword("taunt")
+    }));
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 4);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn frostmourne_records_each_combat_kill_and_summons_them_after_final_durability() {
+    let mut game = game_with_classes(
+        repeated("RLK_086"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 6);
+    let victims = [
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+    ];
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    let weapon = play(&mut game, PlayerId::ONE, "RLK_086", None);
+    let hero = game.state().player(PlayerId::ONE).hero;
+
+    for (index, victim) in victims.into_iter().enumerate() {
+        game.dispatch(PlayerCommand::Attack {
+            attacker: hero,
+            defender: victim,
+        })
+        .unwrap();
+        assert_eq!(game.state().entity(victim).unwrap().zone, Zone::Graveyard);
+        if index < 2 {
+            assert_eq!(game.state().player(PlayerId::ONE).weapon, Some(weapon));
+            end_turn(&mut game);
+            end_turn(&mut game);
+        }
+    }
+
+    assert_eq!(game.state().entity(weapon).unwrap().zone, Zone::Graveyard);
+    assert!(game.state().player(PlayerId::ONE).weapon.is_none());
+    let summoned = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .map(|entity| game.state().entity(*entity).unwrap())
+        .collect::<Vec<_>>();
+    assert_eq!(summoned.len(), 3);
+    assert!(summoned.iter().all(|minion| {
+        minion.card_id == "CS2_120" && minion.attack == 2 && minion.health() == 3
+    }));
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn path_of_arthas_catalog_contains_all_26_collectible_cards() {
+    let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
+    assert_eq!(
+        runtime
+            .definitions()
+            .filter(|card| card.set == "PATH_OF_ARTHAS" && card.collectible)
+            .count(),
+        26
+    );
+}
+
+#[test]
+fn return_of_the_lich_king_catalog_contains_all_13_death_knight_collectible_cards() {
+    let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
+    assert_eq!(
+        runtime
+            .definitions()
+            .filter(|card| {
+                card.set == "RETURN_OF_THE_LICH_KING"
+                    && card.collectible
+                    && card.class == "death_knight"
+            })
+            .count(),
+        13
+    );
+}
+
+#[test]
+fn soulbreaker_gains_corpses_for_combat_kills_including_final_durability() {
+    let mut game = game_with_classes(
+        repeated("RLK_012"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let victims = [
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+    ];
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    let weapon = play(&mut game, PlayerId::ONE, "RLK_012", None);
+    let hero = game.state().player(PlayerId::ONE).hero;
+    for (index, victim) in victims.into_iter().enumerate() {
+        game.dispatch(PlayerCommand::Attack {
+            attacker: hero,
+            defender: victim,
+        })
+        .unwrap();
+        assert_eq!(
+            game.state().player(PlayerId::ONE).corpses,
+            2 * (index as u32 + 1)
+        );
+        if index == 0 {
+            end_turn(&mut game);
+            end_turn(&mut game);
+        }
+    }
+    assert_eq!(game.state().entity(weapon).unwrap().zone, Zone::Graveyard);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn vampiric_blood_always_grants_five_health_and_doubles_only_after_exact_spending() {
+    let mut paid = game_with_classes(
+        mixed(&["RLK_503", "RLK_051"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    gain_body_bagger_corpses(&mut paid, 3);
+    end_turn(&mut paid);
+    advance_to_mana(&mut paid, PlayerId::ONE, 2);
+    let hero = paid.state().player(PlayerId::ONE).hero;
+    let deck_before = paid.state().player(PlayerId::ONE).deck.len();
+    play(&mut paid, PlayerId::ONE, "RLK_051", None);
+    let hero_state = paid.state().entity(hero).unwrap();
+    assert_eq!((hero_state.health(), hero_state.max_health), (40, 40));
+    assert_eq!(
+        paid.state().player(PlayerId::ONE).deck.len(),
+        deck_before - 1
+    );
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(paid.state().player(PlayerId::ONE).corpses_spent, 3);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &paid.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), paid.state());
+
+    let mut unpaid = game_with_classes(
+        repeated("RLK_051"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut unpaid, PlayerId::ONE, 2);
+    let hero = unpaid.state().player(PlayerId::ONE).hero;
+    let deck_before = unpaid.state().player(PlayerId::ONE).deck.len();
+    play(&mut unpaid, PlayerId::ONE, "RLK_051", None);
+    let hero_state = unpaid.state().entity(hero).unwrap();
+    assert_eq!((hero_state.health(), hero_state.max_health), (35, 35));
+    assert_eq!(unpaid.state().player(PlayerId::ONE).deck.len(), deck_before);
+}
+
+#[test]
+fn necrotic_mortician_discovers_only_after_a_recent_friendly_undead_death() {
+    let setup = || {
+        let mut game = game_with_classes(
+            mixed(&["RLK_503", "RLK_116"]),
+            repeated("CS2_029"),
+            ["death_knight", "mage"],
+        );
+        advance_to_mana(&mut game, PlayerId::ONE, 1);
+        let undead = play(&mut game, PlayerId::ONE, "RLK_503", None);
+        advance_to_mana(&mut game, PlayerId::TWO, 4);
+        play(&mut game, PlayerId::TWO, "CS2_029", Some(undead));
+        assert_eq!(game.state().entity(undead).unwrap().zone, Zone::Graveyard);
+        game
+    };
+
+    let mut recent = setup();
+    advance_to_mana(&mut recent, PlayerId::ONE, 2);
+    let mortician = play(&mut recent, PlayerId::ONE, "RLK_116", None);
+    let pending = recent
+        .state()
+        .pending_input
+        .as_ref()
+        .expect("a recent Undead death should enable the Discover");
+    assert_eq!(pending.source, mortician);
+    assert_eq!(pending.prompt, "Discover an Unholy Rune card");
+    for option in &pending.options {
+        let ChoiceValue::Card(card_id) = &option.value else {
+            panic!("Mortician returned a non-card option")
+        };
+        let definition = recent.runtime().definition(card_id).unwrap();
+        assert_eq!(definition.class, "death_knight");
+        assert!(definition.rune_cost.unholy > 0, "{card_id}");
+    }
+    recent.dispatch(PlayerCommand::Choose { index: 0 }).unwrap();
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &recent.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), recent.state());
+
+    let mut stale = setup();
+    advance_to_mana(&mut stale, PlayerId::ONE, 2);
+    end_turn(&mut stale);
+    end_turn(&mut stale);
+    play(&mut stale, PlayerId::ONE, "RLK_116", None);
+    assert!(stale.state().pending_input.is_none());
+}
+
+#[test]
+fn meat_grinder_removes_one_random_deck_minion_and_gains_four_corpses() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_120", "CS2_120", "CS2_029"]),
+        repeated("CS2_120"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    let eligible = game
+        .state()
+        .player(PlayerId::ONE)
+        .deck
+        .iter()
+        .copied()
+        .filter(|entity| game.state().entity(*entity).unwrap().kind == CardKind::Minion)
+        .collect::<Vec<_>>();
+    assert!(!eligible.is_empty());
+    play(&mut game, PlayerId::ONE, "RLK_120", None);
+    assert_eq!(
+        eligible
+            .iter()
+            .filter(|entity| game.state().entity(**entity).unwrap().zone == Zone::Removed)
+            .count(),
+        1
+    );
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 4);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn acolyte_of_death_draws_for_friendly_undead_deaths_only() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_121", "RLK_503", "CS2_120"]),
+        repeated("CS2_029"),
+        ["death_knight", "mage"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 6);
+    play(&mut game, PlayerId::ONE, "RLK_121", None);
+    let undead = play(&mut game, PlayerId::ONE, "RLK_503", None);
+    let beast = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 8);
+    let deck_before = game.state().player(PlayerId::ONE).deck.len();
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(undead));
+    assert_eq!(
+        game.state().player(PlayerId::ONE).deck.len(),
+        deck_before - 1
+    );
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(beast));
+    assert_eq!(
+        game.state().player(PlayerId::ONE).deck.len(),
+        deck_before - 1
+    );
+}
+
+#[test]
+fn boneguard_commander_spends_only_for_available_footman_slots() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "RLK_506"]),
+        repeated("CS2_032"),
+        ["death_knight", "mage"],
+    );
+    gain_body_bagger_corpses(&mut game, 6);
+    advance_to_mana(&mut game, PlayerId::TWO, 7);
+    play(&mut game, PlayerId::TWO, "CS2_032", None);
+    assert!(game.state().player(PlayerId::ONE).board.is_empty());
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 12);
+    advance_to_mana(&mut game, PlayerId::ONE, 8);
+    let commander = play(&mut game, PlayerId::ONE, "RLK_506", None);
+
+    let board = &game.state().player(PlayerId::ONE).board;
+    assert_eq!(board.len(), 7);
+    assert_eq!(board[0], commander);
+    for footman in &board[1..] {
+        let state = game.state().entity(*footman).unwrap();
+        assert_eq!(state.card_id, "RLK_061t");
+        assert_eq!((state.attack, state.health()), (1, 3));
+        assert!(state.has_keyword("taunt"));
+        assert!(state.has_keyword("no_corpse"));
+    }
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 6);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 6);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn mograine_persists_after_death_is_public_and_stacks_once_per_battlecry() {
+    let mut game = game_with_classes(
+        repeated("RLK_706"),
+        repeated("EX1_161"),
+        ["death_knight", "druid"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    let first = play(&mut game, PlayerId::ONE, "RLK_706", None);
+    end_turn(&mut game);
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 27);
+    assert!(
+        game.state()
+            .player_view(PlayerId::TWO)
+            .player(PlayerId::ONE)
+            .public_keywords
+            .contains(&"mograine".to_owned())
+    );
+
+    play(&mut game, PlayerId::TWO, "EX1_161", Some(first));
+    assert_eq!(game.state().entity(first).unwrap().zone, Zone::Graveyard);
+    end_turn(&mut game);
+    let second = play(&mut game, PlayerId::ONE, "RLK_706", None);
+    assert_ne!(first, second);
+    end_turn(&mut game);
+    assert_eq!(game.state().entity(enemy_hero).unwrap().health(), 21);
+    assert_eq!(
+        game.state().player(PlayerId::ONE).script_data["mograine_end_turn_damage"],
+        6
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn soulstealer_destroys_all_others_and_gains_extra_corpses_for_enemies() {
+    let mut game = game_with_classes(
+        mixed(&["CS2_120", "RLK_741"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 2);
+    let friendly = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let enemies = [
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+        play(&mut game, PlayerId::TWO, "CS2_120", None),
+    ];
+    advance_to_mana(&mut game, PlayerId::ONE, 8);
+    let soulstealer = play(&mut game, PlayerId::ONE, "RLK_741", None);
+
+    assert_eq!(game.state().entity(friendly).unwrap().zone, Zone::Graveyard);
+    assert!(
+        enemies
+            .iter()
+            .all(|enemy| game.state().entity(*enemy).unwrap().zone == Zone::Graveyard)
+    );
+    assert_eq!(game.state().player(PlayerId::ONE).board, vec![soulstealer]);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 3);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 0);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn corpse_explosion_spends_per_wave_and_can_reuse_a_corpse_created_mid_cast() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "CS2_231", "RLK_035"]),
+        repeated("CS2_182"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    let bagger = play(&mut game, PlayerId::ONE, "RLK_503", None);
+    let wisp = play(&mut game, PlayerId::ONE, "CS2_231", None);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 1);
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let yeti = play(&mut game, PlayerId::TWO, "CS2_182", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    play(&mut game, PlayerId::ONE, "RLK_035", None);
+
+    assert_eq!(game.state().entity(wisp).unwrap().zone, Zone::Graveyard);
+    assert_eq!(game.state().entity(bagger).unwrap().health(), 1);
+    assert_eq!(game.state().entity(yeti).unwrap().health(), 3);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses, 0);
+    assert_eq!(game.state().player(PlayerId::ONE).corpses_spent, 2);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn blightfang_infections_summon_for_the_opponent_and_silence_removes_one() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_225", "EX1_332"]),
+        mixed(&["CS2_120", "EX1_161"]),
+        ["death_knight", "druid"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 4);
+    let silenced = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    let infected = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    play(&mut game, PlayerId::ONE, "RLK_225", None);
+    assert!(
+        game.state()
+            .entity(infected)
+            .unwrap()
+            .has_keyword("deathrattle")
+    );
+    play(&mut game, PlayerId::ONE, "EX1_332", Some(silenced));
+    assert!(
+        game.state()
+            .entity(silenced)
+            .unwrap()
+            .scripts_for_hook("on_deathrattle")
+            .is_empty()
+    );
+
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    play(&mut game, PlayerId::TWO, "EX1_161", Some(silenced));
+    play(&mut game, PlayerId::TWO, "EX1_161", Some(infected));
+    let zombies = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter(|entity| game.state().entity(**entity).unwrap().card_id == "RLK_118t3")
+        .count();
+    assert_eq!(zombies, 1);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn rimescale_siren_counts_player_cast_spells_while_held_and_freezes_three_distinct_minions() {
+    let mut game = game_with_classes(
+        mixed(&["NX2_035", "CS2_008"]),
+        repeated("CS2_231"),
+        ["death_knight", "druid"],
+    );
+    end_turn(&mut game);
+    let enemy_minions = (0..4)
+        .map(|_| play(&mut game, PlayerId::TWO, "CS2_231", None))
+        .collect::<Vec<_>>();
+    advance_to_mana(&mut game, PlayerId::ONE, 3);
+    let siren = hand_card(&game, PlayerId::ONE, "NX2_035");
+    let enemy_hero = game.state().player(PlayerId::TWO).hero;
+    for _ in 0..3 {
+        play(&mut game, PlayerId::ONE, "CS2_008", Some(enemy_hero));
+    }
+    assert_eq!(
+        game.state().entity(siren).unwrap().script_data["rimescale_spells"],
+        3
+    );
+    game.dispatch(PlayerCommand::PlayCard {
+        card: siren,
+        target: None,
+    })
+    .unwrap();
+    assert_eq!(
+        enemy_minions
+            .iter()
+            .filter(|minion| game.state().entity(**minion).unwrap().frozen)
+            .count(),
+        3
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn construct_quarter_uses_location_targeting_and_summons_the_current_four_five_horror() {
+    let mut game = game_with_classes(
+        mixed(&["RLK_503", "NX2_036"]),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    let enemy = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    let sacrifice = play(&mut game, PlayerId::ONE, "RLK_503", None);
+    let location = play(&mut game, PlayerId::ONE, "NX2_036", None);
+    assert!(
+        game.legal_actions()
+            .unwrap()
+            .contains(&PlayerCommand::UseLocation {
+                location,
+                target: Some(sacrifice),
+            })
+    );
+    game.dispatch(PlayerCommand::UseLocation {
+        location,
+        target: Some(sacrifice),
+    })
+    .unwrap();
+
+    assert_eq!(
+        game.state().entity(sacrifice).unwrap().zone,
+        Zone::Graveyard
+    );
+    assert_eq!(game.state().entity(location).unwrap().health(), 2);
+    let horror = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .copied()
+        .find(|entity| game.state().entity(*entity).unwrap().card_id == "NX2_036t")
+        .unwrap();
+    let state = game.state().entity(horror).unwrap();
+    assert_eq!((state.attack, state.health()), (4, 5));
+    assert!(state.has_keyword("rush"));
+    assert!(
+        game.legal_actions()
+            .unwrap()
+            .contains(&PlayerCommand::Attack {
+                attacker: horror,
+                defender: enemy,
+            })
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
+fn frost_queen_sindragosa_summons_both_wings_and_destroys_their_frozen_enemy() {
+    let mut game = game_with_classes(
+        repeated("NX2_037"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    let enemy = play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    let sindragosa = play(&mut game, PlayerId::ONE, "NX2_037", None);
+    let board = game.state().player(PlayerId::ONE).board.clone();
+    assert_eq!(board.len(), 3);
+    assert_eq!(board[1], sindragosa);
+    assert_eq!(game.state().entity(board[0]).unwrap().card_id, "NX2_037t");
+    assert_eq!(game.state().entity(board[2]).unwrap().card_id, "NX2_037t2");
+
+    let wing = board[0];
+    assert!(
+        game.legal_actions()
+            .unwrap()
+            .contains(&PlayerCommand::Attack {
+                attacker: wing,
+                defender: enemy,
+            })
+    );
+    game.dispatch(PlayerCommand::Attack {
+        attacker: wing,
+        defender: enemy,
+    })
+    .unwrap();
+    assert_eq!(game.state().entity(wing).unwrap().zone, Zone::Graveyard);
+    assert_eq!(game.state().entity(enemy).unwrap().zone, Zone::Graveyard);
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir(data_path()).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
+}
+
+#[test]
 fn keyword_catalog_matches_the_constructed_hearthstone_glossary() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     let mut actual = runtime
@@ -748,6 +3939,30 @@ fn keyword_catalog_matches_the_constructed_hearthstone_glossary() {
     assert!(actual.remove("weapon_durability_immune"));
     assert!(actual.remove("hero_power_disabled"));
     assert!(actual.remove("end_of_turn_repeater"));
+    assert!(
+        actual.remove("no_corpse"),
+        "printed tokens that do not leave Corpses use an internal marker"
+    );
+    assert!(
+        actual.remove("unending_plagues"),
+        "Helya's persistent public player rule uses an internal marker"
+    );
+    assert!(
+        actual.remove("frost_plague_surcharge"),
+        "Frost Plague's stacked next-card surcharge uses an internal marker"
+    );
+    assert!(
+        actual.remove("frozen_solid"),
+        "Frozen Over's temporary per-card play lock uses an internal marker"
+    );
+    assert!(
+        actual.remove("primus_frost_runes"),
+        "The Primus' next-spell discount and Spell Damage use an internal player rule"
+    );
+    assert!(
+        actual.remove("mograine"),
+        "Mograine's persistent end-turn damage uses a public player rule"
+    );
     let expected = [
         "adapt",
         "battlecry",
@@ -924,29 +4139,40 @@ fn forge_prepare_state_machine_walks_preserve_invariants() {
 }
 
 #[test]
-fn all_eleven_basic_hero_powers_are_standalone_lua_modules() {
+fn all_eleven_basic_heroes_and_powers_are_official_standalone_definitions() {
     let runtime = LuaCardRuntime::load_dir(data_path()).unwrap();
     let expected = [
-        ("HERO_01bp", "warrior", 2),
-        ("HERO_02bp", "shaman", 2),
-        ("HERO_03bp", "rogue", 2),
-        ("HERO_04bp", "paladin", 2),
-        ("HERO_05bp", "hunter", 2),
-        ("HERO_06bp", "druid", 2),
-        ("HERO_07bp", "warlock", 2),
-        ("HERO_08bp", "mage", 2),
-        ("HERO_09bp", "priest", 2),
-        ("HERO_10bp", "demon_hunter", 1),
-        ("HERO_11bp", "death_knight", 2),
+        ("HERO_01", "HERO_01bp", "warrior", 2),
+        ("HERO_02", "HERO_02bp", "shaman", 2),
+        ("HERO_03", "HERO_03bp", "rogue", 2),
+        ("HERO_04", "HERO_04bp", "paladin", 2),
+        ("HERO_05", "HERO_05bp", "hunter", 2),
+        ("HERO_06", "HERO_06bp", "druid", 2),
+        ("HERO_07", "HERO_07bp", "warlock", 2),
+        ("HERO_08", "HERO_08bp", "mage", 2),
+        ("HERO_09", "HERO_09bp", "priest", 2),
+        ("HERO_10", "HERO_10bp", "demon_hunter", 1),
+        ("HERO_11", "HERO_11bp", "death_knight", 2),
     ];
-    for (id, class, cost) in expected {
+    for (hero_id, power_id, class, cost) in expected {
+        let hero = runtime
+            .definition(hero_id)
+            .unwrap_or_else(|| panic!("missing basic Hero {hero_id}"));
+        assert_eq!(hero.kind, CardKind::Hero, "{hero_id}");
+        assert!(hero.collectible, "{hero_id}");
+        assert!(!hero.is_deckable(), "{hero_id}");
+        assert_eq!(hero.set, "HERO_SKINS", "{hero_id}");
+        assert_eq!(hero.class, class, "{hero_id}");
+        assert_eq!(hero.health, 30, "{hero_id}");
+        assert_eq!(hero.hero_power.as_deref(), Some(power_id), "{hero_id}");
+
         let definition = runtime
-            .definition(id)
-            .unwrap_or_else(|| panic!("missing basic Hero Power {id}"));
-        assert_eq!(definition.kind, CardKind::HeroPower, "{id}");
-        assert!(!definition.collectible, "{id}");
-        assert_eq!(definition.class, class, "{id}");
-        assert_eq!(definition.cost, cost, "{id}");
+            .definition(power_id)
+            .unwrap_or_else(|| panic!("missing basic Hero Power {power_id}"));
+        assert_eq!(definition.kind, CardKind::HeroPower, "{power_id}");
+        assert!(!definition.collectible, "{power_id}");
+        assert_eq!(definition.class, class, "{power_id}");
+        assert_eq!(definition.cost, cost, "{power_id}");
     }
     assert!(
         data_path()
@@ -954,6 +4180,37 @@ fn all_eleven_basic_hero_powers_are_standalone_lua_modules() {
             .is_file()
     );
     assert!(!data_path().join("sets/legacy/dagger_mastery.lua").exists());
+}
+
+#[test]
+fn constructed_starting_heroes_are_localized_and_replay_exact() {
+    let runtime = LuaCardRuntime::load_dir_with_locale(data_path(), Locale::ZhTw).unwrap();
+    let game = Game::new_unrestricted_with_hero_powers_and_classes(
+        runtime,
+        repeated("CS2_120"),
+        repeated("CS2_120"),
+        79,
+        ["HERO_01bp".to_owned(), "HERO_11bp".to_owned()],
+        ["warrior".to_owned(), "death_knight".to_owned()],
+    )
+    .unwrap();
+    let warrior = game.state().hero(PlayerId::ONE);
+    let death_knight = game.state().hero(PlayerId::TWO);
+    assert_eq!(
+        (warrior.card_id.as_str(), warrior.name.as_str()),
+        ("HERO_01", "卡爾洛斯‧地獄吼")
+    );
+    assert_eq!(
+        (death_knight.card_id.as_str(), death_knight.name.as_str()),
+        ("HERO_11", "巫妖王")
+    );
+
+    let replayed = Game::from_replay(
+        LuaCardRuntime::load_dir_with_locale(data_path(), Locale::ZhTw).unwrap(),
+        &game.replay(),
+    )
+    .unwrap();
+    assert_eq!(replayed.state(), game.state());
 }
 
 #[test]

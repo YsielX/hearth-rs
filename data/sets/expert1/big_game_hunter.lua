@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_005",
+    id = "EX1_005", rarity = "epic",
     name = "Big Game Hunter",
     text = "[x]<b>Tradeable</b>\n<b>Battlecry:</b> Destroy a minion\nwith 7 or more Attack.",
     set = "EXPERT1",

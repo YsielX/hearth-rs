@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "MAW_028",
+    id = "MAW_028", rarity = "common",
     name = "Mawsworn Bailiff",
     text = "<b><b>Taunt</b>.</b> <b>Battlecry:</b> If you have 4 or more Armor, gain +4/+4.",
     set = "REVENDRETH",

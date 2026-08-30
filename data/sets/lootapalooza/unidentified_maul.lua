@@ -17,7 +17,7 @@ function card.reveal_maul(ctx, self, id) cardlib.effects.transform(ctx, self, id
 local function weapon(id, name, text, battlecry)
     return {
         id = id, name = name, text = text, set = "LOOTAPALOOZA", type = "weapon",
-        class = "paladin", collectible = false, cost = 3, attack = 2, health = 2,
+        class = "paladin", collectible = false, rarity = "rare", cost = 3, attack = 2, health = 2,
         keywords = { "battlecry" }, on_battlecry = battlecry,
     }
 end

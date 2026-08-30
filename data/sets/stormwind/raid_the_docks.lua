@@ -22,7 +22,7 @@ end
 
 local card = {
     api_version = 1,
-    id = "SW_028",
+    id = "SW_028", rarity = "legendary",
     name = "Raid the Docks",
     text = "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Draw a weapon.",
     set = "STORMWIND",
@@ -64,13 +64,13 @@ end
 
 card.tokens = {
     {
-        id = "SW_028t",
+        id = "SW_028t", rarity = "legendary",
         name = "Create a Distraction",
         text = "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Deal $2 damage\nto a random enemy twice.",
         set = "STORMWIND", type = "spell", class = "warrior", cost = 1,
     },
     {
-        id = "SW_028t2",
+        id = "SW_028t2", rarity = "legendary",
         name = "Secure the Supplies",
         text = "[x]<b>Questline:</b> Play 3 Pirates.\n<b>Reward:</b> Cap'n Rokara.",
         set = "STORMWIND", type = "spell", class = "warrior", cost = 1,

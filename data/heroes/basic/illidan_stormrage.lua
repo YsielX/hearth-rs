@@ -1,0 +1,1 @@
+return { api_version = 1, id = "HERO_10", name = "Illidan Stormrage", text = "", set = "HERO_SKINS", type = "hero", class = "demon_hunter", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_10bp" }

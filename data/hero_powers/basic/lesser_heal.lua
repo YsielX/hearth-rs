@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_09bp",
+    id = "HERO_09bp", rarity = "free",
     name = "Lesser Heal",
     text = "<b>Hero Power</b>\nRestore #2 Health.",
     set = "LEGACY",

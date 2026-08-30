@@ -250,6 +250,11 @@ pub(super) fn card_definition_to_table(lua: &Lua, card: &CardDefinition) -> mlua
     )?;
     table.set("rarity", card.rarity.as_deref())?;
     table.set("spell_school", card.spell_school.as_deref())?;
+    let rune_cost = lua.create_table()?;
+    rune_cost.set("blood", card.rune_cost.blood)?;
+    rune_cost.set("frost", card.rune_cost.frost)?;
+    rune_cost.set("unholy", card.rune_cost.unholy)?;
+    table.set("rune_cost", rune_cost)?;
     table.set("cost", card.cost)?;
     table.set("attack", card.attack)?;
     table.set("health", card.health)?;
@@ -583,6 +588,24 @@ pub(super) fn event_to_table(lua: &Lua, script_event: &ScriptEvent) -> mlua::Res
             table.set("source", source.0)?;
             table.set("amount", *amount)?;
             table.set("temporary", *temporary)?;
+        }
+        GameEvent::CorpsesGained {
+            source,
+            player,
+            amount,
+        } => {
+            table.set("source", source.map(|entity| entity.0))?;
+            table.set("player", player.0)?;
+            table.set("amount", *amount)?;
+        }
+        GameEvent::CorpsesSpent {
+            source,
+            player,
+            amount,
+        } => {
+            table.set("source", source.0)?;
+            table.set("player", player.0)?;
+            table.set("amount", *amount)?;
         }
         GameEvent::PlayerScriptDataChanged {
             source,

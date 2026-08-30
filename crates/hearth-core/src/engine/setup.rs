@@ -1,5 +1,13 @@
 use super::*;
 
+struct GameSetupOptions {
+    hero_powers: [String; 2],
+    classes: [String; 2],
+    enforce_deck_classes: [bool; 2],
+    starting_player: PlayerId,
+    sideboards: [BTreeMap<String, Vec<String>>; 2],
+}
+
 impl<R: CardRuntime> Game<R> {
     pub fn new(
         runtime: R,
@@ -62,9 +70,41 @@ impl<R: CardRuntime> Game<R> {
             deck_one,
             deck_two,
             seed,
-            hero_powers,
-            classes,
-            [true, true],
+            GameSetupOptions {
+                hero_powers,
+                classes,
+                enforce_deck_classes: [true, true],
+                starting_player: PlayerId::ONE,
+                sideboards: Default::default(),
+            },
+        )
+    }
+
+    /// Constructs a normal game with an explicitly selected first player.
+    ///
+    /// Callers that randomize the opening order must store their result here;
+    /// replay and snapshot reconstruction will then reproduce the same order.
+    pub fn new_with_hero_powers_classes_and_starting_player(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+        starting_player: PlayerId,
+    ) -> Result<Self, GameError> {
+        Self::new_with_deck_class_enforcement(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            GameSetupOptions {
+                hero_powers,
+                classes,
+                enforce_deck_classes: [true, true],
+                starting_player,
+                sideboards: Default::default(),
+            },
         )
     }
 
@@ -83,9 +123,66 @@ impl<R: CardRuntime> Game<R> {
             deck_one,
             deck_two,
             seed,
-            hero_powers,
-            classes,
-            [false, false],
+            GameSetupOptions {
+                hero_powers,
+                classes,
+                enforce_deck_classes: [false, false],
+                starting_player: PlayerId::ONE,
+                sideboards: Default::default(),
+            },
+        )
+    }
+
+    /// Constructs an unrestricted mechanics sandbox with an explicitly
+    /// selected first player.
+    pub fn new_unrestricted_with_hero_powers_classes_and_starting_player(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+        starting_player: PlayerId,
+    ) -> Result<Self, GameError> {
+        Self::new_with_deck_class_enforcement(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            GameSetupOptions {
+                hero_powers,
+                classes,
+                enforce_deck_classes: [false, false],
+                starting_player,
+                sideboards: Default::default(),
+            },
+        )
+    }
+
+    /// Constructs a game with external constructed sideboards.
+    pub fn new_with_sideboards_hero_powers_classes_and_starting_player(
+        runtime: R,
+        deck_one: Vec<String>,
+        deck_two: Vec<String>,
+        sideboards: [BTreeMap<String, Vec<String>>; 2],
+        seed: u64,
+        hero_powers: [String; 2],
+        classes: [String; 2],
+        starting_player: PlayerId,
+        unrestricted: bool,
+    ) -> Result<Self, GameError> {
+        Self::new_with_deck_class_enforcement(
+            runtime,
+            deck_one,
+            deck_two,
+            seed,
+            GameSetupOptions {
+                hero_powers,
+                classes,
+                enforce_deck_classes: [!unrestricted, !unrestricted],
+                starting_player,
+                sideboards,
+            },
         )
     }
 
@@ -94,10 +191,34 @@ impl<R: CardRuntime> Game<R> {
         deck_one: Vec<String>,
         deck_two: Vec<String>,
         seed: u64,
-        hero_powers: [String; 2],
-        classes: [String; 2],
-        enforce_deck_classes: [bool; 2],
+        options: GameSetupOptions,
     ) -> Result<Self, GameError> {
+        let GameSetupOptions {
+            hero_powers,
+            classes,
+            enforce_deck_classes,
+            starting_player,
+            sideboards,
+        } = options;
+        if !matches!(starting_player, PlayerId::ONE | PlayerId::TWO) {
+            return Err(GameError::InvalidStartingPlayer(starting_player));
+        }
+        let deck_rules = [deck_one.as_slice(), deck_two.as_slice()].map(|deck| {
+            let definitions = deck
+                .iter()
+                .filter_map(|card_id| runtime.definition(card_id));
+            let maximum = definitions
+                .clone()
+                .filter_map(|definition| definition.deck_size)
+                .map(usize::from)
+                .max()
+                .unwrap_or(30);
+            let starting_health = definitions
+                .filter_map(|definition| definition.starting_health)
+                .max()
+                .unwrap_or(30);
+            (maximum, starting_health)
+        });
         for (player, deck) in [
             (PlayerId::ONE, deck_one.as_slice()),
             (PlayerId::TWO, deck_two.as_slice()),
@@ -105,10 +226,12 @@ impl<R: CardRuntime> Game<R> {
             if deck.is_empty() {
                 return Err(GameError::EmptyDeck(player));
             }
-            if deck.len() > 30 {
+            let maximum = deck_rules[player.index()].0;
+            if deck.len() > maximum {
                 return Err(GameError::DeckTooLarge {
                     player,
                     cards: deck.len(),
+                    maximum,
                 });
             }
         }
@@ -145,10 +268,13 @@ impl<R: CardRuntime> Game<R> {
             discarded_cards_history: Vec::new(),
             discarded_card_ids_history: Vec::new(),
             starting_deck: Vec::new(),
+            sideboards: BTreeMap::new(),
             cards_added_to_hand_history: Vec::new(),
             mana: 0,
             max_mana: 0,
             temporary_mana: 0,
+            corpses: 0,
+            corpses_spent: 0,
             overload_pending: 0,
             overloaded_mana: 0,
             overload_queued_total: 0,
@@ -166,6 +292,7 @@ impl<R: CardRuntime> Game<R> {
             locations_played_history: Vec::new(),
             fatigue: 0,
             keywords: Vec::new(),
+            public_keywords: Vec::new(),
             script_data: Default::default(),
             extra_turns: 0,
         };
@@ -174,7 +301,8 @@ impl<R: CardRuntime> Game<R> {
             rng_seed: seed,
             random_counter: 0,
             turn: 0,
-            active_player: PlayerId::ONE,
+            starting_player,
+            active_player: starting_player,
             players: [
                 empty_player(PlayerId::ONE, hero_one, classes[0].clone()),
                 empty_player(PlayerId::TWO, hero_two, classes[1].clone()),
@@ -192,6 +320,7 @@ impl<R: CardRuntime> Game<R> {
         };
 
         let initial_decks = [deck_one.clone(), deck_two.clone()];
+        let initial_sideboards = sideboards.clone();
         let initial_hero_powers = hero_powers.clone();
         let initial_classes = classes;
         let mut game = Self {
@@ -199,11 +328,40 @@ impl<R: CardRuntime> Game<R> {
             state,
             rng: ChaCha8Rng::seed_from_u64(seed),
             initial_decks,
+            initial_sideboards,
             initial_hero_powers,
             initial_classes,
             enforce_deck_classes,
             command_history: Vec::new(),
         };
+        for player in [PlayerId::ONE, PlayerId::TWO] {
+            let Some(hero_card_id) = default_hero_for_class(&game.state.player(player).class)
+            else {
+                continue;
+            };
+            // Small unit-test runtimes are allowed to omit cosmetic starting
+            // Hero definitions. The full game pack contains all eleven.
+            let Some(definition) = game.runtime.definition(hero_card_id).cloned() else {
+                continue;
+            };
+            if definition.kind != CardKind::Hero {
+                return Err(GameError::InvalidHero(hero_card_id.to_owned()));
+            }
+            let hero = game.state.player(player).hero;
+            let timestamp = game.state.entities[&hero].timestamp;
+            game.state.entities.insert(
+                hero,
+                Self::from_definition(hero, player, Zone::Hero, timestamp, &definition),
+            );
+        }
+        for player in [PlayerId::ONE, PlayerId::TWO] {
+            let starting_health = deck_rules[player.index()].1;
+            let hero = game.state.player(player).hero;
+            let entity = game.state.entities.get_mut(&hero).unwrap();
+            entity.base_health = starting_health;
+            entity.max_health = starting_health;
+            entity.damage = 0;
+        }
         for player in [PlayerId::ONE, PlayerId::TWO] {
             let definition = game
                 .runtime
@@ -220,16 +378,19 @@ impl<R: CardRuntime> Game<R> {
         }
         game.install_deck(PlayerId::ONE, deck_one)?;
         game.install_deck(PlayerId::TWO, deck_two)?;
+        game.install_sideboards(PlayerId::ONE, sideboards[0].clone())?;
+        game.install_sideboards(PlayerId::TWO, sideboards[1].clone())?;
 
         // Start-of-game cards listen from the deck. Resolve them before the
         // opening hand is drawn, matching Hearthstone's setup ordering.
         let effects = game.publish(GameEvent::GameStarted)?;
         game.resolve_effects(effects)?;
 
-        game.draw_starting_hand(PlayerId::ONE, 3)?;
-        game.draw_starting_hand(PlayerId::TWO, 4)?;
+        let second_player = starting_player.opponent();
+        game.draw_starting_hand(starting_player, 3)?;
+        game.draw_starting_hand(second_player, 4)?;
         game.state.mulligan = Some(crate::MulliganState {
-            current_player: PlayerId::ONE,
+            current_player: starting_player,
             eligible: [
                 game.state.player(PlayerId::ONE).hand.clone(),
                 game.state.player(PlayerId::TWO).hand.clone(),
@@ -257,9 +418,13 @@ impl<R: CardRuntime> Game<R> {
             replay.decks[0].clone(),
             replay.decks[1].clone(),
             replay.seed,
-            replay.hero_powers.clone(),
-            replay.classes.clone(),
-            replay.enforce_deck_classes,
+            GameSetupOptions {
+                hero_powers: replay.hero_powers.clone(),
+                classes: replay.classes.clone(),
+                enforce_deck_classes: replay.enforce_deck_classes,
+                starting_player: replay.starting_player,
+                sideboards: replay.sideboards.clone(),
+            },
         )?;
         for (index, command) in replay.commands.iter().cloned().enumerate() {
             game.dispatch(command)
@@ -291,7 +456,9 @@ impl<R: CardRuntime> Game<R> {
             format_version: 3,
             card_pack_hash: self.runtime.pack_hash().to_owned(),
             seed: self.state.rng_seed,
+            starting_player: self.state.starting_player,
             decks: self.initial_decks.clone(),
+            sideboards: self.initial_sideboards.clone(),
             hero_powers: self.initial_hero_powers.clone(),
             classes: self.initial_classes.clone(),
             enforce_deck_classes: self.enforce_deck_classes,

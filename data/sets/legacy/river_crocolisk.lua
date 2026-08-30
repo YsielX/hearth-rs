@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_120",
+    id = "CS2_120", rarity = "free",
     name = "River Crocolisk",
     text = "",
     set = "LEGACY",

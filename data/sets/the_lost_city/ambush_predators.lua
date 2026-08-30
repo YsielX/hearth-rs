@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "TLC_519",
+    id = "TLC_519", rarity = "rare",
     name = "Ambush Predators",
     text = "Summon a 1/1 Spitter with <b>Stealth</b>\nand <b>Poisonous</b>.\n<b>Kindred:</b> Do it again.",
     set = "THE_LOST_CITY",

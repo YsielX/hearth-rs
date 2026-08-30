@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_144",
+    id = "EX1_144", spell_school = "shadow", rarity = "common",
     name = "Shadowstep",
     text = "Return a friendly minion to your hand. It costs (2) less.",
     set = "EXPERT1",

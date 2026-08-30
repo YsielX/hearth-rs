@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "EDR_871",
+    id = "EDR_871", rarity = "epic",
     name = "Spirit Gatherer",
     text = "<b>Battlecry:</b> Get a Wisp. <b>Imbue</b> your Hero Power.",
     set = "EMERALD_DREAM",

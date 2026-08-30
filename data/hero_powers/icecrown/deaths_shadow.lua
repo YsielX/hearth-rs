@@ -41,7 +41,7 @@ return {
     },
     tokens = {
         {
-            id = "ICC_827t", name = "Shadow Reflection",
+            id = "ICC_827t", spell_school = "shadow", name = "Shadow Reflection",
             text = "Each time you play a card, transform this into a copy of it.",
             set = "ICECROWN", type = "spell", class = "rogue", cost = 0,
             keywords = { "temporary" },

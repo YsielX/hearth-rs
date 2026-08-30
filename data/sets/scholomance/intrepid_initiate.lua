@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "SCH_231",
+    id = "SCH_231", rarity = "common",
     name = "Intrepid Initiate",
     text = "<b>Spellburst:</b> Gain +2 Attack.",
     set = "SCHOLOMANCE",

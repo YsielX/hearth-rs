@@ -431,6 +431,17 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
         })
         .transpose()?
         .unwrap_or_default();
+    let rune_cost = module
+        .get::<Option<Table>>("rune_cost")?
+        .map(|cost| -> mlua::Result<RuneCost> {
+            Ok(RuneCost {
+                blood: cost.get::<Option<u8>>("blood")?.unwrap_or_default(),
+                frost: cost.get::<Option<u8>>("frost")?.unwrap_or_default(),
+                unholy: cost.get::<Option<u8>>("unholy")?.unwrap_or_default(),
+            })
+        })
+        .transpose()?
+        .unwrap_or_default();
     let legacy_requires_target = module
         .get::<Option<bool>>("requires_target")?
         .unwrap_or(false);
@@ -463,6 +474,12 @@ pub(super) fn parse_definition(module: &Table) -> mlua::Result<CardDefinition> {
             .transpose()?
             .unwrap_or_default(),
         deck_allowances,
+        sideboard_size: module
+            .get::<Option<u8>>("sideboard_size")?
+            .unwrap_or_default(),
+        deck_size: module.get::<Option<u8>>("deck_size")?,
+        starting_health: module.get::<Option<i32>>("starting_health")?,
+        rune_cost,
         rarity: module.get::<Option<String>>("rarity")?,
         tags: module
             .get::<Option<Table>>("tags")?
@@ -525,6 +542,31 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
     if definition.armor < 0 {
         return Err(mlua::Error::runtime(format!(
             "card {} cannot grant negative armor",
+            definition.id
+        )));
+    }
+    if definition
+        .deck_size
+        .is_some_and(|size| !(1..=60).contains(&size))
+        || definition
+            .starting_health
+            .is_some_and(|health| !(1..=100).contains(&health))
+    {
+        return Err(mlua::Error::runtime(format!(
+            "card {} has an invalid deck_size or starting_health modifier",
+            definition.id
+        )));
+    }
+    if !definition.rune_cost.fits_death_knight_deck()
+        || (!definition.rune_cost.is_empty()
+            && !definition.class.eq_ignore_ascii_case("death_knight")
+            && !definition
+                .classes
+                .iter()
+                .any(|class| class.eq_ignore_ascii_case("death_knight")))
+    {
+        return Err(mlua::Error::runtime(format!(
+            "card {} has an invalid Death Knight rune_cost",
             definition.id
         )));
     }
@@ -632,7 +674,14 @@ pub(super) fn validate_module(module: &Table, definition: &CardDefinition) -> ml
         for (index, aura) in auras.sequence_values::<Table>().enumerate() {
             let aura = aura?;
             let _: Function = aura.get("targets")?;
-            for field in ["attack", "health", "cost", "cost_set", "spell_damage"] {
+            for field in [
+                "attack",
+                "health",
+                "cost",
+                "cost_set",
+                "cost_cap",
+                "spell_damage",
+            ] {
                 match aura.get::<Value>(field)? {
                     Value::Nil | Value::Function(_) => {}
                     Value::Integer(value) if i32::try_from(value).is_ok() => {}

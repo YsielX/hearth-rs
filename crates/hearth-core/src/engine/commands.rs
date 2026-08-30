@@ -479,6 +479,7 @@ impl<R: CardRuntime> Game<R> {
             | PlayerCommand::UseLocation { .. }
             | PlayerCommand::EndTurn
             | PlayerCommand::Concede
+            | PlayerCommand::ConcedePlayer { .. }
             | PlayerCommand::Choose { .. } => Ok(0),
         }
     }
@@ -489,13 +490,23 @@ impl<R: CardRuntime> Game<R> {
             return Err(GameError::GameOver);
         }
         match (&self.state.mulligan, &command) {
-            (Some(_), PlayerCommand::Mulligan { .. } | PlayerCommand::Concede) => {}
+            (
+                Some(_),
+                PlayerCommand::Mulligan { .. }
+                | PlayerCommand::Concede
+                | PlayerCommand::ConcedePlayer { .. },
+            ) => {}
             (Some(_), _) => return Err(GameError::MulliganPending),
             (None, PlayerCommand::Mulligan { .. }) => return Err(GameError::NoMulliganPending),
             (None, _) => {}
         }
         match (&self.state.pending_input, &command) {
-            (Some(_), PlayerCommand::Choose { .. } | PlayerCommand::Concede) => {}
+            (
+                Some(_),
+                PlayerCommand::Choose { .. }
+                | PlayerCommand::Concede
+                | PlayerCommand::ConcedePlayer { .. },
+            ) => {}
             (Some(_), _) => return Err(GameError::ChoicePending),
             (None, PlayerCommand::Choose { .. }) => return Err(GameError::NoChoicePending),
             (None, _) => {}
@@ -538,15 +549,20 @@ impl<R: CardRuntime> Game<R> {
             PlayerCommand::EndTurn => self.end_turn(),
             PlayerCommand::Concede => {
                 let loser = self.state.active_player;
-                let effects = self.publish(GameEvent::Conceded { player: loser })?;
-                self.resolve_effects(effects)?;
-                self.finish_game(GameOutcome::Winner(loser.opponent()));
-                Ok(())
+                self.concede_player(loser)
             }
+            PlayerCommand::ConcedePlayer { player } => self.concede_player(player),
             PlayerCommand::Choose { index } => self.choose(index),
             PlayerCommand::UseHeroPower { target } => self.use_hero_power(target),
             PlayerCommand::UseLocation { location, target } => self.use_location(location, target),
         }
+    }
+
+    fn concede_player(&mut self, loser: PlayerId) -> Result<(), GameError> {
+        let effects = self.publish(GameEvent::Conceded { player: loser })?;
+        self.resolve_effects(effects)?;
+        self.finish_game(GameOutcome::Winner(loser.opponent()));
+        Ok(())
     }
 
     fn randomize_command_target(
@@ -849,22 +865,25 @@ impl<R: CardRuntime> Game<R> {
         }
         self.refresh_auras()?;
 
-        if player == PlayerId::ONE {
-            self.state.active_player = PlayerId::TWO;
-            self.state.mulligan.as_mut().unwrap().current_player = PlayerId::TWO;
+        let starting_player = self.state.starting_player;
+        if player == starting_player {
+            let second_player = starting_player.opponent();
+            self.state.active_player = second_player;
+            self.state.mulligan.as_mut().unwrap().current_player = second_player;
             return Ok(());
         }
 
         self.state.mulligan = None;
-        self.state.active_player = PlayerId::ONE;
-        let coin = self.instantiate(DEFAULT_COIN, PlayerId::TWO, Zone::Hand)?;
-        self.state.player_mut(PlayerId::TWO).hand.push(coin);
+        self.state.active_player = starting_player;
+        let second_player = starting_player.opponent();
+        let coin = self.instantiate(DEFAULT_COIN, second_player, Zone::Hand)?;
+        self.state.player_mut(second_player).hand.push(coin);
         self.state.record_event(GameEvent::CardCreated {
             source: coin,
-            player: PlayerId::TWO,
+            player: second_player,
             card: coin,
         });
-        self.start_turn(PlayerId::ONE)
+        self.start_turn(starting_player)
     }
 
     pub(super) fn use_hero_power(&mut self, target: Option<EntityId>) -> Result<(), GameError> {
@@ -1260,6 +1279,16 @@ impl<R: CardRuntime> Game<R> {
                 amount: expired,
             })?;
             self.resolve_effects(effects)?;
+        }
+        // End-of-turn effects still get the opportunity to decide the game. If
+        // neither hero has lost, the official long-game limit ends the match
+        // before turn 90 can start (and therefore before its draw or triggers).
+        if self.state.outcome.is_some() {
+            return Ok(());
+        }
+        if turn >= MAX_GAME_TURNS {
+            self.finish_game(GameOutcome::Draw);
+            return Ok(());
         }
         let next = if self.state.player(player).extra_turns > 0 {
             self.state.player_mut(player).extra_turns -= 1;

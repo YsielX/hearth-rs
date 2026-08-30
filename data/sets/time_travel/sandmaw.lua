@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TIME_053",
+    id = "TIME_053", rarity = "common",
     name = "Sandmaw",
     text = "",
     set = "TIME_TRAVEL",

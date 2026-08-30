@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TLC_248",
+    id = "TLC_248", rarity = "common",
     name = "Ultragigasaur",
     text = "",
     set = "THE_LOST_CITY",

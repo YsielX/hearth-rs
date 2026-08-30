@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "ULD_208",
+    id = "ULD_208", rarity = "rare",
     name = "Khartut Defender",
     text = "[x]<b>Taunt</b>, <b>Reborn</b>\n<b>Deathrattle:</b> Restore #3\nHealth to your hero.",
     set = "ULDUM",

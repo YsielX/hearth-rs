@@ -6,7 +6,7 @@ end
 
 return {
     api_version = 1,
-    id = "WW_363",
+    id = "WW_363", rarity = "rare",
     name = "Bounty Wrangler",
     text = "<b>Quickdraw or Combo:</b>\nGet a Coin.",
     set = "WILD_WEST",

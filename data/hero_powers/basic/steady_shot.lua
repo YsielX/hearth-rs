@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_05bp",
+    id = "HERO_05bp", rarity = "free",
     name = "Steady Shot",
     text = "<b>Hero Power</b>\nDeal $2 damage to the enemy hero.",
     set = "LEGACY",

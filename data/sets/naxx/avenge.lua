@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "FP1_020",
+    id = "FP1_020", spell_school = "holy",
     name = "Avenge",
     text = "<b>Secret:</b> When one of your minions dies, give a random friendly minion +3/+2.",
     set = "NAXX",

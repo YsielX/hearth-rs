@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "WON_366",
+    id = "WON_366", rarity = "common",
     name = "Worgen Greaser",
     text = "",
     set = "WONDERS",

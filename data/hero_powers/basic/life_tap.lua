@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_07bp",
+    id = "HERO_07bp", rarity = "free",
     name = "Life Tap",
     text = "<b>Hero Power</b>\nDraw a card and take $2 damage.",
     set = "LEGACY",

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Synchronize Lua card fallback name/text literals with the enUS catalog.
+"""Synchronize Lua fallback text and printed metadata with the official catalog.
 
 The fallback embedded in each Lua definition is intentionally English. Runtime
-locale catalogs remain authoritative for enUS, zhCN, and zhTW display text.
+locale catalogs remain authoritative for enUS, zhCN, and zhTW display text;
+rarity and spell school remain gameplay metadata because they control deck
+limits, generation pools, and school-dependent card effects.
 """
 
 import json
@@ -17,8 +19,12 @@ def quoted(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def sync_definition_segments(source: str, localized: dict[str, dict]) -> str:
-    """Update the first name/text fields following every Lua definition id.
+def sync_definition_segments(
+    source: str,
+    localized: dict[str, dict],
+    official: dict[str, dict],
+) -> str:
+    """Update fallback text and rarity following every Lua definition id.
 
     Cards and embedded tokens can share one file, so replacements must be
     scoped by definition ID instead of relying on a translated old literal.
@@ -30,6 +36,7 @@ def sync_definition_segments(source: str, localized: dict[str, dict]) -> str:
         record = localized.get(card_id)
         if record is None:
             continue
+        metadata = official[card_id]
         end = matches[index + 1].start() if index + 1 < len(matches) else len(source)
         segment = source[match.start():end]
         for field in ("name", "text"):
@@ -40,6 +47,55 @@ def sync_definition_segments(source: str, localized: dict[str, dict]) -> str:
                 segment,
                 count=1,
             )
+        rarity = metadata.get("rarity")
+        rarity = rarity.lower() if isinstance(rarity, str) else None
+        rarity_pattern = r'(\brarity\s*=\s*)"(?:\\.|[^"\\])*"'
+        if re.search(rarity_pattern, segment):
+            if rarity is None:
+                segment = re.sub(r'\s*\brarity\s*=\s*"(?:\\.|[^"\\])*"\s*,?', "", segment, count=1)
+            else:
+                segment = re.sub(
+                    rarity_pattern,
+                    lambda found, rarity=rarity: found.group(1) + quoted(rarity),
+                    segment,
+                    count=1,
+                )
+        elif rarity is not None:
+            segment = re.sub(
+                r'(\bid\s*=\s*"[^"]+"\s*,)',
+                lambda found, rarity=rarity: found.group(1) + " rarity = " + quoted(rarity) + ",",
+                segment,
+                count=1,
+            )
+        spell_school = metadata.get("spellSchool")
+        spell_school = spell_school.lower() if isinstance(spell_school, str) else None
+        school_pattern = r'(\bspell_school\s*=\s*)"(?:\\.|[^"\\])*"'
+        if re.search(school_pattern, segment):
+            if spell_school is None:
+                segment = re.sub(
+                    r'\s*\bspell_school\s*=\s*"(?:\\.|[^"\\])*"\s*,?',
+                    "",
+                    segment,
+                    count=1,
+                )
+            else:
+                segment = re.sub(
+                    school_pattern,
+                    lambda found, spell_school=spell_school: found.group(1)
+                    + quoted(spell_school),
+                    segment,
+                    count=1,
+                )
+        elif spell_school is not None:
+            segment = re.sub(
+                r'(\bid\s*=\s*"[^"]+"\s*,)',
+                lambda found, spell_school=spell_school: found.group(1)
+                + " spell_school = "
+                + quoted(spell_school)
+                + ",",
+                segment,
+                count=1,
+            )
         source = source[:match.start()] + segment + source[end:]
     return source
 
@@ -47,6 +103,9 @@ def sync_definition_segments(source: str, localized: dict[str, dict]) -> str:
 def main() -> None:
     en = {item["id"]: item for item in json.loads((ROOT / "data/locales/enUS.json").read_text())}
     zh = {item["id"]: item for item in json.loads((ROOT / "data/locales/zhCN.json").read_text())}
+    selected_path = ROOT / "data/hearthstonejson/selected.zhCN.json"
+    selected = json.loads(selected_path.read_text())
+    official = {item["id"]: item for item in selected}
     replacements: dict[str, str] = {}
     conflicts: set[str] = set()
     for card_id, localized in zh.items():
@@ -67,9 +126,10 @@ def main() -> None:
     changed = 0
     card_paths = list((ROOT / "data/sets").rglob("*.lua"))
     card_paths.extend((ROOT / "data/hero_powers").rglob("*.lua"))
+    card_paths.extend((ROOT / "data/heroes").rglob("*.lua"))
     for path in sorted(card_paths):
         source = path.read_text()
-        updated = sync_definition_segments(source, en)
+        updated = sync_definition_segments(source, en, official)
         for old, new in replacements.items():
             updated = updated.replace(old, new)
         if updated != source:
@@ -105,8 +165,6 @@ def main() -> None:
         if count and updated != source:
             path.write_text(updated)
             keyword_changed += 1
-    selected_path = ROOT / "data/hearthstonejson/selected.zhCN.json"
-    selected = json.loads(selected_path.read_text())
     for record in selected:
         localized = en[record["id"]]
         record["name"] = localized["name"]

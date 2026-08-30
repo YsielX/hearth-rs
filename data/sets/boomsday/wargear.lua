@@ -1,7 +1,7 @@
 -- Official card: BOT_563, Wargear.
 return {
     api_version = 1,
-    id = "BOT_563",
+    id = "BOT_563", rarity = "common",
     name = "Wargear",
     text = "<b>Magnetic</b>",
     set = "BOOMSDAY",

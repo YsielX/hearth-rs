@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "DMF_532",
+    id = "DMF_532", rarity = "common",
     name = "Circus Amalgam",
     text = "<b>Taunt</b>\n<i>This has all minion types.</i>",
     set = "DARKMOON_FAIRE",

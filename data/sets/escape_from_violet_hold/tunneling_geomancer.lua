@@ -1,7 +1,7 @@
 -- Official event card: CATA_EVENT_401, Tunneling Geomancer.
 return {
     api_version = 1,
-    id = "CATA_EVENT_401",
+    id = "CATA_EVENT_401", rarity = "epic",
     name = "Tunneling Geomancer",
     text = "<b>Prepare</b>\n<b>Spell Damage +1</b>",
     set = "EVENT",

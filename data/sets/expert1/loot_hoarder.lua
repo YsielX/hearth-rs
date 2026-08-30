@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_096",
+    id = "EX1_096", rarity = "common",
     name = "Loot Hoarder",
     text = "<b>Deathrattle:</b> Draw a card.",
     set = "EXPERT1",

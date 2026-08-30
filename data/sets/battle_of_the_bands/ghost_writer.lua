@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "ETC_088",
+    id = "ETC_088", rarity = "common",
     name = "Ghost Writer",
     text = "<b>Battlecry:</b> <b>Discover</b> a spell. <b>Finale:</b> <b>Discover</b> another.",
     set = "BATTLE_OF_THE_BANDS",

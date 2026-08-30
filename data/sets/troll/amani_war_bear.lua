@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TRL_550",
+    id = "TRL_550", rarity = "common",
     name = "Amani War Bear",
     text = "<b>Rush</b>\n<b>Taunt</b>",
     set = "TROLL",

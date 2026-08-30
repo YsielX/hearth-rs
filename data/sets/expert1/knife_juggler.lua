@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "NEW1_019",
+    id = "NEW1_019", rarity = "rare",
     name = "Knife Juggler",
     text = "[x]After you summon a\nminion, deal 1 damage\nto a random enemy.",
     set = "EXPERT1",

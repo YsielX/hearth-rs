@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_606",
+    id = "EX1_606", rarity = "free",
     name = "Shield Block",
     text = "Gain 5 Armor.\nDraw a card.",
     set = "LEGACY",

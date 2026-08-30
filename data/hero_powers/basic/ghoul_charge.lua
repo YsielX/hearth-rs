@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_11bp",
+    id = "HERO_11bp", rarity = "free",
     name = "Ghoul Charge",
     text = "[x]<b>Hero Power</b>\nSummon a 1/1 Ghoul\nwith <b>Charge</b>. It dies at\nend of turn.",
     set = "BASIC",
@@ -12,7 +12,7 @@ return {
     end,
     tokens = {
         {
-            id = "HERO_11bpt", name = "Frail Ghoul",
+            id = "HERO_11bpt", rarity = "free", name = "Frail Ghoul",
             text = "[x]<b>Charge</b>\nAt the end of your turn,\nthis minion dies.",
             set = "BASIC", type = "minion", class = "death_knight",
             cost = 1, attack = 1, health = 1, tags = { "undead" },

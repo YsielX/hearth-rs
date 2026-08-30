@@ -1,4 +1,4 @@
-local card={api_version=1,id="LOOT_054",name="Branching Paths",text="[x]<b>Choose Twice -</b> Draw a\ncard; Give your minions \n+1 Attack; Gain 6 Armor.",set="LOOTAPALOOZA",type="spell",class="druid",rarity="epic",spell_school="nature",cost=4}
+local card={api_version=1,id="LOOT_054",name="Branching Paths",text="[x]<b>Choose Twice -</b> Draw a\ncard; Give your minions \n+1 Attack; Gain 6 Armor.",set="LOOTAPALOOZA",type="spell",class="druid",rarity="epic",cost=4}
 local options={{id="LOOT_054d",label="Draw a card"},{id="LOOT_054b",label="Give your minions +1 Attack"},{id="LOOT_054c",label="Gain 6 Armor"}}
 function card.on_play(ctx,self)ctx:set_data(self,"paths_left",2);ctx:choose_options(ctx:controller(self),"Choose",options,"path_chosen")end
 function card.path_chosen(ctx,self,id) if id=="LOOT_054d"then ctx:draw(ctx:controller(self),1)elseif id=="LOOT_054b"then for _,e in ipairs(ctx:friendly_minions(self))do ctx:buff(e,1,0)end else ctx:gain_armor(ctx:controller(self),6)end;local n=ctx:get_data(self,"paths_left")-1;ctx:set_data(self,"paths_left",n);if n>0 then ctx:continue_with("choose_second_path")end end

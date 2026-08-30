@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "RLK_008t",
+    name = "Risen Ghoul",
+    text = "<b>Rush</b>\n<i>Doesn't leave a <b>Corpse</b>.</i>",
+    set = "CORE",
+    type = "minion",
+    class = "death_knight",
+    collectible = false,
+    cost = 2,
+    attack = 2,
+    health = 2,
+    tags = { "undead" },
+    keywords = { "rush", "no_corpse" },
+}

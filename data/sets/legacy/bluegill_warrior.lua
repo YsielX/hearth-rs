@@ -1,1 +1,1 @@
-return { api_version = 1, id = "CS2_173", name = "Bluegill Warrior", text = "<b>Charge</b>", set = "LEGACY", type = "minion", cost = 2, attack = 2, health = 1, tags = { "murloc" }, keywords = { "charge" } }
+return { api_version = 1, id = "CS2_173", rarity = "free", name = "Bluegill Warrior", text = "<b>Charge</b>", set = "LEGACY", type = "minion", cost = 2, attack = 2, health = 1, tags = { "murloc" }, keywords = { "charge" } }

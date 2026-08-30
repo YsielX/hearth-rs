@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_024",
+    id = "CS2_024", spell_school = "frost", rarity = "free",
     name = "Frostbolt",
     text = "Deal $3 damage to a character and <b>Freeze</b> it.",
     set = "LEGACY",

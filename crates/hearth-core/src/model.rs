@@ -141,6 +141,9 @@ pub struct AuraSpec {
     pub cost: i32,
     #[serde(default)]
     pub cost_set: Option<i32>,
+    /// Clamp the final layered card cost after this aura's additive modifier.
+    #[serde(default)]
+    pub cost_cap: Option<i32>,
     pub spell_damage: i32,
     pub keywords: Vec<String>,
 }
@@ -290,6 +293,61 @@ pub struct DeckAllowance {
     pub excluded_keywords: Vec<String>,
 }
 
+/// Death Knight deckbuilding requirements printed on a card.
+///
+/// A constructed Death Knight deck has three rune slots. Its minimum
+/// commitment is the component-wise maximum of every card's requirement and
+/// is legal when the three maxima add up to at most three.
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
+)]
+pub struct RuneCost {
+    #[serde(default)]
+    pub blood: u8,
+    #[serde(default)]
+    pub frost: u8,
+    #[serde(default)]
+    pub unholy: u8,
+}
+
+impl RuneCost {
+    pub const SLOTS: u8 = 3;
+
+    pub const fn total(self) -> u8 {
+        self.blood
+            .saturating_add(self.frost)
+            .saturating_add(self.unholy)
+    }
+
+    pub const fn combined(self, other: Self) -> Self {
+        Self {
+            blood: if self.blood > other.blood {
+                self.blood
+            } else {
+                other.blood
+            },
+            frost: if self.frost > other.frost {
+                self.frost
+            } else {
+                other.frost
+            },
+            unholy: if self.unholy > other.unholy {
+                self.unholy
+            } else {
+                other.unholy
+            },
+        }
+    }
+
+    pub const fn fits_death_knight_deck(self) -> bool {
+        self.total() <= Self::SLOTS
+    }
+
+    pub const fn is_empty(self) -> bool {
+        self.total() == 0
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CardDefinition {
     pub id: CardId,
@@ -311,6 +369,19 @@ pub struct CardDefinition {
     /// Cross-class construction permissions contributed by this card.
     #[serde(default)]
     pub deck_allowances: Vec<DeckAllowance>,
+    /// Number of cards this card owns in an external constructed sideboard.
+    /// Zero means the card does not support a sideboard.
+    #[serde(default)]
+    pub sideboard_size: u8,
+    /// Constructed main-deck size required while this card starts in the deck.
+    #[serde(default)]
+    pub deck_size: Option<u8>,
+    /// Hero Health established before start-of-game effects resolve.
+    #[serde(default)]
+    pub starting_health: Option<i32>,
+    /// Death Knight rune slots required to include this card.
+    #[serde(default)]
+    pub rune_cost: RuneCost,
     /// Printed rarity, normalized to lowercase for generation pool filters.
     #[serde(default)]
     pub rarity: Option<String>,
@@ -339,6 +410,23 @@ pub struct CardDefinition {
 }
 
 impl CardDefinition {
+    /// Whether this definition may occupy a constructed deck slot.
+    ///
+    /// Base and alternate Hero portraits are collectible client objects, but
+    /// unlike playable Hero cards they are selected outside the 30-card deck.
+    pub fn is_deckable(&self) -> bool {
+        self.collectible
+            && !self.set.eq_ignore_ascii_case("HERO_SKINS")
+            && matches!(
+                self.kind,
+                CardKind::Hero
+                    | CardKind::Minion
+                    | CardKind::Spell
+                    | CardKind::Weapon
+                    | CardKind::Location
+            )
+    }
+
     pub fn localized(&self, locale: Locale) -> LocalizedCardText {
         self.localizations
             .get(&locale)
@@ -517,6 +605,9 @@ pub struct PlayerState {
     /// destruction, transformation, and other zone changes.
     #[serde(default)]
     pub starting_deck: Vec<CardId>,
+    /// Unconsumed constructed sideboards, keyed by their owning main-deck card.
+    #[serde(default)]
+    pub sideboards: BTreeMap<CardId, Vec<CardId>>,
     /// Definition IDs that entered this player's hand after the game began.
     #[serde(default)]
     pub cards_added_to_hand_history: Vec<CardId>,
@@ -524,6 +615,12 @@ pub struct PlayerState {
     pub max_mana: u8,
     #[serde(default)]
     pub temporary_mana: u8,
+    /// Unspent Death Knight Corpses. This resource is public information.
+    #[serde(default)]
+    pub corpses: u32,
+    /// Lifetime number of Corpses successfully spent by this player.
+    #[serde(default)]
+    pub corpses_spent: u32,
     #[serde(default)]
     pub overload_pending: u8,
     #[serde(default)]
@@ -565,6 +662,10 @@ pub struct PlayerState {
     /// survive minion silence, transformation, death, and hero replacement.
     #[serde(default)]
     pub keywords: Vec<String>,
+    /// Player-scoped mechanics that are intentionally visible to both players.
+    /// Kept separate so hidden discounts and internal rule markers never leak.
+    #[serde(default)]
+    pub public_keywords: Vec<String>,
     #[serde(default)]
     pub script_data: BTreeMap<String, i64>,
     #[serde(default)]
@@ -587,6 +688,8 @@ pub struct GameState {
     pub rng_seed: u64,
     pub random_counter: u64,
     pub turn: u32,
+    #[serde(default = "default_starting_player")]
+    pub starting_player: PlayerId,
     pub active_player: PlayerId,
     pub players: [PlayerState; 2],
     pub entities: BTreeMap<EntityId, Entity>,
@@ -815,6 +918,15 @@ pub enum PlayerCommand {
     },
     EndTurn,
     Concede,
+    /// Concedes on behalf of an explicitly identified player.
+    ///
+    /// Frontends use this administrative command when a player concedes while
+    /// another controller currently owns game input. It is intentionally not
+    /// returned by `legal_actions`, but remains part of command history so
+    /// snapshots and replays stay deterministic.
+    ConcedePlayer {
+        player: PlayerId,
+    },
     Choose {
         index: usize,
     },
@@ -835,7 +947,11 @@ pub struct Replay {
     pub format_version: u32,
     pub card_pack_hash: String,
     pub seed: u64,
+    #[serde(default = "default_starting_player")]
+    pub starting_player: PlayerId,
     pub decks: [Vec<CardId>; 2],
+    #[serde(default)]
+    pub sideboards: [BTreeMap<CardId, Vec<CardId>>; 2],
     pub hero_powers: [CardId; 2],
     pub classes: [String; 2],
     #[serde(default = "default_deck_class_enforcement")]
@@ -845,6 +961,10 @@ pub struct Replay {
 
 fn default_deck_class_enforcement() -> [bool; 2] {
     [true, true]
+}
+
+fn default_starting_player() -> PlayerId {
+    PlayerId::ONE
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -1013,6 +1133,8 @@ pub enum EffectSpec {
     RefreshManaCrystals {
         source: EntityId,
         player: PlayerId,
+        #[serde(default)]
+        amount: Option<u8>,
     },
     DestroyManaCrystals {
         source: EntityId,
@@ -1023,6 +1145,26 @@ pub enum EffectSpec {
         source: EntityId,
         player: PlayerId,
         amount: u8,
+    },
+    GainCorpses {
+        source: EntityId,
+        player: PlayerId,
+        amount: u32,
+    },
+    /// Spend exactly `amount`, or do nothing when the player cannot afford it.
+    SpendCorpses {
+        source: EntityId,
+        player: PlayerId,
+        amount: u32,
+    },
+    /// Atomically spend the exact amount, then invoke `hook` only on success.
+    /// This prevents independently collected triggers from applying follow-up
+    /// effects when another trigger consumed the same Corpses first.
+    SpendCorpsesAndContinue {
+        source: EntityId,
+        player: PlayerId,
+        amount: u32,
+        hook: String,
     },
     Draw {
         #[serde(default)]
@@ -1058,6 +1200,14 @@ pub enum EffectSpec {
         #[serde(default)]
         attached_scripts: Vec<CardId>,
     },
+    /// Remove one card from a constructed sideboard and put it into its
+    /// controller's hand. Sideboard cards count as having started in the deck.
+    TakeSideboardCard {
+        source: EntityId,
+        player: PlayerId,
+        owner: CardId,
+        card_id: CardId,
+    },
     GiveCopy {
         source: EntityId,
         player: PlayerId,
@@ -1087,6 +1237,11 @@ pub enum EffectSpec {
         card_id: CardId,
     },
     GrantPlayerKeyword {
+        source: EntityId,
+        player: PlayerId,
+        keyword: String,
+    },
+    GrantPublicPlayerKeyword {
         source: EntityId,
         player: PlayerId,
         keyword: String,
@@ -1827,6 +1982,18 @@ pub enum GameEvent {
         amount: u8,
         temporary: u8,
     },
+    CorpsesGained {
+        /// `None` denotes the normal resource generated by friendly deaths.
+        #[serde(default)]
+        source: Option<EntityId>,
+        player: PlayerId,
+        amount: u32,
+    },
+    CorpsesSpent {
+        source: EntityId,
+        player: PlayerId,
+        amount: u32,
+    },
     PlayerScriptDataChanged {
         source: EntityId,
         player: PlayerId,
@@ -1938,6 +2105,8 @@ impl GameEvent {
             Self::ManaCrystalsGained { .. } => "mana_crystals_gained",
             Self::ManaCrystalsDestroyed { .. } => "mana_crystals_destroyed",
             Self::ManaSpent { .. } => "mana_spent",
+            Self::CorpsesGained { .. } => "corpses_gained",
+            Self::CorpsesSpent { .. } => "corpses_spent",
             Self::PlayerScriptDataChanged { .. } => "player_script_data_changed",
             Self::KeywordDisabled { .. } => "keyword_disabled",
             Self::Frozen { .. } => "frozen",

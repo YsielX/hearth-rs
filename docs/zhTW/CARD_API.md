@@ -34,6 +34,7 @@ local prompt = ctx:localize(
 | `class` | string | 否 | 卡牌職業，預設 `neutral`；Lua 可自行定義命名體系 |
 | `rarity` | string | 否 | 印刷稀有度，統一為小寫，用於動態牌池過濾 |
 | `spell_school` | string | 否 | 印刷法術派系，統一為小寫，用於動態牌池過濾 |
+| `rune_cost` | table | 否 | 印刷死亡騎士符文需求，可填寫 `blood`、`frost`、`unholy` 數量 |
 | `tags` | string[] | 否 | 種族或卡牌包自定義標籤，用於 Lua 牌池過濾 |
 | `cost` | integer | 是 | 基礎費用 |
 | `attack` | integer | 隨從/武器必需 | 隨從或武器的基礎攻擊力 |
@@ -216,7 +217,10 @@ ctx:card_ids()                  -- 當前卡牌包的全部 ID，穩定排序
 ctx:collectible_cards()         -- 僅返回 collectible=true 的 ID
 ctx:card_definition(card_id)    -- 返回不可變卡牌定義快照
 ctx:get_player_data(player, key)
+ctx:has_enchantment_from(entity, source)
 ```
+
+`has_enchantment_from` 判斷實體是否仍保留由指定來源實體產生的附魔，適用於按來源獨立疊加，並在可沉默附魔被移除後失效的持續效果。
 
 實體快照欄位包括：
 
@@ -230,7 +234,7 @@ cards_played_before, combo_active
 玩家快照欄位包括：
 
 ```text
-id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana,
+id, class, hero, hero_power, hero_power_used, hero_power_uses, hero_power_uses_this_turn, weapon, keywords, mana, max_mana, temporary_mana, overload_pending, overloaded_mana, corpses, corpses_spent,
 cards_played_this_turn, cards_played_this_game, spells_cast_this_game,
 minions_played_this_game, minions_summoned_this_game, weapons_played_this_game, locations_played_this_game,
 fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
@@ -242,7 +246,7 @@ fatigue, deck_size, hand_size, board_size, secret_count, hero_power_used
 
 五個歷史查詢返回按發生順序凍結的卡牌定義 ID 陣列，而不是動態反查實體：隨從即使後來變形，歷史中仍保留它打出時的原定義。`cards_played` 在費用支付並離手時記錄，因此反制牌也存在；四個型別歷史在相應 `spell_cast/minion_played/weapon_played/location_played` 成功時記錄。法術自己的 `on_play` 結算期間尚未進入 `spells_cast`，完成正文後才成為 `last_spell_cast`。只有玩家實際施放的法術進入成功施法歷史；由 `cast_spell` 或 `cast_existing_spell` 效果施放的法術帶有 `generated_by`，既不進入該歷史，也不觸發「每當你施放法術」。這些陣列屬於 Rust 權威狀態並進入 snapshot/replay，不應由 Lua 全域性變數代替。
 
-卡牌定義快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用於三職業等多職業牌。其中 `requires_target` 只作為舊指令碼相容欄位；新邏輯應讀取 `target_mode`。例如可以完全在 Lua 中構造動態發現池：
+卡牌定義快照包含 `id, name, text, set, type, collectible, class, classes, rarity, spell_school, rune_cost, tags, cost, attack, health, secret, target_mode, requires_target, keywords, keyword_params`。`classes` 用於三職業等多職業牌；`rune_cost = { blood, frost, unholy }` 暴露印刷符文需求，無符文牌的三個值均為 0。其中 `requires_target` 只作為舊指令碼相容欄位；新邏輯應讀取 `target_mode`。例如可以完全在 Lua 中構造動態發現池：
 
 ```lua
 local candidates = {}
@@ -271,9 +275,13 @@ ctx:clear_overload(player)
 ctx:gain_temporary_mana(player, amount)
 ctx:gain_mana_crystals(player, amount, filled)
 ctx:fill_mana_crystals(player, amount)
-ctx:refresh_mana_crystals(player)
+ctx:refresh_mana_crystals(player, amount?)
 ctx:destroy_mana_crystals(player, amount)
 ctx:spend_mana(player, amount)
+ctx:gain_corpses(player, amount)
+ctx:spend_corpses(player, amount) -- 精確預留成功時回傳 true
+ctx:spend_up_to_corpses(player, maximum) -- 回傳實際預留量
+ctx:spend_corpses_and_continue(player, amount, hook) -- 跨競爭觸發器原子消耗
 ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
 ctx:give_card(player, card_id)
@@ -339,6 +347,7 @@ ctx:grant_keyword_until_end_of_turn(target, keyword)
 ctx:grant_keyword_until_next_turn(target, keyword)
 ctx:disable_keyword(target, keyword)
 ctx:grant_player_keyword(player, keyword)
+ctx:grant_public_player_keyword(player, keyword)
 ctx:disable_player_keyword(player, keyword)
 ctx:set_player_class(player, class_id)
 ctx:summon_fresh_copy(target, position_or_nil, health, without_keywords)
@@ -366,11 +375,11 @@ ctx:increment_player_data(player, key, delta)
 
 `cardlib.effects` 是卡牌層的 Lua 便捷庫。其單體和等量群體函式最終摺疊成一次原子批次處理：`ctx:damage_batch(hits, options_or_nil)`、`ctx:heal_batch(hits)`、`ctx:destroy_batch(targets)`、`ctx:transform_batch(transforms, options_or_nil)`、`ctx:modify_batch(modifications)`。傷害 options 支援 `source` 和 `apply_spell_damage`；事件數值包裝統一呼叫 `ctx:modify_event_amount(event, { operation = "set" | "add" | "multiply", value = n })`。
 
-光環中的 `cost` 是加法層；卡牌文字寫「消耗為（1）」時使用 `cost_set = 1`（也可為函式）。屬性層順序為 `SET → ADD → MULTIPLY → FINAL SET → Aura SET → Aura ADD`，同層多個持續 SET 按光環時間戳順序由後者覆蓋。
+光環中的 `cost` 是加法層；卡牌文字寫「消耗為（1）」時使用 `cost_set = 1`（也可為函式），需要限制最終消耗時使用 `cost_cap`。消耗光環順序為 `Aura SET → Aura ADD → Aura CAP`。
 
 `spell_damage` 光環可以指向手下或英雄。玩家的法術傷害加成為己方場上手下與英雄所承載數值之和，因此雙方玩家級效果無需任何卡牌特判。
 
-`replace_hero` 要求目標定義為 Hero 且宣告有效的 `hero_power`：新英雄使用定義中的生命上限並回滿生命，保留原英雄的護甲、凍結狀態和本回合攻擊次數，同時替換英雄技能並釋出 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 與 `disable_player_keyword` 管理玩家級腳本機制；它們由當前英雄實體承載 Lua 光環和觸發器，但狀態屬於玩家，因此不受手下沉默、變形、死亡或英雄替換影響。
+`replace_hero` 要求目標定義為 Hero 且宣告有效的 `hero_power`：新英雄使用定義中的生命上限並回滿生命，保留原英雄的護甲、凍結狀態和本回合攻擊次數，同時替換英雄技能並釋出 `hero_replaced`/`hero_power_replaced`。`grant_player_keyword` 與 `disable_player_keyword` 管理玩家級腳本機制；它們由當前英雄實體承載 Lua 光環和觸發器，但狀態屬於玩家，因此不受手下沉默、變形、死亡或英雄替換影響。明確屬於公開資訊的永久規則應使用 `grant_public_player_keyword`，其 ID 會同步進入雙方公開投影與 RL 觀察。
 
 `destroy_all` 在同一個死亡檢查點摧毀所有目標，適用於「摧毀所有手下」一類同時結算；`move` 的目標區域包括 `hand`、`secret`、`deck_top`、`deck_bottom`、`deck_random`、`graveyard` 和 `removed`。移動到 `secret` 時會校驗該實體確實具有奧秘規則且奧秘區未滿。`shuffle_entity_into_deck` 使用 Rust 確定性隨機把原實體洗入指定玩家牌庫，同時轉移 owner/controller 並執行隱藏區重置。
 
@@ -455,7 +464,7 @@ hand, board, secret, deck_top, deck_bottom, deck_random, graveyard, removed
 
 `change_controller` 對戰場手下和秘密生效。目標玩家對應區域已滿、目標已經離場或控制權已經相同時不產生變化；手下成功時移動到新控制者戰場最右側並進入休眠，再由關鍵詞的 `ready_on_summon` 規則決定是否解除休眠；秘密則移動到新控制者的秘密區。該操作釋出可取消的 `controller_changed/before`，提交後釋出 `controller_changed/after`。實體的擁有者 `owner` 不變，之後返回手牌或牌庫仍回到擁有者一方。
 
-`change_controller_until_end_of_turn` 記錄可逆的戰場手下控制權：沉默會立即把手下歸還原控制者，變形會清除歸還標記並讓目前控制權永久化；回合結束時若原方戰場已滿，該手下會被消滅。`refresh_mana_crystals` 只補滿現有且未被超載鎖定的永久水晶，同時保留暫時法力、目前超載和待結算超載。`summon_with_stats` 使用可沉默的最終屬性層，`summon_with_base_stats` 則直接設定召喚物基礎攻血，沉默不會把翠玉魔像等成長衍生物還原。
+`change_controller_until_end_of_turn` 記錄可逆的戰場手下控制權：沉默會立即把手下歸還原控制者，變形會清除歸還標記並讓目前控制權永久化；回合結束時若原方戰場已滿，該手下會被消滅。`refresh_mana_crystals` 只刷新現有且未被超載鎖定的永久水晶；可選數量省略時補滿，並始終保留暫時法力、目前超載和待結算超載。`summon_with_stats` 使用可沉默的最終屬性層，`summon_with_base_stats` 則直接設定召喚物基礎攻血，沉默不會把翠玉魔像等成長衍生物還原。
 
 `transform` 只接受戰場隨從和另一張隨從定義。變形保留實體 ID、擁有者、控制者、戰場位置、休眠狀態和本回合攻擊次數；基礎屬性與卡牌指令碼替換為新定義，並清除傷害、凍結、沉默、enchantment、已消耗關鍵字狀態和 `script_data`。變形不算死亡或召喚，釋出可取消的 `transformed/before`，提交後釋出 `transformed/after`。`transform_all` 對整組套用同一定義，`transform_batch` 對每個實體套用各自定義，兩者都統一提交並只重算一次光環。`transform_into_copy` 複製模板實體完整狀態，再套用可沉默的最終攻血值。
 
@@ -849,7 +858,7 @@ card_played, spell_targeted, spell_cast, minion_played, weapon_played, location_
 minion_summoned, magnetized, weapon_equipped, weapon_destroyed, location_used, location_destroyed,
 hero_power_used, hero_power_replaced, secret_played, secret_revealed, zone_changed, controller_changed, transformed, attack, damaged, damage_prevented, healed,
 armor_gained, overload_queued, mana_locked, mana_unlocked, temporary_mana_gained,
-temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent,
+temporary_mana_expired, mana_crystals_gained, mana_crystals_destroyed, mana_spent, corpses_gained, corpses_spent,
 keyword_disabled, frozen, entity_died, conceded, game_ended,
 choice_requested, choice_made, random_choice_made, random_cards_sampled, random_entities_sampled
 ```

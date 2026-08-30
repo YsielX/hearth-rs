@@ -1032,9 +1032,9 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
             "{}",
             lf!(
                 locale,
-                "{} [{}] Hero {} Health/{} Armor | Mana {}/{} (temporary {}, locked {}, pending Overload {}) | Cards played {} | Hand {} | Deck {}",
-                "{} [{}] 英雄 {}生命/{}护甲 | 法力 {}/{}（临时{}，锁定{}，待过载{}） | 本回合出牌 {} | 手牌 {} | 牌库 {}",
-                "{} [{}] 英雄 {}生命/{}護甲 | 法力 {}/{}（暫時{}，鎖定{}，待超載{}） | 本回合出牌 {} | 手牌 {} | 牌庫 {}",
+                "{} [{}] Hero {} Health/{} Armor | Mana {}/{} (temporary {}, locked {}, pending Overload {}) | Corpses {} (spent {}) | Cards played {} | Hand {} | Deck {}",
+                "{} [{}] 英雄 {}生命/{}护甲 | 法力 {}/{}（临时{}，锁定{}，待过载{}） | 残骸 {}（已消耗{}） | 本回合出牌 {} | 手牌 {} | 牌库 {}",
+                "{} [{}] 英雄 {}生命/{}護甲 | 法力 {}/{}（暫時{}，鎖定{}，待超載{}） | 屍體 {}（已消耗{}） | 本回合出牌 {} | 手牌 {} | 牌庫 {}",
                 player_id,
                 player.class,
                 hero.health(),
@@ -1044,6 +1044,8 @@ fn print_state(game: &Game<LuaCardRuntime>, viewer: PlayerId, locale: Locale) {
                 player.temporary_mana,
                 player.overloaded_mana,
                 player.overload_pending,
+                player.corpses,
+                player.corpses_spent,
                 player.cards_played_this_turn,
                 player.hand.len(),
                 player.deck.len()
@@ -1672,6 +1674,18 @@ fn display_public_event(
             "{player} 花费 {amount} 点法力（临时 {temporary}）",
             "{player} 花費 {amount} 點法力（暫時 {temporary}）"
         ),
+        PublicEvent::CorpsesGained { player, amount, .. } => lf!(
+            locale,
+            "{player} gained {amount} Corpses",
+            "{player} 获得 {amount} 份残骸",
+            "{player} 獲得 {amount} 具屍體"
+        ),
+        PublicEvent::CorpsesSpent { player, amount, .. } => lf!(
+            locale,
+            "{player} spent {amount} Corpses",
+            "{player} 消耗 {amount} 份残骸",
+            "{player} 消耗 {amount} 具屍體"
+        ),
         PublicEvent::KeywordDisabled {
             source,
             target,
@@ -1776,6 +1790,7 @@ fn display_command(command: &PlayerCommand) -> String {
         }
         PlayerCommand::EndTurn => "end".to_owned(),
         PlayerCommand::Concede => "concede".to_owned(),
+        PlayerCommand::ConcedePlayer { player } => format!("concede {player}"),
         PlayerCommand::Choose { index } => format!("choose {index}"),
         PlayerCommand::UseHeroPower { target } => match target {
             Some(target) => format!("power {target}"),
@@ -1816,7 +1831,7 @@ fn display_automated_command(
             lt!(locale, "Traded a card", "交易了一张牌", "交易了一張牌").to_owned()
         }
         PlayerCommand::EndTurn => "end".to_owned(),
-        PlayerCommand::Concede => "concede".to_owned(),
+        PlayerCommand::Concede | PlayerCommand::ConcedePlayer { .. } => "concede".to_owned(),
         _ => lt!(locale, "acted", "执行了一个动作", "執行了一個動作").to_owned(),
     }
 }

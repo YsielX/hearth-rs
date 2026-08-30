@@ -1,0 +1,1 @@
+return { api_version = 1, id = "HERO_09", name = "Anduin Wrynn", text = "", set = "HERO_SKINS", type = "hero", class = "priest", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_09bp" }

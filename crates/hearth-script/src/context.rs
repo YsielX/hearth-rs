@@ -10,6 +10,13 @@ pub(super) fn build_context(
 ) -> mlua::Result<Table> {
     let state = Arc::new(state.clone());
     let ctx = lua.create_table()?;
+    // Lua decides conditional and "up to" Corpse spending synchronously. Keep
+    // a per-hook reservation balance so multiple calls cannot overcommit the
+    // immutable state snapshot before their effects resolve.
+    let corpse_balances = Rc::new(RefCell::new([
+        state.player(PlayerId::ONE).corpses,
+        state.player(PlayerId::TWO).corpses,
+    ]));
 
     ctx.set("locale", locale.code())?;
     ctx.set(
@@ -69,6 +76,19 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "sideboard",
+        lua.create_function(move |lua, (_ctx, player, owner): (Table, u8, String)| {
+            let values = snapshot
+                .player(parse_player(player)?)
+                .sideboards
+                .get(&owner)
+                .cloned()
+                .unwrap_or_default();
+            lua.create_sequence_from(values)
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "player",
         lua.create_function(move |lua, (_ctx, player): (Table, u8)| {
             let player = snapshot.player(parse_player(player)?);
@@ -81,6 +101,8 @@ pub(super) fn build_context(
             table.set("mana", player.mana)?;
             table.set("max_mana", player.max_mana)?;
             table.set("temporary_mana", player.temporary_mana)?;
+            table.set("corpses", player.corpses)?;
+            table.set("corpses_spent", player.corpses_spent)?;
             table.set("overload_pending", player.overload_pending)?;
             table.set("overloaded_mana", player.overloaded_mana)?;
             table.set("fatigue", player.fatigue)?;
@@ -646,6 +668,19 @@ pub(super) fn build_context(
     )?;
     let snapshot = state.clone();
     ctx.set(
+        "has_enchantment_from",
+        lua.create_function(move |_, (_ctx, target, source): (Table, u64, u64)| {
+            let entity = snapshot
+                .entity(EntityId(target))
+                .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {target}")))?;
+            Ok(entity
+                .enchantments
+                .iter()
+                .any(|enchantment| enchantment.source == EntityId(source)))
+        })?,
+    )?;
+    let snapshot = state.clone();
+    ctx.set(
         "get_player_data",
         lua.create_function(move |_, (_ctx, player, key): (Table, u8, String)| {
             Ok(snapshot
@@ -804,10 +839,11 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "refresh_mana_crystals",
-        lua.create_function(move |_, (_ctx, player): (Table, u8)| {
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, Option<u8>)| {
             output.borrow_mut().push(EffectSpec::RefreshManaCrystals {
                 source,
                 player: parse_player(player)?,
+                amount,
             });
             Ok(())
         })?,
@@ -835,6 +871,77 @@ pub(super) fn build_context(
             });
             Ok(())
         })?,
+    )?;
+    let output = effects.clone();
+    let balances = corpse_balances.clone();
+    ctx.set(
+        "gain_corpses",
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u32)| {
+            let player = parse_player(player)?;
+            let mut balances = balances.borrow_mut();
+            balances[player.index()] = balances[player.index()].saturating_add(amount);
+            output.borrow_mut().push(EffectSpec::GainCorpses {
+                source,
+                player,
+                amount,
+            });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    let balances = corpse_balances.clone();
+    ctx.set(
+        "spend_corpses",
+        lua.create_function(move |_, (_ctx, player, amount): (Table, u8, u32)| {
+            let player = parse_player(player)?;
+            let mut balances = balances.borrow_mut();
+            if balances[player.index()] < amount {
+                return Ok(false);
+            }
+            balances[player.index()] -= amount;
+            output.borrow_mut().push(EffectSpec::SpendCorpses {
+                source,
+                player,
+                amount,
+            });
+            Ok(true)
+        })?,
+    )?;
+    let output = effects.clone();
+    let balances = corpse_balances.clone();
+    ctx.set(
+        "spend_up_to_corpses",
+        lua.create_function(move |_, (_ctx, player, maximum): (Table, u8, u32)| {
+            let player = parse_player(player)?;
+            let mut balances = balances.borrow_mut();
+            let amount = balances[player.index()].min(maximum);
+            balances[player.index()] -= amount;
+            if amount > 0 {
+                output.borrow_mut().push(EffectSpec::SpendCorpses {
+                    source,
+                    player,
+                    amount,
+                });
+            }
+            Ok(amount)
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "spend_corpses_and_continue",
+        lua.create_function(
+            move |_, (_ctx, player, amount, hook): (Table, u8, u32, String)| {
+                output
+                    .borrow_mut()
+                    .push(EffectSpec::SpendCorpsesAndContinue {
+                        source,
+                        player: parse_player(player)?,
+                        amount,
+                        hook,
+                    });
+                Ok(())
+            },
+        )?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -879,6 +986,21 @@ pub(super) fn build_context(
             });
             Ok(())
         })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "take_sideboard_card",
+        lua.create_function(
+            move |_, (_ctx, player, owner, card_id): (Table, u8, String, String)| {
+                output.borrow_mut().push(EffectSpec::TakeSideboardCard {
+                    source,
+                    player: parse_player(player)?,
+                    owner,
+                    card_id,
+                });
+                Ok(())
+            },
+        )?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1099,6 +1221,20 @@ pub(super) fn build_context(
                 player: parse_player(player)?,
                 keyword,
             });
+            Ok(())
+        })?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "grant_public_player_keyword",
+        lua.create_function(move |_, (_ctx, player, keyword): (Table, u8, String)| {
+            output
+                .borrow_mut()
+                .push(EffectSpec::GrantPublicPlayerKeyword {
+                    source,
+                    player: parse_player(player)?,
+                    keyword,
+                });
             Ok(())
         })?,
     )?;

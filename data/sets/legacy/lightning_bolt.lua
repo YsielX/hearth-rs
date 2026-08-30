@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_238",
+    id = "EX1_238", rarity = "common",
     name = "Lightning Bolt",
     text = "Deal $3 damage. <b>Overload:</b> (1)",
     set = "EXPERT1",

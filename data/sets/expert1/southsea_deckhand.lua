@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_146",
+    id = "CS2_146", rarity = "common",
     name = "Southsea Deckhand",
     text = "Has <b>Charge</b> while you have a weapon equipped.",
     set = "EXPERT1",

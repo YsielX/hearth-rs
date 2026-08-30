@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "DRG_050",
+    id = "DRG_050", rarity = "common",
     name = "Devoted Maniac",
     text = "<b>Rush</b>\n<b>Battlecry:</b> <b>Invoke</b> Galakrond.",
     set = "DRAGONS",

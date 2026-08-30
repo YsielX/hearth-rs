@@ -103,7 +103,9 @@ pub(crate) fn encode_action(
             encoded.target = target.map(map).transpose()?;
         }
         PlayerCommand::EndTurn => encoded.kind = ActionKind::EndTurn,
-        PlayerCommand::Concede => encoded.kind = ActionKind::Concede,
+        PlayerCommand::Concede | PlayerCommand::ConcedePlayer { .. } => {
+            encoded.kind = ActionKind::Concede;
+        }
         PlayerCommand::Choose { index } => {
             encoded.kind = ActionKind::Choose;
             encoded.choice_index =

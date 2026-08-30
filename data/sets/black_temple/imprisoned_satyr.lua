@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "BT_127",
+    id = "BT_127", rarity = "common",
     name = "Imprisoned Satyr",
     text = "[x]<b>Dormant</b> for 2 turns.\nWhen this awakens, reduce\nthe Cost of a random minion\nin your hand by (5).",
     set = "BLACK_TEMPLE",

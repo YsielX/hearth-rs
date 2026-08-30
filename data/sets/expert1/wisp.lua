@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_231",
+    id = "CS2_231", rarity = "common",
     name = "Wisp",
     text = "",
     set = "EXPERT1",

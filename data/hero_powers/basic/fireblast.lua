@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_08bp",
+    id = "HERO_08bp", rarity = "free",
     name = "Fireblast",
     text = "<b>Hero Power</b>\nDeal $1 damage.",
     set = "LEGACY",

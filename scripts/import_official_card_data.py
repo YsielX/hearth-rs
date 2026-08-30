@@ -9,7 +9,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 API = "https://api.hearthstonejson.com/v1/latest/{locale}/cards.json"
-CARD_ROOTS = (ROOT / "data" / "sets", ROOT / "data" / "hero_powers")
+CARD_ROOTS = (
+    ROOT / "data" / "sets",
+    ROOT / "data" / "hero_powers",
+    ROOT / "data" / "heroes",
+)
 
 
 def implemented_ids() -> list[str]:

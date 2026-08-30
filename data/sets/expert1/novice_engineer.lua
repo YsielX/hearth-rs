@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_015",
+    id = "EX1_015", rarity = "free",
     name = "Novice Engineer",
     text = "<b>Battlecry:</b> Draw a card.",
     set = "LEGACY",

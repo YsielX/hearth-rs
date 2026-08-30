@@ -1,7 +1,7 @@
 -- Official card: TTN_724, Storm Giant.
 return {
     api_version = 1,
-    id = "TTN_724",
+    id = "TTN_724", rarity = "epic",
     name = "Storm Giant",
     text = "<b>Taunt</b>\n<b>Forge:</b> Costs (2) less. Can be <b>Forged</b> endlessly.",
     set = "TITANS",

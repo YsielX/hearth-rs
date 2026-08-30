@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_124",
+    id = "EX1_124", rarity = "common",
     name = "Eviscerate",
     text = "Deal $2 damage. <b>Combo:</b> Deal $4 damage instead.",
     set = "EXPERT1",

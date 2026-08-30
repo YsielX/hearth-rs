@@ -1,7 +1,7 @@
 return {
     api_version = 1,
     module_type = "hero_power",
-    id = "HERO_06bp",
+    id = "HERO_06bp", rarity = "free",
     name = "Shapeshift",
     text = "<b>Hero Power</b>\n+$a1 Attack this turn.\n+$d1 Armor.",
     set = "LEGACY",

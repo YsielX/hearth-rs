@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_029",
+    id = "CS2_029", rarity = "free",
     name = "Fireball",
     text = "Deal $6 damage.",
     set = "LEGACY",

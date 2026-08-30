@@ -4,7 +4,7 @@ end
 
 return {
     api_version = 1,
-    id = "CS2_072",
+    id = "CS2_072", rarity = "free",
     name = "Backstab",
     text = "Deal $2 damage to an undamaged minion.",
     set = "LEGACY",

@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_145",
+    id = "EX1_145", rarity = "epic",
     name = "Preparation",
     text = "The next spell you cast this turn costs (2) less.",
     set = "EXPERT1",

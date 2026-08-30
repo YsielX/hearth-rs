@@ -1,2 +1,2 @@
 local function totem(ctx,e)for _,tag in ipairs(ctx:card_definition(ctx:entity(e).card_id).tags)do if tag=="totem" or tag=="all"then return true end end return false end
-return {api_version=1,id="EX1_244",name="Totemic Might",text="Give your Totems +2 Health.",set="LEGACY",type="spell",class="shaman",cost=0,on_play=function(ctx,self)for _,e in ipairs(ctx:friendly_minions(self))do if totem(ctx,e)then ctx:buff(e,0,2)end end end}
+return {api_version=1,id="EX1_244", rarity = "free",name="Totemic Might",text="Give your Totems +2 Health.",set="LEGACY",type="spell",class="shaman",cost=0,on_play=function(ctx,self)for _,e in ipairs(ctx:friendly_minions(self))do if totem(ctx,e)then ctx:buff(e,0,2)end end end}

@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "BOT_309",
+    id = "BOT_309", rarity = "common",
     name = "Upgradeable Framebot",
     text = "",
     set = "BOOMSDAY",

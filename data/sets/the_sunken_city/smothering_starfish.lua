@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "TSC_926",
+    id = "TSC_926", rarity = "epic",
     name = "Smothering Starfish",
     text = "<b>Battlecry:</b> <b>Silence</b> ALL other minions.",
     set = "THE_SUNKEN_CITY",

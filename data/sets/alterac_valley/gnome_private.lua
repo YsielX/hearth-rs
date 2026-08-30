@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "AV_121",
+    id = "AV_121", rarity = "common",
     name = "Gnome Private",
     text = "[x]<b>Honorable Kill:</b> Gain\n+2 Attack.",
     set = "ALTERAC_VALLEY",

@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "TOY_006",
+    id = "TOY_006", rarity = "common",
     name = "Scarab Keychain",
     text = "<b>Battlecry:</b> <b>Discover</b> a\n2-Cost card.",
     set = "WHIZBANGS_WORKSHOP",

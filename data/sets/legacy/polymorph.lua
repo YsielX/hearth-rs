@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "CS2_022",
+    id = "CS2_022", spell_school = "arcane", rarity = "free",
     name = "Polymorph",
     text = "Transform a minion\ninto a 1/1 Sheep.",
     set = "LEGACY",

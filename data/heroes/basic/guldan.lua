@@ -1,0 +1,1 @@
+return { api_version = 1, id = "HERO_07", name = "Gul'dan", text = "", set = "HERO_SKINS", type = "hero", class = "warlock", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_07bp" }

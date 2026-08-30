@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "FP1_018",
+    id = "FP1_018", spell_school = "arcane",
     name = "Duplicate",
     text = "<b>Secret:</b> When a friendly minion dies, put 2 copies of it into your hand.",
     set = "NAXX",

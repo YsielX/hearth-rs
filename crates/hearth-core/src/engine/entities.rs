@@ -16,16 +16,7 @@ impl<R: CardRuntime> Game<R> {
                 .runtime
                 .definition(&card)
                 .ok_or_else(|| GameError::UnknownCard(card.clone()))?;
-            if !definition.collectible
-                || !matches!(
-                    definition.kind,
-                    CardKind::Hero
-                        | CardKind::Minion
-                        | CardKind::Spell
-                        | CardKind::Weapon
-                        | CardKind::Location
-                )
-            {
+            if !definition.is_deckable() {
                 return Err(GameError::InvalidDeckCard { player, card });
             }
             let entity = self.instantiate(&card, player, Zone::Deck)?;
@@ -38,6 +29,60 @@ impl<R: CardRuntime> Game<R> {
         }
         entities.shuffle(&mut self.rng);
         self.state.player_mut(player).deck = entities.into();
+        Ok(())
+    }
+
+    pub(super) fn install_sideboards(
+        &mut self,
+        player: PlayerId,
+        sideboards: BTreeMap<String, Vec<String>>,
+    ) -> Result<(), GameError> {
+        let main_deck = self.state.player(player).starting_deck.clone();
+        let mut all_cards = main_deck.clone();
+        for (owner, cards) in &sideboards {
+            if !main_deck.contains(owner) {
+                return Err(GameError::InvalidSideboard {
+                    player,
+                    owner: owner.clone(),
+                    message: "owner is not in the main deck".to_owned(),
+                });
+            }
+            let definition = self
+                .runtime
+                .definition(owner)
+                .ok_or_else(|| GameError::UnknownCard(owner.clone()))?;
+            if definition.sideboard_size == 0
+                || cards.len() != usize::from(definition.sideboard_size)
+            {
+                return Err(GameError::InvalidSideboard {
+                    player,
+                    owner: owner.clone(),
+                    message: format!(
+                        "expected {} cards, found {}",
+                        definition.sideboard_size,
+                        cards.len()
+                    ),
+                });
+            }
+            for card_id in cards {
+                let card = self
+                    .runtime
+                    .definition(card_id)
+                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
+                if !card.is_deckable() || card_id == owner {
+                    return Err(GameError::InvalidSideboard {
+                        player,
+                        owner: owner.clone(),
+                        message: format!("{card_id} is not an eligible sideboard card"),
+                    });
+                }
+            }
+            all_cards.extend(cards.iter().cloned());
+        }
+        if self.enforce_deck_classes[player.index()] {
+            self.validate_deck_classes(player, &all_cards)?;
+        }
+        self.state.player_mut(player).sideboards = sideboards;
         Ok(())
     }
 
@@ -55,7 +100,7 @@ impl<R: CardRuntime> Game<R> {
             .iter()
             .flat_map(|definition| definition.deck_allowances.iter())
             .collect::<Vec<_>>();
-        for definition in definitions {
+        for definition in &definitions {
             let own_class = if definition.classes.is_empty() {
                 definition.class.eq_ignore_ascii_case("neutral")
                     || definition.class.eq_ignore_ascii_case(class)
@@ -86,6 +131,20 @@ impl<R: CardRuntime> Game<R> {
                     class: class.clone(),
                     card: definition.id.clone(),
                     card_class,
+                });
+            }
+        }
+        if class.eq_ignore_ascii_case("death_knight") {
+            let runes = definitions.iter().fold(RuneCost::default(), |runes, card| {
+                runes.combined(card.rune_cost)
+            });
+            if !runes.fits_death_knight_deck() {
+                return Err(GameError::InvalidDeckRunes {
+                    player,
+                    total: runes.total(),
+                    blood: runes.blood,
+                    frost: runes.frost,
+                    unholy: runes.unholy,
                 });
             }
         }
@@ -674,6 +733,7 @@ impl<R: CardRuntime> Game<R> {
                     .map_err(GameError::Script)?,
             );
         }
+        let mut cost_caps = Vec::new();
         for aura in auras {
             for target in aura.targets {
                 let Some(entity) = self.state.entities.get_mut(&target) else {
@@ -682,6 +742,9 @@ impl<R: CardRuntime> Game<R> {
                 entity.aura_cost = entity.aura_cost.saturating_add(aura.cost);
                 if let Some(cost) = aura.cost_set {
                     entity.aura_cost_set = Some(cost);
+                }
+                if let Some(cap) = aura.cost_cap {
+                    cost_caps.push((target, cap));
                 }
                 if entity.kind != CardKind::Location {
                     entity.aura_attack = entity.aura_attack.saturating_add(aura.attack);
@@ -711,6 +774,11 @@ impl<R: CardRuntime> Game<R> {
                 if !entity.keywords.contains(keyword) {
                     entity.keywords.push(keyword.clone());
                 }
+            }
+        }
+        for (target, cap) in cost_caps {
+            if let Some(entity) = self.state.entities.get_mut(&target) {
+                entity.cost = entity.cost.min(cap.clamp(0, i32::from(u8::MAX)) as u8);
             }
         }
         // Cost floors are folded through the same generic Lua keyword rule boundary as

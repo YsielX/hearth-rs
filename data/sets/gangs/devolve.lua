@@ -1,5 +1,5 @@
 local card = {
-    api_version = 1, id = "CFM_696", name = "Devolve",
+    api_version = 1, id = "CFM_696", spell_school = "nature", name = "Devolve",
     text = "Transform all enemy minions into random ones that cost (1) less.",
     set = "GANGS", type = "spell", class = "shaman", rarity = "rare", cost = 2,
 }

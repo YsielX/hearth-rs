@@ -35,7 +35,7 @@ use action::encode_action;
 use history::ViewerMemory;
 use observation::build_observation;
 
-pub const OBSERVATION_SCHEMA_VERSION: u32 = 3;
+pub const OBSERVATION_SCHEMA_VERSION: u32 = 5;
 
 /// Operator/training metadata. This is deliberately not part of `Decision`,
 /// so a policy cannot mistake implementation source for in-game information.
@@ -423,7 +423,7 @@ mod tests {
         assert!(json.to_string().find("random_counter").is_none());
         assert!(json.to_string().find("command").is_none());
         assert!(json.to_string().find("sequence").is_none());
-        assert_eq!(decision.observation.schema_version, 3);
+        assert_eq!(decision.observation.schema_version, 5);
     }
 
     #[test]

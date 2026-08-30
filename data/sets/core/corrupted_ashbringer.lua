@@ -1,0 +1,15 @@
+return {
+    api_version = 1,
+    id = "RLK_067",
+    name = "Corrupted Ashbringer",
+    text = "<b>Lifesteal</b>",
+    set = "CORE",
+    type = "weapon",
+    class = "death_knight",
+    rarity = "common",
+    cost = 6,
+    attack = 5,
+    health = 2,
+    keywords = { "lifesteal" },
+    rune_cost = { blood = 2 },
+}

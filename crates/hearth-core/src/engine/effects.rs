@@ -25,6 +25,7 @@ impl<R: CardRuntime> Game<R> {
             | EffectSpec::ForceAttack { .. }
             | EffectSpec::Transform { .. }
             | EffectSpec::TransformIntoCopy { .. }
+            | EffectSpec::SpendCorpsesAndContinue { .. }
             | EffectSpec::Continue { .. }
             | EffectSpec::CancelEvent { .. }
             | EffectSpec::ModifyEventAmount { .. }
@@ -62,6 +63,54 @@ impl<R: CardRuntime> Game<R> {
                 keywords,
                 attached_scripts,
             }),
+            EffectSpec::TakeSideboardCard {
+                source,
+                player,
+                owner,
+                card_id,
+            } => {
+                let cards = self
+                    .state
+                    .player_mut(player)
+                    .sideboards
+                    .get_mut(&owner)
+                    .ok_or_else(|| GameError::SideboardCardMissing {
+                        player,
+                        owner: owner.clone(),
+                        card_id: card_id.clone(),
+                    })?;
+                let position = cards
+                    .iter()
+                    .position(|candidate| candidate == &card_id)
+                    .ok_or_else(|| GameError::SideboardCardMissing {
+                        player,
+                        owner: owner.clone(),
+                        card_id: card_id.clone(),
+                    })?;
+                cards.remove(position);
+                let events = self.create_card_from_spec(CardCreation {
+                    source,
+                    player,
+                    card_id,
+                    destination: ZonePlacement::Hand,
+                    position: None,
+                    base_attack: None,
+                    base_health: None,
+                    base_cost: None,
+                    base_spell_damage: None,
+                    keywords: None,
+                    attached_scripts: Vec::new(),
+                })?;
+                for event in &events {
+                    let card = match event {
+                        GameEvent::CardCreated { card, .. }
+                        | GameEvent::CardBurned { card, .. } => *card,
+                        _ => continue,
+                    };
+                    self.state.entities.get_mut(&card).unwrap().started_in_deck = true;
+                }
+                Ok(events)
+            }
             EffectSpec::GiveCopy {
                 source,
                 player,
@@ -262,6 +311,21 @@ impl<R: CardRuntime> Game<R> {
                 }
                 Ok(Vec::new())
             }
+            EffectSpec::GrantPublicPlayerKeyword {
+                source: _,
+                player,
+                keyword,
+            } => {
+                let state = self.state.player_mut(player);
+                if !state.keywords.contains(&keyword) {
+                    state.keywords.push(keyword.clone());
+                }
+                if !state.public_keywords.contains(&keyword) {
+                    state.public_keywords.push(keyword);
+                }
+                self.refresh_auras()?;
+                Ok(Vec::new())
+            }
             EffectSpec::DisablePlayerKeyword {
                 source: _,
                 player,
@@ -270,6 +334,10 @@ impl<R: CardRuntime> Game<R> {
                 self.state
                     .player_mut(player)
                     .keywords
+                    .retain(|candidate| candidate != &keyword);
+                self.state
+                    .player_mut(player)
+                    .public_keywords
                     .retain(|candidate| candidate != &keyword);
                 self.refresh_auras()?;
                 Ok(Vec::new())
@@ -502,12 +570,19 @@ impl<R: CardRuntime> Game<R> {
                 }
                 Ok(events)
             }
-            EffectSpec::RefreshManaCrystals { source: _, player } => {
+            EffectSpec::RefreshManaCrystals {
+                source: _,
+                player,
+                amount,
+            } => {
                 let player_state = self.state.player_mut(player);
                 let unlocked = player_state
                     .max_mana
                     .saturating_sub(player_state.overloaded_mana);
-                player_state.mana = unlocked.saturating_add(player_state.temporary_mana);
+                let maximum = unlocked.saturating_add(player_state.temporary_mana);
+                player_state.mana = amount
+                    .map(|amount| player_state.mana.saturating_add(amount).min(maximum))
+                    .unwrap_or(maximum);
                 Ok(Vec::new())
             }
             EffectSpec::DestroyManaCrystals {
@@ -550,6 +625,44 @@ impl<R: CardRuntime> Game<R> {
                     source,
                     amount,
                     temporary,
+                }])
+            }
+            EffectSpec::GainCorpses {
+                source,
+                player,
+                amount,
+            } => {
+                if amount == 0 {
+                    return Ok(Vec::new());
+                }
+                let state = self.state.player_mut(player);
+                let old = state.corpses;
+                state.corpses = old.saturating_add(amount);
+                let gained = state.corpses - old;
+                Ok((gained > 0)
+                    .then_some(GameEvent::CorpsesGained {
+                        source: Some(source),
+                        player,
+                        amount: gained,
+                    })
+                    .into_iter()
+                    .collect())
+            }
+            EffectSpec::SpendCorpses {
+                source,
+                player,
+                amount,
+            } => {
+                if amount == 0 || self.state.player(player).corpses < amount {
+                    return Ok(Vec::new());
+                }
+                let state = self.state.player_mut(player);
+                state.corpses -= amount;
+                state.corpses_spent = state.corpses_spent.saturating_add(amount);
+                Ok(vec![GameEvent::CorpsesSpent {
+                    source,
+                    player,
+                    amount,
                 }])
             }
             EffectSpec::SetHealth {

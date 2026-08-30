@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_169",
+    id = "EX1_169", spell_school = "nature", rarity = "free",
     name = "Innervate",
     text = "Gain 1 Mana Crystal this turn only.",
     set = "LEGACY",

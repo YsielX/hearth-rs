@@ -46,7 +46,7 @@ card.tokens = {
         set = "ICECROWN", type = "spell", class = "druid", collectible = false, cost = 5,
     },
     {
-        id = "ICC_047t", name = "Fatespinner",
+        id = "ICC_047t", rarity = "epic", name = "Fatespinner",
         text = "<b>Secret Deathrattle:</b> Deal 3 damage to all minions; or Give them +2/+2.@<b>Secret Deathrattle:</b> Give +2/+2 to all minions.@<b>Secret Deathrattle:</b> Deal 3 damage to all minions.",
         set = "ICECROWN", type = "minion", class = "druid", collectible = false,
         cost = 5, attack = 5, health = 3, tags = { "undead" },
@@ -60,7 +60,7 @@ card.tokens = {
         end,
     },
     {
-        id = "ICC_047t2", name = "Fatespinner",
+        id = "ICC_047t2", rarity = "epic", name = "Fatespinner",
         text = "<b>Deathrattle:</b> Deal 3 damage to all minions and give them +2/+2.",
         set = "ICECROWN", type = "minion", class = "druid", collectible = false,
         cost = 5, attack = 5, health = 3, tags = { "undead" }, keywords = { "deathrattle" },

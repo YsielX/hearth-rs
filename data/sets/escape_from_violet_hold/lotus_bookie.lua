@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "JAIL_720",
+    id = "JAIL_720", rarity = "common",
     name = "Lotus Bookie",
     text = "<b>Deathrattle:</b> Get a Coin.",
     set = "ESCAPEFROM_VIOLET_HOLD",

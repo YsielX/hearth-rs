@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "SCH_248",
+    id = "SCH_248", rarity = "common",
     name = "Pen Flinger",
     text = "[x]<b>Battlecry:</b> Deal 1 damage\nto a minion.\n <b><b>Spellburst</b>:</b> Return this\nto your hand.",
     set = "SCHOLOMANCE",

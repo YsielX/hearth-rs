@@ -1,6 +1,8 @@
 # hearth-bot
 
-`hearth-bot` is a deterministic, non-cheating baseline controller. It consumes only `PlayerView` plus the authoritative list of `LegalAction` values; it cannot read the opponent's hand, deck order, Secret identities, hidden aura sources, RNG, or replay.
+`hearth-bot` provides deterministic, non-cheating Easy, Normal, and Hard controllers. Every policy consumes only `PlayerView` plus the authoritative list of `LegalAction` values; none can read the opponent's hand, deck order, Secret identities, hidden aura sources, RNG, or replay. `DifficultyBot` selects the policy while the original `SimpleBot` remains the Normal-compatible controller.
+
+Easy chooses the first stable non-concede action and is intentionally naive. Normal uses the baseline plan below. Hard replaces opening-hand cards costing four or more, takes advantageous trades before spending Mana, then follows the same deterministic planning rules. The same visible state and difficulty always produce the same command.
 
 Decision order:
 

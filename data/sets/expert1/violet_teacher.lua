@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "NEW1_026",
+    id = "NEW1_026", rarity = "rare",
     name = "Violet Teacher",
     text = "Whenever you cast a spell, summon a 1/1 Violet Apprentice.",
     set = "EXPERT1",

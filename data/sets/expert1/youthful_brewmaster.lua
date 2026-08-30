@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_049",
+    id = "EX1_049", rarity = "common",
     name = "Youthful Brewmaster",
     text = "<b>Battlecry:</b> Return a friendly minion from the battlefield to your hand.",
     set = "EXPERT1",

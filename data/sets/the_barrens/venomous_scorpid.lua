@@ -1,6 +1,6 @@
 local card = {
     api_version = 1,
-    id = "BAR_065",
+    id = "BAR_065", rarity = "common",
     name = "Venomous Scorpid",
     text = "<b>Poisonous</b>\n<b>Battlecry:</b> <b>Discover</b> a spell.",
     set = "THE_BARRENS",

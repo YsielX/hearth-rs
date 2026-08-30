@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "WORK_002",
+    id = "WORK_002", rarity = "common",
     name = "Busy-Bot",
     text = "<b>Battlecry:</b> Give your\n1-Attack minions +1/+1.",
     set = "ISLAND_VACATION",

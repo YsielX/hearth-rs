@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "DRG_079",
+    id = "DRG_079", rarity = "common",
     name = "Evasive Wyrm",
     text = "<b>Rush</b>\n<b>Divine Shield</b>\n<b>Elusive</b>",
     set = "DRAGONS",

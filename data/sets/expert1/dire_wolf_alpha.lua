@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_162",
+    id = "EX1_162", rarity = "common",
     name = "Dire Wolf Alpha",
     text = "Adjacent minions have +1 Attack.",
     set = "EXPERT1",

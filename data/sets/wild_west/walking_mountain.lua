@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "WW_382",
+    id = "WW_382", rarity = "epic",
     name = "Walking Mountain",
     text = "<b>Rush</b>, <b>Lifesteal</b>,\n<b>Mega-Windfury</b>\n<b>Overload:</b> (2)",
     set = "WILD_WEST",

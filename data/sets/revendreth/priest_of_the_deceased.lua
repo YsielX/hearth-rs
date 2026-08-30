@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "REV_956",
+    id = "REV_956", rarity = "common",
     name = "Priest of the Deceased",
     text = "<b>Taunt</b>\n<b>Infuse (3):</b> Gain +2/+2.",
     set = "REVENDRETH",

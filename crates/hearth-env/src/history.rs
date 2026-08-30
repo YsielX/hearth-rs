@@ -64,6 +64,8 @@ pub enum EventKind {
     ManaCrystalsGained,
     ManaCrystalsDestroyed,
     ManaSpent,
+    CorpsesGained,
+    CorpsesSpent,
     KeywordDisabled,
     Frozen,
     EntityDied,
@@ -747,6 +749,28 @@ fn encode_record(
             output.player = Some(relative(*player, viewer));
             output.amount = Some(i64::from(*amount));
             output.temporary = Some(*temporary);
+            push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
+            output
+        }
+        PublicEvent::CorpsesGained {
+            player,
+            source,
+            amount,
+        } => {
+            let mut output = EventObservation::new(EventKind::CorpsesGained);
+            output.player = Some(relative(*player, viewer));
+            output.amount = Some(i64::from(*amount));
+            push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
+            output
+        }
+        PublicEvent::CorpsesSpent {
+            player,
+            source,
+            amount,
+        } => {
+            let mut output = EventObservation::new(EventKind::CorpsesSpent);
+            output.player = Some(relative(*player, viewer));
+            output.amount = Some(i64::from(*amount));
             push_optional(&mut output, refs, EventEntityRole::Source, source.as_ref())?;
             output
         }

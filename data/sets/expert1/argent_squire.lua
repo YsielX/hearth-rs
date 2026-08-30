@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EX1_008",
+    id = "EX1_008", rarity = "common",
     name = "Argent Squire",
     text = "<b>Divine Shield</b>",
     set = "EXPERT1",

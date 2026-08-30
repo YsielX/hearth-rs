@@ -1,1 +1,1 @@
-return { api_version = 1, id = "CS2_179", name = "Sen'jin Shieldmasta", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", cost = 4, attack = 3, health = 5, keywords = { "taunt" } }
+return { api_version = 1, id = "CS2_179", rarity = "free", name = "Sen'jin Shieldmasta", text = "<b>Taunt</b>", set = "LEGACY", type = "minion", cost = 4, attack = 3, health = 5, keywords = { "taunt" } }

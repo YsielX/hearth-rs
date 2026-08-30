@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "EDR_468",
+    id = "EDR_468", rarity = "common",
     name = "Eggbasher",
     text = "<b>Battlecry:</b> Deal 1 damage to a minion and give it\n+4 Attack.",
     set = "EMERALD_DREAM",

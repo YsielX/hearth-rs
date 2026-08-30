@@ -8,7 +8,7 @@ end
 
 return {
     api_version = 1,
-    id = "EX1_134",
+    id = "EX1_134", rarity = "rare",
     name = "SI:7 Agent",
     text = "<b>Combo:</b> Deal 3 damage.",
     set = "EXPERT1",

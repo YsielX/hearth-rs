@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "SW_089",
+    id = "SW_089", rarity = "epic",
     name = "Entitled Customer",
     text = "<b>Battlecry:</b> Deal damage equal to your hand size to all other minions.",
     set = "STORMWIND",

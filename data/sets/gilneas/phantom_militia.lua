@@ -1,6 +1,6 @@
 return {
     api_version = 1,
-    id = "GIL_207",
+    id = "GIL_207", rarity = "rare",
     name = "Phantom Militia",
     text = "<b>Echo</b>\n<b>Taunt</b>",
     set = "GILNEAS",

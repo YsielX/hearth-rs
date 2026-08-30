@@ -1,0 +1,1 @@
+return { api_version = 1, id = "HERO_11", name = "The Lich King", text = "", set = "HERO_SKINS", type = "hero", class = "death_knight", rarity = "free", collectible = true, cost = 0, health = 30, hero_power = "HERO_11bp" }
