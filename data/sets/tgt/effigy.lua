@@ -37,7 +37,7 @@ function card.begin_effigy(ctx, self, dead)
 end
 
 function card.summon_effigy(ctx, self, card_id)
-    ctx:summon_at(ctx:controller(self), card_id, ctx:get_data(self, "summon_position"))
+    cardlib.effects.summon_at(ctx, ctx:controller(self), card_id, ctx:get_data(self, "summon_position"))
 end
 
 return card

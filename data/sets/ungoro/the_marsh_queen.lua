@@ -11,7 +11,7 @@ local card = { api_version = 1, id = "UNG_920", name = "The Marsh Queen",
             ctx:set_data(self, "progress", progress)
             if progress >= 7 then
                 ctx:set_data(self, "completed", 1); ctx:reveal_secret(self)
-                ctx:give_card(ctx:controller(self), "UNG_920t1")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_920t1")
             end
         end }},
 }
@@ -19,7 +19,7 @@ card.tokens = {
     { id = "UNG_920t1", name = "Queen Carnassa", text = "<b>Rush</b>\n<b>Battlecry:</b> Shuffle 20 Raptors into your deck.",
       set = "UNGORO", type = "minion", class = "hunter", cost = 5, attack = 8, health = 8,
       tags = { "beast" }, keywords = { "rush", "battlecry" },
-      on_battlecry = function(ctx, self) for _ = 1, 20 do ctx:shuffle_card_into_deck(ctx:controller(self), "UNG_920t2") end end },
+      on_battlecry = function(ctx, self) for _ = 1, 20 do cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), "UNG_920t2") end end },
     { id = "UNG_920t2", name = "Carnassa's Brood", text = "<b>Battlecry:</b> Draw a card.",
       set = "UNGORO", type = "minion", class = "hunter", cost = 1, attack = 3, health = 2,
       tags = { "beast" }, keywords = { "battlecry" }, on_battlecry = function(ctx, self) ctx:draw(ctx:controller(self), 1) end },

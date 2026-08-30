@@ -12,7 +12,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
             if ctx:entity(entity).type == "minion" and deathrattle(ctx, entity) then
-                ctx:buff(entity, 1, 1)
+                cardlib.effects.buff(ctx, entity, 1, 1)
             end
         end
     end,

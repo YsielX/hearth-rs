@@ -12,7 +12,7 @@ return {
     health = 2,
     keywords = { "miniaturize", "rush", "lifesteal", "divine_shield" },
     on_miniaturize = function(ctx, self)
-        ctx:give_card(ctx:controller(self), "TOY_811t")
+        cardlib.effects.give_card(ctx, ctx:controller(self), "TOY_811t")
     end,
     tokens = {
         {

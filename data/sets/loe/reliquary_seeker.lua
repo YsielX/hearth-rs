@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    if #ctx:board(ctx:controller(self)) == 7 then ctx:buff(self, 4, 4) end
+    if #ctx:board(ctx:controller(self)) == 7 then cardlib.effects.buff(ctx, self, 4, 4) end
 end
 
 return card

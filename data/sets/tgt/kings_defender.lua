@@ -6,7 +6,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             for _, keyword in ipairs(ctx:entity(minion).keywords) do
-                if keyword == "taunt" then ctx:buff(self, 0, 1) return end
+                if keyword == "taunt" then cardlib.effects.buff(ctx, self, 0, 1) return end
             end
         end
     end,

@@ -20,7 +20,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.gain_attack(ctx, self, amount)
-    ctx:buff(self, amount, 0)
+    cardlib.effects.buff(ctx, self, amount, 0)
 end
 
 return card

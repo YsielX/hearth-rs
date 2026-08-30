@@ -16,7 +16,7 @@ return {
                     and ctx:entity(event.entity).card_id == "ICC_827"
             end,
             effect = function(ctx, self)
-                ctx:give_card(ctx:controller(self), "ICC_827t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "ICC_827t")
             end,
         },
         {
@@ -25,7 +25,7 @@ return {
                 return event.player == ctx:controller(self)
             end,
             effect = function(ctx, self)
-                ctx:give_card(ctx:controller(self), "ICC_827t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "ICC_827t")
             end,
         },
         {
@@ -35,7 +35,7 @@ return {
                     and ctx:controller(event.entity) == ctx:controller(self)
             end,
             effect = function(ctx, self, event)
-                ctx:grant_keyword(event.entity, "temporary")
+                cardlib.effects.grant_keyword(ctx, event.entity, "temporary")
             end,
         },
     },
@@ -62,7 +62,7 @@ return {
                         return event.entity == self
                     end,
                     effect = function(ctx, self)
-                        ctx:grant_keyword(self, "temporary")
+                        cardlib.effects.grant_keyword(ctx, self, "temporary")
                     end,
                 },
             },

@@ -4,6 +4,6 @@ return {
     cost = 4, attack = 5, health = 4, tags = { "naga", "pirate" }, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local weapon = ctx:player(ctx:controller(self)).weapon
-        if weapon then ctx:buff(weapon, 1, 0) end
+        if weapon then cardlib.effects.buff(ctx, weapon, 1, 0) end
     end,
 }

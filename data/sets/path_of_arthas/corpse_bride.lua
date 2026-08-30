@@ -22,7 +22,7 @@ end
 
 function card.summon_groom(ctx, self, spent)
     local player = ctx:controller(self)
-    ctx:summon_with_stats(player, "RLK_506t", spent, spent)
+    cardlib.effects.summon_with_stats(ctx, player, "RLK_506t", spent, spent)
 end
 
 card.tokens = {{

@@ -19,8 +19,8 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.protect_minion(ctx, self, target)
-    ctx:grant_keyword(target, "divine_shield")
-    ctx:grant_keyword(target, "taunt")
+    cardlib.effects.grant_keyword(ctx, target, "divine_shield")
+    cardlib.effects.grant_keyword(ctx, target, "taunt")
 end
 
 return card

@@ -13,7 +13,7 @@ local card = {
 
 function card.on_play(ctx, self)
     local weapon = ctx:player(ctx:controller(self)).weapon
-    if weapon ~= nil then ctx:buff(weapon, 3, 0) end
+    if weapon ~= nil then cardlib.effects.buff(ctx, weapon, 3, 0) end
 end
 
 function card.on_combo(ctx, self)
@@ -22,7 +22,7 @@ function card.on_combo(ctx, self)
 end
 
 function card.oil_minion(ctx, self, target)
-    ctx:buff(target, 3, 0)
+    cardlib.effects.buff(ctx, target, 3, 0)
 end
 
 return card

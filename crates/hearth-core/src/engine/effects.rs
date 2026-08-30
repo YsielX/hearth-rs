@@ -96,9 +96,8 @@ impl<R: CardRuntime> Game<R> {
                 source,
                 player,
                 target,
-                preserve_state,
-                attack,
-                health,
+                state,
+                final_stats,
                 cost,
             } => {
                 let template = self
@@ -112,13 +111,13 @@ impl<R: CardRuntime> Game<R> {
                     Zone::Graveyard
                 };
                 let card = self.instantiate(&template.card_id, player, zone)?;
-                if preserve_state {
+                if state == CardCopyState::Preserve {
                     self.copy_card_state(&template, card);
                 }
                 let mut modifiers = Vec::new();
                 for (stat, value) in [
-                    (Stat::Attack, attack),
-                    (Stat::Health, health),
+                    (Stat::Attack, final_stats.as_ref().map(|stats| stats.attack)),
+                    (Stat::Health, final_stats.as_ref().map(|stats| stats.health)),
                     (Stat::Cost, cost),
                 ] {
                     if let Some(value) = value {

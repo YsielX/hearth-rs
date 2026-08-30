@@ -12,7 +12,7 @@ card.triggers = {{
         return event.keyword == "divine_shield" and target.type == "minion"
             and target.controller == ctx:controller(self)
     end,
-    effect = function(ctx, self) ctx:buff(self, 2, 0) end,
+    effect = function(ctx, self) cardlib.effects.buff(ctx, self, 2, 0) end,
 }}
 
 return card

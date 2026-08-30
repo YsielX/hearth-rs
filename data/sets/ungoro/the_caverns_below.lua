@@ -44,7 +44,7 @@ local card = {
                 if count >= 4 then
                     ctx:set_data(self, "completed", 1)
                     ctx:reveal_secret(self)
-                    ctx:give_card(ctx:controller(self), "UNG_067t1")
+                    cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_067t1")
                 end
             end,
         },

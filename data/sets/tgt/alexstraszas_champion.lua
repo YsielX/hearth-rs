@@ -13,6 +13,6 @@ return {
     set = "TGT", type = "minion", class = "warrior", rarity = "rare", cost = 2,
     attack = 2, health = 3, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        if holding_dragon(ctx, self) then ctx:buff(self, 1, 0); ctx:grant_keyword(self, "charge") end
+        if holding_dragon(ctx, self) then cardlib.effects.buff(ctx, self, 1, 0); cardlib.effects.grant_keyword(ctx, self, "charge") end
     end,
 }

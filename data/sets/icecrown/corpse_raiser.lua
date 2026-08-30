@@ -24,12 +24,12 @@ end
 function card.on_battlecry(ctx, self, target)
     if target then
         ctx:attach_hook(target, "on_deathrattle", "ICC_257")
-        ctx:grant_keyword(target, "deathrattle")
+        cardlib.effects.grant_keyword(ctx, target, "deathrattle")
     end
 end
 
 function card.on_deathrattle(ctx, self, position)
-    ctx:summon_at(ctx:controller(self), ctx:entity(self).card_id, position)
+    cardlib.effects.summon_at(ctx, ctx:controller(self), ctx:entity(self).card_id, position)
 end
 
 return card

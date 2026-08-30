@@ -15,6 +15,6 @@ function card.targets(ctx, self)
 end
 function card.on_play(ctx, self, target)
     ctx:change_controller_until_end_of_turn(target, ctx:controller(self))
-    ctx:grant_keyword_until_end_of_turn(target, "charge")
+    cardlib.effects.grant_keyword_until_end_of_turn(ctx, target, "charge")
 end
 return card

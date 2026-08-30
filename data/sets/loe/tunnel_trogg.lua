@@ -19,7 +19,7 @@ return {
                 return event.player == ctx:controller(self) and event.amount > 0
             end,
             effect = function(ctx, self, event)
-                ctx:buff(self, event.amount, 0)
+                cardlib.effects.buff(ctx, self, event.amount, 0)
             end,
         },
     },

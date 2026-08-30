@@ -25,7 +25,7 @@ end
 function plagues.shuffle(ctx, source_player, target_player, card_id)
     ctx:set_player_data(target_player, SOURCE_KEY, source_player + 1)
     ctx:increment_player_data(source_player, SHUFFLED_KEY, 1)
-    ctx:shuffle_card_into_deck(target_player, card_id)
+    cardlib.effects.shuffle_card_into_deck(ctx, target_player, card_id)
 end
 
 function plagues.reshuffle_if_unending(ctx, plague_player, card_id)

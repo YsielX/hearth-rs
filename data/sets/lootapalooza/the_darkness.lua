@@ -85,9 +85,9 @@ local card = {
 
 function card.on_battlecry(ctx, self)
     local enemy = ctx:opponent(ctx:controller(self))
-    ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
-    ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
-    ctx:shuffle_card_into_deck(enemy, "LOOT_526t")
+    cardlib.effects.shuffle_card_into_deck(ctx, enemy, "LOOT_526t")
+    cardlib.effects.shuffle_card_into_deck(ctx, enemy, "LOOT_526t")
+    cardlib.effects.shuffle_card_into_deck(ctx, enemy, "LOOT_526t")
     cardlib.effects.transform_preserving_scripts(ctx, self, "LOOT_526d")
 end
 

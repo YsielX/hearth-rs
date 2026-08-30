@@ -52,7 +52,7 @@ function card.on_battlecry(ctx, self, target)
         ctx:attach_hook(self, "on_deathrattle", card_id)
         copied = copied + 1
     end
-    if copied > 0 then ctx:grant_keyword(self, "deathrattle") end
+    if copied > 0 then cardlib.effects.grant_keyword(ctx, self, "deathrattle") end
 end
 
 -- The attached card scripts supply the copied hooks. This no-op hook satisfies

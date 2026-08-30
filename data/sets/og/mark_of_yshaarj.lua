@@ -14,7 +14,7 @@ end
 
 function card.on_play(ctx, self, target)
     local draw = beast(ctx, target)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
     if draw then ctx:draw(ctx:controller(self), 1) end
 end
 return card

@@ -12,7 +12,7 @@ local function demon(definition)
 end
 function card.on_battlecry(ctx, self)
     for _, entity in ipairs(ctx:friendly_minions(self)) do
-        if demon(ctx:card_definition(ctx:entity(entity).card_id)) then ctx:buff(entity, 1, 1) end
+        if demon(ctx:card_definition(ctx:entity(entity).card_id)) then cardlib.effects.buff(ctx, entity, 1, 1) end
     end
 end
 return card

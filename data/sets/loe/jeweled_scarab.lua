@@ -19,5 +19,5 @@ function card.on_battlecry(ctx, self)
     ctx:discover_cards(player, "Discover a 3-Cost card", pool, 3, "receive_card")
 end
 
-function card.receive_card(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.receive_card(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 return card

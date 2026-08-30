@@ -153,40 +153,51 @@ return {
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              ctx:give_card(player, "KAR_114")
-              ctx:shuffle_card_into_deck(player, "OG_221")
+              ctx:create_card(player, "KAR_114")
+              ctx:create_card(player, "OG_221", { destination = "deck_random" })
+              ctx:continue_with("mark_barnes_template")
+          end,
+          mark_barnes_template = function(ctx, self)
+              local player = ctx:controller(self)
+              for _, entity in ipairs(ctx:deck(player)) do
+                  if ctx:entity(entity).card_id == "OG_221" then
+                      ctx:buff(entity, { attack = 2, health = 3 })
+                      ctx:set_data(entity, "barnes_marker", 42)
+                      break
+                  end
+              end
           end },
         { id = "TEST_KARA_CURATOR_SETUP", name = "Curator Setup", text = "", set = "TEST",
           type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              ctx:give_card(player, "KAR_061")
-              ctx:shuffle_card_into_deck(player, "KAR_005")
-              ctx:shuffle_card_into_deck(player, "OG_271")
-              ctx:shuffle_card_into_deck(player, "OG_156")
+              ctx:create_card(player, "KAR_061")
+              ctx:create_card(player, "KAR_005", { destination = "deck_random" })
+              ctx:create_card(player, "OG_271", { destination = "deck_random" })
+              ctx:create_card(player, "OG_156", { destination = "deck_random" })
           end },
         { id = "TEST_KARA_ATIESH_SETUP", name = "Atiesh Setup", text = "", set = "TEST",
           type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              ctx:give_card(player, "KAR_097")
-              ctx:give_card(player, "TEST_KARA_DISCOUNT")
-              ctx:give_card(player, "KAR_013")
-              ctx:give_card(player, "KAR_013")
-              ctx:give_card(player, "KAR_013")
-              ctx:give_card(player, "OG_086")
+              ctx:create_card(player, "KAR_097")
+              ctx:create_card(player, "TEST_KARA_DISCOUNT")
+              ctx:create_card(player, "KAR_013")
+              ctx:create_card(player, "KAR_013")
+              ctx:create_card(player, "KAR_013")
+              ctx:create_card(player, "OG_086")
           end },
         { id = "TEST_KARA_MOAT_SETUP", name = "Moat Setup", text = "", set = "TEST",
           type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               clear_hand(ctx, self)
-              ctx:give_card(player, "OG_221")
-              ctx:give_card(player, "OG_223")
-              ctx:give_card(player, "KAR_041")
-              ctx:give_card(player, "TEST_KARA_KILL")
+              ctx:create_card(player, "OG_221")
+              ctx:create_card(player, "OG_223")
+              ctx:create_card(player, "KAR_041")
+              ctx:create_card(player, "TEST_KARA_KILL")
           end },
     },
 }
@@ -257,7 +268,7 @@ fn silverware_golem_discard_summons_the_same_entity_from_graveyard() {
 }
 
 #[test]
-fn barnes_uses_a_deck_template_but_summons_a_fresh_one_one_copy() {
+fn barnes_preserves_the_deck_templates_state_then_sets_the_copy_to_one_one() {
     let (_dir, runtime) = fixture_runtime();
     let mut game = game_with_runtime(
         runtime,
@@ -283,6 +294,11 @@ fn barnes_uses_a_deck_template_but_summons_a_fresh_one_one_copy() {
     assert_eq!(game.state().entity(template).unwrap().zone, Zone::Deck);
     assert_eq!(game.state().entity(copy).unwrap().attack, 1);
     assert_eq!(game.state().entity(copy).unwrap().max_health, 1);
+    assert_eq!(
+        game.state().entity(copy).unwrap().script_data["barnes_marker"],
+        42
+    );
+    assert_eq!(game.state().entity(copy).unwrap().enchantments.len(), 2);
     assert!(
         game.state()
             .entity(copy)

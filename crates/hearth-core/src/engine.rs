@@ -6,12 +6,12 @@ use rand_chacha::ChaCha8Rng;
 use thiserror::Error;
 
 use crate::{
-    CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy, ChoiceValue, EffectDuration,
-    EffectSpec, Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId, EventId,
-    EventTiming, GameEvent, GameOutcome, GameSnapshot, GameState, LegalAction, MinionDeathRecord,
-    ModifierOperation, PendingEvent, PlayerCommand, PlayerId, PlayerState, Replay,
-    ReservedSummonOrigin, ResolutionItem, RuneCost, ScriptEvent, SpellCastRecord, Stat,
-    StatModifier, Zone, ZonePlacement,
+    CardCopyState, CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy, ChoiceValue,
+    EffectDuration, EffectSpec, Enchantment, EnchantmentExpiry, EnchantmentId, Entity, EntityId,
+    EventId, EventTiming, FreshCopyStats, GameEvent, GameOutcome, GameSnapshot, GameState,
+    LegalAction, MinionDeathRecord, MinionStats, ModifierOperation, PendingEvent, PlayerCommand,
+    PlayerId, PlayerState, Replay, ReservedSummonOrigin, ResolutionItem, RuneCost, ScriptEvent,
+    SpellCastRecord, Stat, StatModifier, SummonStats, Zone, ZonePlacement,
 };
 
 mod casting;

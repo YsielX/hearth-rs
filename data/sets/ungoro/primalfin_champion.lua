@@ -18,7 +18,7 @@ card.triggers = {{
 function card.on_deathrattle(ctx, self)
     for index = 1, ctx:get_data(self, "champion_spell_count") do
         local spell = ctx:get_data(self, "champion_spell_" .. index)
-        if spell ~= 0 then ctx:give_card(ctx:controller(self), ctx:entity(spell).card_id) end
+        if spell ~= 0 then cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(spell).card_id) end
     end
 end
 return card

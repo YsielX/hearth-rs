@@ -12,7 +12,7 @@ function card.on_play(ctx, self, target)
 end
 
 function card.toxic_arrow_survived(ctx, self, target)
-    if ctx:entity(target).zone == "board" then ctx:grant_keyword(target, "poisonous") end
+    if ctx:entity(target).zone == "board" then cardlib.effects.grant_keyword(ctx, target, "poisonous") end
 end
 
 return card

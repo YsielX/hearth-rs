@@ -22,12 +22,12 @@ function card.on_choose_one(ctx, self)
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then ctx:buff(self, 1, 0)
-    else ctx:buff(self, 0, 1) end
+    if choice == 1 then cardlib.effects.buff(ctx, self, 1, 0)
+    else cardlib.effects.buff(ctx, self, 0, 1) end
 end
 
 function card.on_choose_multiple(ctx, self)
-    ctx:buff(self, 1, 1)
+    cardlib.effects.buff(ctx, self, 1, 1)
 end
 
 return card

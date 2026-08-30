@@ -13,7 +13,7 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        for _ = 1, 4 do ctx:shuffle_card_into_deck(player, "TTN_083t") end
+        for _ = 1, 4 do cardlib.effects.shuffle_card_into_deck(ctx, player, "TTN_083t") end
     end,
     tokens = {
         {

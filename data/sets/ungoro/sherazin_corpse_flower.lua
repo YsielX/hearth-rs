@@ -6,7 +6,7 @@ local card = {
 }
 function card.on_deathrattle(ctx, self, position)
     cardlib.effects.transform(ctx, self, "UNG_065t")
-    ctx:summon_existing_at(ctx:controller(self), self, position)
+    cardlib.effects.summon_existing_at(ctx, ctx:controller(self), self, position)
 end
 local seed = {
     id = "UNG_065t", name = "Sherazin, Seed",

@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    ctx:shuffle_card_into_deck(ctx:opponent(ctx:controller(self)), "BOT_511t")
+    cardlib.effects.shuffle_card_into_deck(ctx, ctx:opponent(ctx:controller(self)), "BOT_511t")
 end
 
 card.tokens = {

@@ -11,7 +11,7 @@ local card = { api_version = 1, id = "UNG_028", name = "Open the Waygate",
             ctx:set_data(self, "progress", progress)
             if progress >= 8 then
                 ctx:set_data(self, "completed", 1); ctx:reveal_secret(self)
-                ctx:give_card(ctx:controller(self), "UNG_028t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_028t")
             end
         end }},
 }

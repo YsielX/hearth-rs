@@ -12,7 +12,7 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
-            ctx:give_card(player, ctx:entity(minion).card_id)
+            cardlib.effects.give_card(ctx, player, ctx:entity(minion).card_id)
         end
     end,
 }

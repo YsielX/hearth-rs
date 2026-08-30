@@ -19,7 +19,7 @@ return {
                 return event.player == ctx:controller(self)
             end,
             effect = function(ctx, self, event)
-                ctx:give_card(
+                cardlib.effects.give_card(ctx,
                     ctx:controller(self),
                     ctx:entity(event.entity).card_id
                 )

@@ -30,7 +30,7 @@ card.triggers = {{
     end,
     effect = function(ctx, self, event)
         ctx:set_data(event.entity, EXPIRY, ctx:turn() + 1)
-        ctx:grant_keyword(event.entity, KEY)
+        cardlib.effects.grant_keyword(ctx, event.entity, KEY)
     end,
 }}
 

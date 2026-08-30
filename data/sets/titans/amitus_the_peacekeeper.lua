@@ -55,7 +55,7 @@ card.action_effects = {
     end,
     titan_2 = function(ctx, self)
         for _, entity in ipairs(ctx:friendly_minions(self)) do
-            if entity ~= self then ctx:buff(entity, 2, 2) end
+            if entity ~= self then cardlib.effects.buff(ctx, entity, 2, 2) end
         end
     end,
     titan_3 = function(ctx, self)

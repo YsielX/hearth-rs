@@ -8,7 +8,7 @@ return {
         condition = function(ctx, self, event) return event.player == ctx:controller(self) end,
         effect = function(ctx, self)
             for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
-                if ctx:entity(entity).type == "minion" then ctx:buff(entity, 1, 1) end
+                if ctx:entity(entity).type == "minion" then cardlib.effects.buff(ctx, entity, 1, 1) end
             end
         end,
     }},

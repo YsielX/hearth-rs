@@ -957,27 +957,6 @@ pub(super) fn build_context(
     )?;
     let output = effects.clone();
     ctx.set(
-        "give_card",
-        lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
-            output.borrow_mut().push(EffectSpec::CreateCard {
-                source,
-                player: parse_player(player)?,
-                card_id,
-                destination: ZonePlacement::Hand,
-                position: None,
-                base_attack: None,
-                base_health: None,
-                base_cost: None,
-                base_spell_damage: None,
-                keywords: None,
-                attached_scripts: Vec::new(),
-                started_in_deck: false,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
         "consume_sideboard_card",
         lua.create_function(
             move |_, (_ctx, player, owner, card_id): (Table, u8, String, String)| {
@@ -986,29 +965,6 @@ pub(super) fn build_context(
                     player: parse_player(player)?,
                     owner,
                     card_id,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "give_card_at",
-        lua.create_function(
-            move |_, (_ctx, player, card_id, position): (Table, u8, String, usize)| {
-                output.borrow_mut().push(EffectSpec::CreateCard {
-                    source,
-                    player: parse_player(player)?,
-                    card_id,
-                    destination: ZonePlacement::Hand,
-                    position: Some(position),
-                    base_attack: None,
-                    base_health: None,
-                    base_cost: None,
-                    base_spell_damage: None,
-                    keywords: None,
-                    attached_scripts: Vec::new(),
-                    started_in_deck: false,
                 });
                 Ok(())
             },
@@ -1068,107 +1024,45 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "give_copy",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::GiveCopy {
-                source,
-                player: parse_player(player)?,
-                target: EntityId(target),
-                preserve_state: true,
-                attack: None,
-                health: None,
-                cost: None,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "give_copy_with_stats",
         lua.create_function(
-            move |_,
-                  (_ctx, player, target, attack, health, cost): (
-                Table,
-                u8,
-                u64,
-                i32,
-                i32,
-                Option<i32>,
-            )| {
+            move |lua, (_ctx, player, target, options): (Table, u8, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let state = match options
+                    .get::<Option<String>>("state")?
+                    .as_deref()
+                    .unwrap_or("preserve")
+                {
+                    "preserve" => CardCopyState::Preserve,
+                    "definition" => CardCopyState::Definition,
+                    value => {
+                        return Err(mlua::Error::RuntimeError(format!(
+                            "invalid give_copy state: {value}"
+                        )));
+                    }
+                };
+                let final_stats = options
+                    .get::<Option<Table>>("final_stats")?
+                    .map(|stats| -> mlua::Result<MinionStats> {
+                        Ok(MinionStats {
+                            attack: stats.get("attack")?,
+                            health: stats.get("health")?,
+                        })
+                    })
+                    .transpose()?;
                 output.borrow_mut().push(EffectSpec::GiveCopy {
                     source,
                     player: parse_player(player)?,
                     target: EntityId(target),
-                    preserve_state: true,
-                    attack: Some(attack),
-                    health: Some(health),
-                    cost,
+                    state,
+                    final_stats,
+                    cost: options.get("cost")?,
                 });
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "give_base_copy",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::GiveCopy {
-                source,
-                player: parse_player(player)?,
-                target: EntityId(target),
-                preserve_state: false,
-                attack: None,
-                health: None,
-                cost: None,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "give_base_copy_with_stats",
-        lua.create_function(
-            move |_,
-                  (_ctx, player, target, attack, health, cost): (
-                Table,
-                u8,
-                u64,
-                i32,
-                i32,
-                Option<i32>,
-            )| {
-                output.borrow_mut().push(EffectSpec::GiveCopy {
-                    source,
-                    player: parse_player(player)?,
-                    target: EntityId(target),
-                    preserve_state: false,
-                    attack: Some(attack),
-                    health: Some(health),
-                    cost,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "shuffle_card_into_deck",
-        lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
-            output.borrow_mut().push(EffectSpec::CreateCard {
-                source,
-                player: parse_player(player)?,
-                card_id,
-                destination: ZonePlacement::DeckRandom,
-                position: None,
-                base_attack: None,
-                base_health: None,
-                base_cost: None,
-                base_spell_damage: None,
-                keywords: None,
-                attached_scripts: Vec::new(),
-                started_in_deck: false,
-            });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1343,18 +1237,50 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "summon",
-        lua.create_function(move |_, (_ctx, player, card_id): (Table, u8, String)| {
-            output.borrow_mut().push(EffectSpec::Summon {
-                player: parse_player(player)?,
-                card_id,
-                position: None,
-                attack: None,
-                health: None,
-                keywords: Vec::new(),
-                base_stats: false,
-            });
-            Ok(())
-        })?,
+        lua.create_function(
+            move |lua, (_ctx, player, card_id, options): (Table, u8, String, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let final_stats = options.get::<Option<Table>>("final_stats")?;
+                let base_stats = options.get::<Option<Table>>("base_stats")?;
+                if final_stats.is_some() && base_stats.is_some() {
+                    return Err(mlua::Error::RuntimeError(
+                        "summon final_stats and base_stats are mutually exclusive".into(),
+                    ));
+                }
+                let stats = match (final_stats, base_stats) {
+                    (Some(stats), None) => SummonStats::Final(MinionStats {
+                        attack: stats.get("attack")?,
+                        health: stats.get("health")?,
+                    }),
+                    (None, Some(stats)) => SummonStats::Base(MinionStats {
+                        attack: stats.get("attack")?,
+                        health: stats.get("health")?,
+                    }),
+                    (None, None) => SummonStats::Definition,
+                    (Some(_), Some(_)) => unreachable!(),
+                };
+                let keywords = options
+                    .get::<Option<Table>>("keywords")?
+                    .map(|keywords| {
+                        keywords
+                            .sequence_values::<String>()
+                            .collect::<mlua::Result<Vec<_>>>()
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
+                output.borrow_mut().push(EffectSpec::Summon {
+                    player: parse_player(player)?,
+                    card_id,
+                    position: options.get("position")?,
+                    stats,
+                    keywords,
+                });
+                Ok(())
+            },
+        )?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1369,112 +1295,17 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "summon_existing",
-        lua.create_function(move |_, (_ctx, player, card): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::SummonExisting {
-                source,
-                player: parse_player(player)?,
-                card: EntityId(card),
-                position: None,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_existing_at",
         lua.create_function(
-            move |_, (_ctx, player, card, position): (Table, u8, u64, usize)| {
+            move |lua, (_ctx, player, card, options): (Table, u8, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
                 output.borrow_mut().push(EffectSpec::SummonExisting {
                     source,
                     player: parse_player(player)?,
                     card: EntityId(card),
-                    position: Some(position),
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_at",
-        lua.create_function(
-            move |_, (_ctx, player, card_id, position): (Table, u8, String, usize)| {
-                output.borrow_mut().push(EffectSpec::Summon {
-                    player: parse_player(player)?,
-                    card_id,
-                    position: Some(position),
-                    attack: None,
-                    health: None,
-                    keywords: Vec::new(),
-                    base_stats: false,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_with_stats",
-        lua.create_function(
-            move |_,
-                  (_ctx, player, card_id, attack, health, keywords): (
-                Table,
-                u8,
-                String,
-                i32,
-                i32,
-                Option<Table>,
-            )| {
-                let keywords = keywords
-                    .map(|keywords| {
-                        keywords
-                            .sequence_values::<String>()
-                            .collect::<mlua::Result<Vec<_>>>()
-                    })
-                    .transpose()?
-                    .unwrap_or_default();
-                output.borrow_mut().push(EffectSpec::Summon {
-                    player: parse_player(player)?,
-                    card_id,
-                    position: None,
-                    attack: Some(attack),
-                    health: Some(health),
-                    keywords,
-                    base_stats: false,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_with_base_stats",
-        lua.create_function(
-            move |_,
-                  (_ctx, player, card_id, attack, health, keywords): (
-                Table,
-                u8,
-                String,
-                i32,
-                i32,
-                Option<Table>,
-            )| {
-                let keywords = keywords
-                    .map(|keywords| {
-                        keywords
-                            .sequence_values::<String>()
-                            .collect::<mlua::Result<Vec<_>>>()
-                    })
-                    .transpose()?
-                    .unwrap_or_default();
-                output.borrow_mut().push(EffectSpec::Summon {
-                    player: parse_player(player)?,
-                    card_id,
-                    position: None,
-                    attack: Some(attack),
-                    health: Some(health),
-                    keywords,
-                    base_stats: true,
+                    position: options.get("position")?,
                 });
                 Ok(())
             },
@@ -1483,47 +1314,28 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "summon_copy",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::SummonCopy {
-                source,
-                player: parse_player(player)?,
-                target: EntityId(target),
-                position: None,
-                attack: None,
-                health: None,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_copy_at",
         lua.create_function(
-            move |_, (_ctx, player, target, position): (Table, u8, u64, usize)| {
+            move |lua, (_ctx, player, target, options): (Table, u8, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let final_stats = options.get::<Option<Table>>("final_stats")?;
+                let (attack, health) = match final_stats {
+                    Some(final_stats) => (
+                        Some(final_stats.get::<i32>("attack")?),
+                        Some(final_stats.get::<i32>("health")?),
+                    ),
+                    None => (None, None),
+                };
                 output.borrow_mut().push(EffectSpec::SummonCopy {
                     source,
                     player: parse_player(player)?,
                     target: EntityId(target),
-                    position: Some(position),
-                    attack: None,
-                    health: None,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "summon_copy_with_stats",
-        lua.create_function(
-            move |_, (_ctx, player, target, attack, health): (Table, u8, u64, i32, i32)| {
-                output.borrow_mut().push(EffectSpec::SummonCopy {
-                    source,
-                    player: parse_player(player)?,
-                    target: EntityId(target),
-                    position: None,
-                    attack: Some(attack),
-                    health: Some(health),
+                    position: options.get("position")?,
+                    final_stats: attack
+                        .zip(health)
+                        .map(|(attack, health)| MinionStats { attack, health }),
                 });
                 Ok(())
             },
@@ -1532,26 +1344,17 @@ pub(super) fn build_context(
     let output = effects.clone();
     ctx.set(
         "recruit",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::Recruit {
-                source,
-                player: parse_player(player)?,
-                target: EntityId(target),
-                position: None,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "recruit_at",
         lua.create_function(
-            move |_, (_ctx, player, target, position): (Table, u8, u64, usize)| {
+            move |lua, (_ctx, player, target, options): (Table, u8, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
                 output.borrow_mut().push(EffectSpec::Recruit {
                     source,
                     player: parse_player(player)?,
                     target: EntityId(target),
-                    position: Some(position),
+                    position: options.get("position")?,
                 });
                 Ok(())
             },
@@ -1561,42 +1364,23 @@ pub(super) fn build_context(
     ctx.set(
         "move",
         lua.create_function(
-            move |_, (_ctx, target, destination): (Table, u64, String)| {
+            move |lua, (_ctx, target, destination, options): (Table, u64, String, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
                 output.borrow_mut().push(EffectSpec::MoveEntity {
                     source,
                     target: EntityId(target),
                     destination: parse_zone_placement(&destination)?,
-                    destination_player: None,
+                    destination_player: options
+                        .get::<Option<u8>>("player")?
+                        .map(parse_player)
+                        .transpose()?,
                 });
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "shuffle_entity_into_deck",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::MoveEntity {
-                source,
-                target: EntityId(target),
-                destination: ZonePlacement::DeckRandom,
-                destination_player: Some(parse_player(player)?),
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "move_to_hand",
-        lua.create_function(move |_, (_ctx, player, target): (Table, u8, u64)| {
-            output.borrow_mut().push(EffectSpec::MoveEntity {
-                source,
-                target: EntityId(target),
-                destination: ZonePlacement::Hand,
-                destination_player: Some(parse_player(player)?),
-            });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1682,20 +1466,25 @@ pub(super) fn build_context(
     ctx.set(
         "transform_into_copy",
         lua.create_function(
-            move |_,
-                  (_ctx, target, template, attack, health): (
-                Table,
-                u64,
-                u64,
-                Option<i32>,
-                Option<i32>,
-            )| {
+            move |lua, (_ctx, target, template, options): (Table, u64, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let final_stats = options
+                    .get::<Option<Table>>("final_stats")?
+                    .map(|stats| -> mlua::Result<MinionStats> {
+                        Ok(MinionStats {
+                            attack: stats.get("attack")?,
+                            health: stats.get("health")?,
+                        })
+                    })
+                    .transpose()?;
                 output.borrow_mut().push(EffectSpec::TransformIntoCopy {
                     source,
                     target: EntityId(target),
                     template: EntityId(template),
-                    attack,
-                    health,
+                    final_stats,
                     preserve_attached_scripts: false,
                 });
                 Ok(())
@@ -1778,48 +1567,36 @@ pub(super) fn build_context(
     ctx.set(
         "buff",
         lua.create_function(
-            move |_, (_ctx, target, attack, health): (Table, u64, i32, i32)| {
+            move |lua, (_ctx, target, options): (Table, u64, Option<Table>)| {
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let keywords = options
+                    .get::<Option<Table>>("keywords")?
+                    .map(|keywords| {
+                        keywords
+                            .sequence_values::<String>()
+                            .collect::<mlua::Result<Vec<_>>>()
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
                 output.borrow_mut().push(EffectSpec::Buff {
                     source,
                     target: EntityId(target),
-                    attack,
-                    health,
-                    keywords: Vec::new(),
-                    duration: EffectDuration::Permanent,
+                    attack: options.get::<Option<i32>>("attack")?.unwrap_or_default(),
+                    health: options.get::<Option<i32>>("health")?.unwrap_or_default(),
+                    keywords,
+                    duration: parse_duration(
+                        options
+                            .get::<Option<String>>("duration")?
+                            .as_deref()
+                            .unwrap_or("permanent"),
+                    )?,
                 });
                 Ok(())
             },
         )?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "grant_keyword",
-        lua.create_function(move |_, (_ctx, target, keyword): (Table, u64, String)| {
-            output.borrow_mut().push(EffectSpec::Buff {
-                source,
-                target: EntityId(target),
-                attack: 0,
-                health: 0,
-                keywords: vec![keyword],
-                duration: EffectDuration::Permanent,
-            });
-            Ok(())
-        })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "grant_keyword_until_end_of_turn",
-        lua.create_function(move |_, (_ctx, target, keyword): (Table, u64, String)| {
-            output.borrow_mut().push(EffectSpec::Buff {
-                source,
-                target: EntityId(target),
-                attack: 0,
-                health: 0,
-                keywords: vec![keyword],
-                duration: EffectDuration::UntilEndOfTurn,
-            });
-            Ok(())
-        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -1838,66 +1615,44 @@ pub(super) fn build_context(
     ctx.set(
         "summon_fresh_copy",
         lua.create_function(
-            move |_,
-                  (_ctx, target, position, health, without): (
-                Table,
-                u64,
-                Option<usize>,
-                i32,
-                Table,
-            )| {
+            move |lua, (_ctx, target, options): (Table, u64, Option<Table>)| {
                 let target = EntityId(target);
                 let player = snapshot
                     .entity(target)
                     .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {target}")))?
                     .controller;
-                let without_keywords = without
+                let options = match options {
+                    Some(options) => options,
+                    None => lua.create_table()?,
+                };
+                let final_stats = options.get::<Option<Table>>("final_stats")?;
+                let remaining_health = options.get::<Option<i32>>("remaining_health")?;
+                if final_stats.is_some() && remaining_health.is_some() {
+                    return Err(mlua::Error::runtime(
+                        "summon_fresh_copy options cannot contain both final_stats and remaining_health",
+                    ));
+                }
+                let stats = match final_stats {
+                    Some(final_stats) => FreshCopyStats::Final(MinionStats {
+                        attack: final_stats.get("attack")?,
+                        health: final_stats.get("health")?,
+                    }),
+                    None => remaining_health
+                        .map(FreshCopyStats::RemainingHealth)
+                        .unwrap_or(FreshCopyStats::FullHealth),
+                };
+                let without_keywords = match options.get::<Option<Table>>("without_keywords")? {
+                    Some(without) => without
                     .sequence_values::<String>()
-                    .collect::<mlua::Result<Vec<_>>>()?;
+                    .collect::<mlua::Result<Vec<_>>>()?,
+                    None => Vec::new(),
+                };
                 output.borrow_mut().push(EffectSpec::SummonFreshCopy {
                     source,
                     player,
                     target,
-                    position,
-                    attack: None,
-                    health,
-                    final_stats: false,
-                    without_keywords,
-                });
-                Ok(())
-            },
-        )?,
-    )?;
-    let output = effects.clone();
-    let snapshot = state.clone();
-    ctx.set(
-        "summon_fresh_copy_with_stats",
-        lua.create_function(
-            move |_,
-                  (_ctx, target, position, attack, health, without): (
-                Table,
-                u64,
-                Option<usize>,
-                i32,
-                i32,
-                Table,
-            )| {
-                let target = EntityId(target);
-                let player = snapshot
-                    .entity(target)
-                    .ok_or_else(|| mlua::Error::runtime(format!("unknown entity {target}")))?
-                    .controller;
-                let without_keywords = without
-                    .sequence_values::<String>()
-                    .collect::<mlua::Result<Vec<_>>>()?;
-                output.borrow_mut().push(EffectSpec::SummonFreshCopy {
-                    source,
-                    player,
-                    target,
-                    position,
-                    attack: Some(attack),
-                    health,
-                    final_stats: true,
+                    position: options.get("position")?,
+                    stats,
                     without_keywords,
                 });
                 Ok(())
@@ -1993,23 +1748,6 @@ pub(super) fn build_context(
             });
             Ok(())
         })?,
-    )?;
-    let output = effects.clone();
-    ctx.set(
-        "buff_until_end_of_turn",
-        lua.create_function(
-            move |_, (_ctx, target, attack, health): (Table, u64, i32, i32)| {
-                output.borrow_mut().push(EffectSpec::Buff {
-                    source,
-                    target: EntityId(target),
-                    attack,
-                    health,
-                    keywords: Vec::new(),
-                    duration: EffectDuration::UntilEndOfTurn,
-                });
-                Ok(())
-            },
-        )?,
     )?;
     let output = effects.clone();
     ctx.set(

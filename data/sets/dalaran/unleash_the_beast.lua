@@ -13,7 +13,7 @@ return {
         ctx:summon(ctx:controller(self), "DAL_378t1")
     end,
     on_twinspell = function(ctx, self)
-        ctx:give_card(ctx:controller(self), "DAL_378ts")
+        cardlib.effects.give_card(ctx, ctx:controller(self), "DAL_378ts")
     end,
     tokens = {
         {

@@ -13,6 +13,6 @@ return {
             end
             if view.type == "minion" and not dormant then count = count + 1 end
         end
-        if count > 0 then ctx:buff(self, 0, count) end
+        if count > 0 then cardlib.effects.buff(ctx, self, 0, count) end
     end,
 }

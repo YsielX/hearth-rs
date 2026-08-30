@@ -29,6 +29,6 @@ return {
         return candidates
     end,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:buff(target, 2, 2) end
+        if target ~= nil then cardlib.effects.buff(ctx, target, 2, 2) end
     end,
 }

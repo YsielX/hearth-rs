@@ -1,1 +1,1 @@
-return {api_version=1,id="CS2_046", rarity = "free",name="Bloodlust",text="Give your minions +3 Attack this turn.",set="LEGACY",type="spell",class="shaman",cost=5,on_play=function(ctx,self)for _,e in ipairs(ctx:friendly_minions(self))do ctx:buff_until_end_of_turn(e,3,0)end end}
+return {api_version=1,id="CS2_046", rarity = "free",name="Bloodlust",text="Give your minions +3 Attack this turn.",set="LEGACY",type="spell",class="shaman",cost=5,on_play=function(ctx,self)for _,e in ipairs(ctx:friendly_minions(self))do cardlib.effects.buff_until_end_of_turn(ctx, e,3,0)end end}

@@ -10,7 +10,7 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         if ctx:player(player).max_mana >= 10 then
-            ctx:give_card(player, "CS2_013t")
+            cardlib.effects.give_card(ctx, player, "CS2_013t")
         else
             ctx:gain_mana_crystals(player, 1, false)
         end

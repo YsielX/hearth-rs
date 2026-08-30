@@ -25,7 +25,7 @@ function card.summon_guardians(ctx, self, spent)
     local summon_count = ctx:get_data(self, "tomb_guardian_count")
     for _ = 1, summon_count do
         if spent > 0 then
-            ctx:summon_with_stats(player, "RLK_118t3", 2, 2, { "reborn" })
+            cardlib.effects.summon_with_stats(ctx, player, "RLK_118t3", 2, 2, { "reborn" })
         else
             ctx:summon(player, "RLK_118t3")
         end

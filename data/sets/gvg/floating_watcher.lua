@@ -23,7 +23,7 @@ return {
                     and event.amount > 0
             end,
             effect = function(ctx, self)
-                ctx:buff(self, 2, 2)
+                cardlib.effects.buff(ctx, self, 2, 2)
             end,
         },
     },

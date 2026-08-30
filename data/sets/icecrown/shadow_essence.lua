@@ -13,7 +13,7 @@ function card.on_play(ctx, self)
 end
 
 function card.summon_shadow_essence(ctx, self, entity)
-    ctx:summon_copy_with_stats(ctx:controller(self), entity, 5, 5)
+    cardlib.effects.summon_copy_with_stats(ctx, ctx:controller(self), entity, 5, 5)
 end
 
 return card

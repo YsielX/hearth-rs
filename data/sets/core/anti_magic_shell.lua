@@ -12,8 +12,8 @@ return {
     rune_cost = { unholy = 1 },
     on_play = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
-            ctx:buff(minion, 1, 1)
-            ctx:grant_keyword(minion, "elusive")
+            cardlib.effects.buff(ctx, minion, 1, 1)
+            cardlib.effects.grant_keyword(ctx, minion, "elusive")
         end
     end,
 }

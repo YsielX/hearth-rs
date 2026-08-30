@@ -27,7 +27,7 @@ function card.on_play(ctx, self, target)
 end
 
 function card.return_to_life(ctx, self, dead)
-    ctx:summon_at(dead.player, dead.card_id, dead.position)
+    cardlib.effects.summon_at(ctx, dead.player, dead.card_id, dead.position)
 end
 
 return card

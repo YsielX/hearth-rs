@@ -9,6 +9,6 @@ return {
     },
     on_play = function(ctx, self)
         local weapon = ctx:player(ctx:controller(self)).weapon
-        if weapon then ctx:grant_keyword(weapon, "poisonous") end
+        if weapon then cardlib.effects.grant_keyword(ctx, weapon, "poisonous") end
     end,
 }

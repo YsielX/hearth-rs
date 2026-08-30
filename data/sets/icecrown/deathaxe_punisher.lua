@@ -31,7 +31,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.buff_lifesteal_minion(ctx, self, target)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
 end
 
 return card

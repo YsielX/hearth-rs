@@ -40,7 +40,7 @@ card.triggers = {
 }
 
 function card.receive_hunter_card(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 return card

@@ -13,7 +13,7 @@ function card.on_play(ctx, self)
         end
         if entity.type == "minion" and not dormant then
             ctx:attach_hook(minion, "on_deathrattle", "OG_045")
-            ctx:grant_keyword(minion, "deathrattle")
+            cardlib.effects.grant_keyword(ctx, minion, "deathrattle")
         end
     end
 end
@@ -27,6 +27,6 @@ function card.on_deathrattle(ctx, self)
     if #pool > 0 then ctx:random_value(pool, "receive_random_beast") end
 end
 function card.receive_random_beast(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 return card

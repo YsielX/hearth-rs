@@ -8,11 +8,11 @@ local card = {
 
 function card.on_play(ctx, self, target)
     ctx:attach_hook(target, "on_deathrattle", "ICC_244")
-    ctx:grant_keyword(target, "deathrattle")
+    cardlib.effects.grant_keyword(ctx, target, "deathrattle")
 end
 
 function card.on_deathrattle(ctx, self, position)
-    ctx:summon_fresh_copy(self, position, 1, {})
+    cardlib.effects.summon_fresh_copy(ctx, self, position, 1, {})
 end
 
 return card

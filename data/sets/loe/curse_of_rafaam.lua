@@ -12,7 +12,7 @@ local card = {
 }
 
 function card.on_play(ctx, self)
-    ctx:give_card(ctx:opponent(ctx:controller(self)), "LOE_007t")
+    cardlib.effects.give_card(ctx, ctx:opponent(ctx:controller(self)), "LOE_007t")
 end
 
 card.tokens = {

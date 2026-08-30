@@ -17,5 +17,5 @@ function card.on_battlecry(ctx, self)
     end
     if #candidates > 0 then ctx:random_entity(candidates, "buff_grimscale_murloc") end
 end
-function card.buff_grimscale_murloc(ctx, self, target) ctx:buff(target, 1, 1) end
+function card.buff_grimscale_murloc(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 1) end
 return card

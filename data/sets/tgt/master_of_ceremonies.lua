@@ -5,7 +5,7 @@ return {
     keywords = { "battlecry" }, on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             for _, keyword in ipairs(ctx:entity(minion).keywords) do
-                if keyword == "spell_damage" then ctx:buff(self, 2, 2) return end
+                if keyword == "spell_damage" then cardlib.effects.buff(ctx, self, 2, 2) return end
             end
         end
     end,

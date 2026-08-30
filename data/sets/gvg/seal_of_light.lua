@@ -12,6 +12,6 @@ return {
     on_play = function(ctx, self)
         local hero = ctx:player(ctx:controller(self)).hero
         cardlib.effects.heal(ctx, hero, 4)
-        ctx:buff_until_end_of_turn(hero, 2, 0)
+        cardlib.effects.buff_until_end_of_turn(ctx, hero, 2, 0)
     end,
 }

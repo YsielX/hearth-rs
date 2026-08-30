@@ -12,8 +12,8 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         if #ctx:secrets(ctx:controller(self)) > 0 then
-            ctx:buff(self, 1, 1)
-            ctx:grant_keyword(self, "taunt")
+            cardlib.effects.buff(ctx, self, 1, 1)
+            cardlib.effects.grant_keyword(ctx, self, "taunt")
         end
     end,
 }

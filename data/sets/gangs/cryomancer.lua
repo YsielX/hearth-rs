@@ -14,7 +14,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, enemy in ipairs(ctx:enemy_characters(self)) do
             if ctx:entity(enemy).frozen then
-                ctx:buff(self, 2, 2)
+                cardlib.effects.buff(ctx, self, 2, 2)
                 return
             end
         end

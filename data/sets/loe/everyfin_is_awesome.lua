@@ -31,7 +31,7 @@ return {
     },
     on_play = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
-            ctx:buff(minion, 2, 2)
+            cardlib.effects.buff(ctx, minion, 2, 2)
         end
     end,
 }

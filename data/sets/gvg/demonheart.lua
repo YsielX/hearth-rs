@@ -21,7 +21,7 @@ return {
     targets = function(ctx) return ctx:minions() end,
     on_play = function(ctx, self, target)
         if ctx:controller(target) == ctx:controller(self) and is_demon(ctx, target) then
-            ctx:buff(target, 5, 5)
+            cardlib.effects.buff(ctx, target, 5, 5)
         else
             cardlib.effects.damage(ctx, target, 5)
         end

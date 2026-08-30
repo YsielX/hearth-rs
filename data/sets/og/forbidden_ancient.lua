@@ -9,6 +9,6 @@ function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     local amount = ctx:player(player).mana
     ctx:spend_mana(player, amount)
-    if amount > 0 then ctx:buff(self, amount, amount) end
+    if amount > 0 then cardlib.effects.buff(ctx, self, amount, amount) end
 end
 return card

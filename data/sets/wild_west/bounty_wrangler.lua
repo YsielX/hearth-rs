@@ -1,7 +1,7 @@
 local function give_coin_once(ctx, self)
     if ctx:get_data(self, "coin_given") ~= 0 then return end
     ctx:set_data(self, "coin_given", 1)
-    ctx:give_card(ctx:controller(self), "GAME_005")
+    cardlib.effects.give_card(ctx, ctx:controller(self), "GAME_005")
 end
 
 return {

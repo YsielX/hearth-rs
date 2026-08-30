@@ -14,7 +14,7 @@ return {
             for _, keyword in ipairs(ctx:entity(minion).keywords) do
                 if keyword == "dormant" then dormant = true break end
             end
-            if not dormant then ctx:buff(minion, 1, 1) end
+            if not dormant then cardlib.effects.buff(ctx, minion, 1, 1) end
         end
     end,
 }

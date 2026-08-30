@@ -23,7 +23,7 @@ function card.buff_hand(ctx, self, spent)
     if spent == 0 then return end
     local player = ctx:controller(self)
     for _, entity in ipairs(ctx:hand(player)) do
-        if ctx:entity(entity).type == "minion" then ctx:buff(entity, 2, 0) end
+        if ctx:entity(entity).type == "minion" then cardlib.effects.buff(ctx, entity, 2, 0) end
     end
 end
 

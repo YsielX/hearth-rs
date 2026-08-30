@@ -16,6 +16,6 @@ return {
         return ctx:minions()
     end,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:buff_until_end_of_turn(target, -3, 0) end
+        if target ~= nil then cardlib.effects.buff_until_end_of_turn(ctx, target, -3, 0) end
     end,
 }

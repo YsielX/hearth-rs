@@ -7,6 +7,6 @@ return {
         condition = function(ctx, self, event)
             return event.target == self and event.amount > 0 and ctx:entity(self).health > 0
         end,
-        effect = function(ctx, self) ctx:buff(self, 2, 0) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 2, 0) end,
     }},
 }

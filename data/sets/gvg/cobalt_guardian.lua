@@ -29,7 +29,7 @@ return {
                     and is_mech(ctx, event.entity)
             end,
             effect = function(ctx, self)
-                ctx:grant_keyword(self, "divine_shield")
+                cardlib.effects.grant_keyword(ctx, self, "divine_shield")
             end,
         },
     },

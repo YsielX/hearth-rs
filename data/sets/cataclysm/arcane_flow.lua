@@ -25,8 +25,8 @@ end
 function card.on_shatter(ctx, self)
     local player = ctx:controller(self)
     ctx:move(self, "removed")
-    ctx:give_card_at(player, "CATA_489t", 0)
-    ctx:give_card_at(player, "CATA_489t2", 99)
+    cardlib.effects.give_card_at(ctx, player, "CATA_489t", 0)
+    cardlib.effects.give_card_at(ctx, player, "CATA_489t2", 99)
 end
 
 card.tokens = {
@@ -75,7 +75,7 @@ card.tokens = {
                     if right ~= nil then
                         ctx:move(self, "removed")
                         ctx:move(right, "removed")
-                        ctx:give_card_at(event.player, "CATA_489", left_position)
+                        cardlib.effects.give_card_at(ctx, event.player, "CATA_489", left_position)
                     end
                 end,
             },

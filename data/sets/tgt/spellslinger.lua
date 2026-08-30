@@ -26,11 +26,11 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.give_own_spell(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 function card.give_enemy_spell(ctx, self, card_id)
-    ctx:give_card(ctx:opponent(ctx:controller(self)), card_id)
+    cardlib.effects.give_card(ctx, ctx:opponent(ctx:controller(self)), card_id)
 end
 
 card.triggers = {

@@ -12,7 +12,7 @@ function card.on_battlecry(ctx, self)
         if minion ~= self then
             local definition = ctx:card_definition(ctx:entity(minion).card_id)
             for _, tag in ipairs(definition.tags or {}) do
-                if tag == "pirate" or tag == "all" then ctx:buff(weapon, 1, 1) return end
+                if tag == "pirate" or tag == "all" then cardlib.effects.buff(ctx, weapon, 1, 1) return end
             end
         end
     end

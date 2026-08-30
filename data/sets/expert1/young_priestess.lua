@@ -1,3 +1,3 @@
 local card={api_version=1,id="EX1_004",name="Young Priestess",text="At the end of your turn, give another random friendly minion +1 Health.",set="EXPERT1",type="minion",rarity="rare",cost=1,attack=2,health=1,triggers={{event="turn_ended",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self then r[#r+1]=e end end;if #r>0 then ctx:random_entity(r,"buff_selected")end end}}}
-function card.buff_selected(ctx,self,target)ctx:buff(target,0,1)end
+function card.buff_selected(ctx,self,target)cardlib.effects.buff(ctx, target,0,1)end
 return card

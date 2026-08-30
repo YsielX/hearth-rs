@@ -8,25 +8,25 @@ local function apply_adaptation(ctx, target, adaptation)
     for _, keyword in ipairs(ctx:entity(target).keywords) do if keyword == "dormant" then return end end
     if adaptation == "UNG_999t2" then
         ctx:attach_hook(target, "on_deathrattle", "UNG_999t2")
-        ctx:grant_keyword(target, "deathrattle")
+        cardlib.effects.grant_keyword(ctx, target, "deathrattle")
     elseif adaptation == "UNG_999t3" then
-        ctx:buff(target, 3, 0)
+        cardlib.effects.buff(ctx, target, 3, 0)
     elseif adaptation == "UNG_999t4" then
-        ctx:buff(target, 0, 3)
+        cardlib.effects.buff(ctx, target, 0, 3)
     elseif adaptation == "UNG_999t5" then
-        ctx:grant_keyword(target, "elusive")
+        cardlib.effects.grant_keyword(ctx, target, "elusive")
     elseif adaptation == "UNG_999t6" then
-        ctx:grant_keyword(target, "taunt")
+        cardlib.effects.grant_keyword(ctx, target, "taunt")
     elseif adaptation == "UNG_999t7" then
-        ctx:grant_keyword(target, "windfury")
+        cardlib.effects.grant_keyword(ctx, target, "windfury")
     elseif adaptation == "UNG_999t8" then
-        ctx:grant_keyword(target, "divine_shield")
+        cardlib.effects.grant_keyword(ctx, target, "divine_shield")
     elseif adaptation == "UNG_999t10" then
         ctx:grant_keyword_until_next_turn(target, "stealth")
     elseif adaptation == "UNG_999t13" then
-        ctx:grant_keyword(target, "poisonous")
+        cardlib.effects.grant_keyword(ctx, target, "poisonous")
     elseif adaptation == "UNG_999t14" then
-        ctx:buff(target, 1, 1)
+        cardlib.effects.buff(ctx, target, 1, 1)
     end
 end
 
@@ -71,7 +71,7 @@ card.triggers = {
             if progress >= 5 then
                 ctx:set_data(self, "completed", 1)
                 ctx:reveal_secret(self)
-                ctx:give_card(ctx:controller(self), "UNG_954t1")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_954t1")
             end
         end,
     },

@@ -38,7 +38,7 @@ function card.begin_avenge(ctx, self)
 end
 
 function card.avenge_minion(ctx, self, target)
-    ctx:buff(target, 3, 2)
+    cardlib.effects.buff(ctx, target, 3, 2)
 end
 
 return card

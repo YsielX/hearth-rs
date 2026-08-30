@@ -23,7 +23,7 @@ return {
     keywords = { "taunt", "battlecry" },
     on_battlecry = function(ctx, self)
         if cthun_attack(ctx, ctx:controller(self)) >= 10 then
-            ctx:buff(self, 0, 5)
+            cardlib.effects.buff(ctx, self, 0, 5)
         end
     end,
 }

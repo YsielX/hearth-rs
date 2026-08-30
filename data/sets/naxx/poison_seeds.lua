@@ -44,7 +44,7 @@ end
 
 function card.summon_replacements(ctx, self, replacements)
     for _, replacement in ipairs(replacements) do
-        ctx:summon_at(replacement.player, "FP1_019t", replacement.position)
+        cardlib.effects.summon_at(ctx, replacement.player, "FP1_019t", replacement.position)
     end
 end
 

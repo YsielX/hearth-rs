@@ -15,5 +15,5 @@ function card.on_battlecry(ctx, self)
         end
     end
 end
-function card.enhance(ctx, self, choice) ctx:grant_keyword(choice.target, choice.keyword) end
+function card.enhance(ctx, self, choice) cardlib.effects.grant_keyword(ctx, choice.target, choice.keyword) end
 return card

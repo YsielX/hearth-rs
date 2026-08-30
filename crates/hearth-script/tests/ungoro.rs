@@ -162,7 +162,7 @@ local function clear_hand(ctx, player)
 end
 
 local function give_many(ctx, player, cards)
-    for _, card_id in ipairs(cards) do ctx:give_card(player, card_id) end
+    for _, card_id in ipairs(cards) do ctx:create_card(player, card_id) end
 end
 
 local function make_free(ctx, player, card_id)
@@ -234,7 +234,7 @@ local cards = {
           clear_hand(ctx, player)
           ctx:summon(player, "TEST_UNGORO_BIG"); ctx:summon(enemy, "TEST_UNGORO_BIG")
           ctx:continue_with("damage_tarim_targets")
-          ctx:give_card(player, "UNG_015"); ctx:continue_with("finish_tarim_setup")
+          ctx:create_card(player, "UNG_015"); ctx:continue_with("finish_tarim_setup")
       end,
       damage_tarim_targets = function(ctx, self)
           for _, entity in ipairs(ctx:minions()) do
@@ -255,7 +255,7 @@ local cards = {
           local player, enemy = ctx:controller(self), ctx:opponent(ctx:controller(self))
           clear_hand(ctx, player); clear_hand(ctx, enemy)
           for _, entity in ipairs(ctx:deck(enemy)) do ctx:move(entity, "graveyard") end
-          ctx:give_card(player, "UNG_035"); ctx:continue_with("finish_glimmer_setup")
+          ctx:create_card(player, "UNG_035"); ctx:continue_with("finish_glimmer_setup")
       end,
       finish_glimmer_setup = function(ctx, self) make_free(ctx, ctx:controller(self), "UNG_035") end },
     { id = "TEST_UNGORO_OBSIDIAN_SETUP", name = "Obsidian Setup", text = "", set = "TEST",
@@ -281,8 +281,8 @@ local cards = {
       type = "spell", cost = 0, collectible = true,
       on_play = function(ctx, self)
           local player = ctx:controller(self); clear_hand(ctx, player)
-          ctx:give_card(player, "UNG_934")
-          for _ = 1, 7 do ctx:give_card(player, "TEST_UNGORO_TAUNT") end
+          ctx:create_card(player, "UNG_934")
+          for _ = 1, 7 do ctx:create_card(player, "TEST_UNGORO_TAUNT") end
           ctx:continue_with("finish_fire_plume_setup")
       end,
       finish_fire_plume_setup = function(ctx, self)

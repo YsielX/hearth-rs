@@ -1107,6 +1107,34 @@ pub struct EntityStatModification {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MinionStats {
+    pub attack: i32,
+    pub health: i32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SummonStats {
+    #[default]
+    Definition,
+    Base(MinionStats),
+    Final(MinionStats),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FreshCopyStats {
+    FullHealth,
+    RemainingHealth(i32),
+    Final(MinionStats),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum CardCopyState {
+    #[default]
+    Preserve,
+    Definition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EffectSpec {
     Damage {
         source: EntityId,
@@ -1244,12 +1272,10 @@ pub enum EffectSpec {
         source: EntityId,
         player: PlayerId,
         target: EntityId,
-        #[serde(default = "default_true")]
-        preserve_state: bool,
         #[serde(default)]
-        attack: Option<i32>,
+        state: CardCopyState,
         #[serde(default)]
-        health: Option<i32>,
+        final_stats: Option<MinionStats>,
         #[serde(default)]
         cost: Option<i32>,
     },
@@ -1341,15 +1367,9 @@ pub enum EffectSpec {
         #[serde(default)]
         position: Option<usize>,
         #[serde(default)]
-        attack: Option<i32>,
-        #[serde(default)]
-        health: Option<i32>,
+        stats: SummonStats,
         #[serde(default)]
         keywords: Vec<String>,
-        /// Replace the fresh entity's base Attack/Health instead of attaching
-        /// a silenciable FinalSet enchantment.
-        #[serde(default)]
-        base_stats: bool,
     },
     SummonFromHand {
         card: EntityId,
@@ -1361,6 +1381,11 @@ pub enum EffectSpec {
         #[serde(default)]
         position: Option<usize>,
     },
+    /// Summon a state-preserving copy of a live minion entity.
+    ///
+    /// The template may be in Deck, Hand, or Board. Graveyard entities must
+    /// use `SummonFreshCopy`, because resurrection creates a clean instance
+    /// rather than retaining damage and enchantments from the dead entity.
     SummonCopy {
         source: EntityId,
         player: PlayerId,
@@ -1368,9 +1393,7 @@ pub enum EffectSpec {
         #[serde(default)]
         position: Option<usize>,
         #[serde(default)]
-        attack: Option<i32>,
-        #[serde(default)]
-        health: Option<i32>,
+        final_stats: Option<MinionStats>,
     },
     Recruit {
         source: EntityId,
@@ -1414,9 +1437,7 @@ pub enum EffectSpec {
         target: EntityId,
         template: EntityId,
         #[serde(default)]
-        attack: Option<i32>,
-        #[serde(default)]
-        health: Option<i32>,
+        final_stats: Option<MinionStats>,
         #[serde(default)]
         preserve_attached_scripts: bool,
     },
@@ -1470,17 +1491,17 @@ pub enum EffectSpec {
         target: EntityId,
         keyword: String,
     },
+    /// Summon a clean instance from the target entity's card definition.
+    ///
+    /// This intentionally does not retain the target's runtime state and is
+    /// therefore suitable for resurrection and similar graveyard effects.
     SummonFreshCopy {
         source: EntityId,
         player: PlayerId,
         target: EntityId,
         #[serde(default)]
         position: Option<usize>,
-        #[serde(default)]
-        attack: Option<i32>,
-        health: i32,
-        #[serde(default)]
-        final_stats: bool,
+        stats: FreshCopyStats,
         #[serde(default)]
         without_keywords: Vec<String>,
     },
@@ -1752,9 +1773,7 @@ pub enum ResolutionItem {
         transform: PendingEvent,
         template: Entity,
         #[serde(default)]
-        attack: Option<i32>,
-        #[serde(default)]
-        health: Option<i32>,
+        final_stats: Option<MinionStats>,
         #[serde(default)]
         preserve_attached_scripts: bool,
     },
@@ -1768,11 +1787,7 @@ pub enum ResolutionItem {
         card_id: CardId,
         #[serde(default)]
         position: usize,
-        #[serde(default)]
-        attack: Option<i32>,
-        health: i32,
-        #[serde(default)]
-        final_stats: bool,
+        stats: FreshCopyStats,
         #[serde(default)]
         without_keywords: Vec<String>,
     },

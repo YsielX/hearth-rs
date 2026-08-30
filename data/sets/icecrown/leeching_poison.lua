@@ -9,7 +9,7 @@ local card = {
 
 function card.on_play(ctx, self)
     local weapon = ctx:player(ctx:controller(self)).weapon
-    if weapon ~= nil then ctx:grant_keyword_until_end_of_turn(weapon, "lifesteal") end
+    if weapon ~= nil then cardlib.effects.grant_keyword_until_end_of_turn(ctx, weapon, "lifesteal") end
 end
 
 return card

@@ -22,7 +22,7 @@ return {
             if minion ~= self and not dormant then originals[#originals + 1] = minion end
         end
         for _, minion in ipairs(originals) do
-            ctx:summon_copy_with_stats(player, minion, 1, 1)
+            cardlib.effects.summon_copy_with_stats(ctx, player, minion, 1, 1)
         end
     end,
 }

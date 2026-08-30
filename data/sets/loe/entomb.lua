@@ -17,6 +17,6 @@ return {
         return result
     end,
     on_play = function(ctx, self, target)
-        ctx:shuffle_entity_into_deck(ctx:controller(self), target)
+        cardlib.effects.shuffle_entity_into_deck(ctx, ctx:controller(self), target)
     end,
 }

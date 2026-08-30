@@ -5,6 +5,6 @@ return {
     cost = 3, attack = 2, health = 3, keywords = { "battlecry" }, target_mode = "required_if_available",
     targets = function(ctx, self) return ctx:minions() end,
     on_battlecry = function(ctx, self, target)
-        if target then ctx:summon_copy_with_stats(ctx:controller(self), target, 1, 1) end
+        if target then cardlib.effects.summon_copy_with_stats(ctx, ctx:controller(self), target, 1, 1) end
     end,
 }

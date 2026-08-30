@@ -4,7 +4,7 @@ local card = { api_version = 1, id = "UNG_108", name = "Earthen Scales",
     cost = 2, target_mode = "required", targets = function(ctx, self) return ctx:friendly_minions(self) end }
 function card.on_play(ctx, self, target)
     ctx:set_data(self, "earthen_target", target)
-    ctx:buff(target, 1, 1)
+    cardlib.effects.buff(ctx, target, 1, 1)
     ctx:continue_with("gain_armor")
 end
 function card.gain_armor(ctx, self)

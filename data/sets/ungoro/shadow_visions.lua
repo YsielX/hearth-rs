@@ -13,6 +13,6 @@ function card.on_play(ctx, self)
     end
 end
 function card.copy_shadow_vision(ctx, self, entity)
-    ctx:give_card(ctx:controller(self), ctx:entity(entity).card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(entity).card_id)
 end
 return card

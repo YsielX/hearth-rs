@@ -14,8 +14,8 @@ return {
     attack = 3, health = 6, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         if played_elemental_last_turn(ctx, ctx:controller(self)) then
-            ctx:grant_keyword(self, "taunt")
-            ctx:grant_keyword(self, "divine_shield")
+            cardlib.effects.grant_keyword(ctx, self, "taunt")
+            cardlib.effects.grant_keyword(ctx, self, "divine_shield")
         end
     end,
 }

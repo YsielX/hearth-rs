@@ -14,7 +14,7 @@ return {
         return ctx:minions()
     end,
     on_play = function(ctx, self, target)
-        ctx:buff(target, 2, 4)
+        cardlib.effects.buff(ctx, target, 2, 4)
         cardlib.effects.modify(ctx, target, {
             stat = "spell_damage",
             operation = "add",

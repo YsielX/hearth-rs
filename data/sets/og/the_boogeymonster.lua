@@ -9,6 +9,6 @@ return {
             local defender = ctx:entity(event.defender)
             return defender.type == "minion" and defender.zone == "graveyard"
         end,
-        effect = function(ctx, self) ctx:buff(self, 2, 2) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 2, 2) end,
     }},
 }

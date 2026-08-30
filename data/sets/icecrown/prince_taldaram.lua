@@ -40,7 +40,7 @@ end
 
 function card.on_battlecry(ctx, self, target)
     if target and condition_met(ctx, self) then
-        ctx:transform_into_copy(self, target, 3, 3)
+        cardlib.effects.transform_into_copy_with_stats(ctx, self, target, 3, 3)
     end
 end
 

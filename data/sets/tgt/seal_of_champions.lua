@@ -12,7 +12,7 @@ return {
     target_mode = "required",
     targets = function(ctx) return ctx:minions() end,
     on_play = function(ctx, self, target)
-        ctx:buff(target, 3, 0)
-        ctx:grant_keyword(target, "divine_shield")
+        cardlib.effects.buff(ctx, target, 3, 0)
+        cardlib.effects.grant_keyword(ctx, target, "divine_shield")
     end,
 }

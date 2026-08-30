@@ -5,6 +5,6 @@ return {
     cost = 2, attack = 1, health = 2, keywords = { "combo" },
     on_combo = function(ctx, self)
         local count = ctx:entity(self).cards_played_before
-        if count > 0 then ctx:buff(self, count, count) end
+        if count > 0 then cardlib.effects.buff(ctx, self, count, count) end
     end,
 }

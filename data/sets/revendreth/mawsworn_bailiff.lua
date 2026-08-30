@@ -13,7 +13,7 @@ return {
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
         if ctx:entity(ctx:player(player).hero).armor >= 4 then
-            ctx:buff(self, 4, 4)
+            cardlib.effects.buff(ctx, self, 4, 4)
         end
     end,
 }

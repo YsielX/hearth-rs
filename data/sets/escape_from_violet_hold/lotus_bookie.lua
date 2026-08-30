@@ -11,6 +11,6 @@ return {
     health = 2,
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:give_card(ctx:controller(self), "GAME_005")
+        cardlib.effects.give_card(ctx, ctx:controller(self), "GAME_005")
     end,
 }

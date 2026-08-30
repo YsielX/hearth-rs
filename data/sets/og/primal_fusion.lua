@@ -22,6 +22,6 @@ return {
     target_mode = "required", targets = function(ctx) return ctx:minions() end,
     on_play = function(ctx, self, target)
         local amount = friendly_totems(ctx, self)
-        if amount > 0 then ctx:buff(target, amount, amount) end
+        if amount > 0 then cardlib.effects.buff(ctx, target, amount, amount) end
     end,
 }

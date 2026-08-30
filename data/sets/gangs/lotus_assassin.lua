@@ -9,6 +9,6 @@ return {
             local defender = ctx:entity(event.defender)
             return event.attacker == self and defender.type == "minion" and defender.zone == "graveyard"
         end,
-        effect = function(ctx, self) ctx:grant_keyword(self, "stealth") end,
+        effect = function(ctx, self) cardlib.effects.grant_keyword(ctx, self, "stealth") end,
     }},
 }

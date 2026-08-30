@@ -4,6 +4,6 @@ return {
     set = "UNGORO", type = "minion", rarity = "common", cost = 7,
     attack = 5, health = 8, tags = { "beast" }, keywords = { "taunt", "deathrattle" },
     on_deathrattle = function(ctx, self, position)
-        for _ = 1, 3 do ctx:summon_at(ctx:controller(self), "UNG_201t", position) end
+        for _ = 1, 3 do cardlib.effects.summon_at(ctx, ctx:controller(self), "UNG_201t", position) end
     end,
 }

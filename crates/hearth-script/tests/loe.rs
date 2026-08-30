@@ -79,7 +79,7 @@ return {
     type = "spell",
     cost = 0,
     on_play = function(ctx, self)
-        ctx:give_card(ctx:controller(self), "LOE_019t2")
+        ctx:create_card(ctx:controller(self), "LOE_019t2")
     end,
 }
 "#,

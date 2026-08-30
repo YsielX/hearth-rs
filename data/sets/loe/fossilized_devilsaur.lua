@@ -21,7 +21,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             if minion ~= self and is_beast(ctx, minion) then
-                ctx:grant_keyword(self, "taunt")
+                cardlib.effects.grant_keyword(ctx, self, "taunt")
                 return
             end
         end

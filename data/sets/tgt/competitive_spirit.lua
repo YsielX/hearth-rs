@@ -19,7 +19,7 @@ return {
             end,
             effect = function(ctx, self)
                 ctx:reveal_secret(self)
-                for _, minion in ipairs(ctx:friendly_minions(self)) do ctx:buff(minion, 1, 1) end
+                for _, minion in ipairs(ctx:friendly_minions(self)) do cardlib.effects.buff(ctx, minion, 1, 1) end
             end,
         },
     },

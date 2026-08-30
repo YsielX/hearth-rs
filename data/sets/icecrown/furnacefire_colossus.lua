@@ -14,6 +14,6 @@ return {
             end
         end
         for _, weapon in ipairs(weapons) do ctx:discard(ctx:controller(self), weapon) end
-        if attack ~= 0 or health ~= 0 then ctx:buff(self, attack, health) end
+        if attack ~= 0 or health ~= 0 then cardlib.effects.buff(ctx, self, attack, health) end
     end,
 }

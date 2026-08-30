@@ -7,7 +7,7 @@ local card = {
 
 function card.targets(ctx, self) return ctx:board(ctx:controller(self)) end
 function card.on_battlecry(ctx, self, target)
-    if target then ctx:buff(target, 2, 0) end
+    if target then cardlib.effects.buff(ctx, target, 2, 0) end
 end
 
 return card

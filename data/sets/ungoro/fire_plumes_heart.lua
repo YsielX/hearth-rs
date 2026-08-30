@@ -22,7 +22,7 @@ local card = {
             ctx:set_data(self, "played_taunt", 0)
             local progress = ctx:get_data(self, "progress") + 1
             ctx:set_data(self, "progress", progress)
-            if progress >= 7 then ctx:set_data(self, "completed", 1); ctx:reveal_secret(self); ctx:give_card(ctx:controller(self), "UNG_934t1") end
+            if progress >= 7 then ctx:set_data(self, "completed", 1); ctx:reveal_secret(self); cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_934t1") end
         end,
     }},
 }

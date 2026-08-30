@@ -34,5 +34,5 @@ function card.on_battlecry(ctx, self)
     if #pool > 0 then ctx:discover_cards(player, "Discover a Mech", pool, 3, "receive_mech") end
 end
 
-function card.receive_mech(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.receive_mech(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 return card

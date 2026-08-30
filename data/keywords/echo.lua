@@ -2,7 +2,7 @@ return {
     api_version = 1, module_type = "keyword", id = "echo", name = "Echo",
     hooks = {
         on_play = function(ctx, self)
-            ctx:give_card(ctx:controller(self), ctx:entity(self).card_id)
+            cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(self).card_id)
         end,
     },
     rules = {
@@ -27,7 +27,7 @@ return {
                     stat = "cost", operation = "set",
                     value = ctx:entity(event.source).cost,
                 })
-                ctx:grant_keyword(self, "temporary")
+                cardlib.effects.grant_keyword(ctx, self, "temporary")
             end,
         },
     },

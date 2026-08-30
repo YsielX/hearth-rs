@@ -23,7 +23,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
             if is_dragon(ctx, entity) then
-                ctx:buff(self, 0, 2)
+                cardlib.effects.buff(ctx, self, 0, 2)
                 return
             end
         end

@@ -139,7 +139,7 @@ local function make_free(ctx, player, card_id)
 end
 
 local function give_many(ctx, player, card_ids)
-    for _, card_id in ipairs(card_ids) do ctx:give_card(player, card_id) end
+    for _, card_id in ipairs(card_ids) do ctx:create_card(player, card_id) end
 end
 
 local cards = {
@@ -228,6 +228,36 @@ local cards = {
     { id = "TEST_ICC_REFLECTION_B", name = "Reflection B", text = "", set = "TEST",
       type = "spell", cost = 0, collectible = false },
 
+    { id = "TEST_ICC_SHADOW_ESSENCE_SETUP", name = "Shadow Essence Setup", text = "",
+      set = "TEST", type = "spell", cost = 0, collectible = true,
+      on_play = function(ctx, self)
+          local player = ctx:controller(self)
+          clear_hand(ctx, player); clear_deck(ctx, player)
+          give_many(ctx, player, { "ICC_235", "TEST_ICC_COPY_TARGET" })
+          ctx:continue_with("pack_shadow_essence_deck")
+      end,
+      pack_shadow_essence_deck = function(ctx, self)
+          local player = ctx:controller(self)
+          for _, entity in ipairs(ctx:hand(player)) do
+              if ctx:entity(entity).card_id == "TEST_ICC_COPY_TARGET" then
+                  ctx:move(entity, "deck_random", { player = player })
+                  break
+              end
+          end
+          ctx:continue_with("mark_shadow_essence_template")
+      end,
+      mark_shadow_essence_template = function(ctx, self)
+          local player = ctx:controller(self)
+          for _, entity in ipairs(ctx:deck(player)) do
+              if ctx:entity(entity).card_id == "TEST_ICC_COPY_TARGET" then
+                  ctx:buff(entity, { attack = 2, health = 3 })
+                  ctx:set_data(entity, "shadow_essence_marker", 42)
+                  break
+              end
+          end
+          make_free(ctx, player, "ICC_235")
+      end },
+
     { id = "TEST_ICC_TALDARAM_SETUP", name = "Taldaram Setup", text = "", set = "TEST",
       type = "spell", cost = 0, collectible = true,
       on_play = function(ctx, self)
@@ -241,7 +271,7 @@ local cards = {
           local player = ctx:controller(self)
           for _, minion in ipairs(ctx:board(player)) do
               if ctx:entity(minion).card_id == "TEST_ICC_COPY_TARGET" then
-                  ctx:buff(minion, 2, 3)
+                  ctx:buff(minion, { attack = 2, health = 3 })
                   cardlib.effects.damage_ignoring_spell_damage(ctx, minion, 2)
                   ctx:freeze(minion)
                   ctx:set_data(minion, "copied_marker", 42)
@@ -270,7 +300,7 @@ local cards = {
           clear_hand(ctx, player)
           ctx:summon(opponent, "BRM_019"); ctx:summon(opponent, "BRM_019")
           ctx:summon(opponent, "TEST_ICC_DEFILE_VICTIM")
-          ctx:give_card(player, "ICC_041")
+          ctx:create_card(player, "ICC_041")
           ctx:continue_with("finish_defile_setup")
       end,
       finish_defile_setup = function(ctx, self)
@@ -291,7 +321,7 @@ local cards = {
           clear_hand(ctx, player)
           ctx:summon(player, "TEST_ICC_EVOLVE_A"); ctx:summon(player, "TEST_ICC_EVOLVE_B")
           ctx:summon(opponent, "TEST_ICC_TRANSFORM_WATCHER")
-          ctx:give_card(player, "ICC_481"); ctx:continue_with("finish_thrall_setup")
+          ctx:create_card(player, "ICC_481"); ctx:continue_with("finish_thrall_setup")
       end,
       finish_thrall_setup = function(ctx, self) make_free(ctx, ctx:controller(self), "ICC_481") end },
 
@@ -324,10 +354,10 @@ local cards = {
           local player = ctx:controller(self)
           for _, entity in ipairs(ctx:hand(player)) do
               if string.sub(ctx:entity(entity).card_id, 1, 20) == "TEST_ICC_ARMY_MINION" then
-                  ctx:shuffle_entity_into_deck(player, entity)
+                  ctx:move(entity, "deck_random", { player = player })
               end
           end
-          ctx:give_card(player, "ICC_314t2"); ctx:continue_with("free_army")
+          ctx:create_card(player, "ICC_314t2"); ctx:continue_with("free_army")
       end,
       free_army = function(ctx, self) make_free(ctx, ctx:controller(self), "ICC_314t2") end },
 
@@ -336,17 +366,17 @@ local cards = {
       on_play = function(ctx, self)
           local player, opponent = ctx:controller(self), ctx:opponent(ctx:controller(self))
           clear_hand(ctx, player); clear_hand(ctx, opponent); clear_deck(ctx, opponent)
-          ctx:give_card(opponent, "TEST_ICC_GRIP_MINION")
+          ctx:create_card(opponent, "TEST_ICC_GRIP_MINION")
           ctx:continue_with("pack_grip_deck")
       end,
       pack_grip_deck = function(ctx, self)
           local player, opponent = ctx:controller(self), ctx:opponent(ctx:controller(self))
           for _, entity in ipairs(ctx:hand(opponent)) do
               if ctx:entity(entity).card_id == "TEST_ICC_GRIP_MINION" then
-                  ctx:shuffle_entity_into_deck(opponent, entity)
+                  ctx:move(entity, "deck_random", { player = opponent })
               end
           end
-          ctx:give_card(player, "ICC_314t4"); ctx:continue_with("free_grip")
+          ctx:create_card(player, "ICC_314t4"); ctx:continue_with("free_grip")
       end,
       free_grip = function(ctx, self) make_free(ctx, ctx:controller(self), "ICC_314t4") end },
 
@@ -425,6 +455,34 @@ fn defile_stops_after_fourteen_waves_when_grim_patrons_keep_the_loop_alive() {
         14
     );
     assert!(game.state().outcome.is_none());
+}
+
+#[test]
+fn shadow_essence_copies_a_deck_minions_state_and_sets_the_copy_to_five_five() {
+    let (_guard, mut game) = fixture_game("TEST_ICC_SHADOW_ESSENCE_SETUP", ["priest", "mage"]);
+    let template = game
+        .state()
+        .player(PlayerId::ONE)
+        .deck
+        .iter()
+        .copied()
+        .find(|entity| game.state().entity(*entity).unwrap().card_id == "TEST_ICC_COPY_TARGET")
+        .unwrap();
+    assert_eq!(game.state().entity(template).unwrap().enchantments.len(), 1);
+    assert_eq!(
+        game.state().entity(template).unwrap().script_data["shadow_essence_marker"],
+        42
+    );
+
+    play(&mut game, PlayerId::ONE, "ICC_235", None);
+
+    let copy = board_card(&game, PlayerId::ONE, "TEST_ICC_COPY_TARGET");
+    assert_ne!(copy, template);
+    assert_eq!(game.state().entity(template).unwrap().zone, Zone::Deck);
+    let copy = game.state().entity(copy).unwrap();
+    assert_eq!((copy.attack, copy.max_health, copy.damage), (5, 5, 0));
+    assert_eq!(copy.script_data["shadow_essence_marker"], 42);
+    assert_eq!(copy.enchantments.len(), 2);
 }
 
 #[test]

@@ -4,6 +4,6 @@ return {
     set = "GANGS", type = "minion", class = "paladin", rarity = "rare",
     cost = 7, attack = 6, health = 6, keywords = { "taunt", "battlecry" },
     on_battlecry = function(ctx, self)
-        for _, minion in ipairs(ctx:adjacent_minions(self)) do ctx:grant_keyword(minion, "divine_shield") end
+        for _, minion in ipairs(ctx:adjacent_minions(self)) do cardlib.effects.grant_keyword(ctx, minion, "divine_shield") end
     end,
 }

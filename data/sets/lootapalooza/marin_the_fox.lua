@@ -1,7 +1,7 @@
 local treasures={"LOOT_998h","LOOT_998j","LOOT_998k","LOOT_998l"}
 local chest={id="LOOT_357l",name="Master Chest",text="<b>Deathrattle:</b> Give your opponent a fantastic treasure!",set="LOOTAPALOOZA",type="minion",collectible=false,cost=3,attack=0,health=8,keywords={"deathrattle"}}
 function chest.on_deathrattle(ctx,self)ctx:random_value(treasures,"grant_treasure")end
-function chest.grant_treasure(ctx,self,id)ctx:give_card(ctx:opponent(ctx:controller(self)),id)end
+function chest.grant_treasure(ctx,self,id)cardlib.effects.give_card(ctx, ctx:opponent(ctx:controller(self)),id)end
 local goblet={id="LOOT_998h",name="Tolin's Goblet",text="Draw a card. Fill your hand with copies of it.",set="LOOTAPALOOZA",type="spell",collectible=false,cost=3}
 function goblet.on_play(ctx,self)local d=ctx:deck(ctx:controller(self));if #d==0 then ctx:draw(ctx:controller(self),1);return end;local e=d[1];ctx:draw_entity(ctx:controller(self),e);ctx:continue_with_entity("fill_goblet",e)end
 function goblet.fill_goblet(ctx,self,e)local p=ctx:controller(self);for _=1,10-#ctx:hand(p) do ctx:give_copy(p,e)end end

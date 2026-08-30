@@ -7,8 +7,8 @@ local card = {
 
 function card.on_deathrattle(ctx, self)
     local player = ctx:controller(self)
-    ctx:give_card(player, "ICC_026t")
-    ctx:give_card(player, "ICC_026t")
+    cardlib.effects.give_card(ctx, player, "ICC_026t")
+    cardlib.effects.give_card(ctx, player, "ICC_026t")
 end
 
 return card

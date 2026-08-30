@@ -21,6 +21,6 @@ function card.on_deathrattle(ctx, self)
     if #pool > 0 then ctx:random_value(pool, "bone_drake_chosen") end
 end
 
-function card.bone_drake_chosen(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.bone_drake_chosen(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 
 return card

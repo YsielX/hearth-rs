@@ -18,7 +18,7 @@ return {
                 if keyword == "dormant" then dormant = true break end
             end
             if not dormant and ctx:entity(minion).attack >= 5 then
-                ctx:buff(self, 2, 2)
+                cardlib.effects.buff(ctx, self, 2, 2)
                 return
             end
         end

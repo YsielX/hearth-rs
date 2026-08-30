@@ -11,6 +11,6 @@ return {
     cost = 5,
     on_play = function(ctx, self)
         cardlib.effects.damage_all(ctx, ctx:minions(), 3)
-        ctx:shuffle_entity_into_deck(ctx:opponent(ctx:controller(self)), self)
+        cardlib.effects.shuffle_entity_into_deck(ctx, ctx:opponent(ctx:controller(self)), self)
     end,
 }

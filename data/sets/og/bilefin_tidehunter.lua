@@ -12,7 +12,7 @@ return {
     tags = { "murloc" },
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        ctx:summon_at(
+        cardlib.effects.summon_at(ctx,
             ctx:controller(self),
             "OG_156a",
             ctx:board_position(self) + 1

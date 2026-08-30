@@ -237,6 +237,57 @@ fn play(
     card
 }
 
+#[test]
+fn carnivorous_cube_resummons_two_fresh_copies_from_its_graveyard_victim() {
+    let mut game = game_with_decks(mixed(&["LOOT_161", "CS2_120"]), repeated("CS2_029"));
+    advance_to_mana(&mut game, PlayerId::ONE, 7);
+    let victim = play(&mut game, PlayerId::ONE, "CS2_120", None);
+    let cube = play(&mut game, PlayerId::ONE, "LOOT_161", Some(victim));
+    assert_eq!(game.state().entity(victim).unwrap().zone, Zone::Graveyard);
+
+    end_turn(&mut game);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(cube));
+
+    let copies = game
+        .state()
+        .player(PlayerId::ONE)
+        .board
+        .iter()
+        .filter_map(|entity| {
+            let entity = game.state().entity(*entity).unwrap();
+            (entity.card_id == "CS2_120").then_some(entity)
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(copies.len(), 2);
+    assert!(
+        copies
+            .iter()
+            .all(|copy| (copy.attack, copy.max_health, copy.damage) == (2, 3, 0))
+    );
+    assert!(copies.iter().all(|copy| copy.enchantments.is_empty()));
+}
+
+#[test]
+fn kobold_illusionist_copies_a_hand_minion_without_consuming_the_template() {
+    let mut game = game_with_decks(mixed(&["LOOT_412", "CS2_120"]), repeated("CS2_029"));
+    advance_to_mana(&mut game, PlayerId::ONE, 5);
+    let illusionist = play(&mut game, PlayerId::ONE, "LOOT_412", None);
+
+    end_turn(&mut game);
+    play(&mut game, PlayerId::TWO, "CS2_029", Some(illusionist));
+
+    let copy = game.state().player(PlayerId::ONE).board[0];
+    let copy = game.state().entity(copy).unwrap();
+    assert_eq!((copy.attack, copy.max_health, copy.damage), (1, 1, 0));
+    assert!(
+        game.state()
+            .player(PlayerId::ONE)
+            .hand
+            .iter()
+            .any(|entity| game.state().entity(*entity).unwrap().card_id == copy.card_id)
+    );
+}
+
 fn deck_ids(game: &Game<LuaCardRuntime>, player: PlayerId) -> Vec<String> {
     game.state()
         .player(player)

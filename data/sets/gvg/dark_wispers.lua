@@ -75,8 +75,8 @@ function card.chosen(ctx, self, choice)
 end
 
 function card.buff_minion(ctx, self, target)
-    ctx:buff(target, 5, 5)
-    ctx:grant_keyword(target, "taunt")
+    cardlib.effects.buff(ctx, target, 5, 5)
+    cardlib.effects.grant_keyword(ctx, target, "taunt")
 end
 
 function card.on_choose_multiple(ctx, self)

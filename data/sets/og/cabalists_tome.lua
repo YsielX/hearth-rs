@@ -19,12 +19,12 @@ local function choose(ctx, self, hook)
 end
 function card.on_play(ctx, self) choose(ctx, self, "receive_first_spell") end
 function card.receive_first_spell(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id); choose(ctx, self, "receive_second_spell")
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id); choose(ctx, self, "receive_second_spell")
 end
 function card.receive_second_spell(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id); choose(ctx, self, "receive_third_spell")
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id); choose(ctx, self, "receive_third_spell")
 end
 function card.receive_third_spell(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 return card

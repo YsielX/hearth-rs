@@ -15,6 +15,6 @@ return {
             return event.player == ctx:controller(self) and event.entity ~= self
                 and beast(ctx, event.entity)
         end,
-        effect = function(ctx, self, event) ctx:buff(event.entity, 1, 1) end,
+        effect = function(ctx, self, event) cardlib.effects.buff(ctx, event.entity, 1, 1) end,
     }},
 }

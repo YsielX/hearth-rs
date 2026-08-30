@@ -10,7 +10,7 @@ local card = {
     cost = 3,
     on_play = function(ctx, self)
         local opponent = ctx:opponent(ctx:controller(self))
-        for _ = 1, 3 do ctx:shuffle_card_into_deck(opponent, "AT_035t") end
+        for _ = 1, 3 do cardlib.effects.shuffle_card_into_deck(ctx, opponent, "AT_035t") end
     end,
 }
 

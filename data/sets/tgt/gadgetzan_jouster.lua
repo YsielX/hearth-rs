@@ -22,11 +22,11 @@ function card.reveal_friendly_minion(ctx, self, entity)
     ctx:set_data(self, "friendly_cost", ctx:entity(entity).cost)
     local candidates = deck_minions(ctx, ctx:opponent(ctx:controller(self)))
     if #candidates > 0 then ctx:random_value(candidates, "reveal_enemy_minion")
-    else ctx:buff(self, 1, 1) end
+    else cardlib.effects.buff(ctx, self, 1, 1) end
 end
 
 function card.reveal_enemy_minion(ctx, self, entity)
-    if ctx:get_data(self, "friendly_cost") > ctx:entity(entity).cost then ctx:buff(self, 1, 1) end
+    if ctx:get_data(self, "friendly_cost") > ctx:entity(entity).cost then cardlib.effects.buff(ctx, self, 1, 1) end
 end
 
 return card

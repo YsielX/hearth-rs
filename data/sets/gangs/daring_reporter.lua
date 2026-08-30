@@ -7,6 +7,6 @@ return {
         condition = function(ctx, self, event)
             return event.player == ctx:opponent(ctx:controller(self))
         end,
-        effect = function(ctx, self) ctx:buff(self, 1, 1) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 1, 1) end,
     }},
 }

@@ -4,6 +4,6 @@ return {
     set = "ICECROWN", type = "minion", rarity = "common",
     cost = 5, attack = 5, health = 4, tags = { "undead" }, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        for _, minion in ipairs(ctx:adjacent_minions(self)) do ctx:buff(minion, 0, 2) end
+        for _, minion in ipairs(ctx:adjacent_minions(self)) do cardlib.effects.buff(ctx, minion, 0, 2) end
     end,
 }

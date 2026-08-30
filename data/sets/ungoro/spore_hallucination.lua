@@ -15,5 +15,5 @@ function card.on_play(ctx, self)
     end
     if #pool > 0 then ctx:discover_cards(player, "Choose a card", pool, 3, "receive_spore_card") end
 end
-function card.receive_spore_card(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function card.receive_spore_card(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 return card

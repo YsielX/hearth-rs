@@ -21,8 +21,8 @@ local card = {
 }
 
 local function win(ctx, self)
-    ctx:grant_keyword(self, "taunt")
-    ctx:grant_keyword(self, "divine_shield")
+    cardlib.effects.grant_keyword(ctx, self, "taunt")
+    cardlib.effects.grant_keyword(ctx, self, "divine_shield")
 end
 
 function card.on_battlecry(ctx, self)

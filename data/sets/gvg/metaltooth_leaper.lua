@@ -24,7 +24,7 @@ local card = {
 
 function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:friendly_minions(self)) do
-        if minion ~= self and is_mech(ctx, minion) then ctx:buff(minion, 2, 0) end
+        if minion ~= self and is_mech(ctx, minion) then cardlib.effects.buff(ctx, minion, 2, 0) end
     end
 end
 

@@ -23,7 +23,7 @@ function card.targets(ctx, self)
 end
 
 function card.on_battlecry(ctx, self, target)
-    if target then ctx:grant_keyword_until_end_of_turn(target, "immune") end
+    if target then cardlib.effects.grant_keyword_until_end_of_turn(ctx, target, "immune") end
 end
 
 return card

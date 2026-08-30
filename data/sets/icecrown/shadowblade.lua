@@ -6,7 +6,7 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    ctx:grant_keyword_until_end_of_turn(ctx:player(ctx:controller(self)).hero, "immune")
+    cardlib.effects.grant_keyword_until_end_of_turn(ctx, ctx:player(ctx:controller(self)).hero, "immune")
 end
 
 return card

@@ -18,7 +18,7 @@ function card.on_deathrattle(ctx, self)
 end
 
 function card.buff_friendly_minion(ctx, self, target)
-    ctx:buff(target, 3, 3)
+    cardlib.effects.buff(ctx, target, 3, 3)
 end
 
 return card

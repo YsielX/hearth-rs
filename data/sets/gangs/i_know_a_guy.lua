@@ -23,10 +23,10 @@ function card.on_play(ctx, self)
     end
     if #pool > 0 then ctx:discover_cards(player, "Choose a Taunt minion", pool, 3, "receive_taunt") end
 end
-function card.receive_taunt(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.receive_taunt(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 card.triggers = {{
     event = "card_created", timing = "after", active_zones = { "graveyard" },
     condition = function(ctx, self, event) return event.source == self end,
-    effect = function(ctx, self, event) ctx:buff(event.entity, 1, 2) end,
+    effect = function(ctx, self, event) cardlib.effects.buff(ctx, event.entity, 1, 2) end,
 }}
 return card

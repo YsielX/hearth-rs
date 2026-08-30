@@ -22,7 +22,7 @@ function card.on_battlecry(ctx, self)
             frost_spells = frost_spells + 1
         end
     end
-    if frost_spells > 0 then ctx:buff(self, frost_spells, 0) end
+    if frost_spells > 0 then cardlib.effects.buff(ctx, self, frost_spells, 0) end
 end
 
 return card

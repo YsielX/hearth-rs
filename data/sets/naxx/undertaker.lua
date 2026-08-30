@@ -27,7 +27,7 @@ return {
                     and has_keyword(ctx:entity(event.entity), "deathrattle")
             end,
             effect = function(ctx, self, event)
-                ctx:buff(self, 1, 1)
+                cardlib.effects.buff(ctx, self, 1, 1)
             end,
         },
     },

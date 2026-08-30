@@ -217,15 +217,13 @@ impl<R: CardRuntime> Game<R> {
                     ResolutionItem::CommitTransformIntoCopy {
                         transform,
                         template,
-                        attack,
-                        health,
+                        final_stats,
                         preserve_attached_scripts,
                     } => {
                         self.commit_transform_into_copy(
                             transform,
                             template,
-                            attack,
-                            health,
+                            final_stats,
                             preserve_attached_scripts,
                             &mut queue,
                         )?;
@@ -244,18 +242,14 @@ impl<R: CardRuntime> Game<R> {
                         player,
                         card_id,
                         position,
-                        attack,
-                        health,
-                        final_stats,
+                        stats,
                         without_keywords,
                     } => {
                         self.stage_fresh_copy(
                             player,
                             &card_id,
                             position,
-                            attack,
-                            health,
-                            final_stats,
+                            stats,
                             &without_keywords,
                             &mut queue,
                         )?;

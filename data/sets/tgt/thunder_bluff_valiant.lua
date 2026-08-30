@@ -1,7 +1,7 @@
 local function empower_totems(ctx, self)
     for _, minion in ipairs(ctx:friendly_minions(self)) do
         for _, tag in ipairs(ctx:card_definition(ctx:entity(minion).card_id).tags or {}) do
-            if tag == "totem" or tag == "all" then ctx:buff(minion, 2, 0) break end
+            if tag == "totem" or tag == "all" then cardlib.effects.buff(ctx, minion, 2, 0) break end
         end
     end
 end

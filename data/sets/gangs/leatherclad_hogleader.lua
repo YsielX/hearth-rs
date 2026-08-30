@@ -5,6 +5,6 @@ local card = {
     health = 6, tags = { "quilboar" }, keywords = { "battlecry" },
 }
 function card.on_battlecry(ctx, self)
-    if #ctx:hand(ctx:opponent(ctx:controller(self))) >= 6 then ctx:grant_keyword(self, "charge") end
+    if #ctx:hand(ctx:opponent(ctx:controller(self))) >= 6 then cardlib.effects.grant_keyword(ctx, self, "charge") end
 end
 return card

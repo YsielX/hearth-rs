@@ -30,7 +30,7 @@ return {
             effect = function(ctx, self, event)
                 ctx:set_data(self, "hero_power_pending", 0)
                 ctx:cancel_event(event)
-                ctx:buff(self, 1, 0)
+                cardlib.effects.buff(ctx, self, 1, 0)
             end,
         },
         {

@@ -21,7 +21,7 @@ return {
                 return event.target == hero and event.amount > 0
             end,
             effect = function(ctx, self)
-                ctx:buff(self, 1, 0)
+                cardlib.effects.buff(ctx, self, 1, 0)
             end,
         },
     },

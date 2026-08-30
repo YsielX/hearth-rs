@@ -33,8 +33,8 @@ function card.duplicate_minion(ctx, self, card_id)
     if ctx:get_data(self, "triggered") == 1 then return end
     ctx:set_data(self, "triggered", 1)
     local player = ctx:controller(self)
-    ctx:give_card(player, card_id)
-    ctx:give_card(player, card_id)
+    cardlib.effects.give_card(ctx, player, card_id)
+    cardlib.effects.give_card(ctx, player, card_id)
 end
 
 return card

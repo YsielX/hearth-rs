@@ -40,7 +40,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.on_artifact_discovered(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 card.tokens = {
@@ -53,7 +53,7 @@ card.tokens = {
         cost = 10,
         target_mode = "required",
         targets = function(ctx) return ctx:minions() end,
-        on_play = function(ctx, self, target) ctx:buff(target, 10, 10) end,
+        on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 10, 10) end,
     },
     {
         id = "LOEA16_4",

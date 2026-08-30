@@ -21,7 +21,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             if minion ~= self and is_pirate(ctx, minion) then
-                ctx:buff(self, 1, 1)
+                cardlib.effects.buff(ctx, self, 1, 1)
                 return
             end
         end

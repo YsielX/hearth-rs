@@ -24,7 +24,7 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    ctx:shuffle_card_into_deck(ctx:controller(self), "LOE_019t")
+    cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), "LOE_019t")
 end
 
 local golden_monkey = {
@@ -85,7 +85,7 @@ card.tokens = {
         cost = 2,
         on_play = function(ctx, self)
             local player = ctx:controller(self)
-            ctx:shuffle_card_into_deck(player, "LOE_019t2")
+            cardlib.effects.shuffle_card_into_deck(ctx, player, "LOE_019t2")
             ctx:draw(player, 1)
         end,
     },

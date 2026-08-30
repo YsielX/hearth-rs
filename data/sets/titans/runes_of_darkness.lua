@@ -44,7 +44,7 @@ end
 
 function card.receive_weapon(ctx, self, card_id)
     local player = ctx:controller(self)
-    ctx:give_card(player, card_id)
+    cardlib.effects.give_card(ctx, player, card_id)
     ctx:spend_resource_and_continue(player, "corpses", 3, 3, "buff_created_weapon")
 end
 
@@ -53,7 +53,7 @@ function card.buff_created_weapon(ctx, self, spent)
     for _, entity in ipairs(ctx:hand(ctx:controller(self))) do
         if ctx:get_data(entity, "runes_of_darkness_created") == 1 then
             ctx:set_data(entity, "runes_of_darkness_created", 0)
-            ctx:buff(entity, 1, 1)
+            cardlib.effects.buff(ctx, entity, 1, 1)
             return
         end
     end

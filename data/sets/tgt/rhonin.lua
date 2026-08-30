@@ -7,6 +7,6 @@ local card = {
 
 function card.on_deathrattle(ctx, self)
     local player = ctx:controller(self)
-    for _ = 1, 3 do ctx:give_card(player, "EX1_277") end
+    for _ = 1, 3 do cardlib.effects.give_card(ctx, player, "EX1_277") end
 end
 return card

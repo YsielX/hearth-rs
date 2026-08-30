@@ -7,7 +7,7 @@ local card = {
 
 function card.on_deathrattle(ctx, self, position)
     local player = ctx:controller(self)
-    if ctx:active_player() ~= player then ctx:summon_at(player, "ICC_900t", position) end
+    if ctx:active_player() ~= player then cardlib.effects.summon_at(ctx, player, "ICC_900t", position) end
 end
 
 return card

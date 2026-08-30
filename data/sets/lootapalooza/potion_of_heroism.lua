@@ -5,7 +5,7 @@ local card = {
     cost = 2, target_mode = "required", targets = function(ctx) return ctx:minions() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:grant_keyword(target, "divine_shield")
+    cardlib.effects.grant_keyword(ctx, target, "divine_shield")
     ctx:draw(ctx:controller(self), 1)
 end
 return card

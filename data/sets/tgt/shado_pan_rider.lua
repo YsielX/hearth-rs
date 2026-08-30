@@ -11,5 +11,5 @@ return {
     attack = 3,
     health = 7,
     keywords = { "combo" },
-    on_combo = function(ctx, self) ctx:buff(self, 4, 0) end,
+    on_combo = function(ctx, self) cardlib.effects.buff(ctx, self, 4, 0) end,
 }

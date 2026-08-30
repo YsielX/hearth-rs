@@ -13,6 +13,6 @@ return {
     tags = { "elemental", "beast" },
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        if #ctx:hand(ctx:controller(self)) == 0 then ctx:buff(self, 3, 3) end
+        if #ctx:hand(ctx:controller(self)) == 0 then cardlib.effects.buff(ctx, self, 3, 3) end
     end,
 }

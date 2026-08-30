@@ -20,5 +20,5 @@ function card.on_battlecry(ctx, self)
     end
     if #pool > 0 then ctx:random_value(pool, "receive_beast") end
 end
-function card.receive_beast(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.receive_beast(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 return card

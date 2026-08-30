@@ -6,12 +6,12 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 use hearth_core::{
-    AuraSpec, CardActionSpec, CardDefinition, CardKind, CardRuntime, ChoiceOption, ChoicePolicy,
-    ChoiceValue, DeckAllowance, EffectDuration, EffectSpec, EntityId, EntityStatModification,
-    EventId, EventTiming, GameEvent, GameOutcome, GameState, Locale, LocalizedCardText,
-    MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES, MAX_CHOICE_VALUE_STRING_BYTES,
-    ModifierOperation, PlayerId, RuneCost, ScriptEvent, Stat, StatModifier, TargetMode, Zone,
-    ZonePlacement,
+    AuraSpec, CardActionSpec, CardCopyState, CardDefinition, CardKind, CardRuntime, ChoiceOption,
+    ChoicePolicy, ChoiceValue, DeckAllowance, EffectDuration, EffectSpec, EntityId,
+    EntityStatModification, EventId, EventTiming, FreshCopyStats, GameEvent, GameOutcome,
+    GameState, Locale, LocalizedCardText, MAX_CHOICE_VALUE_DEPTH, MAX_CHOICE_VALUE_NODES,
+    MAX_CHOICE_VALUE_STRING_BYTES, MinionStats, ModifierOperation, PlayerId, RuneCost, ScriptEvent,
+    Stat, StatModifier, SummonStats, TargetMode, Zone, ZonePlacement,
 };
 use mlua::{Function, HookTriggers, Lua, RegistryKey, Table, Value, VmState};
 use thiserror::Error;

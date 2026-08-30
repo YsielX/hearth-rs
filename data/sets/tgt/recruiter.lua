@@ -10,7 +10,7 @@ local card = {
     attack = 5,
     health = 4,
     keywords = { "inspire" },
-    on_inspire = function(ctx, self) ctx:give_card(ctx:controller(self), "CS2_152") end,
+    on_inspire = function(ctx, self) cardlib.effects.give_card(ctx, ctx:controller(self), "CS2_152") end,
 }
 
 card.tokens = {

@@ -115,7 +115,7 @@ card.tokens = {
         type = "hero_power", class = "druid", cost = 2,
         on_play = function(ctx, self)
             local player = ctx:controller(self)
-            ctx:buff_until_end_of_turn(ctx:player(player).hero, 2, 0)
+            cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 2, 0)
             ctx:gain_armor(player, 2)
         end,
     },
@@ -143,7 +143,7 @@ card.tokens = {
         type = "hero_power", class = "demon_hunter", cost = 1,
         on_play = function(ctx, self)
             local player = ctx:controller(self)
-            ctx:buff_until_end_of_turn(ctx:player(player).hero, 2, 0)
+            cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 2, 0)
         end,
     },
 }

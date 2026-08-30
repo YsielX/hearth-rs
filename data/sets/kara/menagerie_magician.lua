@@ -40,8 +40,8 @@ function card.on_battlecry(ctx, self)
     if #murlocs > 0 then ctx:random_entity(murlocs, "buff_murloc") end
 end
 
-function card.buff_beast(ctx, self, target) ctx:buff(target, 2, 2) end
-function card.buff_dragon(ctx, self, target) ctx:buff(target, 2, 2) end
-function card.buff_murloc(ctx, self, target) ctx:buff(target, 2, 2) end
+function card.buff_beast(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
+function card.buff_dragon(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
+function card.buff_murloc(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
 
 return card

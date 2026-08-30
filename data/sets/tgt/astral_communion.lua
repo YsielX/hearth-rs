@@ -9,7 +9,7 @@ function card.on_play(ctx, self)
     local player = ctx:controller(self)
     local at_maximum = ctx:player(player).max_mana >= 10
     ctx:fill_mana_crystals(player, 10)
-    if at_maximum then ctx:give_card(player, "CS2_013t") end
+    if at_maximum then cardlib.effects.give_card(ctx, player, "CS2_013t") end
     for _, entity in ipairs(ctx:hand(player)) do ctx:discard(player, entity) end
 end
 

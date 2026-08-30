@@ -14,6 +14,6 @@ card.on_deathrattle = queue_jade
 function card.summon_jade(ctx, self)
     local player = ctx:controller(self)
     local size = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
-    ctx:summon_with_base_stats(player, "CFM_712_t01", size, size)
+    cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", size, size)
 end
 return card

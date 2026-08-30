@@ -50,8 +50,8 @@ local card = {
 function card.on_colossal(ctx, self)
     local player = ctx:controller(self)
     local position = ctx:board_position(self)
-    ctx:summon_at(player, "NX2_037t", position)
-    ctx:summon_at(player, "NX2_037t2", position + 2)
+    cardlib.effects.summon_at(ctx, player, "NX2_037t", position)
+    cardlib.effects.summon_at(ctx, player, "NX2_037t2", position + 2)
 end
 
 card.triggers = {{

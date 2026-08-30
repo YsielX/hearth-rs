@@ -21,7 +21,7 @@ local card = {
     keywords = { "battlecry" },
 }
 
-local function win(ctx, self) ctx:grant_keyword(self, "charge") end
+local function win(ctx, self) cardlib.effects.grant_keyword(ctx, self, "charge") end
 
 function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)

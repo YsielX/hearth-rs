@@ -10,6 +10,6 @@ return {
     health = 3,
     keywords = { "honorable_kill" },
     on_honorable_kill = function(ctx, self)
-        ctx:buff(self, 2, 0)
+        cardlib.effects.buff(ctx, self, 2, 0)
     end,
 }

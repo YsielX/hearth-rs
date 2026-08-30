@@ -15,5 +15,5 @@ local card = {
         end,
     }},
 }
-function card.buff_minion(ctx, self, target) ctx:buff(target, 2, 2) end
+function card.buff_minion(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
 return card

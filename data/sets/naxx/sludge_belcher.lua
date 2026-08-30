@@ -12,7 +12,7 @@ return {
     tags = { "undead" },
     keywords = { "taunt", "deathrattle" },
     on_deathrattle = function(ctx, self, position)
-        ctx:summon_at(ctx:controller(self), "FP1_012t", position)
+        cardlib.effects.summon_at(ctx, ctx:controller(self), "FP1_012t", position)
     end,
     tokens = {
         {

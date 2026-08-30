@@ -19,6 +19,6 @@ card.triggers = {{
     end,
 }}
 
-function card.ascend_minion(ctx, self, target) ctx:buff(target, 1, 1) end
+function card.ascend_minion(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 1) end
 
 return card

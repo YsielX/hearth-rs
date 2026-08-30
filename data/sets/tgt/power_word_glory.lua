@@ -37,7 +37,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     ctx:set_data(self, "glory_target", target)
-    ctx:grant_keyword(target, "power_word_glory")
+    cardlib.effects.grant_keyword(ctx, target, "power_word_glory")
 end
 
 return card

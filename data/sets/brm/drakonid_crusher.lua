@@ -13,6 +13,6 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local opponent = ctx:opponent(ctx:controller(self))
-        if ctx:entity(ctx:player(opponent).hero).health <= 15 then ctx:buff(self, 3, 3) end
+        if ctx:entity(ctx:player(opponent).hero).health <= 15 then cardlib.effects.buff(ctx, self, 3, 3) end
     end,
 }

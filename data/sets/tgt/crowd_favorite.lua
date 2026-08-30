@@ -15,6 +15,6 @@ return {
             return event.player == ctx:controller(self) and event.entity ~= self
                 and has_battlecry(ctx:card_definition(ctx:entity(event.entity).card_id))
         end,
-        effect = function(ctx, self) ctx:buff(self, 1, 1) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 1, 1) end,
     }},
 }

@@ -17,6 +17,6 @@ end
 function card.summon_jade_shuriken_golem(ctx, self)
     local player = ctx:controller(self)
     local n = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
-    ctx:summon_with_base_stats(player, "CFM_712_t01", n, n)
+    cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", n, n)
 end
 return card

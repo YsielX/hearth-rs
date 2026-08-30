@@ -9,6 +9,6 @@ function card.on_deathrattle(ctx, self)
     if #deck > 0 then ctx:random_entity(deck, "copy_oracle_card") end
 end
 function card.copy_oracle_card(ctx, self, entity)
-    ctx:give_card(ctx:controller(self), ctx:entity(entity).card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(entity).card_id)
 end
 return card

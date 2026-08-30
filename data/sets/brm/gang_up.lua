@@ -13,6 +13,6 @@ return {
     on_play = function(ctx, self, target)
         local player = ctx:controller(self)
         local card_id = ctx:entity(target).card_id
-        for _ = 1, 3 do ctx:shuffle_card_into_deck(player, card_id) end
+        for _ = 1, 3 do cardlib.effects.shuffle_card_into_deck(ctx, player, card_id) end
     end,
 }

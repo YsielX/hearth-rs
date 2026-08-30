@@ -12,7 +12,7 @@ return {
     tags = { "elemental" },
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        ctx:give_card(ctx:controller(self), "UNG_809t1")
+        cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_809t1")
     end,
     tokens = {
         {

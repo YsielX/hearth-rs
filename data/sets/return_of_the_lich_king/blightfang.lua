@@ -18,7 +18,7 @@ local card = {
 function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:enemy_minions(self)) do
         ctx:attach_hook(minion, "on_deathrattle", "RLK_225")
-        ctx:grant_keyword(minion, "deathrattle")
+        cardlib.effects.grant_keyword(ctx, minion, "deathrattle")
     end
 end
 

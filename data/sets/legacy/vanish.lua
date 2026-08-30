@@ -1,1 +1,1 @@
-return {api_version=1,id="NEW1_004", rarity = "common",name="Vanish",text="Return all minions to their owner's hand.",set="LEGACY",type="spell",class="rogue",cost=6,on_play=function(ctx,self)for _,e in ipairs(ctx:minions())do ctx:move_to_hand(ctx:entity(e).owner,e)end end}
+return {api_version=1,id="NEW1_004", rarity = "common",name="Vanish",text="Return all minions to their owner's hand.",set="LEGACY",type="spell",class="rogue",cost=6,on_play=function(ctx,self)for _,e in ipairs(ctx:minions())do cardlib.effects.move_to_hand(ctx, ctx:entity(e).owner,e)end end}

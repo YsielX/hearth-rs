@@ -11,7 +11,7 @@ end
 function card.summon_jade(ctx, self)
     local player = ctx:controller(self)
     local size = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
-    ctx:summon_with_base_stats(player, "CFM_712_t01", size, size)
+    cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", size, size)
 end
 card.tokens = {
     { id = "CFM_712_t01", name = "Jade Golem", text = "", set = "GANGS", type = "minion", cost = 1, attack = 1, health = 1 },

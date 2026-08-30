@@ -50,7 +50,7 @@ local card = {
 
 function card.on_play(ctx, self)
     for _ = 1, 5 do
-        ctx:shuffle_card_into_deck(ctx:controller(self), "LOOT_106t")
+        cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), "LOOT_106t")
     end
 end
 

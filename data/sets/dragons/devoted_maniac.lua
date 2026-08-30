@@ -33,7 +33,7 @@ function card.on_invoke(ctx, self)
     elseif class == "shaman" then
         ctx:summon(player, "DRG_238t14t3")
     elseif class == "warrior" then
-        ctx:buff_until_end_of_turn(ctx:player(player).hero, 3, 0)
+        cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
     elseif class == "priest" then
         local candidates = class_minions(ctx, "priest")
         if #candidates > 0 then ctx:random_value(candidates, "receive_invoked_card") end
@@ -43,7 +43,7 @@ function card.on_invoke(ctx, self)
 end
 
 function card.receive_invoked_card(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 card.tokens = {

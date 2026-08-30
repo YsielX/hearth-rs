@@ -287,15 +287,9 @@ ctx:spend_resource_and_continue(player, resource_id, minimum, maximum, hook)
 -- hook(ctx, self, spent) 在解析时执行；资源不足 minimum 时 spent 为 0
 ctx:draw(player, count)
 ctx:draw_entity(player, deck_entity)
-ctx:give_card(player, card_id)
-ctx:give_card_at(player, card_id, position)
 ctx:create_card(player, card_id, spec_or_nil)
 ctx:consume_sideboard_card(player, owner_card_id, card_id)
-ctx:give_copy(player, entity)
-ctx:give_copy_with_stats(player, entity, attack, health, cost_or_nil)
-ctx:give_base_copy(player, entity)
-ctx:give_base_copy_with_stats(player, entity, attack, health, cost_or_nil)
-ctx:shuffle_card_into_deck(player, card_id)
+ctx:give_copy(player, entity, options_or_nil)
 ctx:replace_hero(player, hero_card_id)
 ctx:replace_hero_power(player, card_id)
 ctx:refresh_hero_power(player)
@@ -305,28 +299,19 @@ ctx:lose_weapon_durability(weapon, amount)
 ctx:discard(player, entity)
 ctx:cast_spell(player, card_id, options_or_nil)
 ctx:cast_existing_spell(card, options_or_nil)
-ctx:summon(player, card_id)
-ctx:summon_at(player, card_id, position)
-ctx:summon_with_stats(player, card_id, attack, health, keywords_or_nil)
-ctx:summon_with_base_stats(player, card_id, attack, health, keywords_or_nil)
-ctx:summon_copy(player, target)
-ctx:summon_copy_at(player, target, position)
-ctx:summon_copy_with_stats(player, target, attack, health)
-ctx:recruit(player, deck_entity)
-ctx:recruit_at(player, deck_entity, position)
+ctx:summon(player, card_id, options_or_nil)
+ctx:summon_copy(player, target, options_or_nil)
+ctx:recruit(player, deck_entity, options_or_nil)
 ctx:summon_from_hand(card)
-ctx:summon_existing(player, graveyard_entity)
-ctx:summon_existing_at(player, graveyard_entity, position)
-ctx:move(target, destination)
-ctx:move_to_hand(player, target)
-ctx:shuffle_entity_into_deck(player, target)
+ctx:summon_existing(player, graveyard_entity, options_or_nil)
+ctx:move(target, destination, options_or_nil)
 ctx:shuffle_copy_into_deck(player, target)
 ctx:change_controller(target, player)
 ctx:change_controller_until_end_of_turn(target, player)
 cardlib.effects.transform(ctx, target, card_id)
 cardlib.effects.transform_all(ctx, targets, card_id)
 cardlib.effects.transform_batch(ctx, { { target, card_id }, ... })
-ctx:transform_into_copy(target, template, attack_or_nil, health_or_nil)
+ctx:transform_into_copy(target, template, options_or_nil)
 cardlib.effects.transform_preserving_scripts(ctx, target, card_id)
 cardlib.effects.destroy(ctx, target)
 cardlib.effects.destroy_all(ctx, targets)
@@ -344,11 +329,8 @@ ctx:trigger_hook(target, hook)
 ctx:attach_hook(target, hook, card_id)
 ctx:attach_script(target, card_id)
 ctx:board_position(target)
-ctx:buff(target, attack_delta, health_delta)
-ctx:buff_until_end_of_turn(target, attack_delta, health_delta)
+ctx:buff(target, options_or_nil)
 cardlib.effects.modify_all(ctx, targets, modifier_table)
-ctx:grant_keyword(target, keyword)
-ctx:grant_keyword_until_end_of_turn(target, keyword)
 ctx:grant_keyword_until_next_turn(target, keyword)
 ctx:disable_keyword(target, keyword)
 ctx:grant_player_keyword(player, keyword)
@@ -356,8 +338,7 @@ ctx:grant_public_player_status(player, status)
 ctx:disable_public_player_status(player, status)
 ctx:disable_player_keyword(player, keyword)
 ctx:set_player_class(player, class_id)
-ctx:summon_fresh_copy(target, position_or_nil, health, without_keywords)
-ctx:summon_fresh_copy_with_stats(target, position_or_nil, attack, health, without_keywords)
+ctx:summon_fresh_copy(target, options_or_nil)
 ctx:silence(target)
 ctx:freeze(target)
 ctx:reveal_secret(secret)
@@ -365,6 +346,28 @@ ctx:cancel_event(event)
 cardlib.effects.set_event_amount(ctx, event, amount)
 cardlib.effects.add_event_amount(ctx, event, amount)
 cardlib.effects.multiply_event_amount(ctx, event, factor)
+cardlib.effects.give_card(ctx, player, card_id)
+cardlib.effects.give_card_at(ctx, player, card_id, position)
+cardlib.effects.shuffle_card_into_deck(ctx, player, card_id)
+cardlib.effects.give_copy_with_stats(ctx, player, target, attack, health, cost_or_nil)
+cardlib.effects.give_base_copy(ctx, player, target)
+cardlib.effects.give_base_copy_with_stats(ctx, player, target, attack, health, cost_or_nil)
+cardlib.effects.summon_at(ctx, player, card_id, position)
+cardlib.effects.summon_with_stats(ctx, player, card_id, attack, health, keywords_or_nil)
+cardlib.effects.summon_with_base_stats(ctx, player, card_id, attack, health, keywords_or_nil)
+cardlib.effects.summon_existing_at(ctx, player, target, position)
+cardlib.effects.recruit_at(ctx, player, target, position)
+cardlib.effects.move_to_hand(ctx, player, target)
+cardlib.effects.shuffle_entity_into_deck(ctx, player, target)
+cardlib.effects.transform_into_copy_with_stats(ctx, target, template, attack, health)
+cardlib.effects.buff(ctx, target, attack_delta, health_delta)
+cardlib.effects.buff_until_end_of_turn(ctx, target, attack_delta, health_delta)
+cardlib.effects.grant_keyword(ctx, target, keyword)
+cardlib.effects.grant_keyword_until_end_of_turn(ctx, target, keyword)
+cardlib.effects.summon_copy_at(ctx, player, target, position)
+cardlib.effects.summon_copy_with_stats(ctx, player, target, attack, health)
+cardlib.effects.summon_fresh_copy(ctx, target, position_or_nil, health, without_keywords)
+cardlib.effects.summon_fresh_copy_with_stats(ctx, target, position_or_nil, attack, health, without_keywords)
 ctx:set_attack_defender(event_id, defender)
 ctx:set_damage_target(event_id, target)
 ctx:set_spell_target(event_id, target)
@@ -380,7 +383,7 @@ ctx:increment_player_data(player, key, delta)
 
 所有效果的 `source` 自动设为当前执行 hook 的卡牌实体。
 
-`cardlib.effects` 是卡牌层的 Lua 便捷库。其单体和等量群体函数最终折叠成一次原子批处理：`ctx:damage_batch(hits, options_or_nil)`、`ctx:heal_batch(hits)`、`ctx:destroy_batch(targets)`、`ctx:transform_batch(transforms, options_or_nil)`、`ctx:modify_batch(modifications)`。伤害 options 支持 `source` 和 `apply_spell_damage`；事件数值包装统一调用 `ctx:modify_event_amount(event, { operation = "set" | "add" | "multiply", value = n })`。
+`cardlib.effects` 是卡牌层的 Lua 便捷库。每种 Rust 效果只保留一个参数化原语：`create_card`、`give_copy`、`summon`、`summon_existing`、`recruit`、`move`、`transform_into_copy`、`buff`、`summon_copy` 和 `summon_fresh_copy`；位置、目标区域、持续时间、复制状态和属性变体都由 Lua 语法糖组合。`summon` 支持 `position`、互斥的 `base_stats`/`final_stats` 和 `keywords`；`give_copy` 支持 `state = "preserve" | "definition"`、`final_stats` 和 `cost`；`move` 通过 `{ player = ... }` 指定目标玩家；`buff` 支持 `attack`、`health`、`keywords` 与 `duration = "permanent" | "end_of_turn"`。fresh-copy 的 `remaining_health` 与 `final_stats` 互斥。批量接口仍用于保证组操作的原子性。
 
 光环中的 `cost` 是加法层；卡牌文字写“费用为（1）”时使用 `cost_set = 1`（也可为函数），需要限制最终费用时使用 `cost_cap`。费用光环顺序为 `Aura SET → Aura ADD → Aura CAP`。
 
@@ -400,7 +403,7 @@ ctx:increment_player_data(player, key, delta)
 
 `give_copy` 用于向前或同区域复制，保留来源实体的永久状态；`give_copy_with_stats` 再附加最终攻击、生命及可选费用定值。`give_base_copy*` 用于战场到手牌等向后区域复制，只从印刷定义创建无增益副本。
 
-`draw_entity` 从指定玩家牌库抽取该原实体，并走可取消的普通 CardDrawn/CardBurned 流程。`summon_existing` 把墓地或移除区的原随从送入完整可取消召唤流程，取消或满场时恢复；`summon_existing_at` 还会使用记录的原战场位置。`move_to_hand` 可把原实体转入指定玩家手牌，`shuffle_copy_into_deck` 会保留被复制实体的状态。`summon_fresh_copy_with_stats` 创建无增益模板副本并最终定值攻血。`lose_weapon_durability` 扣除已装备武器耐久，归零时走普通可取消的 `weapon_destroyed` 生命周期。`add_attack_collateral` 为待结算攻击加入同批战斗伤害。
+`draw_entity` 从指定玩家牌库抽取该原实体，并走可取消的普通 CardDrawn/CardBurned 流程。`summon_existing` 把墓地或移除区的原随从送入完整可取消召唤流程，取消或满场时恢复；`summon_existing_at` 还会使用记录的原战场位置。`move_to_hand` 可把原实体转入指定玩家手牌，`shuffle_copy_into_deck` 会保留被复制实体的状态。`summon_copy` 会保留牌库、手牌或战场中存活随从的运行时状态；可选的 `final_stats` 会在同一原子操作内给新实体附加可沉默的最终攻血。墓地实体应使用 `summon_fresh_copy`，它默认从卡牌定义创建满血、无增益的新实例；`remaining_health` 保留印刷生命上限但以受伤状态入场，`final_stats` 则通过可沉默的最终定值替换显示攻血。`summon_with_stats` 会附加可沉默的最终攻血；`summon_with_base_stats` 会替换印刷基础属性，因此青玉魔像等动态衍生物不会因沉默恢复。`lose_weapon_durability` 扣除已装备武器耐久，归零时走普通可取消的 `weapon_destroyed` 生命周期。`add_attack_collateral` 为待结算攻击加入同批战斗伤害。
 
 `damage_batch` 对冻结目标集原子结算不同伤害值，其忽略法术伤害版本不叠加法强；`damage_batch_from` 还可显式指定造成整批伤害的实体。`set_spell_target` 只在 `spell_targeted` 事件的触发效果仍在结算时有效；它把目标改为一个仍在战场上的随从，并让法术正文随后使用新目标。`modify_all` 对冻结目标组应用同一属性规格；`modify_batch` 接受逐实体规格，每个属性操作不同时可传 `modifiers` 数组。两者都支持 `reset_damage = true`。`force_attack` 无需攻击者处于可攻击状态即可发起完整攻击事件；`take_extra_turn` 为指定玩家排入可回放的额外回合。`grant_keyword_until_next_turn` 在该随从控制者的下回合开始时到期，且不依赖来源实体继续存在。
 
@@ -418,9 +421,9 @@ ctx:increment_player_data(player, key, delta)
 
 `entity_died` 事件包含控制者与该随从被移除时的零基 `position`。同一死亡检查点按入场顺序移除随从，后死者的位置在先死者移除后计算。`deathrattle.lua` 会把该值作为第三个参数传给 `on_deathrattle(ctx, self, position)`；若要从死亡位置开始放置衍生物，应显式调用 `summon_at(player, card_id, position)`。连续召唤到同一位置时，后一次会插在前一次左侧。复生模块也使用该位置恢复实体。
 
-`summon_copy` 和 `summon_copy_at` 复制效果结算时仍在战场上的随从状态。副本获得新的 `EntityId`，继承当前卡牌定义、伤害、冻结、沉默、已消耗关键字、enchantment 和 `script_data`；每个 enchantment 获得新 ID，原本以自身为来源的 enchantment 会重映射到副本。光环不作为永久状态复制，而是在副本入场后按新位置重新计算。副本的拥有者和控制者是参数中的玩家，攻击次数重置，并遵循普通新召唤随从的休眠/冲锋规则。
+`ctx:summon_copy` 复制效果结算时仍在牌库、手牌或战场中的存活随从状态。副本获得新的 `EntityId`，继承当前卡牌定义、伤害、冻结、沉默、已消耗关键字、enchantment 和 `script_data`；每个 enchantment 获得新 ID，原本以自身为来源的 enchantment 会重映射到副本。options 中的 `final_stats` 会在同一个效果内额外附加最终攻血并清除副本伤害，`position` 指定零基战场位置。光环不作为永久状态复制，而是在副本入场后按新位置重新计算。副本的拥有者和控制者是参数中的玩家，攻击次数重置，并遵循普通新召唤随从的休眠/冲锋规则。`cardlib.effects.summon_copy_at` 和 `summon_copy_with_stats` 只负责构造这些 options，不是额外的 Rust 操作。
 
-复制仍发布可取消的 `minion_summoned/before` 和成功后的 `after`，不会再次执行被复制随从的 `on_play`、关键词 lifecycle hook 或战吼。需要无增益、无伤害的全新副本时，读取 `ctx:entity(target).card_id` 并使用普通 `summon`。
+复制仍发布可取消的 `minion_summoned/before` 和成功后的 `after`，不会再次执行被复制随从的 `on_play`、关键词 lifecycle hook 或战吼。墓地实体不能作为状态复制模板；复活或其他需要无增益、无伤害实例的效果应使用 `ctx:summon_fresh_copy`，常见参数组合由 `cardlib.effects.summon_fresh_copy*` 包装。
 
 `recruit` 和 `recruit_at` 从参数玩家的牌库移动指定随从实体到战场，后者使用零基位置。它保留原 `EntityId`，不创建副本、不执行 `on_play`、关键词 lifecycle hook 或战吼，但会发布普通的 `minion_summoned/before/after`，因此召唤触发器、取消和光环行为与其他效果召唤一致。常见的随机招募应组合牌库查询、Rust RNG 和命名恢复：
 
@@ -437,7 +440,7 @@ if #candidates > 0 then
 end
 
 function card.on_recruit(ctx, self, entity)
-    ctx:recruit_at(ctx:controller(self), entity, 0)
+    cardlib.effects.recruit_at(ctx, ctx:controller(self), entity, 0)
 end
 ```
 
@@ -722,7 +725,7 @@ ctx:discover_cards(
 
 -- 命名 resume hook
 function card.on_card_chosen(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 ```
 

@@ -15,6 +15,6 @@ return {
     cost = 4, attack = 4, health = 4, keywords = { "battlecry" },
     target_mode = "required_if_available", targets = friendly_beasts,
     on_battlecry = function(ctx, self, target)
-        if target ~= nil then ctx:buff(target, 0, 3) end
+        if target ~= nil then cardlib.effects.buff(ctx, target, 0, 3) end
     end,
 }

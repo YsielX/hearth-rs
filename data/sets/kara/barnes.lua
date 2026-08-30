@@ -25,7 +25,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.summon_one_one_copy(ctx, self, entity)
-    ctx:summon_fresh_copy_with_stats(entity, nil, 1, 1, {})
+    cardlib.effects.summon_copy_with_stats(ctx, ctx:controller(self), entity, 1, 1)
 end
 
 return card

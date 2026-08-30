@@ -7,6 +7,6 @@ return {
         condition = function(ctx, self, event)
             return event.player == ctx:controller(self) and event.target == self
         end,
-        effect = function(ctx, self) ctx:grant_keyword(self, "divine_shield") end,
+        effect = function(ctx, self) cardlib.effects.grant_keyword(ctx, self, "divine_shield") end,
     }},
 }

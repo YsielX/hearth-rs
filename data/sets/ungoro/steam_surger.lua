@@ -8,6 +8,6 @@ return { api_version = 1, id = "UNG_021", name = "Steam Surger",
     attack = 5, health = 4, tags = { "elemental" }, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         for _, card_id in ipairs(ctx:cards_played_last_turn(ctx:controller(self))) do
-            if elemental(ctx:card_definition(card_id)) then ctx:give_card(ctx:controller(self), "UNG_018"); return end
+            if elemental(ctx:card_definition(card_id)) then cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_018"); return end
         end
     end }

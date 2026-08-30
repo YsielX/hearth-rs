@@ -7,7 +7,7 @@ return {
         local weapon = ctx:player(ctx:controller(self)).weapon
         if weapon ~= nil then
             local snapshot = ctx:entity(weapon)
-            ctx:buff(self, snapshot.attack, math.max(0, snapshot.health))
+            cardlib.effects.buff(ctx, self, snapshot.attack, math.max(0, snapshot.health))
         end
     end,
 }

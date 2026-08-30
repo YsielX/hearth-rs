@@ -14,8 +14,8 @@ local card = {
 
 function card.on_fabled(ctx, self)
     local player = ctx:controller(self)
-    ctx:shuffle_card_into_deck(player, "TIME_211t1")
-    ctx:shuffle_card_into_deck(player, "TIME_211t2")
+    cardlib.effects.shuffle_card_into_deck(ctx, player, "TIME_211t1")
+    cardlib.effects.shuffle_card_into_deck(ctx, player, "TIME_211t2")
 end
 
 function card.on_choose_one(ctx, self)

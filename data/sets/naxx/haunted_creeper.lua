@@ -12,8 +12,8 @@ return {
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self, position)
         local player = ctx:controller(self)
-        ctx:summon_at(player, "FP1_002t", position)
-        ctx:summon_at(player, "FP1_002t", position)
+        cardlib.effects.summon_at(ctx, player, "FP1_002t", position)
+        cardlib.effects.summon_at(ctx, player, "FP1_002t", position)
     end,
     tokens = {
         {

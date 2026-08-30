@@ -7,7 +7,7 @@ local card = {
 function card.on_battlecry(ctx, self)
     for _, minion in ipairs(ctx:enemy_minions(self)) do
         for _, keyword in ipairs(ctx:entity(minion).keywords or {}) do
-            if keyword == "taunt" then ctx:grant_keyword(self, "charge") return end
+            if keyword == "taunt" then cardlib.effects.grant_keyword(ctx, self, "charge") return end
         end
     end
 end

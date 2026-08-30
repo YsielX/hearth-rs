@@ -49,7 +49,7 @@ end
 
 function card.on_legendary(ctx, self, card_id)
     ctx:set_data(self, "excluded:" .. card_id, 1)
-    ctx:shuffle_card_into_deck(ctx:controller(self), card_id)
+    cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), card_id)
     local added = ctx:get_data(self, "added") + 1
     ctx:set_data(self, "added", added)
     if added < 5 then choose_legendary(ctx, self, card_id) end

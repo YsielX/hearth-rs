@@ -100,6 +100,126 @@ function effects.transform_preserving_scripts(ctx, target, card_id)
     })
 end
 
+function effects.transform_into_copy_with_stats(ctx, target, template, attack, health)
+    ctx:transform_into_copy(target, template, {
+        final_stats = { attack = attack, health = health },
+    })
+end
+
+function effects.summon_at(ctx, player, card_id, position)
+    ctx:summon(player, card_id, { position = position })
+end
+
+function effects.summon_with_stats(ctx, player, card_id, attack, health, keywords)
+    ctx:summon(player, card_id, {
+        final_stats = { attack = attack, health = health },
+        keywords = keywords,
+    })
+end
+
+function effects.summon_with_base_stats(ctx, player, card_id, attack, health, keywords)
+    ctx:summon(player, card_id, {
+        base_stats = { attack = attack, health = health },
+        keywords = keywords,
+    })
+end
+
+function effects.summon_existing_at(ctx, player, target, position)
+    ctx:summon_existing(player, target, { position = position })
+end
+
+function effects.recruit_at(ctx, player, target, position)
+    ctx:recruit(player, target, { position = position })
+end
+
+function effects.move_to_hand(ctx, player, target)
+    ctx:move(target, "hand", { player = player })
+end
+
+function effects.shuffle_entity_into_deck(ctx, player, target)
+    ctx:move(target, "deck_random", { player = player })
+end
+
+function effects.give_copy_with_stats(ctx, player, target, attack, health, cost)
+    ctx:give_copy(player, target, {
+        final_stats = { attack = attack, health = health },
+        cost = cost,
+    })
+end
+
+function effects.give_base_copy(ctx, player, target)
+    ctx:give_copy(player, target, { state = "definition" })
+end
+
+function effects.give_base_copy_with_stats(ctx, player, target, attack, health, cost)
+    ctx:give_copy(player, target, {
+        state = "definition",
+        final_stats = { attack = attack, health = health },
+        cost = cost,
+    })
+end
+
+function effects.give_card(ctx, player, card_id)
+    ctx:create_card(player, card_id)
+end
+
+function effects.give_card_at(ctx, player, card_id, position)
+    ctx:create_card(player, card_id, { destination = "hand", position = position })
+end
+
+function effects.shuffle_card_into_deck(ctx, player, card_id)
+    ctx:create_card(player, card_id, { destination = "deck_random" })
+end
+
+function effects.buff(ctx, target, attack, health)
+    ctx:buff(target, { attack = attack, health = health })
+end
+
+function effects.buff_until_end_of_turn(ctx, target, attack, health)
+    ctx:buff(target, {
+        attack = attack,
+        health = health,
+        duration = "end_of_turn",
+    })
+end
+
+function effects.grant_keyword(ctx, target, keyword)
+    ctx:buff(target, { keywords = { keyword } })
+end
+
+function effects.grant_keyword_until_end_of_turn(ctx, target, keyword)
+    ctx:buff(target, {
+        keywords = { keyword },
+        duration = "end_of_turn",
+    })
+end
+
+function effects.summon_copy_at(ctx, player, target, position)
+    ctx:summon_copy(player, target, { position = position })
+end
+
+function effects.summon_copy_with_stats(ctx, player, target, attack, health)
+    ctx:summon_copy(player, target, {
+        final_stats = { attack = attack, health = health },
+    })
+end
+
+function effects.summon_fresh_copy(ctx, target, position, health, without_keywords)
+    ctx:summon_fresh_copy(target, {
+        position = position,
+        remaining_health = health,
+        without_keywords = without_keywords,
+    })
+end
+
+function effects.summon_fresh_copy_with_stats(ctx, target, position, attack, health, without_keywords)
+    ctx:summon_fresh_copy(target, {
+        position = position,
+        final_stats = { attack = attack, health = health },
+        without_keywords = without_keywords,
+    })
+end
+
 local function modification(target, spec)
     local entry = copy_table(spec)
     entry.target = target

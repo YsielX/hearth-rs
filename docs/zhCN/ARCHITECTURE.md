@@ -100,7 +100,7 @@ Rust 在需要做规则决策时询问通用规则名：
 - 剧毒监听自身造成的 `damaged/after` 并输出通用 `destroy`；
 - 吸血监听伤害并输出通用 `heal`；
 - 亡语监听墓地中的自身 `entity_died/after`，通过 continuation 调用卡牌的 `on_deathrattle`；
-- 复生监听墓地中的 `entity_died/after`，调用 `summon_fresh_copy`，指定 1 点生命并排除 `reborn`。
+- 复生监听墓地中的 `entity_died/after`，通过 `cardlib.effects.summon_fresh_copy` 指定 1 点生命并排除 `reborn`。
 
 战吼、连击与压轴由 lifecycle keyword 驱动：`battlecry.lua` 在出牌阶段把已声明目标传给卡牌的 `on_battlecry`；`combo.lua` 仅在当前牌不是本回合第一张手牌时调用 `on_combo`；`finale.lua` 仅在本次付费后剩余法力为零时调用 `on_finale`。法术迸发监听己方的 `spell_cast/after`，先禁用自身关键词，再通过可序列化 continuation 调用 `on_spellburst`；亡语用同一机制把死亡位置传给 `on_deathrattle`。关键词模块用 `required_card_hooks` 声明契约，加载卡包时会拒绝只引用关键词却没有实现效果函数的卡牌。卡牌文件因此只写该牌独有的效果，不再重复触发条件、时序与一次性状态。
 
@@ -150,7 +150,7 @@ Lua hook 不直接改变 `GameState`。例如 `cardlib.effects.damage(ctx, targe
 
 Rust 死亡检查点先按入场顺序识别所有致死随从，再逐一移除。每个随从的 `position` 在它实际移除时记录，因此同批中较早死亡的随从不会继续占据较晚死亡随从的位置。全部移入墓地后再批量发布 `entity_died`；Rust 不检查复生或任何具体亡语。
 
-`deathrattle.lua` 把事件的 `position` 传给卡牌的 `on_deathrattle`，卡牌可据此调用 `summon_at`；`reborn.lua` 则输出通用新鲜副本召唤效果。两者仍经过可取消的 `minion_summoned/before/after`，战场已满时安全失败。
+`deathrattle.lua` 把事件的 `position` 传给卡牌的 `on_deathrattle`，卡牌可据此调用 Lua 糖 `cardlib.effects.summon_at`；`reborn.lua` 则输出通用新鲜副本召唤效果。两者仍经过可取消的 `minion_summoned/before/after`，战场已满时安全失败。
 
 ## 数据和状态
 

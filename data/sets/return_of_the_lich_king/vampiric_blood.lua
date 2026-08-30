@@ -14,14 +14,14 @@ local card = {
 function card.on_play(ctx, self)
     local player = ctx:controller(self)
     local hero = ctx:player(player).hero
-    ctx:buff(hero, 0, 5)
+    cardlib.effects.buff(ctx, hero, 0, 5)
     ctx:spend_resource_and_continue(player, "corpses", 3, 3, "vampiric_bonus")
 end
 
 function card.vampiric_bonus(ctx, self, spent)
     if spent == 0 then return end
     local player = ctx:controller(self)
-    ctx:buff(ctx:player(player).hero, 0, 5)
+    cardlib.effects.buff(ctx, ctx:player(player).hero, 0, 5)
     ctx:draw(player, 1)
 end
 

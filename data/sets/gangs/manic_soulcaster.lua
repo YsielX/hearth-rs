@@ -21,7 +21,7 @@ return {
     end,
     on_battlecry = function(ctx, self, target)
         if target then
-            ctx:shuffle_card_into_deck(ctx:controller(self), ctx:entity(target).card_id)
+            cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), ctx:entity(target).card_id)
         end
     end,
 }

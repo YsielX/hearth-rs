@@ -11,6 +11,6 @@ return {
                 if keyword == "deathrattle" then count = count + 1 break end
             end
         end
-        if count > 0 then ctx:buff(self, count, count) end
+        if count > 0 then cardlib.effects.buff(ctx, self, count, count) end
     end,
 }

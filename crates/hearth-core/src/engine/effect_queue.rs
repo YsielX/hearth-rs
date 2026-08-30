@@ -582,10 +582,8 @@ impl<R: CardRuntime> Game<R> {
                 player,
                 card_id,
                 position,
-                attack,
-                health,
+                stats,
                 keywords,
-                base_stats,
             } => {
                 if self.state.player(player).board.len() >= MAX_BOARD_SIZE {
                     return Ok(false);
@@ -605,32 +603,26 @@ impl<R: CardRuntime> Game<R> {
                     return Err(GameError::CardCannotBeSummoned(card_id));
                 }
                 let entity = self.instantiate(&card_id, player, Zone::SetAside)?;
-                if base_stats {
+                if let SummonStats::Base(stats) = &stats {
                     let summoned = self.state.entities.get_mut(&entity).unwrap();
-                    if let Some(attack) = attack {
-                        summoned.base_attack = attack;
-                    }
-                    if let Some(health) = health {
-                        summoned.base_health = health.max(1);
-                    }
+                    summoned.base_attack = stats.attack;
+                    summoned.base_health = stats.health.max(1);
                     Self::recompute_entity(summoned);
                 }
-                if (!base_stats && (attack.is_some() || health.is_some())) || !keywords.is_empty() {
+                if matches!(stats, SummonStats::Final(_)) || !keywords.is_empty() {
                     let id = EnchantmentId(self.state.next_enchantment_id);
                     self.state.next_enchantment_id += 1;
                     let mut modifiers = Vec::new();
-                    if !base_stats && let Some(attack) = attack {
+                    if let SummonStats::Final(stats) = &stats {
                         modifiers.push(StatModifier {
                             stat: Stat::Attack,
                             operation: ModifierOperation::FinalSet,
-                            value: attack,
+                            value: stats.attack,
                         });
-                    }
-                    if !base_stats && let Some(health) = health {
                         modifiers.push(StatModifier {
                             stat: Stat::Health,
                             operation: ModifierOperation::FinalSet,
-                            value: health,
+                            value: stats.health,
                         });
                     }
                     let summoned = self.state.entities.get_mut(&entity).unwrap();
@@ -747,8 +739,7 @@ impl<R: CardRuntime> Game<R> {
                 player,
                 target,
                 position,
-                attack,
-                health,
+                final_stats,
             } => {
                 if self.state.player(player).board.len() >= MAX_BOARD_SIZE {
                     return Ok(false);
@@ -765,29 +756,28 @@ impl<R: CardRuntime> Game<R> {
                     .entity(target)
                     .cloned()
                     .ok_or(GameError::UnknownEntity(target))?;
-                if template.zone != Zone::Board || template.kind != CardKind::Minion {
+                let is_live_template =
+                    matches!(template.zone, Zone::Deck | Zone::Hand | Zone::Board);
+                if !is_live_template || template.kind != CardKind::Minion {
                     return Ok(false);
                 }
                 let entity = self.instantiate(&template.card_id, player, Zone::SetAside)?;
                 self.copy_card_state(&template, entity);
-                if attack.is_some() || health.is_some() {
+                if let Some(final_stats) = final_stats {
                     let id = EnchantmentId(self.state.next_enchantment_id);
                     self.state.next_enchantment_id += 1;
-                    let mut modifiers = Vec::new();
-                    if let Some(attack) = attack {
-                        modifiers.push(StatModifier {
+                    let modifiers = vec![
+                        StatModifier {
                             stat: Stat::Attack,
                             operation: ModifierOperation::FinalSet,
-                            value: attack,
-                        });
-                    }
-                    if let Some(health) = health {
-                        modifiers.push(StatModifier {
+                            value: final_stats.attack,
+                        },
+                        StatModifier {
                             stat: Stat::Health,
                             operation: ModifierOperation::FinalSet,
-                            value: health,
-                        });
-                    }
+                            value: final_stats.health,
+                        },
+                    ];
                     let copy = self.state.entities.get_mut(&entity).unwrap();
                     copy.damage = 0;
                     copy.enchantments.push(Enchantment {
@@ -817,9 +807,7 @@ impl<R: CardRuntime> Game<R> {
                 player,
                 target,
                 position,
-                attack,
-                health,
-                final_stats,
+                stats,
                 without_keywords,
             } => {
                 let entity = self
@@ -833,9 +821,7 @@ impl<R: CardRuntime> Game<R> {
                     player,
                     card_id: entity.card_id.clone(),
                     position: position.unwrap_or(self.state.player(player).board.len()),
-                    attack,
-                    health,
-                    final_stats,
+                    stats,
                     without_keywords,
                 });
                 Ok(false)
@@ -1185,8 +1171,7 @@ impl<R: CardRuntime> Game<R> {
                 source,
                 target,
                 template,
-                attack,
-                health,
+                final_stats,
                 preserve_attached_scripts,
             } => {
                 let Some(entity) = self.state.entity(target) else {
@@ -1214,8 +1199,7 @@ impl<R: CardRuntime> Game<R> {
                 queue.push_front(ResolutionItem::CommitTransformIntoCopy {
                     transform: pending,
                     template,
-                    attack,
-                    health,
+                    final_stats,
                     preserve_attached_scripts,
                 });
                 Self::prepend_effects(queue, before);

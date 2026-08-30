@@ -31,7 +31,7 @@ function card.on_deathrattle(ctx, self)
 end
 
 function card.receive_spare_part(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 card.tokens = {
@@ -39,7 +39,7 @@ card.tokens = {
         id = "PART_001", name = "Armor Plating", text = "Give a minion +1 Health.",
         set = "GVG", type = "spell", cost = 1, target_mode = "required",
         targets = all_minions,
-        on_play = function(ctx, self, target) ctx:buff(target, 0, 1) end,
+        on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 0, 1) end,
     },
     {
         id = "PART_002", name = "Time Rewinder", text = "Return a friendly minion to your hand.",
@@ -51,7 +51,7 @@ card.tokens = {
         id = "PART_003", name = "Rusty Horn", text = "Give a minion <b>Taunt</b>.",
         set = "GVG", type = "spell", cost = 1, target_mode = "required",
         targets = all_minions,
-        on_play = function(ctx, self, target) ctx:grant_keyword(target, "taunt") end,
+        on_play = function(ctx, self, target) cardlib.effects.grant_keyword(ctx, target, "taunt") end,
     },
     {
         id = "PART_004", name = "Finicky Cloakfield",
@@ -60,7 +60,7 @@ card.tokens = {
         targets = friendly_minions,
         on_play = function(ctx, self, target)
             ctx:set_data(self, "cloak_target", target)
-            ctx:grant_keyword(target, "stealth")
+            cardlib.effects.grant_keyword(ctx, target, "stealth")
         end,
         triggers = {
             {
@@ -97,7 +97,7 @@ card.tokens = {
         id = "PART_007", name = "Whirling Blades", text = "Give a minion +1 Attack.",
         set = "GVG", type = "spell", cost = 1, target_mode = "required",
         targets = all_minions,
-        on_play = function(ctx, self, target) ctx:buff(target, 1, 0) end,
+        on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 0) end,
     },
 }
 

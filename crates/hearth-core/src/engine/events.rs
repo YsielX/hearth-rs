@@ -1220,9 +1220,7 @@ impl<R: CardRuntime> Game<R> {
         player: PlayerId,
         card_id: &str,
         position: usize,
-        attack: Option<i32>,
-        health: i32,
-        final_stats: bool,
+        stats: FreshCopyStats,
         without_keywords: &[String],
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
@@ -1236,36 +1234,43 @@ impl<R: CardRuntime> Game<R> {
                 copy.disabled_keywords.push(keyword.clone());
             }
         }
-        if final_stats {
-            let id = EnchantmentId(self.state.next_enchantment_id);
-            self.state.next_enchantment_id += 1;
-            let mut modifiers = vec![StatModifier {
-                stat: Stat::Health,
-                operation: ModifierOperation::FinalSet,
-                value: health.max(1),
-            }];
-            if let Some(attack) = attack {
-                modifiers.push(StatModifier {
-                    stat: Stat::Attack,
-                    operation: ModifierOperation::FinalSet,
-                    value: attack,
+        match stats {
+            FreshCopyStats::Final(stats) => {
+                let id = EnchantmentId(self.state.next_enchantment_id);
+                self.state.next_enchantment_id += 1;
+                let modifiers = vec![
+                    StatModifier {
+                        stat: Stat::Health,
+                        operation: ModifierOperation::FinalSet,
+                        value: stats.health.max(1),
+                    },
+                    StatModifier {
+                        stat: Stat::Attack,
+                        operation: ModifierOperation::FinalSet,
+                        value: stats.attack,
+                    },
+                ];
+                copy.enchantments.push(Enchantment {
+                    id,
+                    source: entity,
+                    attack: 0,
+                    health: 0,
+                    modifiers,
+                    keywords: Vec::new(),
+                    silenciable: true,
+                    expires_at: None,
                 });
+                Self::recompute_entity(copy);
+                copy.damage = 0;
             }
-            copy.enchantments.push(Enchantment {
-                id,
-                source: entity,
-                attack: 0,
-                health: 0,
-                modifiers,
-                keywords: Vec::new(),
-                silenciable: true,
-                expires_at: None,
-            });
-            Self::recompute_entity(copy);
-            copy.damage = 0;
-        } else {
-            Self::recompute_entity(copy);
-            copy.damage = (copy.max_health - health.max(1)).max(0);
+            FreshCopyStats::RemainingHealth(health) => {
+                Self::recompute_entity(copy);
+                copy.damage = (copy.max_health - health.max(1)).max(0);
+            }
+            FreshCopyStats::FullHealth => {
+                Self::recompute_entity(copy);
+                copy.damage = 0;
+            }
         }
 
         let pending = self.begin_event(GameEvent::MinionSummoned { player, entity })?;

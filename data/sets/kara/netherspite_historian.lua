@@ -47,7 +47,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.receive_dragon(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 return card

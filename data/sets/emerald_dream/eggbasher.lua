@@ -15,6 +15,6 @@ return {
     on_battlecry = function(ctx, self, target)
         if target == nil then return end
         cardlib.effects.damage(ctx, target, 1)
-        ctx:buff(target, 4, 0)
+        cardlib.effects.buff(ctx, target, 4, 0)
     end,
 }

@@ -9,7 +9,7 @@ function card.on_battlecry(ctx, self)
     if not ctx:player(player).weapon then return end
     for _, zone in ipairs({ ctx:hand(player), ctx:deck(player) }) do
         for _, entity in ipairs(zone) do
-            if ctx:entity(entity).type == "minion" then ctx:buff(entity, 2, 2) end
+            if ctx:entity(entity).type == "minion" then cardlib.effects.buff(ctx, entity, 2, 2) end
         end
     end
 end

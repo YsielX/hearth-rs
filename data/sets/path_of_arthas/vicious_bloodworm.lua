@@ -27,7 +27,7 @@ function card.targets(ctx, self)
 end
 
 function card.on_battlecry(ctx, self, target)
-    if target then ctx:buff(target, ctx:entity(self).attack, 0) end
+    if target then cardlib.effects.buff(ctx, target, ctx:entity(self).attack, 0) end
 end
 
 return card

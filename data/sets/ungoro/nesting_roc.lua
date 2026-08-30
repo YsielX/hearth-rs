@@ -14,6 +14,6 @@ return {
                 if not is_dormant then others = others + 1 end
             end
         end
-        if others >= 2 then ctx:grant_keyword(self, "taunt") end
+        if others >= 2 then cardlib.effects.grant_keyword(ctx, self, "taunt") end
     end,
 }

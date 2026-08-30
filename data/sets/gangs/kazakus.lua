@@ -99,7 +99,7 @@ local function apply_ingredient(ctx, self, category)
     elseif category == CATEGORY.goldthorn then
         local health = ({ 2, 4, 6 })[tier]
         for _, minion in ipairs(ctx:friendly_minions(self)) do
-            if not is_dormant(ctx, minion) then ctx:buff(minion, 0, health) end
+            if not is_dormant(ctx, minion) then cardlib.effects.buff(ctx, minion, 0, health) end
         end
         continue_potion(ctx)
     elseif category == CATEGORY.heart then
@@ -217,7 +217,7 @@ end
 
 local function kazakus_receive_demon(ctx, self, card_id)
     ctx:set_data(self, "kazakus_sub_remaining", ctx:get_data(self, "kazakus_sub_remaining") - 1)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
     ctx:continue_with("kazakus_choose_demon")
 end
 
@@ -293,7 +293,7 @@ function card.kazakus_second_chosen(ctx, self, card_id)
     local cost = ctx:get_data(self, "kazakus_cost")
     ctx:set_data(self, "kazakus_second", ingredient_category[card_id])
     ctx:set_data(self, "kazakus_waiting_potion", 1)
-    ctx:give_card(player, potion_ids[cost])
+    cardlib.effects.give_card(ctx, player, potion_ids[cost])
 end
 
 card.triggers = {{

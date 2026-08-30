@@ -19,7 +19,7 @@ return {
             condition = function(ctx, self, event)
                 return event.attacker == self and ctx:entity(event.defender).type == "hero"
             end,
-            effect = function(ctx, self) ctx:give_card(ctx:controller(self), "GAME_005") end,
+            effect = function(ctx, self) cardlib.effects.give_card(ctx, ctx:controller(self), "GAME_005") end,
         },
     },
 }

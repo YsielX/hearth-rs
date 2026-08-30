@@ -15,7 +15,7 @@ local card = {
 
 function card.on_location_use(ctx, self, target)
     cardlib.effects.destroy(ctx, target)
-    ctx:summon_with_stats(ctx:controller(self), "NX2_036t", 4, 5)
+    cardlib.effects.summon_with_stats(ctx, ctx:controller(self), "NX2_036t", 4, 5)
 end
 
 card.tokens = {{

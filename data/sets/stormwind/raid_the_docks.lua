@@ -48,7 +48,7 @@ local card = {
                     fire_cannon(ctx, self, "on_quest_cannon")
                 elseif progress == 9 then
                     ctx:reveal_secret(self)
-                    ctx:give_card(ctx:controller(self), "SW_028t5")
+                    cardlib.effects.give_card(ctx, ctx:controller(self), "SW_028t5")
                 end
             end,
         },

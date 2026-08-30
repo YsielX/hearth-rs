@@ -5,6 +5,6 @@ return {
     cost = 6, attack = 5, health = 5, tags = { "pirate" }, keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local weapon = ctx:player(ctx:controller(self)).weapon
-        if weapon and ctx:entity(weapon).attack >= 3 then ctx:buff(self, 4, 4) end
+        if weapon and ctx:entity(weapon).attack >= 3 then cardlib.effects.buff(ctx, self, 4, 4) end
     end,
 }

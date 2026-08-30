@@ -11,6 +11,6 @@ return {
     keywords = { "taunt", "infuse" },
     keyword_params = { infuse = 3 },
     on_infuse = function(ctx, self)
-        ctx:buff(self, 2, 2)
+        cardlib.effects.buff(ctx, self, 2, 2)
     end,
 }

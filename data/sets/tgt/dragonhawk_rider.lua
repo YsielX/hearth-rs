@@ -4,6 +4,6 @@ return {
     set = "TGT", type = "minion", rarity = "common", cost = 3, attack = 3, health = 3,
     keywords = { "inspire" },
     on_inspire = function(ctx, self)
-        ctx:grant_keyword_until_end_of_turn(self, "windfury")
+        cardlib.effects.grant_keyword_until_end_of_turn(ctx, self, "windfury")
     end,
 }

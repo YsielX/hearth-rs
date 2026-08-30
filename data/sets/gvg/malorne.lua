@@ -30,7 +30,7 @@ function card.enter_dormant(ctx, self)
     if ctx:entity(self).zone ~= "board" then return end
     ctx:set_data(self, "malorne_dormant", 1)
     ctx:set_data(self, "beast_deaths", 0)
-    ctx:grant_keyword(self, "dormant")
+    cardlib.effects.grant_keyword(ctx, self, "dormant")
 end
 
 card.triggers = {

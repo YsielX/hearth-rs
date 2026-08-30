@@ -6,7 +6,7 @@ return {
         local player = ctx:controller(self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             local entity = ctx:entity(minion)
-            if entity.damage > 0 then ctx:give_base_copy(player, minion) end
+            if entity.damage > 0 then cardlib.effects.give_base_copy(ctx, player, minion) end
         end
     end,
 }

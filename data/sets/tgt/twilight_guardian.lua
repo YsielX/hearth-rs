@@ -16,8 +16,8 @@ function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     for _, entity in ipairs(ctx:hand(player)) do
         if is_dragon(ctx, entity) then
-            ctx:buff(self, 1, 0)
-            ctx:grant_keyword(self, "taunt")
+            cardlib.effects.buff(ctx, self, 1, 0)
+            cardlib.effects.grant_keyword(ctx, self, "taunt")
             return
         end
     end

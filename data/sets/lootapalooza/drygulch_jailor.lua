@@ -6,6 +6,6 @@ local card = {
 }
 function card.on_deathrattle(ctx, self)
     local player = ctx:controller(self)
-    ctx:give_card(player, "CS2_101t"); ctx:give_card(player, "CS2_101t"); ctx:give_card(player, "CS2_101t")
+    cardlib.effects.give_card(ctx, player, "CS2_101t"); cardlib.effects.give_card(ctx, player, "CS2_101t"); cardlib.effects.give_card(ctx, player, "CS2_101t")
 end
 return card

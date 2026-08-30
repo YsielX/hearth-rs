@@ -5,7 +5,7 @@ return {
     on_play = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             for _, keyword in ipairs(ctx:entity(minion).keywords) do
-                if keyword == "taunt" then ctx:buff(minion, 2, 2) break end
+                if keyword == "taunt" then cardlib.effects.buff(ctx, minion, 2, 2) break end
             end
         end
     end,

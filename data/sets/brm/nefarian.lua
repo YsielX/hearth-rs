@@ -33,7 +33,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.add_opponent_spell(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
     local added = ctx:get_data(self, "spells_added") + 1
     ctx:set_data(self, "spells_added", added)
     if added < 2 then

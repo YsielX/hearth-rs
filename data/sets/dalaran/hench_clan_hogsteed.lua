@@ -11,7 +11,7 @@ return {
     tags = { "beast" },
     keywords = { "rush", "deathrattle" },
     on_deathrattle = function(ctx, self, position)
-        ctx:summon_at(ctx:controller(self), "DAL_743t", position)
+        cardlib.effects.summon_at(ctx, ctx:controller(self), "DAL_743t", position)
     end,
     tokens = {
         {

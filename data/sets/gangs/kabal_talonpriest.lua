@@ -8,5 +8,5 @@ return {
         for _, entity in ipairs(ctx:friendly_minions(self)) do if entity ~= self then result[#result + 1] = entity end end
         return result
     end,
-    on_battlecry = function(ctx, self, target) if target then ctx:buff(target, 0, 3) end end,
+    on_battlecry = function(ctx, self, target) if target then cardlib.effects.buff(ctx, target, 0, 3) end end,
 }

@@ -13,7 +13,7 @@ return {
     tags = { "beast" },
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self, position)
-        ctx:summon_at(ctx:controller(self), "KAR_005a", position)
+        cardlib.effects.summon_at(ctx, ctx:controller(self), "KAR_005a", position)
     end,
     tokens = {
         {

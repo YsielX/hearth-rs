@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_gigantify(ctx, self)
-    ctx:give_card(ctx:controller(self), "MIS_300t")
+    cardlib.effects.give_card(ctx, ctx:controller(self), "MIS_300t")
 end
 
 card.tokens = {

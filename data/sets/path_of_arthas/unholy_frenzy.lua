@@ -66,7 +66,7 @@ function card.frenzy_resummon_next(ctx, self)
     local entity = ctx:get_data(self, "frenzy_attacker_" .. index)
     local position = ctx:get_data(self, "frenzy_position_" .. index)
     local definition = ctx:card_definition(ctx:entity(entity).card_id)
-    ctx:summon_fresh_copy(entity, position, definition.health, {})
+    cardlib.effects.summon_fresh_copy(ctx, entity, position, definition.health, {})
     ctx:continue_with("frenzy_resummon_next")
 end
 

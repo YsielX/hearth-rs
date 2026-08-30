@@ -19,7 +19,7 @@ return {
                 if keyword == "dormant" then dormant = true end
                 if keyword == "divine_shield" then divine_shield = true end
             end
-            if divine_shield and not dormant then ctx:buff(minion, 1, 1) end
+            if divine_shield and not dormant then cardlib.effects.buff(ctx, minion, 1, 1) end
         end
     end,
 }

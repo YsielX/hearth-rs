@@ -14,6 +14,6 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local weapon = ctx:player(ctx:controller(self)).weapon
-        if weapon ~= nil then ctx:buff(weapon, 1, 0) end
+        if weapon ~= nil then cardlib.effects.buff(ctx, weapon, 1, 0) end
     end,
 }

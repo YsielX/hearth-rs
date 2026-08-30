@@ -22,7 +22,7 @@ function card.on_play(ctx, self)
     end
     if count == 0 then return end
     if ctx:player(player).max_mana >= 10 or ctx:player(player).mana >= 10 then
-        ctx:give_card(player, "CS2_013t")
+        cardlib.effects.give_card(ctx, player, "CS2_013t")
     else
         ctx:gain_mana_crystals(player, count, false)
     end

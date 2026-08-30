@@ -5,6 +5,6 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local count = #ctx:hand(ctx:controller(self))
-        if count > 0 then ctx:buff(self, count, 0) end
+        if count > 0 then cardlib.effects.buff(ctx, self, count, 0) end
     end,
 }

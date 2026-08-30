@@ -26,6 +26,6 @@ return {
                 and event.entity ~= self
                 and is_undead(ctx, event.entity)
         end,
-        effect = function(ctx, self, event) ctx:grant_keyword(event.entity, "poisonous") end,
+        effect = function(ctx, self, event) cardlib.effects.grant_keyword(ctx, event.entity, "poisonous") end,
     }},
 }

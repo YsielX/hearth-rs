@@ -19,7 +19,7 @@ return {
             condition = function(ctx, self, event)
                 return event.player == ctx:controller(self)
             end,
-            effect = function(ctx, self, event) ctx:buff(event.entity, 1, 0) end,
+            effect = function(ctx, self, event) cardlib.effects.buff(ctx, event.entity, 1, 0) end,
         },
     },
 }

@@ -20,6 +20,6 @@ function card.on_battlecry(ctx, self)
     end
 end
 function card.copy_drakonid_choice(ctx, self, chosen)
-    ctx:give_card(ctx:controller(self), ctx:entity(chosen).card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(chosen).card_id)
 end
 return card

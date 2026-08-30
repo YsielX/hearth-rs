@@ -14,7 +14,7 @@ return {
     on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
             if ctx:entity(minion).card_id == "CS2_101t" then
-                ctx:buff(minion, 2, 2)
+                cardlib.effects.buff(ctx, minion, 2, 2)
             end
         end
     end,

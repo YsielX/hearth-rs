@@ -8,7 +8,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     cardlib.effects.damage(ctx, target, 3)
-    ctx:shuffle_card_into_deck(ctx:controller(self), "LOE_002t")
+    cardlib.effects.shuffle_card_into_deck(ctx, ctx:controller(self), "LOE_002t")
 end
 
 card.tokens = {{

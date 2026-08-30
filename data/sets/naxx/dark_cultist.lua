@@ -19,7 +19,7 @@ function card.on_deathrattle(ctx, self)
 end
 
 function card.give_health(ctx, self, target)
-    ctx:buff(target, 0, 3)
+    cardlib.effects.buff(ctx, target, 0, 3)
 end
 
 return card

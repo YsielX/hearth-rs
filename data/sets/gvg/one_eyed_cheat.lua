@@ -29,7 +29,7 @@ return {
                     and is_pirate(ctx, event.entity)
             end,
             effect = function(ctx, self)
-                ctx:grant_keyword(self, "stealth")
+                cardlib.effects.grant_keyword(ctx, self, "stealth")
             end,
         },
     },

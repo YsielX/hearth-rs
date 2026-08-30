@@ -137,7 +137,7 @@ return {
               local player = ctx:controller(self)
               for _, card_id in ipairs({ "OG_280", "OG_334", "OG_281", "OG_096",
                   "TEST_OG_HURT_FRIENDS", "TEST_OG_HEAL_FRIENDS", "TEST_OG_HURT_HERO" }) do
-                  ctx:give_card(player, card_id)
+                  ctx:create_card(player, card_id)
               end
           end },
         { id = "TEST_OG_DISCARD", name = "Discard", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
@@ -169,7 +169,7 @@ return {
           on_play = function(ctx, self)
               local player = ctx:controller(self)
               cardlib.effects.damage(ctx, ctx:player(player).hero, 10)
-              ctx:give_card(player, "TEST_OG_SILENCE")
+              ctx:create_card(player, "TEST_OG_SILENCE")
           end },
         { id = "TEST_OG_HURT_HEROES", name = "Hurt Heroes", text = "", set = "TEST", type = "spell", cost = 0, collectible = true,
           on_play = function(ctx, self) cardlib.effects.damage_all(ctx, { ctx:player(0).hero, ctx:player(1).hero }, 3) end },
@@ -274,7 +274,7 @@ return {
     on_play = function(ctx, self)
         local player = ctx:controller(self)
         for _, card_id in ipairs({ "OG_280", "OG_281", "OG_281", "OG_281", "OG_291" }) do
-            ctx:give_card(player, card_id)
+            ctx:create_card(player, card_id)
         end
     end,
 }

@@ -26,7 +26,7 @@ function card.on_battlecry(ctx, self)
     local own = deck_minions(ctx, player)
     if #own == 0 then return end
     if #deck_minions(ctx, ctx:opponent(player)) == 0 then
-        ctx:buff(self, 0, 1)
+        cardlib.effects.buff(ctx, self, 0, 1)
         return
     end
     ctx:random_value(own, "reveal_friendly_minion")
@@ -39,7 +39,7 @@ function card.reveal_friendly_minion(ctx, self, entity)
 end
 
 function card.reveal_enemy_minion(ctx, self, entity)
-    if ctx:get_data(self, "joust_cost") > ctx:entity(entity).cost then ctx:buff(self, 0, 1) end
+    if ctx:get_data(self, "joust_cost") > ctx:entity(entity).cost then cardlib.effects.buff(ctx, self, 0, 1) end
 end
 
 return card

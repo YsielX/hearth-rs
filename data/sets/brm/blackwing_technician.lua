@@ -25,6 +25,6 @@ return {
     health = 4,
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
-        if holding_dragon(ctx, self) then ctx:buff(self, 1, 1) end
+        if holding_dragon(ctx, self) then cardlib.effects.buff(ctx, self, 1, 1) end
     end,
 }

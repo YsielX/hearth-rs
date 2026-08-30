@@ -5,12 +5,12 @@ local card = {
     cost = 5, target_mode = "required", targets = function(ctx, self) return ctx:minions() end,
 }
 function card.on_play(ctx, self, target)
-    ctx:buff(target, 2, 6)
-    ctx:grant_keyword(target, "taunt")
+    cardlib.effects.buff(ctx, target, 2, 6)
+    cardlib.effects.grant_keyword(ctx, target, "taunt")
     ctx:attach_hook(target, "on_deathrattle", "UNG_952")
-    ctx:grant_keyword(target, "deathrattle")
+    cardlib.effects.grant_keyword(ctx, target, "deathrattle")
 end
 function card.on_deathrattle(ctx, self, position)
-    ctx:summon_at(ctx:controller(self), "UNG_810", position)
+    cardlib.effects.summon_at(ctx, ctx:controller(self), "UNG_810", position)
 end
 return card

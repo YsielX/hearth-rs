@@ -20,5 +20,5 @@ local card = {
         end,
     }},
 }
-function card.receive_demon(ctx, self, card_id) ctx:give_card(ctx:controller(self), card_id) end
+function card.receive_demon(ctx, self, card_id) cardlib.effects.give_card(ctx, ctx:controller(self), card_id) end
 return card

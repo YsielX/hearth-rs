@@ -7,7 +7,7 @@ return {
         local player = ctx:controller(self)
         for _, zone in ipairs({ ctx:hand(player), ctx:deck(player) }) do
             for _, entity in ipairs(zone) do
-                if ctx:entity(entity).type == "minion" then ctx:buff(entity, 1, 1) end
+                if ctx:entity(entity).type == "minion" then cardlib.effects.buff(ctx, entity, 1, 1) end
             end
         end
     end,

@@ -11,8 +11,8 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:give_card(player, "AV_219t")
-        ctx:give_card(player, "AV_219t")
+        cardlib.effects.give_card(ctx, player, "AV_219t")
+        cardlib.effects.give_card(ctx, player, "AV_219t")
     end,
     tokens = {
         {

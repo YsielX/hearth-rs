@@ -19,7 +19,7 @@ function card.on_battlecry(ctx, self)
 end
 
 function card.buff_minion(ctx, self, target)
-    ctx:buff(target, 1, 0)
+    cardlib.effects.buff(ctx, target, 1, 0)
 end
 
 return card

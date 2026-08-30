@@ -64,7 +64,7 @@ end
 function card.resolve_glimmerroot_guess(ctx, self, correct)
     if correct == 1 then
         local id = id_at(ctx, ctx:get_data(self, "glimmer_real"))
-        ctx:give_card(ctx:controller(self), id)
+        cardlib.effects.give_card(ctx, ctx:controller(self), id)
     end
 end
 return card

@@ -17,6 +17,6 @@ function choice.on_play(ctx, self)
     end
     if #pool > 0 then ctx:discover_cards(player, "Discover a card", pool, 3, "receive_discovered_card") end
 end
-function choice.receive_discovered_card(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function choice.receive_discovered_card(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 card.tokens = { choice }
 return card

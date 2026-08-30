@@ -12,7 +12,7 @@ return {
                 return event.entity == self
             end,
             effect = function(ctx, self, event)
-                ctx:summon_fresh_copy(self, event.position, 1, { "reborn" })
+                cardlib.effects.summon_fresh_copy(ctx, self, event.position, 1, { "reborn" })
             end,
         },
     },

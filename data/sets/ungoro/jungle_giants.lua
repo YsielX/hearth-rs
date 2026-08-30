@@ -12,7 +12,7 @@ local card = { api_version = 1, id = "UNG_116", name = "Jungle Giants",
             if progress >= 4 then
                 ctx:set_data(self, "completed", 1)
                 ctx:reveal_secret(self)
-                ctx:give_card(ctx:controller(self), "UNG_116t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "UNG_116t")
             end
         end }},
 }

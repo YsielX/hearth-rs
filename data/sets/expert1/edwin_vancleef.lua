@@ -14,6 +14,6 @@ return {
 
     on_combo = function(ctx, self)
         local cards = ctx:entity(self).cards_played_before
-        ctx:buff(self, cards * 2, cards * 2)
+        cardlib.effects.buff(ctx, self, cards * 2, cards * 2)
     end,
 }

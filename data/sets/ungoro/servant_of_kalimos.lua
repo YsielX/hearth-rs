@@ -24,5 +24,5 @@ function card.on_battlecry(ctx, self)
     end
     if #pool > 0 then ctx:discover_cards(player, "Discover an Elemental", pool, 3, "receive_elemental") end
 end
-function card.receive_elemental(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function card.receive_elemental(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 return card

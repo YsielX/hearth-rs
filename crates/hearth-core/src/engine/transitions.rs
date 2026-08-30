@@ -673,8 +673,7 @@ impl<R: CardRuntime> Game<R> {
         &mut self,
         transform: PendingEvent,
         template: Entity,
-        attack: Option<i32>,
-        health: Option<i32>,
+        final_stats: Option<MinionStats>,
         preserve_attached_scripts: bool,
         queue: &mut VecDeque<ResolutionItem>,
     ) -> Result<(), GameError> {
@@ -733,25 +732,22 @@ impl<R: CardRuntime> Game<R> {
                 }
             }
         }
-        if attack.is_some() || health.is_some() {
+        if let Some(stats) = final_stats {
             let id = EnchantmentId(self.state.next_enchantment_id);
             self.state.next_enchantment_id += 1;
-            let mut modifiers = Vec::new();
-            if let Some(value) = attack {
-                modifiers.push(StatModifier {
+            let modifiers = vec![
+                StatModifier {
                     stat: Stat::Attack,
                     operation: ModifierOperation::FinalSet,
-                    value,
-                });
-            }
-            if let Some(value) = health {
-                modifiers.push(StatModifier {
+                    value: stats.attack,
+                },
+                StatModifier {
                     stat: Stat::Health,
                     operation: ModifierOperation::FinalSet,
-                    value,
-                });
-                target.damage = 0;
-            }
+                    value: stats.health,
+                },
+            ];
+            target.damage = 0;
             target.enchantments.push(Enchantment {
                 id,
                 source,

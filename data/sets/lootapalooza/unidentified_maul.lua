@@ -27,13 +27,13 @@ card.tokens = {
         local player = ctx:controller(self); ctx:summon(player, "CS2_101t"); ctx:summon(player, "CS2_101t")
     end),
     weapon("LOOT_286t2", "Sacred Maul", "<b>Battlecry:</b> Give your minions <b>Taunt</b>.", function(ctx, self)
-        for _, minion in ipairs(ctx:friendly_minions(self)) do ctx:grant_keyword(minion, "taunt") end
+        for _, minion in ipairs(ctx:friendly_minions(self)) do cardlib.effects.grant_keyword(ctx, minion, "taunt") end
     end),
     weapon("LOOT_286t3", "Blessed Maul", "<b>Battlecry:</b> Give your minions +1 Attack.", function(ctx, self)
-        for _, minion in ipairs(ctx:friendly_minions(self)) do ctx:buff(minion, 1, 0) end
+        for _, minion in ipairs(ctx:friendly_minions(self)) do cardlib.effects.buff(ctx, minion, 1, 0) end
     end),
     weapon("LOOT_286t4", "Purifier's Maul", "<b>Battlecry:</b> Give your minions <b>Divine Shield</b>.", function(ctx, self)
-        for _, minion in ipairs(ctx:friendly_minions(self)) do ctx:grant_keyword(minion, "divine_shield") end
+        for _, minion in ipairs(ctx:friendly_minions(self)) do cardlib.effects.grant_keyword(ctx, minion, "divine_shield") end
     end),
 }
 return card

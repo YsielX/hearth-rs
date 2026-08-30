@@ -13,7 +13,7 @@ return {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         for _, minion in ipairs(ctx:friendly_minions(self)) do
-            if ctx:entity(minion).attack == 1 then ctx:buff(minion, 1, 1) end
+            if ctx:entity(minion).attack == 1 then cardlib.effects.buff(ctx, minion, 1, 1) end
         end
     end,
 }

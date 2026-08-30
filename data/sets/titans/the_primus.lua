@@ -45,8 +45,8 @@ card.action_effects = {
     titan_1 = function(ctx, self, spent, target)
         local health = ctx:entity(target).health
         cardlib.effects.destroy(ctx, target)
-        ctx:buff(self, 0, health)
-        ctx:buff(ctx:player(ctx:controller(self)).hero, 0, health)
+        cardlib.effects.buff(ctx, self, 0, health)
+        cardlib.effects.buff(ctx, ctx:player(ctx:controller(self)).hero, 0, health)
         discover_rune_card(ctx, self, "blood")
     end,
     titan_2 = function(ctx, self)
@@ -64,7 +64,7 @@ card.action_effects = {
 }
 
 function card.receive_rune_card(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 card.tokens = {

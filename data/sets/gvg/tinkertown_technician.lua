@@ -17,9 +17,9 @@ local function has_mech(ctx, self)
 end
 function card.on_battlecry(ctx, self)
     if has_mech(ctx, self) then
-        ctx:buff(self, 1, 1)
+        cardlib.effects.buff(ctx, self, 1, 1)
         ctx:random_value(parts, "receive_part")
     end
 end
-function card.receive_part(ctx, self, part) ctx:give_card(ctx:controller(self), part) end
+function card.receive_part(ctx, self, part) cardlib.effects.give_card(ctx, ctx:controller(self), part) end
 return card

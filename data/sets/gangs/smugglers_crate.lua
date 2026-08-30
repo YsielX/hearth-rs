@@ -27,6 +27,6 @@ function card.on_play(ctx, self)
     if #candidates > 0 then ctx:random_entity(candidates, "buff_beast") end
 end
 
-function card.buff_beast(ctx, self, target) ctx:buff(target, 2, 2) end
+function card.buff_beast(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
 
 return card

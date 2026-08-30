@@ -1,3 +1,3 @@
 local card={api_version=1,id="NEW1_037",name="Master Swordsmith",text="At the end of your turn, give another random friendly minion +1 Attack.",set="EXPERT1",type="minion",rarity="rare",cost=2,attack=1,health=3,triggers={{event="turn_ended",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self then r[#r+1]=e end end;if #r>0 then ctx:random_entity(r,"buff_selected")end end}}}
-function card.buff_selected(ctx,self,target)ctx:buff(target,1,0)end
+function card.buff_selected(ctx,self,target)cardlib.effects.buff(ctx, target,1,0)end
 return card

@@ -19,7 +19,7 @@ return {
                     and ctx:entity(event.entity).type == "minion"
             end,
             effect = function(ctx, self)
-                ctx:buff(self, 1, 0)
+                cardlib.effects.buff(ctx, self, 1, 0)
             end,
         },
     },

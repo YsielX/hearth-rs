@@ -16,7 +16,7 @@ function card.on_play(ctx, self, target)
 end
 
 function card.give_random_minion(ctx, self, card_id)
-    ctx:give_card(ctx:opponent(ctx:controller(self)), card_id)
+    cardlib.effects.give_card(ctx, ctx:opponent(ctx:controller(self)), card_id)
 end
 
 return card

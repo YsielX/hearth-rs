@@ -24,8 +24,8 @@ end
 
 function card.on_battlecry(ctx, self, target)
     if target then
-        ctx:buff(target, 4, 4)
-        ctx:grant_keyword(target, "taunt")
+        cardlib.effects.buff(ctx, target, 4, 4)
+        cardlib.effects.grant_keyword(ctx, target, "taunt")
     end
 end
 

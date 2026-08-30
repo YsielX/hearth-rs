@@ -16,7 +16,7 @@ local card = {
 function card.on_play(ctx, self)
     for _, minion in ipairs(ctx:enemy_minions(self)) do
         -- A zero-stat enchantment is a silenciable, source-specific infection marker.
-        ctx:buff(minion, 0, 0)
+        cardlib.effects.buff(ctx, minion, 0, 0)
     end
 end
 

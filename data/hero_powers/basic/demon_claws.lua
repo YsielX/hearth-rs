@@ -9,6 +9,6 @@ return {
     cost = 1,
     on_play = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:buff_until_end_of_turn(ctx:player(player).hero, 1, 0)
+        cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 1, 0)
     end,
 }

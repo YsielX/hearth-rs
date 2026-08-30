@@ -18,7 +18,7 @@ return {
                 return event.attacker == ctx:player(ctx:controller(self)).hero
             end,
             effect = function(ctx, self, event)
-                ctx:buff(self, 1, 0)
+                cardlib.effects.buff(ctx, self, 1, 0)
             end,
         },
     },

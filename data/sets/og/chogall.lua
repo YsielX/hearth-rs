@@ -19,7 +19,7 @@ function card.on_battlecry(ctx, self)
         if not seen[entity] and ctx:entity(entity).zone == "graveyard" then
             seen[entity] = true
             ctx:move(entity, "hand")
-            ctx:grant_keyword(entity, "costs_health_instead_of_mana")
+            cardlib.effects.grant_keyword(ctx, entity, "costs_health_instead_of_mana")
         end
     end
 end

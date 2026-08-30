@@ -28,7 +28,7 @@ end
 
 function card.on_battlecry(ctx, self, target)
     -- Golden is cosmetic; Battlefield-to-Hand copy semantics use the base card.
-    ctx:give_base_copy(ctx:controller(self), target)
+    cardlib.effects.give_base_copy(ctx, ctx:controller(self), target)
 end
 
 return card

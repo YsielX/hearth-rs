@@ -10,7 +10,7 @@ local card = {
 }
 
 function card.on_combo(ctx, self, target)
-    if target ~= nil then ctx:grant_keyword(target, "poisonous") end
+    if target ~= nil then cardlib.effects.grant_keyword(ctx, target, "poisonous") end
 end
 
 return card

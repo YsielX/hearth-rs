@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_deathrattle(ctx, self)
-    ctx:give_card(ctx:controller(self), "KAR_094a")
+    cardlib.effects.give_card(ctx, ctx:controller(self), "KAR_094a")
 end
 
 card.tokens = {

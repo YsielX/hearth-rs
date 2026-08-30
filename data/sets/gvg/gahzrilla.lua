@@ -20,7 +20,7 @@ return {
                 return event.target == self and event.amount > 0 and ctx:entity(self).health > 0
             end,
             effect = function(ctx, self)
-                ctx:buff(self, ctx:entity(self).attack, 0)
+                cardlib.effects.buff(ctx, self, ctx:entity(self).attack, 0)
             end,
         },
     },

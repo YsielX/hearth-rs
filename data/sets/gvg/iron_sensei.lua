@@ -40,7 +40,7 @@ local card = {
 }
 
 function card.upgrade_mech(ctx, self, target)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
 end
 
 return card

@@ -12,6 +12,6 @@ return {
     tags = { "beast" },
     keywords = { "deathrattle" },
     on_deathrattle = function(ctx, self)
-        ctx:shuffle_entity_into_deck(ctx:opponent(ctx:controller(self)), self)
+        cardlib.effects.shuffle_entity_into_deck(ctx, ctx:opponent(ctx:controller(self)), self)
     end,
 }

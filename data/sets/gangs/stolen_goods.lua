@@ -24,6 +24,6 @@ function card.draw_taunt(ctx, self, entity)
     ctx:continue_with_number("buff_drawn", entity)
 end
 function card.buff_drawn(ctx, self, entity)
-    if ctx:entity(entity).zone == "hand" then ctx:buff(entity, 2, 2) end
+    if ctx:entity(entity).zone == "hand" then cardlib.effects.buff(ctx, entity, 2, 2) end
 end
 return card

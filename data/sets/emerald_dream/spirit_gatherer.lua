@@ -13,7 +13,7 @@ local card = {
 }
 
 function card.on_battlecry(ctx, self)
-    ctx:give_card(ctx:controller(self), "CS2_231")
+    cardlib.effects.give_card(ctx, ctx:controller(self), "CS2_231")
 end
 
 function card.on_imbue(ctx, self)

@@ -13,6 +13,6 @@ return {
         condition = function(ctx, self, event)
             return event.player == ctx:controller(self) and event.entity ~= self and is_mech(ctx, event.entity)
         end,
-        effect = function(ctx, self) ctx:buff(self, 2, 2) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 2, 2) end,
     }},
 }

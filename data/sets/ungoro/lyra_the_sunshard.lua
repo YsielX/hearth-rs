@@ -24,5 +24,5 @@ card.triggers = {{
         if #pool > 0 then ctx:random_value(pool, "add_lyra_spell") end
     end,
 }}
-function card.add_lyra_spell(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function card.add_lyra_spell(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 return card

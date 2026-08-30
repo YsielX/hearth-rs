@@ -34,7 +34,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     ctx:set_data(self, "waiting_for_copy", 1)
-    ctx:give_card(ctx:controller(self), ctx:entity(target).card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(target).card_id)
 end
 
 return card

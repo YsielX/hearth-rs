@@ -19,8 +19,8 @@ local card = {
                     and ctx:entity(event.entity).card_id ~= "GVG_028t"
             end,
             effect = function(ctx, self, event)
-                ctx:give_card(ctx:controller(self), ctx:entity(event.entity).card_id)
-                ctx:give_card(event.player, "GVG_028t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), ctx:entity(event.entity).card_id)
+                cardlib.effects.give_card(ctx, event.player, "GVG_028t")
             end,
         },
     },

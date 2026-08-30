@@ -6,13 +6,13 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:buff(target, 1, 1)
+    cardlib.effects.buff(ctx, target, 1, 1)
     ctx:attach_hook(target, "on_deathrattle", "LOE_105")
-    ctx:grant_keyword(target, "deathrattle")
+    cardlib.effects.grant_keyword(ctx, target, "deathrattle")
 end
 
 function card.on_deathrattle(ctx, self)
-    ctx:give_card(ctx:controller(self), "LOE_105")
+    cardlib.effects.give_card(ctx, ctx:controller(self), "LOE_105")
 end
 
 return card

@@ -28,7 +28,7 @@ function card.on_starship_piece(ctx, self)
     for _, entity in ipairs(ctx:hand(player)) do
         if ctx:entity(entity).card_id == "GDB_100t2" then return end
     end
-    ctx:give_card(player, "GDB_100t2")
+    cardlib.effects.give_card(ctx, player, "GDB_100t2")
 end
 
 card.tokens = {
@@ -71,7 +71,7 @@ card.tokens = {
                 end,
                 effect = function(ctx, self, event)
                     local piece = ctx:entity(event.source)
-                    ctx:buff(self, piece.attack, piece.max_health - 1)
+                    cardlib.effects.buff(ctx, self, piece.attack, piece.max_health - 1)
                     ctx:set_data(self, "starship_pieces", 1)
                     ctx:set_data(self, "starship_armor", 4)
                 end,
@@ -86,7 +86,7 @@ card.tokens = {
                 end,
                 effect = function(ctx, self, event)
                     local piece = ctx:entity(event.entity)
-                    ctx:buff(self, piece.attack, piece.max_health)
+                    cardlib.effects.buff(ctx, self, piece.attack, piece.max_health)
                     ctx:set_data(self, "starship_pieces", ctx:get_data(self, "starship_pieces") + 1)
                     ctx:set_data(self, "starship_armor", ctx:get_data(self, "starship_armor") + 4)
                 end,

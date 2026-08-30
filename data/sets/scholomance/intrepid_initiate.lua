@@ -10,6 +10,6 @@ return {
     health = 2,
     keywords = { "spellburst" },
     on_spellburst = function(ctx, self)
-        ctx:buff(self, 2, 0)
+        cardlib.effects.buff(ctx, self, 2, 0)
     end,
 }

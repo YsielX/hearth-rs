@@ -7,6 +7,6 @@ return {
         condition = function(ctx, self, event)
             return event.player == ctx:controller(self) and ctx:entity(event.entity).type == "minion"
         end,
-        effect = function(ctx, self) ctx:buff(self, 1, 0) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 1, 0) end,
     }},
 }

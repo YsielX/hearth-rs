@@ -14,7 +14,7 @@ local card = {
 }
 
 function card.on_play(ctx, self, target)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
     if #ctx:board(ctx:controller(self)) >= 7 then return end
 
     local pool = {}

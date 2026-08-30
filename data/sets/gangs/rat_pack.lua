@@ -15,7 +15,7 @@ return {
     on_deathrattle = function(ctx, self, position)
         local me = ctx:entity(self)
         local count = math.max(0, me.attack_at_death or me.attack or 0)
-        for _ = 1, count do ctx:summon_at(ctx:controller(self), "CFM_316t", position) end
+        for _ = 1, count do cardlib.effects.summon_at(ctx, ctx:controller(self), "CFM_316t", position) end
     end,
     tokens = {{
         id = "CFM_316t", name = "Rat", text = "", set = "GANGS",

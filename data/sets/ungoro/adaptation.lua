@@ -36,25 +36,25 @@ function card.adapted(ctx, self, adaptation)
     if entity.zone ~= "board" or entity.controller ~= ctx:controller(self) then return end
     if adaptation == "UNG_999t2" then
         ctx:attach_hook(target, "on_deathrattle", "UNG_999t2")
-        ctx:grant_keyword(target, "deathrattle")
+        cardlib.effects.grant_keyword(ctx, target, "deathrattle")
     elseif adaptation == "UNG_999t3" then
-        ctx:buff(target, 3, 0)
+        cardlib.effects.buff(ctx, target, 3, 0)
     elseif adaptation == "UNG_999t4" then
-        ctx:buff(target, 0, 3)
+        cardlib.effects.buff(ctx, target, 0, 3)
     elseif adaptation == "UNG_999t5" then
-        ctx:grant_keyword(target, "elusive")
+        cardlib.effects.grant_keyword(ctx, target, "elusive")
     elseif adaptation == "UNG_999t6" then
-        ctx:grant_keyword(target, "taunt")
+        cardlib.effects.grant_keyword(ctx, target, "taunt")
     elseif adaptation == "UNG_999t7" then
-        ctx:grant_keyword(target, "windfury")
+        cardlib.effects.grant_keyword(ctx, target, "windfury")
     elseif adaptation == "UNG_999t8" then
-        ctx:grant_keyword(target, "divine_shield")
+        cardlib.effects.grant_keyword(ctx, target, "divine_shield")
     elseif adaptation == "UNG_999t10" then
         ctx:grant_keyword_until_next_turn(target, "stealth")
     elseif adaptation == "UNG_999t13" then
-        ctx:grant_keyword(target, "poisonous")
+        cardlib.effects.grant_keyword(ctx, target, "poisonous")
     elseif adaptation == "UNG_999t14" then
-        ctx:buff(target, 1, 1)
+        cardlib.effects.buff(ctx, target, 1, 1)
     end
 end
 
@@ -66,8 +66,8 @@ card.tokens = {
         keywords = { "deathrattle" },
         on_deathrattle = function(ctx, self, position)
             local player = ctx:controller(self)
-            ctx:summon_at(player, "UNG_999t2t1", position)
-            ctx:summon_at(player, "UNG_999t2t1", position)
+            cardlib.effects.summon_at(ctx, player, "UNG_999t2t1", position)
+            cardlib.effects.summon_at(ctx, player, "UNG_999t2t1", position)
         end,
     },
     { id = "UNG_999t3", name = "Flaming Claws", text = "+3 Attack", set = "UNGORO", type = "spell", class = "neutral", cost = 0 },

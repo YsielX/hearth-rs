@@ -5,7 +5,7 @@ return {
     tags = { "beast" }, keywords = { "inspire" },
     on_inspire = function(ctx, self)
         for _, minion in ipairs(ctx:board(ctx:controller(self))) do
-            if minion ~= self then ctx:buff(minion, 1, 1) end
+            if minion ~= self then cardlib.effects.buff(ctx, minion, 1, 1) end
         end
     end,
 }

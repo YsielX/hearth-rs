@@ -20,7 +20,7 @@ end
 function power.chosen(ctx, self, choice)
     local player = ctx:controller(self)
     if choice == 1 then
-        ctx:buff_until_end_of_turn(ctx:player(player).hero, 3, 0)
+        cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
     else
         ctx:gain_armor(player, 3)
     end
@@ -28,7 +28,7 @@ end
 
 function power.on_choose_multiple(ctx, self)
     local player = ctx:controller(self)
-    ctx:buff_until_end_of_turn(ctx:player(player).hero, 3, 0)
+    cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
     ctx:gain_armor(player, 3)
 end
 

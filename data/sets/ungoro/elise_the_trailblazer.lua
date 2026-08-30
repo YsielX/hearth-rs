@@ -12,7 +12,7 @@ function card.on_battlecry(ctx, self)
         seen[id] = true
     end
     ctx:set_data(self, "draw_pack", unique and 1 or 0)
-    ctx:shuffle_card_into_deck(player, "UNG_851t1")
+    cardlib.effects.shuffle_card_into_deck(ctx, player, "UNG_851t1")
 end
 card.triggers = {{
     event = "card_created", timing = "after", active_zones = { "board" },
@@ -35,7 +35,7 @@ function pack.add_pack_card(ctx, self)
     if #pool > 0 and ctx:get_data(self, "cards_left") > 0 then ctx:random_value(pool, "receive_pack_card") end
 end
 function pack.receive_pack_card(ctx, self, id)
-    ctx:give_card(ctx:controller(self), id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), id)
     local left = ctx:get_data(self, "cards_left") - 1
     ctx:set_data(self, "cards_left", left)
     if left > 0 then ctx:continue_with("add_pack_card") end

@@ -5,13 +5,13 @@ local card = {
     keywords = { "battlecry" },
     on_battlecry = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:give_card(player, "EX1_014t"); ctx:give_card(player, "EX1_014t")
+        cardlib.effects.give_card(ctx, player, "EX1_014t"); cardlib.effects.give_card(ctx, player, "EX1_014t")
     end,
 }
 card.tokens = {{
     id = "EX1_014t", name = "Bananas", text = "Give a minion +1/+1.",
     set = "EXPERT1", type = "spell", cost = 1, target_mode = "required",
     targets = function(ctx) return ctx:minions() end,
-    on_play = function(ctx, self, target) ctx:buff(target, 1, 1) end,
+    on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 1) end,
 }}
 return card

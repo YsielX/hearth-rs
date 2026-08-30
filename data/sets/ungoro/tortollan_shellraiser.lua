@@ -8,5 +8,5 @@ function card.on_deathrattle(ctx, self)
     local candidates = ctx:friendly_minions(self)
     if #candidates > 0 then ctx:random_entity(candidates, "buff_shellraiser_friend") end
 end
-function card.buff_shellraiser_friend(ctx, self, target) ctx:buff(target, 1, 1) end
+function card.buff_shellraiser_friend(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 1) end
 return card

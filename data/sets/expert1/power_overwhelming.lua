@@ -14,7 +14,7 @@ local card = {
         return ctx:friendly_minions(self)
     end,
     on_play = function(ctx, self, target)
-        ctx:buff_until_end_of_turn(target, 4, 4)
+        cardlib.effects.buff_until_end_of_turn(ctx, target, 4, 4)
         ctx:attach_script(target, "EX1_316")
     end,
     triggers = { {

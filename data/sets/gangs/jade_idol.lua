@@ -19,7 +19,7 @@ end
 
 local function shuffle_idols(ctx, self)
     local player = ctx:controller(self)
-    for _ = 1, 3 do ctx:shuffle_card_into_deck(player, "CFM_602") end
+    for _ = 1, 3 do cardlib.effects.shuffle_card_into_deck(ctx, player, "CFM_602") end
 end
 
 function card.on_choose_one(ctx, self)
@@ -41,7 +41,7 @@ end
 function card.summon_jade_golem(ctx, self)
     local player = ctx:controller(self)
     local size = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
-    ctx:summon_with_base_stats(player, "CFM_712_t01", size, size)
+    cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", size, size)
 end
 
 return card

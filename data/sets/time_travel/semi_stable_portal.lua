@@ -40,7 +40,7 @@ local function minion_pool(ctx)
 end
 
 local function keep(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 function card.on_rewind(ctx, self)

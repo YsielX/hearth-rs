@@ -7,6 +7,6 @@ return {
         condition = function(ctx, self, event)
             return event.player == ctx:controller(self) and ctx:entity(event.entity).attack == 1
         end,
-        effect = function(ctx, self, event) ctx:buff(event.entity, 2, 2) end,
+        effect = function(ctx, self, event) cardlib.effects.buff(ctx, event.entity, 2, 2) end,
     }},
 }

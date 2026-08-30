@@ -32,7 +32,7 @@ card.tokens = {{
         if #pool > 0 then ctx:random_value(pool, "frozen_champion_chosen") end
     end,
     frozen_champion_chosen = function(ctx, self, card_id)
-        ctx:give_card(ctx:controller(self), card_id)
+        cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
     end,
 }}
 

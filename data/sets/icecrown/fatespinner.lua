@@ -53,7 +53,7 @@ card.tokens = {
         triggers = {{
             event = "transformed", timing = "after", active_zones = { "board" },
             condition = function(ctx, self, event) return event.entity == self end,
-            effect = function(ctx, self) ctx:grant_keyword(self, "deathrattle") end,
+            effect = function(ctx, self) cardlib.effects.grant_keyword(ctx, self, "deathrattle") end,
         }},
         on_deathrattle = function(ctx, self)
             if ctx:get_data(self, "fatespinner_mode") == 2 then growth(ctx) else decay(ctx) end

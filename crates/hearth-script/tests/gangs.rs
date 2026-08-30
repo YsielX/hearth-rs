@@ -174,7 +174,7 @@ local function clear_hand(ctx, self)
 end
 
 local function give_many(ctx, player, cards)
-    for _, card_id in ipairs(cards) do ctx:give_card(player, card_id) end
+    for _, card_id in ipairs(cards) do ctx:create_card(player, card_id) end
 end
 
 return {
@@ -216,7 +216,7 @@ return {
         { id = "TEST_GANGS_BUFF", name = "Buff", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:minions() end,
-          on_play = function(ctx, self, target) ctx:buff(target, 3, 0) end },
+          on_play = function(ctx, self, target) ctx:buff(target, { attack = 3, health = 0 }) end },
         { id = "TEST_GANGS_DAMAGE", name = "Damage", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false, target_mode = "required",
           targets = function(ctx) return ctx:characters() end,
@@ -235,7 +235,7 @@ return {
           end },
         { id = "TEST_GANGS_GENERATE_MURLOC", name = "Generate Murloc", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false,
-          on_play = function(ctx, self) ctx:give_card(ctx:controller(self), "TEST_GANGS_MURLOC") end },
+          on_play = function(ctx, self) ctx:create_card(ctx:controller(self), "TEST_GANGS_MURLOC") end },
         { id = "TEST_GANGS_OVERLOAD", name = "Overload", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = false,
           on_play = function(ctx, self) ctx:overload(ctx:controller(self), 2) end },
@@ -269,7 +269,7 @@ return {
               ctx:summon(ctx:opponent(player), "CFM_670")
               ctx:summon(ctx:opponent(player), "TEST_GANGS_DUMMY")
               ctx:summon(ctx:opponent(player), "TEST_GANGS_DUMMY")
-              ctx:give_card(player, "TEST_GANGS_DAMAGE")
+              ctx:create_card(player, "TEST_GANGS_DAMAGE")
           end },
         { id = "TEST_GANGS_SEADEVIL_SETUP", name = "Seadevil Setup", text = "", set = "TEST", type = "spell",
           cost = 0, collectible = true,
@@ -329,7 +329,7 @@ return {
                   end
               end
               ctx:summon(ctx:opponent(player), "TEST_GANGS_DUMMY")
-              ctx:give_card(player, "CFM_621")
+              ctx:create_card(player, "CFM_621")
           end },
     },
 }

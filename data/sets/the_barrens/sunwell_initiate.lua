@@ -10,6 +10,6 @@ return {
     health = 4,
     keywords = { "frenzy" },
     on_frenzy = function(ctx, self)
-        ctx:grant_keyword(self, "divine_shield")
+        cardlib.effects.grant_keyword(ctx, self, "divine_shield")
     end,
 }

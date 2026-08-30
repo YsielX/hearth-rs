@@ -35,6 +35,6 @@ function card.choose_hand_minion(ctx, self)
     if #candidates > 0 then ctx:random_entity(candidates, "buff_hand_minion") end
 end
 
-function card.buff_hand_minion(ctx, self, target) ctx:buff(target, 2, 2) end
+function card.buff_hand_minion(ctx, self, target) cardlib.effects.buff(ctx, target, 2, 2) end
 
 return card

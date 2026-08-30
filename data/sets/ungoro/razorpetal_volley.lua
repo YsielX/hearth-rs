@@ -4,8 +4,8 @@ return {
     set = "UNGORO", type = "spell", class = "rogue", rarity = "common", spell_school = "nature", cost = 2,
     on_play = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:give_card(player, "UNG_057t1")
-        ctx:give_card(player, "UNG_057t1")
+        cardlib.effects.give_card(ctx, player, "UNG_057t1")
+        cardlib.effects.give_card(ctx, player, "UNG_057t1")
     end,
     tokens = {{
         id = "UNG_057t1", name = "Razorpetal", text = "Deal $2 damage.",

@@ -113,6 +113,24 @@ fn azure_drake_draws_and_provides_spell_damage() {
 }
 
 #[test]
+fn mindgames_copies_an_opponents_deck_minion_without_removing_the_template() {
+    let mut game = game(repeated("EX1_345"), repeated("CS2_120"));
+    advance_to_mana(&mut game, PlayerId::ONE, 4);
+    let opponent_deck_before = game.state().player(PlayerId::TWO).deck.clone();
+
+    play(&mut game, PlayerId::ONE, "EX1_345", None);
+
+    assert_eq!(
+        game.state().player(PlayerId::TWO).deck,
+        opponent_deck_before
+    );
+    let copy = game.state().player(PlayerId::ONE).board[0];
+    let copy = game.state().entity(copy).unwrap();
+    assert_eq!(copy.card_id, "CS2_120");
+    assert_eq!(copy.controller, PlayerId::ONE);
+}
+
+#[test]
 fn sylvanas_takes_a_random_enemy_minion_on_death() {
     let mut game = game(repeated("EX1_016"), mixed(&["CS2_120", "CS2_076"]));
     advance_to_mana(&mut game, PlayerId::TWO, 2);

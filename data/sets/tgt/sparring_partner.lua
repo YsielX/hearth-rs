@@ -4,5 +4,5 @@ return {
     class = "warrior", rarity = "rare", cost = 2, attack = 3, health = 2,
     keywords = { "taunt", "battlecry" }, target_mode = "required",
     targets = function(ctx) return ctx:minions() end,
-    on_battlecry = function(ctx, self, target) ctx:grant_keyword(target, "taunt") end,
+    on_battlecry = function(ctx, self, target) cardlib.effects.grant_keyword(ctx, target, "taunt") end,
 }

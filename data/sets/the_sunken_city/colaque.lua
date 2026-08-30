@@ -15,7 +15,7 @@ local card = {
 }
 
 function card.on_colossal(ctx, self)
-    ctx:summon_at(ctx:controller(self), "TSC_026t", ctx:board_position(self) + 1)
+    cardlib.effects.summon_at(ctx, ctx:controller(self), "TSC_026t", ctx:board_position(self) + 1)
 end
 
 card.tokens = {

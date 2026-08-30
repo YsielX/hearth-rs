@@ -25,7 +25,7 @@ function card.summon_twilight_copy(ctx, self)
     if #pool > 0 then ctx:random_value(pool, "receive_twilight_copy") end
 end
 function card.receive_twilight_copy(ctx, self, id)
-    ctx:summon_with_stats(ctx:controller(self), id, 1, 1)
+    cardlib.effects.summon_with_stats(ctx, ctx:controller(self), id, 1, 1)
     ctx:set_data(self, "twilight_used:" .. id, 1)
     local left = ctx:get_data(self, "twilight_left") - 1; ctx:set_data(self, "twilight_left", left)
     if left > 0 then ctx:continue_with("summon_twilight_copy") end

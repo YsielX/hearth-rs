@@ -16,5 +16,5 @@ return {
         end
         return result
     end,
-    on_play = function(ctx, self, target) ctx:buff(target, 3, 3) end,
+    on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 3, 3) end,
 }

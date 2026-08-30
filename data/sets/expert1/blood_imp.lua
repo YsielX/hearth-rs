@@ -1,3 +1,3 @@
 local card={api_version=1,id="CS2_059",name="Blood Imp",text="[x]  <b>Stealth</b>. At the end of your  \nturn, give another random\n friendly minion +1 Health.",set="EXPERT1",type="minion",class="warlock",rarity="common",cost=1,attack=0,health=1,tags={"demon"},keywords={"stealth"},triggers={{event="turn_ended",timing="after",active_zones={"board"},condition=function(ctx,self,e)return e.player==ctx:controller(self)end,effect=function(ctx,self)local r={};for _,e in ipairs(ctx:friendly_minions(self))do if e~=self then r[#r+1]=e end end;if #r>0 then ctx:random_entity(r,"buff_selected")end end}}}
-function card.buff_selected(ctx,self,target)ctx:buff(target,0,1)end
+function card.buff_selected(ctx,self,target)cardlib.effects.buff(ctx, target,0,1)end
 return card

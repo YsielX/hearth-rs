@@ -29,7 +29,7 @@ local card = {
 
 function card.on_play(ctx, self, target)
     local player = ctx:controller(self)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
     if #ctx:board(player) < 7 then
         ctx:set_data(self, "soulcage_target", target)
         ctx:spend_resource_and_continue(player, "corpses", 5, 5, "summon_soulcage_copy")

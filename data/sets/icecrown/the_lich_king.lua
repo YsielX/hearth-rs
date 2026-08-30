@@ -141,7 +141,7 @@ function death_grip.on_play(ctx, self)
 end
 
 function death_grip.steal_death_grip_minion(ctx, self, entity)
-    ctx:move_to_hand(ctx:controller(self), entity)
+    cardlib.effects.move_to_hand(ctx, ctx:controller(self), entity)
 end
 
 local death_coil = {
@@ -220,8 +220,8 @@ local anti_magic_shell = {
 function anti_magic_shell.on_play(ctx, self)
     for _, minion in ipairs(ctx:friendly_minions(self)) do
         if not is_dormant(ctx, minion) then
-            ctx:buff(minion, 2, 2)
-            ctx:grant_keyword(minion, "elusive")
+            cardlib.effects.buff(ctx, minion, 2, 2)
+            cardlib.effects.grant_keyword(ctx, minion, "elusive")
         end
     end
 end
@@ -286,7 +286,7 @@ local card = {
 }
 
 function card.receive_lich_king_card(ctx, self, card_id)
-    ctx:give_card(ctx:controller(self), card_id)
+    cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
 end
 
 return card

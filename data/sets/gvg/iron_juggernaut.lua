@@ -1,5 +1,5 @@
 local function shuffle_mine(ctx, self)
-    ctx:shuffle_card_into_deck(ctx:opponent(ctx:controller(self)), "GVG_056t")
+    cardlib.effects.shuffle_card_into_deck(ctx, ctx:opponent(ctx:controller(self)), "GVG_056t")
 end
 
 local card = {

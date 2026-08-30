@@ -30,7 +30,7 @@ function card.on_deathrattle(ctx, self)
 end
 
 function card.buff_mech(ctx, self, target)
-    ctx:buff(target, 2, 2)
+    cardlib.effects.buff(ctx, target, 2, 2)
 end
 
 return card

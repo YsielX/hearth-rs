@@ -14,7 +14,7 @@ return {
             active_zones = { "board" },
             condition = function(ctx, self, event) return event.attacker == self end,
             effect = function(ctx, self, event)
-                ctx:give_card(ctx:controller(self), "TTN_812t")
+                cardlib.effects.give_card(ctx, ctx:controller(self), "TTN_812t")
             end,
         },
     },

@@ -16,7 +16,7 @@ local function buff(ctx, self)
         for _, keyword in ipairs(entity.keywords) do
             if keyword == "dormant" then dormant = true break end
         end
-        if entity.type == "minion" and not dormant then ctx:buff(minion, 2, 2) end
+        if entity.type == "minion" and not dormant then cardlib.effects.buff(ctx, minion, 2, 2) end
     end
 end
 

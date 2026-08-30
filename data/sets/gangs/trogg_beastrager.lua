@@ -30,6 +30,6 @@ function card.on_battlecry(ctx, self)
     if #candidates > 0 then ctx:random_entity(candidates, "buff_beast") end
 end
 
-function card.buff_beast(ctx, self, target) ctx:buff(target, 1, 1) end
+function card.buff_beast(ctx, self, target) cardlib.effects.buff(ctx, target, 1, 1) end
 
 return card

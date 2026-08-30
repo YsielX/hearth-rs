@@ -8,5 +8,5 @@ local card = {
 local function part(ctx) ctx:random_value(parts, "receive_part") end
 function card.on_battlecry(ctx, self) part(ctx) end
 function card.on_deathrattle(ctx, self) part(ctx) end
-function card.receive_part(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function card.receive_part(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 return card

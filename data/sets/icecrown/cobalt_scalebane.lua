@@ -17,6 +17,6 @@ card.triggers = {{
     end,
 }}
 
-function card.cobalt_scalebane_chosen(ctx, self, target) ctx:buff(target, 3, 0) end
+function card.cobalt_scalebane_chosen(ctx, self, target) cardlib.effects.buff(ctx, target, 3, 0) end
 
 return card

@@ -5,6 +5,6 @@ return {
     triggers = {{
         event = "card_discarded", timing = "after", active_zones = { "board" },
         condition = function(ctx, self, event) return event.player == ctx:controller(self) end,
-        effect = function(ctx, self) ctx:buff(self, 2, 1) end,
+        effect = function(ctx, self) cardlib.effects.buff(ctx, self, 2, 1) end,
     }},
 }

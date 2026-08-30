@@ -17,5 +17,5 @@ function card.on_battlecry(ctx, self)
     end
     if #pool > 0 then ctx:discover_cards(ctx:controller(self), "Choose a Kabal card", pool, 3, "receive_kabal_card") end
 end
-function card.receive_kabal_card(ctx, self, id) ctx:give_card(ctx:controller(self), id) end
+function card.receive_kabal_card(ctx, self, id) cardlib.effects.give_card(ctx, ctx:controller(self), id) end
 return card

@@ -32,7 +32,7 @@ function card.on_battlecry(ctx, self)
     local player = ctx:controller(self)
     local opponent = ctx:opponent(player)
     ctx:exchange_zone_contents(player, opponent, "deck")
-    ctx:give_card(opponent, "LOOT_541t")
+    cardlib.effects.give_card(ctx, opponent, "LOOT_541t")
 end
 
 return card

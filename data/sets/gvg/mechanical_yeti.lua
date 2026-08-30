@@ -9,6 +9,6 @@ function card.on_deathrattle(ctx, self)
     ctx:random_value(parts, "give_owner_part")
     ctx:random_value(parts, "give_opponent_part")
 end
-function card.give_owner_part(ctx, self, part) ctx:give_card(ctx:controller(self), part) end
-function card.give_opponent_part(ctx, self, part) ctx:give_card(ctx:opponent(ctx:controller(self)), part) end
+function card.give_owner_part(ctx, self, part) cardlib.effects.give_card(ctx, ctx:controller(self), part) end
+function card.give_opponent_part(ctx, self, part) cardlib.effects.give_card(ctx, ctx:opponent(ctx:controller(self)), part) end
 return card

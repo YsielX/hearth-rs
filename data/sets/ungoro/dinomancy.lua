@@ -15,4 +15,4 @@ return { api_version = 1, id = "UNG_917", name = "Dinomancy",
             for _, minion in ipairs(ctx:friendly_minions(self)) do if is_beast(ctx, minion) then result[#result + 1] = minion end end
             return result
         end,
-        on_play = function(ctx, self, target) ctx:buff(target, 3, 3) end }} }
+        on_play = function(ctx, self, target) cardlib.effects.buff(ctx, target, 3, 3) end }} }

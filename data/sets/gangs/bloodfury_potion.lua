@@ -12,7 +12,7 @@ local function demon(definition)
     return false
 end
 function card.on_play(ctx, self, target)
-    if demon(ctx:card_definition(ctx:entity(target).card_id)) then ctx:buff(target, 3, 3)
-    else ctx:buff(target, 3, 0) end
+    if demon(ctx:card_definition(ctx:entity(target).card_id)) then cardlib.effects.buff(ctx, target, 3, 3)
+    else cardlib.effects.buff(ctx, target, 3, 0) end
 end
 return card

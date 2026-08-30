@@ -15,5 +15,5 @@ return {
         end
         return result
     end,
-    on_battlecry = function(ctx, self, target) if target then ctx:buff(target, 2, 2) end end,
+    on_battlecry = function(ctx, self, target) if target then cardlib.effects.buff(ctx, target, 2, 2) end end,
 }

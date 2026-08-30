@@ -4,7 +4,7 @@ return {
     set = "ICECROWN", type = "spell", class = "druid", rarity = "common", cost = 3,
     on_play = function(ctx, self)
         local player = ctx:controller(self)
-        ctx:buff_until_end_of_turn(ctx:player(player).hero, 3, 0)
+        cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
         ctx:gain_armor(player, 3)
     end,
 }
