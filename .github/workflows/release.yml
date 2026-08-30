@@ -1,0 +1,87 @@
+name: Release native clients
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x86_64
+          - os: windows-latest
+            platform: windows-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@1.97.0
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes pkg-config libx11-dev libxi-dev libxkbcommon-dev
+
+      - name: Build CLI and graphical client
+        run: cargo build --locked --release -p hearth-cli -p hearth-client-bevy
+
+      - name: Package Linux bundle
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          bundle="hearth-rs-${GITHUB_REF_NAME}-linux-x86_64"
+          mkdir -p "dist/${bundle}"
+          cp target/release/hearth-cli target/release/hearth-client-bevy "dist/${bundle}/"
+          strip "dist/${bundle}/hearth-cli" "dist/${bundle}/hearth-client-bevy"
+          cp -R data decks "dist/${bundle}/"
+          cp README.md README.zhCN.md README.zhTW.md "dist/${bundle}/"
+          tar -C dist -czf "dist/${bundle}.tar.gz" "${bundle}"
+          cd dist
+          sha256sum "${bundle}.tar.gz" > "${bundle}.tar.gz.sha256"
+
+      - name: Package Windows bundle
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $bundle = "hearth-rs-$env:GITHUB_REF_NAME-windows-x86_64"
+          New-Item -ItemType Directory -Force "dist/$bundle" | Out-Null
+          Copy-Item target/release/hearth-cli.exe,target/release/hearth-client-bevy.exe "dist/$bundle/"
+          Copy-Item -Recurse data,decks "dist/$bundle/"
+          Copy-Item README.md,README.zhCN.md,README.zhTW.md "dist/$bundle/"
+          Compress-Archive -Path "dist/$bundle" -DestinationPath "dist/$bundle.zip"
+          $hash = (Get-FileHash "dist/$bundle.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $bundle.zip" | Set-Content -NoNewline "dist/$bundle.zip.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hearth-rs-${{ matrix.platform }}
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          path: release-assets
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v3
+        with:
+          name: hearth-rs ${{ github.ref_name }}
+          generate_release_notes: true
+          files: release-assets/*

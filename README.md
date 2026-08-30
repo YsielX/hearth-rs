@@ -128,7 +128,7 @@ Restart the process and the recursive loader discovers it. As long as the effect
 
 ## Running a game
 
-Rust 1.88 or newer is required. Lua 5.4 is built through `mlua`'s `vendored` feature.
+Rust 1.95 or newer is required. Lua 5.4 is built through `mlua`'s `vendored` feature.
 
 ```bash
 cargo run -p hearth-cli -- play \

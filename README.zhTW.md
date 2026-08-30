@@ -112,7 +112,7 @@ return {
 
 ## 執行
 
-需要 Rust 1.88 或更新版本。Lua 5.4 由 `mlua` 的 `vendored` 功能構建。
+需要 Rust 1.95 或更新版本。Lua 5.4 由 `mlua` 的 `vendored` 功能構建。
 
 ```bash
 cargo run -p hearth-cli -- play \

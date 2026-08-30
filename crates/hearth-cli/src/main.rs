@@ -579,7 +579,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn parse_options() -> Result<Option<CliInvocation>, Box<dyn Error>> {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let root = hearth_app::runtime_root();
     let mut args = env::args().skip(1).peekable();
     let Some(command) = args.next() else {
         print_usage();

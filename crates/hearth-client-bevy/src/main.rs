@@ -273,7 +273,7 @@ struct LaunchOptions {
 }
 
 fn main() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let root = hearth_app::runtime_root();
     let options = match parse_config(&root) {
         Ok(options) => options,
         Err(message) => {

@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use thiserror::Error;
 
@@ -19,6 +19,25 @@ pub use match_session::{
 // Compatibility module aliases for callers that used the first shared-text
 // extraction before presentation became its own namespace.
 pub use presentation::{command_text, event_text};
+
+/// Locates the repository-shaped runtime bundle used by both native clients.
+///
+/// Release archives place the executables beside `data/` and `decks/`. During
+/// development and tests those directories live at the workspace root, so the
+/// compile-time path remains a fallback rather than leaking into release use.
+pub fn runtime_root() -> PathBuf {
+    runtime_root_from(std::env::current_exe().ok().as_deref())
+}
+
+fn runtime_root_from(executable: Option<&Path>) -> PathBuf {
+    if let Some(root) = executable.and_then(Path::parent)
+        && root.join("data").is_dir()
+        && root.join("decks").is_dir()
+    {
+        return root.to_owned();
+    }
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
+}
 
 #[derive(Debug, Error)]
 pub enum AppError {
