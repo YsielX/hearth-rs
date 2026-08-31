@@ -50,7 +50,11 @@ function power.first_beast(ctx, self, first)
                 local options = {}
                 for _, choice in ipairs(choices) do
                     local definition = ctx:card_definition(choice.second)
-                    options[#options + 1] = { label = definition.name, value = choice }
+                    options[#options + 1] = {
+                        label = definition.name,
+                        card_id = choice.second,
+                        value = choice,
+                    }
                 end
                 return options
             end)(),

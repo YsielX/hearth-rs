@@ -30,6 +30,7 @@ pub struct ActionObservation {
     pub board_position: Option<u8>,
     pub mana_cost: u8,
     pub card_action: Option<String>,
+    pub semantic_card_id: Option<String>,
     pub choice_index: Option<u16>,
 }
 
@@ -48,6 +49,7 @@ pub(crate) fn encode_action(
         board_position: None,
         mana_cost: action.mana_cost,
         card_action: None,
+        semantic_card_id: action.semantic_card_id.clone(),
         choice_index: None,
     };
     match &action.command {

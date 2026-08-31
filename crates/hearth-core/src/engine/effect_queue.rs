@@ -216,6 +216,8 @@ impl<R: CardRuntime> Game<R> {
                         ChoiceOption {
                             label: format!("{} [{}]", definition.name, card_id),
                             value: crate::ChoiceValue::Card(card_id.clone()),
+                            public_card_id: None,
+                            public_card_ids: Vec::new(),
                         }
                     })
                     .collect();
@@ -296,6 +298,8 @@ impl<R: CardRuntime> Game<R> {
                         ChoiceOption {
                             label: entity_state.name.clone(),
                             value: crate::ChoiceValue::Entity(*entity),
+                            public_card_id: None,
+                            public_card_ids: Vec::new(),
                         }
                     })
                     .collect();

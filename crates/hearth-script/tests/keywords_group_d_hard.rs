@@ -97,6 +97,23 @@ fn rewind_semi_stable_portal_can_keep_or_reroll_a_reduced_random_minion() {
             game.state().pending_input.as_ref().unwrap().options.len(),
             2
         );
+        let public_choice = game
+            .state()
+            .player_view(PlayerId::ONE)
+            .pending_input
+            .unwrap();
+        assert_eq!(public_choice.options[0].semantic_card_ids.len(), 2);
+        assert_eq!(public_choice.options[1].semantic_card_ids.len(), 2);
+        assert!(
+            public_choice.options[0]
+                .semantic_card_ids
+                .contains(&"TIME_000ta".to_owned())
+        );
+        assert!(
+            public_choice.options[1]
+                .semantic_card_ids
+                .contains(&"TIME_000tb".to_owned())
+        );
         game.dispatch(PlayerCommand::Choose { index: choice })
             .unwrap();
         let generated = game

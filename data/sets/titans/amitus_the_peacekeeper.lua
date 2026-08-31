@@ -34,6 +34,12 @@ local function set_to_two(ctx, entity)
     cardlib.effects.modify(ctx, entity, { stat = "health", operation = "set", value = 2 })
 end
 
+card.action_semantic_cards = {
+    titan_1 = "TTN_858t1",
+    titan_2 = "TTN_858t2",
+    titan_3 = "TTN_858t3",
+}
+
 card.action_effects = {
     titan_1 = function(ctx, self)
         local player = ctx:controller(self)
@@ -64,6 +70,24 @@ card.action_effects = {
             if ctx:entity(entity).type == "minion" then set_to_two(ctx, entity) end
         end
     end,
+}
+
+card.tokens = {
+    {
+        id = "TTN_858t1", name = "Reinforced",
+        text = "Draw 2 minions. Set their Attack, Health, and Cost to 2.",
+        set = "TITANS", type = "spell", class = "paladin", collectible = false, cost = 0,
+    },
+    {
+        id = "TTN_858t2", name = "Empowered",
+        text = "Give your other\nminions +2/+2.",
+        set = "TITANS", type = "spell", class = "paladin", collectible = false, cost = 0,
+    },
+    {
+        id = "TTN_858t3", name = "Pacified",
+        text = "Set the Attack and Health of all enemy minions to 2.",
+        set = "TITANS", type = "spell", class = "paladin", collectible = false, cost = 0,
+    },
 }
 
 return card

@@ -28,6 +28,7 @@ pub struct EntityView {
     pub location_cooldown: u8,
     pub keywords: Vec<String>,
     pub silenced: bool,
+    pub public_cards: Vec<CardId>,
 }
 
 impl EntityView {
@@ -51,6 +52,7 @@ impl EntityView {
             location_cooldown: entity.location_cooldown,
             keywords: entity.keywords.clone(),
             silenced: entity.silenced,
+            public_cards: entity.public_cards.clone(),
         }
     }
 
@@ -128,6 +130,7 @@ pub enum ChoiceOptionValueView {
 pub struct ChoiceOptionView {
     pub label: String,
     pub value: ChoiceOptionValueView,
+    pub semantic_card_ids: Vec<CardId>,
 }
 
 impl fmt::Display for ChoiceOptionView {
@@ -267,26 +270,36 @@ impl GameState {
                     .iter()
                     .map(|option| ChoiceOptionView {
                         label: option.label.clone(),
-                        value: match &option.value {
-                            ChoiceValue::Entity(entity_id) => self
-                                .entity(*entity_id)
-                                .map(|entity| {
-                                    ChoiceOptionValueView::Entity(PublicEntity {
-                                        id: *entity_id,
-                                        card_id: entity.card_id.clone(),
+                        semantic_card_ids: option
+                            .public_card_id
+                            .iter()
+                            .chain(option.public_card_ids.iter())
+                            .cloned()
+                            .collect(),
+                        value: if let Some(card_id) = &option.public_card_id {
+                            ChoiceOptionValueView::Card(card_id.clone())
+                        } else {
+                            match &option.value {
+                                ChoiceValue::Entity(entity_id) => self
+                                    .entity(*entity_id)
+                                    .map(|entity| {
+                                        ChoiceOptionValueView::Entity(PublicEntity {
+                                            id: *entity_id,
+                                            card_id: entity.card_id.clone(),
+                                        })
                                     })
-                                })
-                                .unwrap_or(ChoiceOptionValueView::Opaque),
-                            ChoiceValue::Card(card_id) => {
-                                ChoiceOptionValueView::Card(card_id.clone())
+                                    .unwrap_or(ChoiceOptionValueView::Opaque),
+                                ChoiceValue::Card(card_id) => {
+                                    ChoiceOptionValueView::Card(card_id.clone())
+                                }
+                                ChoiceValue::Number(_)
+                                | ChoiceValue::Integer(_)
+                                | ChoiceValue::Nil
+                                | ChoiceValue::Boolean(_)
+                                | ChoiceValue::Text(_)
+                                | ChoiceValue::List(_)
+                                | ChoiceValue::Object(_) => ChoiceOptionValueView::Opaque,
                             }
-                            ChoiceValue::Number(_)
-                            | ChoiceValue::Integer(_)
-                            | ChoiceValue::Nil
-                            | ChoiceValue::Boolean(_)
-                            | ChoiceValue::Text(_)
-                            | ChoiceValue::List(_)
-                            | ChoiceValue::Object(_) => ChoiceOptionValueView::Opaque,
                         },
                     })
                     .collect(),

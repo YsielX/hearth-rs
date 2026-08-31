@@ -91,8 +91,17 @@ class HearthQNetwork(nn.Module):
     def _encode_state(
         self, batch: dict[str, torch.Tensor]
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        entity = self.encode_card(batch["entity_cards"]) + self.entity_state(
-            batch["entity_state"]
+        public_card_values = self.encode_card(batch["entity_public_cards"])
+        public_card_weights = batch["entity_public_card_mask"].to(
+            public_card_values.dtype
+        ).unsqueeze(-1)
+        # Keep multiplicity: two identical Starship pieces are semantically
+        # different from one even though their mean embedding is identical.
+        public_card_context = (public_card_values * public_card_weights).sum(2)
+        entity = (
+            self.encode_card(batch["entity_cards"])
+            + self.entity_state(batch["entity_state"])
+            + public_card_context
         )
         entity = self.entity_encoder(entity, src_key_padding_mask=~batch["entity_mask"])
         entity_context = self._masked_mean(entity, batch["entity_mask"])
@@ -153,6 +162,14 @@ class HearthQNetwork(nn.Module):
         has_target = batch["action_targets"].ge(0).unsqueeze(-1)
         target_context = target_context * has_target
 
+        action_card_values = self.encode_card(batch["action_semantic_cards"])
+        action_card_weights = batch["action_semantic_card_mask"].to(
+            action_card_values.dtype
+        ).unsqueeze(-1)
+        action_card_context = (action_card_values * action_card_weights).sum(
+            2
+        ) / action_card_weights.sum(2).clamp_min(1)
+
         action = torch.cat(
             [
                 context.unsqueeze(1).expand(-1, action_count, -1),
@@ -160,7 +177,7 @@ class HearthQNetwork(nn.Module):
                 self.action_numeric(batch["action_numeric"]),
                 source_context,
                 target_context,
-                self.encode_card(batch["action_choice_cards"]),
+                action_card_context,
             ],
             dim=-1,
         )

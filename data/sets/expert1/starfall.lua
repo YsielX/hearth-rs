@@ -15,15 +15,15 @@ local card = {
 function card.on_choose_one(ctx, self)
     local options = {}
     if #ctx:minions() > 0 then
-        options[#options + 1] = { label = "Deal 5 damage to a minion", value = 1 }
+        options[#options + 1] = { card_id = "NEW1_007b", label = "Deal 5 damage to a minion" }
     end
     -- The area-damage mode remains a legal choice even on an empty board.
-    options[#options + 1] = { label = "Deal 2 damage to all enemy minions", value = 2 }
+    options[#options + 1] = { card_id = "NEW1_007a", label = "Deal 2 damage to all enemy minions" }
     ctx:choose_options(ctx:controller(self), "Choose One", options, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then
+    if choice == "NEW1_007b" then
         ctx:choose_entities(ctx:controller(self), "Choose a minion", ctx:minions(), "hit_selected")
     else
         cardlib.effects.damage_all(ctx, ctx:enemy_minions(self), 2)
@@ -41,5 +41,10 @@ function card.on_choose_multiple(ctx, self)
         ctx:choose_entities(ctx:controller(self), "Choose a minion", minions, "hit_selected")
     end
 end
+
+card.tokens = {
+    { id = "NEW1_007a", spell_school = "arcane", name = "Stellar Drift", text = "Deal $2 damage to all enemy minions.", set = "EXPERT1", type = "spell", class = "druid", collectible = false, cost = 5 },
+    { id = "NEW1_007b", spell_school = "arcane", name = "Starlord", text = "Deal $5 damage to a minion.", set = "EXPERT1", type = "spell", class = "druid", collectible = false, cost = 5 },
+}
 
 return card

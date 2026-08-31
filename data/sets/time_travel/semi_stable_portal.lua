@@ -50,8 +50,18 @@ end
 function card.portal_roll(ctx, self, card_id)
     local name = ctx:card_definition(card_id).name
     ctx:choose_options(ctx:controller(self), "Keep this timeline or Rewind?", {
-        { label = "Keep: " .. name, value = { action = "keep", card = card_id } },
-        { label = "Rewind", value = { action = "rewind" } },
+        {
+            label = "Keep: " .. name,
+            card_id = card_id,
+            card_ids = { "TIME_000ta" },
+            value = { action = "keep", card = card_id },
+        },
+        {
+            label = "Rewind",
+            card_id = "TIME_000tb",
+            card_ids = { card_id },
+            value = { action = "rewind" },
+        },
     }, "portal_choice")
 end
 
@@ -66,5 +76,20 @@ end
 function card.portal_rewound(ctx, self, card_id)
     keep(ctx, self, card_id)
 end
+
+card.tokens = {
+    {
+        id = "TIME_000ta", name = "Keep Timeline",
+        text = "Do nothing.\n<i>This timeline is\nperfect as-is!</i>",
+        set = "TIME_TRAVEL", type = "spell", class = "neutral",
+        collectible = false, cost = 0,
+    },
+    {
+        id = "TIME_000tb", name = "Rewind Timeline",
+        text = "<b>Rewind</b> the card's effect.",
+        set = "TIME_TRAVEL", type = "spell", class = "neutral",
+        collectible = false, cost = 0,
+    },
+}
 
 return card

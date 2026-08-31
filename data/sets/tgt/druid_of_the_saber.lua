@@ -7,13 +7,13 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Transform into a 2/1 with Charge", value = 1 },
-        { label = "Transform into a 3/2 with Stealth", value = 2 },
+        { card_id = "AT_042a", label = "Transform into a 2/1 with Charge" },
+        { card_id = "AT_042b", label = "Transform into a 3/2 with Stealth" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    cardlib.effects.transform(ctx, self, choice == 1 and "AT_042t" or "AT_042t2")
+    cardlib.effects.transform(ctx, self, choice == "AT_042a" and "AT_042t" or "AT_042t2")
 end
 
 function card.on_choose_multiple(ctx, self) cardlib.effects.transform(ctx, self, "OG_044c") end

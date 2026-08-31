@@ -770,6 +770,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Danny Dai",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 2789,
+    "id": "AT_037a",
+    "name": "缠人根须",
+    "set": "TGT",
+    "spellSchool": "NATURE",
+    "text": "造成$2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ware Li",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 2791,
+    "id": "AT_037b",
+    "name": "并蒂树苗",
+    "set": "TGT",
+    "spellSchool": "NATURE",
+    "text": "召唤两个1/1的树苗。",
+    "type": "SPELL"
+  },
+  {
     "attack": 1,
     "cardClass": "DRUID",
     "cost": 1,
@@ -3253,6 +3277,40 @@
     "type": "MINION"
   },
   {
+    "attack": 5,
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2293,
+    "health": 2,
+    "id": "BRM_010a",
+    "name": "火焰猎豹形态",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "BRM",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2294,
+    "health": 5,
+    "id": "BRM_010b",
+    "name": "火鹰形态",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "BRM",
+    "type": "MINION"
+  },
+  {
     "artist": "Ben Zhang",
     "attack": 5,
     "cardClass": "DRUID",
@@ -4427,6 +4485,28 @@
     "type": "MINION"
   },
   {
+    "artist": "Jon Neimeister",
+    "cardClass": "DRUID",
+    "cost": 10,
+    "dbfId": 41958,
+    "id": "CFM_308a",
+    "name": "遗忘护甲",
+    "set": "GANGS",
+    "text": "获得10点护甲值。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jon Neimeister",
+    "cardClass": "DRUID",
+    "cost": 10,
+    "dbfId": 41959,
+    "id": "CFM_308b",
+    "name": "遗忘法力",
+    "set": "GANGS",
+    "text": "复原你的法力水晶。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Mike Sass",
     "cardClass": "SHAMAN",
     "collectible": true,
@@ -4929,6 +5009,31 @@
     ],
     "set": "GANGS",
     "text": "<b>抉择：</b>召唤一个{0}的<b>青玉魔像</b>；或者将该牌的三张复制洗入你的牌库。0<b>抉择：</b>召唤一个<b>青玉魔像</b>；或者将该牌的三张复制洗入你的\n牌库。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 41409,
+    "id": "CFM_602a",
+    "name": "雕琢玉像",
+    "referencedTags": [
+      "JADE_GOLEM"
+    ],
+    "set": "GANGS",
+    "text": "召唤一个{0}的<b>青玉魔像</b>。0召唤一个<b>青玉魔像</b>。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 41408,
+    "id": "CFM_602b",
+    "name": "青玉秘藏",
+    "set": "GANGS",
+    "text": "将三张“青玉护符”洗入你的\n牌库。",
     "type": "SPELL"
   },
   {
@@ -11824,6 +11929,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 253,
+    "id": "EX1_154a",
+    "name": "阳炎之怒",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "对一个随从造成$3点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 137,
+    "id": "EX1_154b",
+    "name": "自然之怒",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "对一个随从造成$1点伤害，抽一张牌。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Clint Langley",
     "cardClass": "DRUID",
     "collectible": true,
@@ -11842,6 +11971,31 @@
     "set": "EXPERT1",
     "spellSchool": "NATURE",
     "text": "<b>抉择：</b>\n使一个随从获得+4攻击力；或者+4生命值和<b>嘲讽</b>。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 468,
+    "id": "EX1_155a",
+    "name": "猛虎之怒",
+    "set": "EXPERT1",
+    "text": "使一个随从获得+4攻击力。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 690,
+    "id": "EX1_155b",
+    "name": "皮糙肉厚",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "使一个随从获得+4生命值和\n<b>嘲讽</b>。",
     "type": "SPELL"
   },
   {
@@ -11888,6 +12042,28 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>抉择：</b>使你的所有随从获得+1/+1；或者召唤一只3/2的\n猎豹。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "MAR Studio",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 60,
+    "id": "EX1_160a",
+    "name": "召唤猎豹",
+    "set": "EXPERT1",
+    "text": "召唤一只3/2的猎豹。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "MAR Studio",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 835,
+    "id": "EX1_160b",
+    "name": "兽群领袖",
+    "set": "EXPERT1",
+    "text": "使你所有的随从获得+1/+1。",
     "type": "SPELL"
   },
   {
@@ -11965,6 +12141,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Konstantin Turovec",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 451,
+    "id": "EX1_164a",
+    "name": "快速生长",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "获得两个法力水晶。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 325,
+    "id": "EX1_164b",
+    "name": "摄取养分",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "抽三张牌。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Luca Zontini",
     "attack": 4,
     "cardClass": "DRUID",
@@ -11985,6 +12185,46 @@
     ],
     "set": "EXPERT1",
     "text": "<b>抉择：</b>变形成为7/6并具有<b>突袭</b>；或者变形成为4/9并具有<b>嘲讽</b>。",
+    "type": "MINION"
+  },
+  {
+    "attack": 7,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 63,
+    "health": 6,
+    "id": "EX1_165a",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "猎豹形态",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>突袭</b>",
+    "type": "MINION"
+  },
+  {
+    "attack": 4,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 99,
+    "health": 9,
+    "id": "EX1_165b",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "熊形态",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>嘲讽</b>",
     "type": "MINION"
   },
   {
@@ -12048,6 +12288,29 @@
     "set": "EXPERT1",
     "text": "<b>抉择：</b>造成2点伤害；或者<b>沉默</b>一个随从。",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 987,
+    "id": "EX1_166a",
+    "name": "月火术",
+    "set": "EXPERT1",
+    "text": "造成2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 321,
+    "id": "EX1_166b",
+    "mechanics": [
+      "SILENCE"
+    ],
+    "name": "禁魔",
+    "set": "EXPERT1",
+    "text": "<b>沉默</b>一个随从。",
+    "type": "SPELL"
   },
   {
     "artist": "Doug Alexander",
@@ -12124,6 +12387,29 @@
     "set": "EXPERT1",
     "text": "<b>抉择：</b>\n+5攻击力；或者+5生命值并具有<b>嘲讽</b>。",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 578,
+    "id": "EX1_178a",
+    "name": "扎根",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "+5生命值并具有<b>嘲讽</b>。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 182,
+    "id": "EX1_178b",
+    "name": "拔根",
+    "set": "EXPERT1",
+    "text": "+5攻击力。",
+    "type": "SPELL"
   },
   {
     "artist": "Daarken",
@@ -14358,6 +14644,29 @@
     "set": "EXPERT1",
     "text": "<b>抉择：</b>使你的所有其他随从获得+2/+2；或者召唤两个2/2并具有<b>嘲讽</b>的树人。",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 1145,
+    "id": "EX1_573a",
+    "name": "半神的恩赐",
+    "set": "EXPERT1",
+    "text": "使你的所有其他随从获得+2/+2。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 364,
+    "id": "EX1_573b",
+    "name": "恩师的教诲",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "召唤两个2/2并具有<b>嘲讽</b>的树人。",
+    "type": "SPELL"
   },
   {
     "attack": 2,
@@ -16767,6 +17076,26 @@
     "type": "MINION"
   },
   {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 2195,
+    "id": "GVG_030a",
+    "name": "攻击模式",
+    "set": "GVG",
+    "text": "+1攻击力。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 2197,
+    "id": "GVG_030b",
+    "name": "坦克模式",
+    "set": "GVG",
+    "text": "+1生命值。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Efrem Palacios",
     "cardClass": "DRUID",
     "collectible": true,
@@ -16799,6 +17128,26 @@
     "set": "GVG",
     "text": "<b>抉择：</b>使每个玩家获得一个法力水晶；或每个玩家抽一张牌。",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2226,
+    "id": "GVG_032a",
+    "name": "水晶赠礼",
+    "set": "GVG",
+    "text": "使每个玩家获得一个法力水晶。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2227,
+    "id": "GVG_032b",
+    "name": "卡牌赠礼",
+    "set": "GVG",
+    "text": "每个玩家抽一张牌。",
+    "type": "SPELL"
   },
   {
     "artist": "Steve Prescott",
@@ -16995,6 +17344,33 @@
     "set": "GVG",
     "spellSchool": "NATURE",
     "text": "<b>抉择：</b>\n召唤5个小精灵；或者使一个随从获得+5/+5和<b>嘲讽</b>。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 2176,
+    "id": "GVG_041a",
+    "name": "守护者的呼唤",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "GVG",
+    "spellSchool": "NATURE",
+    "text": "+5/+5并具有<b>嘲讽</b>。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 2177,
+    "id": "GVG_041b",
+    "name": "大自然的防线",
+    "set": "GVG",
+    "spellSchool": "NATURE",
+    "text": "召唤5个小精灵。",
     "type": "SPELL"
   },
   {
@@ -22230,6 +22606,32 @@
     "type": "HERO"
   },
   {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 45303,
+    "id": "ICC_832a",
+    "name": "甲虫瘟疫",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "ICECROWN",
+    "text": "召唤两只1/5并具有<b>嘲讽</b>的\n甲虫。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 45300,
+    "id": "ICC_832b",
+    "name": "蜘蛛瘟疫",
+    "referencedTags": [
+      "POISONOUS"
+    ],
+    "set": "ICECROWN",
+    "text": "召唤两只1/2并具有<b>剧毒</b>的\n蜘蛛。",
+    "type": "SPELL"
+  },
+  {
     "cardClass": "NEUTRAL",
     "cost": 2,
     "dbfId": 43182,
@@ -22241,6 +22643,26 @@
     "set": "ICECROWN",
     "text": "<b>抉择：</b>在本回合中获得+$a3攻击力；或者获得+$d3点护甲值。",
     "type": "HERO_POWER"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 46050,
+    "id": "ICC_832pa",
+    "name": "甲虫硬壳",
+    "set": "ICECROWN",
+    "text": "+$d3护甲值。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 46051,
+    "id": "ICC_832pb",
+    "name": "蜘蛛毒牙",
+    "set": "ICECROWN",
+    "text": "+$a3攻击力。",
+    "type": "SPELL"
   },
   {
     "artist": "Slawomir Maniak",
@@ -25281,6 +25703,34 @@
     "type": "SPELL"
   },
   {
+    "artist": "A. J. Nazzaro",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 38112,
+    "id": "LOE_115a",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "冲破束缚",
+    "set": "LOE",
+    "text": "<b>发现</b>一张随从牌。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "A. J. Nazzaro",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 38113,
+    "id": "LOE_115b",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "梦醒时分",
+    "set": "LOE",
+    "text": "<b>发现</b>一张法术牌。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Wayne Reynolds",
     "attack": 1,
     "cardClass": "WARLOCK",
@@ -28185,6 +28635,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 1161,
+    "id": "NEW1_007a",
+    "name": "星辰漂流",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "对所有敌方随从造成$2点伤害。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 928,
+    "id": "NEW1_007b",
+    "name": "星辰领主",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "对一个随从造成$5点伤害。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Patrik Hjelm",
     "attack": 7,
     "cardClass": "DRUID",
@@ -28202,6 +28676,26 @@
     "set": "EXPERT1",
     "text": "<b>抉择：</b>抽两张牌；或者恢复#7点生命值。",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 313,
+    "id": "NEW1_008a",
+    "name": "古老的教诲",
+    "set": "EXPERT1",
+    "text": "抽两张牌。",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 209,
+    "id": "NEW1_008b",
+    "name": "古老的秘密",
+    "set": "EXPERT1",
+    "text": "恢复7点生命值。",
+    "type": "SPELL"
   },
   {
     "attack": 0,
@@ -29299,6 +29793,28 @@
     "rarity": "COMMON",
     "set": "OG",
     "text": "<b>抉择：</b>使你的英雄在本回合中获得+4攻击力；或者获得8点护甲值。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Alexandrov",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 38332,
+    "id": "OG_047a",
+    "name": "脊刺异变",
+    "set": "OG",
+    "text": "在本回合中，使你的英雄获得+4攻击力。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Alexandrov",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 38333,
+    "id": "OG_047b",
+    "name": "鳞甲异变",
+    "set": "OG",
+    "text": "获得8点护甲值。",
     "type": "SPELL"
   },
   {
@@ -30426,6 +30942,30 @@
   },
   {
     "artist": "Skan Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 38654,
+    "id": "OG_195a",
+    "name": "小精灵大军",
+    "set": "OG",
+    "spellSchool": "NATURE",
+    "text": "召唤七个1/1的小精灵。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Skan Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 38652,
+    "id": "OG_195b",
+    "name": "小精灵之力",
+    "set": "OG",
+    "spellSchool": "NATURE",
+    "text": "使你的所有随从获得+2/+2。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Skan Srisuwan",
     "attack": 1,
     "cardClass": "DRUID",
     "cost": 0,
@@ -30492,6 +31032,28 @@
     "set": "OG",
     "text": "<b>抉择：</b>召唤一个2/2的泥浆怪；或者获得一个空的法力水晶。",
     "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & S. Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 38716,
+    "id": "OG_202a",
+    "name": "亚煞极之力",
+    "set": "OG",
+    "text": "召唤一个2/2的泥浆怪。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & S. Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 38717,
+    "id": "OG_202b",
+    "name": "尤格-萨隆之赐",
+    "set": "OG",
+    "text": "获得一个空的法力水晶。",
+    "type": "SPELL"
   },
   {
     "artist": "Anton Kagounkina",
@@ -33511,6 +34073,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Vika Yarova",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 119589,
+    "hideCost": true,
+    "id": "TIME_000ta",
+    "name": "维持时间线",
+    "set": "TIME_TRAVEL",
+    "text": "什么都不做。<i>这条时间线很\n完美！</i>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 119636,
+    "hideCost": true,
+    "id": "TIME_000tb",
+    "name": "回溯时间线",
+    "set": "TIME_TRAVEL",
+    "text": "<b>回溯</b>这张牌的效果。",
+    "type": "SPELL"
+  },
+  {
     "artist": "Kevin Sidharta",
     "attack": 7,
     "cardClass": "NEUTRAL",
@@ -33549,6 +34135,28 @@
     "set": "TIME_TRAVEL",
     "text": "<b>奇闻</b>\n<b>抉择：</b>强化辛艾萨莉；或者永恒之井。<i>（未选择的选项会被摧毁！）</i>",
     "type": "MINION"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 120204,
+    "id": "TIME_211a",
+    "name": "强化辛艾萨莉",
+    "set": "TIME_TRAVEL",
+    "text": "辛艾萨莉召唤的随从会拥有翻倍属性值。摧毁永恒之井。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 120205,
+    "id": "TIME_211b",
+    "name": "强化永恒之井",
+    "set": "TIME_TRAVEL",
+    "text": "永恒之井创建的法术会施放两次。摧毁辛艾萨莉。",
+    "type": "SPELL"
   },
   {
     "artist": "Daniil Kudriavtsev",
@@ -34369,6 +34977,45 @@
     "set": "TITANS",
     "text": "<b>泰坦</b>\n<b>嘲讽</b>。你的随从每次受到伤害不会超过2点。",
     "type": "MINION"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98062,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t1",
+    "name": "增援",
+    "set": "TITANS",
+    "text": "抽两张随从牌。将其攻击力，生命值和法力值消耗变为2。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98063,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t2",
+    "name": "强化",
+    "set": "TITANS",
+    "text": "使你的所有其他随从获得+2/+2。",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98064,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t3",
+    "name": "平静",
+    "set": "TITANS",
+    "text": "将所有敌方随从的攻击力和生命值变为2。",
+    "type": "SPELL"
   },
   {
     "artist": "MAR Studio",

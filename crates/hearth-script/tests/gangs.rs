@@ -822,6 +822,18 @@ fn kazakus_discovers_two_distinct_ingredients_and_executes_the_custom_potion() {
     let potion = hand_card(&game, PlayerId::ONE, "CFM_621t");
     assert_eq!(game.state().entity(potion).unwrap().cost, 1);
     assert_eq!(
+        game.state().entity(potion).unwrap().public_cards,
+        [first.clone(), second.clone()]
+    );
+    assert_eq!(
+        game.state()
+            .player_view(PlayerId::ONE)
+            .entity(potion)
+            .unwrap()
+            .public_cards,
+        [first.clone(), second.clone()]
+    );
+    assert_eq!(
         game.state()
             .entity(potion)
             .unwrap()

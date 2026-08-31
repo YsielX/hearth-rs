@@ -78,6 +78,7 @@ fn timeout_policy_prefers_end_turn_and_never_concedes() {
     let legal = |command| LegalAction {
         command,
         mana_cost: 0,
+        semantic_card_id: None,
     };
     let choices = vec![
         legal(PlayerCommand::Concede),

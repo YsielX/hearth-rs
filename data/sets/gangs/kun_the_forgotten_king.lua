@@ -19,18 +19,23 @@ local function refresh(ctx, self) ctx:refresh_mana_crystals(ctx:controller(self)
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Gain 10 Armor", value = 1 },
-        { label = "Refresh your Mana Crystals", value = 2 },
+        { card_id = "CFM_308a", label = "Gain 10 Armor" },
+        { card_id = "CFM_308b", label = "Refresh your Mana Crystals" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then armor(ctx, self) else refresh(ctx, self) end
+    if choice == "CFM_308a" then armor(ctx, self) else refresh(ctx, self) end
 end
 
 function card.on_choose_multiple(ctx, self)
     armor(ctx, self)
     refresh(ctx, self)
 end
+
+card.tokens = {
+    { id = "CFM_308a", name = "Forgotten Armor", text = "Gain 10 Armor.", set = "GANGS", type = "spell", class = "druid", collectible = false, cost = 10 },
+    { id = "CFM_308b", name = "Forgotten Mana", text = "Refresh your Mana Crystals.", set = "GANGS", type = "spell", class = "druid", collectible = false, cost = 10 },
+}
 
 return card

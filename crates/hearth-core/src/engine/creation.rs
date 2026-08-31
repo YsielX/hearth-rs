@@ -12,6 +12,7 @@ pub(super) struct CardCreation {
     pub base_spell_damage: Option<i32>,
     pub keywords: Option<Vec<String>>,
     pub attached_scripts: Vec<String>,
+    pub public_cards: Vec<String>,
     pub started_in_deck: bool,
 }
 
@@ -24,6 +25,11 @@ impl<R: CardRuntime> Game<R> {
             self.runtime
                 .definition(attached)
                 .ok_or_else(|| GameError::UnknownCard(attached.clone()))?;
+        }
+        for public_card in &creation.public_cards {
+            self.runtime
+                .definition(public_card)
+                .ok_or_else(|| GameError::UnknownCard(public_card.clone()))?;
         }
         let actual_destination = if creation.destination == ZonePlacement::Hand
             && self.state.player(creation.player).hand.len() >= MAX_HAND_SIZE
@@ -60,6 +66,7 @@ impl<R: CardRuntime> Game<R> {
             }
             entity.base_attached_cards = creation.attached_scripts.clone();
             entity.attached_cards = creation.attached_scripts;
+            entity.public_cards = creation.public_cards;
             entity.started_in_deck = creation.started_in_deck;
             Self::recompute_entity(entity);
         }

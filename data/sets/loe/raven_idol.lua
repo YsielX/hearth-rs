@@ -30,13 +30,13 @@ end
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Discover a minion", value = 1 },
-        { label = "Discover a spell", value = 2 },
+        { card_id = "LOE_115a", label = "Discover a minion" },
+        { card_id = "LOE_115b", label = "Discover a spell" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then discover_minion(ctx, self, "receive_card")
+    if choice == "LOE_115a" then discover_minion(ctx, self, "receive_card")
     else discover_spell(ctx, self, "receive_card") end
 end
 
@@ -52,5 +52,10 @@ function card.receive_minion_then_discover_spell(ctx, self, card_id)
     cardlib.effects.give_card(ctx, ctx:controller(self), card_id)
     discover_spell(ctx, self, "receive_card")
 end
+
+card.tokens = {
+    { id = "LOE_115a", name = "Break Free", text = "<b>Discover</b> a minion.", set = "LOE", type = "spell", class = "druid", collectible = false, cost = 1 },
+    { id = "LOE_115b", name = "Awakened", text = "<b>Discover</b> a spell.", set = "LOE", type = "spell", class = "druid", collectible = false, cost = 1 },
+}
 
 return card

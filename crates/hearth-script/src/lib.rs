@@ -1184,6 +1184,26 @@ impl CardRuntime for LuaCardRuntime {
             .ok_or_else(|| format!("unknown card action entity {source}"))?;
         let card_module = self.module(&entity.card_id)?;
         let card_target_mode = |action: &str| Self::action_target_mode(&card_module, action);
+        let semantic_card_id = |action: &str| -> Result<Option<String>, String> {
+            let Some(mapping) = card_module
+                .get::<Option<Table>>("action_semantic_cards")
+                .map_err(|error| error.to_string())?
+            else {
+                return Ok(None);
+            };
+            let card_id = mapping
+                .get::<Option<String>>(action)
+                .map_err(|error| error.to_string())?;
+            if let Some(card_id) = &card_id
+                && !self.catalog.contains_key(card_id)
+            {
+                return Err(format!(
+                    "card {} action {action} references unknown semantic card {card_id}",
+                    entity.card_id
+                ));
+            }
+            Ok(card_id)
+        };
         let mut output = Vec::new();
         for keyword in &entity.keywords {
             let module = self.keyword_module(keyword)?;
@@ -1246,6 +1266,10 @@ impl CardRuntime for LuaCardRuntime {
                 }
                 output.push(CardActionSpec {
                     id: id.clone(),
+                    semantic_card_id: spec
+                        .get::<Option<String>>("semantic_card_id")
+                        .map_err(|error| error.to_string())?
+                        .or(semantic_card_id(&id)?),
                     cost: spec
                         .get::<Option<u8>>("cost")
                         .map_err(|error| error.to_string())?
@@ -1312,6 +1336,10 @@ impl CardRuntime for LuaCardRuntime {
                 }
                 output.push(CardActionSpec {
                     id: id.clone(),
+                    semantic_card_id: spec
+                        .get::<Option<String>>("semantic_card_id")
+                        .map_err(|error| error.to_string())?
+                        .or(semantic_card_id(&id)?),
                     cost: spec
                         .get::<Option<u8>>("cost")
                         .map_err(|error| error.to_string())?

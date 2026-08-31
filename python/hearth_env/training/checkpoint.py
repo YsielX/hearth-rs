@@ -60,7 +60,8 @@ def load_checkpoint(
     payload = torch.load(path, map_location=device, weights_only=False)
     if payload.get("checkpoint_version") != CHECKPOINT_VERSION:
         raise ValueError("unsupported checkpoint version")
-    if payload.get("tensor_schema_version") != TENSOR_SCHEMA_VERSION:
+    checkpoint_tensor_schema = payload.get("tensor_schema_version")
+    if checkpoint_tensor_schema not in {1, TENSOR_SCHEMA_VERSION}:
         raise ValueError("tensor schema differs from checkpoint")
     old_manifest = payload["catalog"]
     if old_manifest.get("feature_schema_version") != CARD_FEATURE_SCHEMA_VERSION:
@@ -106,5 +107,9 @@ def load_checkpoint(
         "new_pack_hash": catalog.pack_hash,
         "retained_cards": len((set(old_indices) & set(new_indices)) - special),
         "new_cards": len((set(new_indices) - set(old_indices)) - special),
+        "tensor_schema": {
+            "from": checkpoint_tensor_schema,
+            "to": TENSOR_SCHEMA_VERSION,
+        },
     }
     return model, payload

@@ -22,14 +22,14 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose a Deathrattle", {
-        { label = "Deal 3 damage to all minions", value = 1 },
-        { label = "Give all minions +2/+2", value = 2 },
+        { card_id = "ICC_047b", label = "Deal 3 damage to all minions" },
+        { card_id = "ICC_047a", label = "Give all minions +2/+2" },
     }, "fatespinner_chosen")
 end
 
 function card.fatespinner_chosen(ctx, self, choice)
     cardlib.effects.transform(ctx, self, "ICC_047t")
-    ctx:set_data(self, "fatespinner_mode", choice)
+    ctx:set_data(self, "fatespinner_mode", choice == "ICC_047a" and 2 or 1)
 end
 
 function card.on_choose_multiple(ctx, self)

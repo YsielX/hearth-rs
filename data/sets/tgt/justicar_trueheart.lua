@@ -40,7 +40,7 @@ card.tokens = {
                 { id = "AT_132_SHAMANd", name = "Wrath of Air Totem" },
             }) do
                 if not present[option.id] then
-                    options[#options + 1] = { label = option.name, value = option.id }
+                    options[#options + 1] = { label = option.name, card_id = option.id }
                 end
             end
             if #options > 0 then ctx:choose_options(player, "Choose a Totem", options, "summon_chosen_totem") end

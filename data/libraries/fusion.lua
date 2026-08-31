@@ -35,6 +35,7 @@ function fusion.create_minion(ctx, player, template, components, limits)
         cost = math.min(limits.maximum_cost or 10, cost),
         keywords = keywords,
         attached_scripts = components,
+        public_cards = components,
     })
 end
 

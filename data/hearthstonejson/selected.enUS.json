@@ -770,6 +770,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Danny Dai",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 2789,
+    "id": "AT_037a",
+    "name": "Grasping Roots",
+    "set": "TGT",
+    "spellSchool": "NATURE",
+    "text": "Deal $2 damage.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Ware Li",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 2791,
+    "id": "AT_037b",
+    "name": "One, Two, Trees!",
+    "set": "TGT",
+    "spellSchool": "NATURE",
+    "text": "Summon two 1/1 Saplings.",
+    "type": "SPELL"
+  },
+  {
     "attack": 1,
     "cardClass": "DRUID",
     "cost": 1,
@@ -3253,6 +3277,40 @@
     "type": "MINION"
   },
   {
+    "attack": 5,
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2293,
+    "health": 2,
+    "id": "BRM_010a",
+    "name": "Firecat Form",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "BRM",
+    "type": "MINION"
+  },
+  {
+    "attack": 2,
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2294,
+    "health": 5,
+    "id": "BRM_010b",
+    "name": "Fire Hawk Form",
+    "race": "BEAST",
+    "races": [
+      "ELEMENTAL",
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "BRM",
+    "type": "MINION"
+  },
+  {
     "artist": "Ben Zhang",
     "attack": 5,
     "cardClass": "DRUID",
@@ -4429,6 +4487,28 @@
     "type": "MINION"
   },
   {
+    "artist": "Jon Neimeister",
+    "cardClass": "DRUID",
+    "cost": 10,
+    "dbfId": 41958,
+    "id": "CFM_308a",
+    "name": "Forgotten Armor",
+    "set": "GANGS",
+    "text": "Gain 10 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Jon Neimeister",
+    "cardClass": "DRUID",
+    "cost": 10,
+    "dbfId": 41959,
+    "id": "CFM_308b",
+    "name": "Forgotten Mana",
+    "set": "GANGS",
+    "text": "Refresh your Mana Crystals.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Mike Sass",
     "cardClass": "SHAMAN",
     "collectible": true,
@@ -4934,6 +5014,32 @@
     ],
     "set": "GANGS",
     "text": "<b>Choose One -</b> Summon a{1} {0} <b>Jade Golem</b>; or Shuffle 3 copies of this card into your deck.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "DRUID",
+    "collectionText": "Summon a <b>Jade Golem</b>.",
+    "cost": 1,
+    "dbfId": 41409,
+    "id": "CFM_602a",
+    "name": "Cut from Jade",
+    "referencedTags": [
+      "JADE_GOLEM"
+    ],
+    "set": "GANGS",
+    "text": "Summon a{1} {0} <b>Jade Golem</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Studio Hive",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 41408,
+    "id": "CFM_602b",
+    "name": "Jade Stash",
+    "set": "GANGS",
+    "text": "Shuffle 3 Jade Idols into your deck.",
     "type": "SPELL"
   },
   {
@@ -11837,6 +11943,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 253,
+    "id": "EX1_154a",
+    "name": "Solar Wrath",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Deal $3 damage to a minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gonzalo Ordonez",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 137,
+    "id": "EX1_154b",
+    "name": "Nature's Wrath",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Deal $1 damage to a minion. Draw a card.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Clint Langley",
     "cardClass": "DRUID",
     "collectible": true,
@@ -11855,6 +11985,31 @@
     "set": "EXPERT1",
     "spellSchool": "NATURE",
     "text": "<b>Choose One -</b> Give a minion +4 Attack; or +4 Health and <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 468,
+    "id": "EX1_155a",
+    "name": "Tiger's Fury",
+    "set": "EXPERT1",
+    "text": "Give a minion\n+4 Attack.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Clint Langley",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 690,
+    "id": "EX1_155b",
+    "name": "Thick Hide",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "Give a minion\n+4 Health and <b>Taunt</b>.",
     "type": "SPELL"
   },
   {
@@ -11901,6 +12056,28 @@
     "rarity": "COMMON",
     "set": "EXPERT1",
     "text": "<b>Choose One -</b> Give your minions +1/+1; or Summon a 3/2 Panther.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "MAR Studio",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 60,
+    "id": "EX1_160a",
+    "name": "Summon a Panther",
+    "set": "EXPERT1",
+    "text": "Summon a 3/2 Panther.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "MAR Studio",
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 835,
+    "id": "EX1_160b",
+    "name": "Leader of the Pack",
+    "set": "EXPERT1",
+    "text": "Give your minions +1/+1.",
     "type": "SPELL"
   },
   {
@@ -11978,6 +12155,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Konstantin Turovec",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 451,
+    "id": "EX1_164a",
+    "name": "Rampant Growth",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Gain 2 Mana Crystals.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Konstantin Turovec",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 325,
+    "id": "EX1_164b",
+    "name": "Enrich",
+    "set": "EXPERT1",
+    "spellSchool": "NATURE",
+    "text": "Draw 3 cards.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Luca Zontini",
     "attack": 4,
     "cardClass": "DRUID",
@@ -11998,6 +12199,46 @@
     ],
     "set": "EXPERT1",
     "text": "[x]<b>Choose One -</b> Transform\ninto a 7/6 with <b>Rush</b>;\nor a 4/9 with <b>Taunt</b>.",
+    "type": "MINION"
+  },
+  {
+    "attack": 7,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 63,
+    "health": 6,
+    "id": "EX1_165a",
+    "mechanics": [
+      "RUSH"
+    ],
+    "name": "Cat Form",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Rush</b>",
+    "type": "MINION"
+  },
+  {
+    "attack": 4,
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 99,
+    "health": 9,
+    "id": "EX1_165b",
+    "mechanics": [
+      "TAUNT"
+    ],
+    "name": "Bear Form",
+    "race": "BEAST",
+    "races": [
+      "BEAST"
+    ],
+    "rarity": "COMMON",
+    "set": "EXPERT1",
+    "text": "<b>Taunt</b>",
     "type": "MINION"
   },
   {
@@ -12061,6 +12302,29 @@
     "set": "EXPERT1",
     "text": "<b>Choose One -</b> Deal 2 damage; or <b>Silence</b> a minion.",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 987,
+    "id": "EX1_166a",
+    "name": "Moonfire",
+    "set": "EXPERT1",
+    "text": "Deal 2 damage.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 321,
+    "id": "EX1_166b",
+    "mechanics": [
+      "SILENCE"
+    ],
+    "name": "Dispel",
+    "set": "EXPERT1",
+    "text": "<b>Silence</b> a minion.",
+    "type": "SPELL"
   },
   {
     "artist": "Doug Alexander",
@@ -12137,6 +12401,29 @@
     "set": "EXPERT1",
     "text": "<b>Choose One -</b>\n+5 Attack; or +5 Health and <b>Taunt</b>.",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 578,
+    "id": "EX1_178a",
+    "name": "Rooted",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "+5 Health and <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 182,
+    "id": "EX1_178b",
+    "name": "Uproot",
+    "set": "EXPERT1",
+    "text": "+5 Attack.",
+    "type": "SPELL"
   },
   {
     "artist": "Daarken",
@@ -14371,6 +14658,29 @@
     "set": "EXPERT1",
     "text": "<b>Choose One -</b> Give your other minions +2/+2; or Summon two 2/2 Treants with <b>Taunt</b>.",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 1145,
+    "id": "EX1_573a",
+    "name": "Demigod's Favor",
+    "set": "EXPERT1",
+    "text": "Give your other minions +2/+2.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 8,
+    "dbfId": 364,
+    "id": "EX1_573b",
+    "name": "Shan'do's Lesson",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "EXPERT1",
+    "text": "Summon two 2/2 Treants with <b>Taunt</b>.",
+    "type": "SPELL"
   },
   {
     "attack": 2,
@@ -16780,6 +17090,26 @@
     "type": "MINION"
   },
   {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 2195,
+    "id": "GVG_030a",
+    "name": "Attack Mode",
+    "set": "GVG",
+    "text": "+1 Attack.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 2197,
+    "id": "GVG_030b",
+    "name": "Tank Mode",
+    "set": "GVG",
+    "text": "+1 Health.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Efrem Palacios",
     "cardClass": "DRUID",
     "collectible": true,
@@ -16812,6 +17142,26 @@
     "set": "GVG",
     "text": "<b>Choose One -</b> Give each player a Mana Crystal; or Each player draws a card.",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2226,
+    "id": "GVG_032a",
+    "name": "Gift of Mana",
+    "set": "GVG",
+    "text": "Give each player a Mana Crystal.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 2227,
+    "id": "GVG_032b",
+    "name": "Gift of Cards",
+    "set": "GVG",
+    "text": "Each player draws a card.",
+    "type": "SPELL"
   },
   {
     "artist": "Steve Prescott",
@@ -17008,6 +17358,33 @@
     "set": "GVG",
     "spellSchool": "NATURE",
     "text": "<b>Choose One -</b> Summon 5 Wisps; or Give a minion +5/+5 and <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 2176,
+    "id": "GVG_041a",
+    "name": "Call the Guardians",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "GVG",
+    "spellSchool": "NATURE",
+    "text": "+5/+5 and <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Trent Kaniuga",
+    "cardClass": "DRUID",
+    "cost": 6,
+    "dbfId": 2177,
+    "id": "GVG_041b",
+    "name": "Nature's Defense",
+    "set": "GVG",
+    "spellSchool": "NATURE",
+    "text": "Summon 5 Wisps.",
     "type": "SPELL"
   },
   {
@@ -22246,6 +22623,32 @@
     "type": "HERO"
   },
   {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 45303,
+    "id": "ICC_832a",
+    "name": "Scarab Plague",
+    "referencedTags": [
+      "TAUNT"
+    ],
+    "set": "ICECROWN",
+    "text": "Summon two 1/5 Scarabs with <b>Taunt</b>.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 45300,
+    "id": "ICC_832b",
+    "name": "Spider Plague",
+    "referencedTags": [
+      "POISONOUS"
+    ],
+    "set": "ICECROWN",
+    "text": "[x]Summon two 1/2\nSpiders with <b>Poisonous</b>.",
+    "type": "SPELL"
+  },
+  {
     "cardClass": "NEUTRAL",
     "cost": 2,
     "dbfId": 43182,
@@ -22257,6 +22660,26 @@
     "set": "ICECROWN",
     "text": "<b>Choose One -</b>\n+$a3 Attack this turn;\nor Gain $d3 Armor.",
     "type": "HERO_POWER"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 46050,
+    "id": "ICC_832pa",
+    "name": "Scarab Shell",
+    "set": "ICECROWN",
+    "text": "+$d3 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 2,
+    "dbfId": 46051,
+    "id": "ICC_832pb",
+    "name": "Spider Fangs",
+    "set": "ICECROWN",
+    "text": "+$a3 Attack.",
+    "type": "SPELL"
   },
   {
     "artist": "Slawomir Maniak",
@@ -25297,6 +25720,34 @@
     "type": "SPELL"
   },
   {
+    "artist": "A. J. Nazzaro",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 38112,
+    "id": "LOE_115a",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Break Free",
+    "set": "LOE",
+    "text": "<b>Discover</b> a minion.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "A. J. Nazzaro",
+    "cardClass": "DRUID",
+    "cost": 1,
+    "dbfId": 38113,
+    "id": "LOE_115b",
+    "mechanics": [
+      "DISCOVER"
+    ],
+    "name": "Awakened",
+    "set": "LOE",
+    "text": "<b>Discover</b> a spell.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Wayne Reynolds",
     "attack": 1,
     "cardClass": "WARLOCK",
@@ -28201,6 +28652,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 1161,
+    "id": "NEW1_007a",
+    "name": "Stellar Drift",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "Deal $2 damage to all enemy minions.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Richard Wright",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 928,
+    "id": "NEW1_007b",
+    "name": "Starlord",
+    "set": "EXPERT1",
+    "spellSchool": "ARCANE",
+    "text": "Deal $5 damage to a minion.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Patrik Hjelm",
     "attack": 7,
     "cardClass": "DRUID",
@@ -28218,6 +28693,26 @@
     "set": "EXPERT1",
     "text": "<b>Choose One -</b> Draw 2 cards; or Restore #7 Health.",
     "type": "MINION"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 313,
+    "id": "NEW1_008a",
+    "name": "Ancient Teachings",
+    "set": "EXPERT1",
+    "text": "Draw 2 cards.",
+    "type": "SPELL"
+  },
+  {
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 209,
+    "id": "NEW1_008b",
+    "name": "Ancient Secrets",
+    "set": "EXPERT1",
+    "text": "Restore 7 Health.",
+    "type": "SPELL"
   },
   {
     "attack": 0,
@@ -29315,6 +29810,28 @@
     "rarity": "COMMON",
     "set": "OG",
     "text": "<b>Choose One -</b> Give your hero +4 Attack this turn; or Gain 8 Armor.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Alexandrov",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 38332,
+    "id": "OG_047a",
+    "name": "Evolve Spines",
+    "set": "OG",
+    "text": "Give your hero +4 Attack this turn.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Alex Alexandrov",
+    "cardClass": "DRUID",
+    "cost": 3,
+    "dbfId": 38333,
+    "id": "OG_047b",
+    "name": "Evolve Scales",
+    "set": "OG",
+    "text": "Gain 8 Armor.",
     "type": "SPELL"
   },
   {
@@ -30442,6 +30959,30 @@
   },
   {
     "artist": "Skan Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 38654,
+    "id": "OG_195a",
+    "name": "Many Wisps",
+    "set": "OG",
+    "spellSchool": "NATURE",
+    "text": "Summon seven 1/1 Wisps.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Skan Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 7,
+    "dbfId": 38652,
+    "id": "OG_195b",
+    "name": "Big Wisps",
+    "set": "OG",
+    "spellSchool": "NATURE",
+    "text": "Give your minions +2/+2.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Skan Srisuwan",
     "attack": 1,
     "cardClass": "DRUID",
     "cost": 0,
@@ -30508,6 +31049,28 @@
     "set": "OG",
     "text": "[x]<b>Choose One -</b> Summon a\n2/2 Slime; or Gain an\nempty Mana Crystal.",
     "type": "MINION"
+  },
+  {
+    "artist": "L. Lullabi & S. Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 38716,
+    "id": "OG_202a",
+    "name": "Y'Shaarj's Strength",
+    "set": "OG",
+    "text": "Summon a 2/2 Slime.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "L. Lullabi & S. Srisuwan",
+    "cardClass": "DRUID",
+    "cost": 4,
+    "dbfId": 38717,
+    "id": "OG_202b",
+    "name": "Yogg-Saron's Magic",
+    "set": "OG",
+    "text": "Gain an empty Mana Crystal.",
+    "type": "SPELL"
   },
   {
     "artist": "Anton Kagounkina",
@@ -33527,6 +34090,30 @@
     "type": "SPELL"
   },
   {
+    "artist": "Vika Yarova",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 119589,
+    "hideCost": true,
+    "id": "TIME_000ta",
+    "name": "Keep Timeline",
+    "set": "TIME_TRAVEL",
+    "text": "Do nothing.\n<i>This timeline is\nperfect as-is!</i>",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "NEUTRAL",
+    "cost": 0,
+    "dbfId": 119636,
+    "hideCost": true,
+    "id": "TIME_000tb",
+    "name": "Rewind Timeline",
+    "set": "TIME_TRAVEL",
+    "text": "<b>Rewind</b> the card's effect.",
+    "type": "SPELL"
+  },
+  {
     "artist": "Kevin Sidharta",
     "attack": 7,
     "cardClass": "NEUTRAL",
@@ -33565,6 +34152,28 @@
     "set": "TIME_TRAVEL",
     "text": "[x]<b>Fabled</b>. <b>Choose One -</b>\nEmpower Zin-Azshari; or\nThe Well of Eternity. <i>(The\n  other gets destroyed!)</i>",
     "type": "MINION"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 120204,
+    "id": "TIME_211a",
+    "name": "Empower Zin-Azshari",
+    "set": "TIME_TRAVEL",
+    "text": "[x]The minions summoned\nby Zin-Azshari will have\ndoubled stats. Destroy\nThe Well of Eternity.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Gabor Szikszai",
+    "cardClass": "DRUID",
+    "cost": 5,
+    "dbfId": 120205,
+    "id": "TIME_211b",
+    "name": "Empower the Well",
+    "set": "TIME_TRAVEL",
+    "text": "The spells created by The Well of Eternity will cast twice.\nDestroy Zin-Azshari.",
+    "type": "SPELL"
   },
   {
     "artist": "Daniil Kudriavtsev",
@@ -34385,6 +34994,45 @@
     "set": "TITANS",
     "text": "<b>Titan</b>\n<b>Taunt</b>. Your minions\ncan't take more than 2 damage at a time.",
     "type": "MINION"
+  },
+  {
+    "artist": "Zoltan Boros",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98062,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t1",
+    "name": "Reinforced",
+    "set": "TITANS",
+    "text": "Draw 2 minions. Set their Attack, Health, and Cost to 2.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98063,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t2",
+    "name": "Empowered",
+    "set": "TITANS",
+    "text": "Give your other\nminions +2/+2.",
+    "type": "SPELL"
+  },
+  {
+    "artist": "Vika Yarova",
+    "cardClass": "PALADIN",
+    "cost": 0,
+    "dbfId": 98064,
+    "elite": true,
+    "hideStats": true,
+    "id": "TTN_858t3",
+    "name": "Pacified",
+    "set": "TITANS",
+    "text": "Set the Attack and Health of all enemy minions to 2.",
+    "type": "SPELL"
   },
   {
     "artist": "MAR Studio",

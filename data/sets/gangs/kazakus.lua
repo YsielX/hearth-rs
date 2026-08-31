@@ -267,9 +267,9 @@ end
 function card.on_battlecry(ctx, self)
     if not no_duplicates(ctx, ctx:controller(self)) then return end
     ctx:choose_options(ctx:controller(self), "Choose a potion Cost", {
-        { label = "1-Cost", value = 1 },
-        { label = "5-Cost", value = 5 },
-        { label = "10-Cost", value = 10 },
+        { card_id = "CFM_621t11", value = 1 },
+        { card_id = "CFM_621t12", value = 5 },
+        { card_id = "CFM_621t13", value = 10 },
     }, "kazakus_cost_chosen")
 end
 
@@ -291,9 +291,19 @@ end
 function card.kazakus_second_chosen(ctx, self, card_id)
     local player = ctx:controller(self)
     local cost = ctx:get_data(self, "kazakus_cost")
+    local first_category = ctx:get_data(self, "kazakus_first")
+    local first_card_id = nil
+    for _, candidate in ipairs(ingredients[cost]) do
+        if ingredient_category[candidate] == first_category then
+            first_card_id = candidate
+            break
+        end
+    end
     ctx:set_data(self, "kazakus_second", ingredient_category[card_id])
     ctx:set_data(self, "kazakus_waiting_potion", 1)
-    cardlib.effects.give_card(ctx, player, potion_ids[cost])
+    ctx:create_card(player, potion_ids[cost], {
+        public_cards = { first_card_id, card_id },
+    })
 end
 
 card.triggers = {{

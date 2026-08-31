@@ -57,7 +57,11 @@ function card.arrange_glimmerroot_choices(ctx, self, correct_position)
         local id, correct
         if position == correct_position then id, correct = real, 1
         else id, correct, fake_index = fakes[fake_index], 0, fake_index + 1 end
-        choices[#choices + 1] = { label = ctx:card_definition(id).name, value = correct }
+        choices[#choices + 1] = {
+            label = ctx:card_definition(id).name,
+            card_id = id,
+            value = correct,
+        }
     end
     ctx:choose_options(ctx:controller(self), "Which card started in your opponent's deck?", choices, "resolve_glimmerroot_guess")
 end

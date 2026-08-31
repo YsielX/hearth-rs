@@ -434,6 +434,7 @@ impl<R: CardRuntime> Game<R> {
             choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
             base_attached_cards: Vec::new(),
+            public_cards: Vec::new(),
             hook_attachments: BTreeMap::new(),
         }
     }
@@ -485,6 +486,7 @@ impl<R: CardRuntime> Game<R> {
             choice_policy: ChoicePolicy::Player,
             attached_cards: Vec::new(),
             base_attached_cards: Vec::new(),
+            public_cards: Vec::new(),
             hook_attachments: BTreeMap::new(),
         }
     }

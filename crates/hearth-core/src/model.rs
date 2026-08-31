@@ -543,6 +543,11 @@ pub struct Entity {
     /// restore these while still removing ordinary Magnetic attachments.
     #[serde(default)]
     pub base_attached_cards: Vec<CardId>,
+    /// Public card definitions that describe a generated/composite entity but
+    /// do not execute as attached scripts. Agents may safely use these to
+    /// understand cards such as Zombeasts and custom potions.
+    #[serde(default)]
+    pub public_cards: Vec<CardId>,
     /// Ordered, stackable card scripts attached to one specific Lua hook.
     #[serde(default)]
     pub hook_attachments: BTreeMap<String, Vec<CardId>>,
@@ -967,6 +972,11 @@ pub enum PlayerCommand {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CardActionSpec {
     pub id: String,
+    /// Player-visible card definition describing this action, when the action
+    /// has richer semantics than its internal string identifier (for example
+    /// a Titan ability).
+    #[serde(default)]
+    pub semantic_card_id: Option<CardId>,
     pub cost: u8,
     #[serde(default)]
     pub spend_all_mana: bool,
@@ -1082,6 +1092,17 @@ impl ChoiceValue {
 pub struct ChoiceOption {
     pub label: String,
     pub value: ChoiceValue,
+    /// Optional player-visible card definition for an otherwise arbitrary
+    /// continuation payload. This deliberately does not replace `value`:
+    /// scripts may need structured data to resume while clients and agents
+    /// need the card's full semantics.
+    #[serde(default)]
+    pub public_card_id: Option<CardId>,
+    /// Additional public card definitions needed to interpret the option.
+    /// The first/display card remains `public_card_id`; these provide
+    /// composition or context without affecting the continuation payload.
+    #[serde(default)]
+    pub public_card_ids: Vec<CardId>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -1257,9 +1278,16 @@ pub enum EffectSpec {
         keywords: Option<Vec<String>>,
         #[serde(default)]
         attached_scripts: Vec<CardId>,
+        #[serde(default)]
+        public_cards: Vec<CardId>,
         /// Marks generated cards that inherit constructed-deck provenance.
         #[serde(default)]
         started_in_deck: bool,
+    },
+    AddPublicCard {
+        source: EntityId,
+        target: EntityId,
+        card_id: CardId,
     },
     /// Consume one card identity from a constructed sideboard.
     ConsumeSideboardCard {

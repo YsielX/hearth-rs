@@ -433,7 +433,22 @@ impl<R: CardRuntime> Game<R> {
             .into_iter()
             .map(|command| {
                 let mana_cost = self.command_mana_cost(&command)?;
-                Ok(LegalAction { command, mana_cost })
+                let semantic_card_id =
+                    if let PlayerCommand::UseCardAction { card, action, .. } = &command {
+                        self.runtime
+                            .card_actions(&self.state, *card)
+                            .map_err(GameError::Script)?
+                            .into_iter()
+                            .find(|spec| spec.id == *action)
+                            .and_then(|spec| spec.semantic_card_id)
+                    } else {
+                        None
+                    };
+                Ok(LegalAction {
+                    command,
+                    mana_cost,
+                    semantic_card_id,
+                })
             })
             .collect()
     }

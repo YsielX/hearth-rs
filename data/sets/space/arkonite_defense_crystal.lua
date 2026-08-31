@@ -72,6 +72,7 @@ card.tokens = {
                 effect = function(ctx, self, event)
                     local piece = ctx:entity(event.source)
                     cardlib.effects.buff(ctx, self, piece.attack, piece.max_health - 1)
+                    ctx:add_public_card(self, piece.card_id)
                     ctx:set_data(self, "starship_pieces", 1)
                     ctx:set_data(self, "starship_armor", 4)
                 end,
@@ -87,6 +88,7 @@ card.tokens = {
                 effect = function(ctx, self, event)
                     local piece = ctx:entity(event.entity)
                     cardlib.effects.buff(ctx, self, piece.attack, piece.max_health)
+                    ctx:add_public_card(self, piece.card_id)
                     ctx:set_data(self, "starship_pieces", ctx:get_data(self, "starship_pieces") + 1)
                     ctx:set_data(self, "starship_armor", ctx:get_data(self, "starship_armor") + 4)
                 end,

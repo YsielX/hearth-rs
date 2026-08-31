@@ -20,8 +20,8 @@ end
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Empower Zin-Azshari", value = 1 },
-        { label = "Empower the Well of Eternity", value = 2 },
+        { card_id = "TIME_211a", label = "Empower Zin-Azshari" },
+        { card_id = "TIME_211b", label = "Empower the Well of Eternity" },
     }, "empower")
 end
 
@@ -43,7 +43,7 @@ end
 
 function card.empower(ctx, self, choice)
     local player = ctx:controller(self)
-    if choice == 1 then
+    if choice == "TIME_211a" then
         replace_in_zones(ctx, player, "TIME_211t2", "TIME_211t2t")
         destroy_in_zones(ctx, player, "TIME_211t1")
     else
@@ -53,6 +53,8 @@ function card.empower(ctx, self, choice)
 end
 
 card.tokens = {
+    { id = "TIME_211a", name = "Empower Zin-Azshari", text = "[x]The minions summoned\nby Zin-Azshari will have\ndoubled stats. Destroy\nThe Well of Eternity.", set = "TIME_TRAVEL", type = "spell", class = "druid", collectible = false, cost = 5 },
+    { id = "TIME_211b", name = "Empower the Well", text = "The spells created by The Well of Eternity will cast twice.\nDestroy Zin-Azshari.", set = "TIME_TRAVEL", type = "spell", class = "druid", collectible = false, cost = 5 },
     { id = "TIME_211t1", name = "The Well of Eternity", text = "Fill your hand\nwith random\n<b>Temporary</b> spells.", set = "TIME_TRAVEL", type = "location", class = "druid", cost = 4, health = 3 },
     { id = "TIME_211t1t", name = "The Well of Eternity", text = "[x]Fill your hand\nwith random <b>Temporary</b>\nspells. They cast twice.", set = "TIME_TRAVEL", type = "location", class = "druid", cost = 4, health = 3 },
     { id = "TIME_211t2", name = "Zin-Azshari", text = "Summon a copy of a friendly minion.", set = "TIME_TRAVEL", type = "location", class = "druid", cost = 4, health = 3 },

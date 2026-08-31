@@ -1988,6 +1988,13 @@ fn the_primus_resolves_all_three_runes_and_discovers_from_the_matching_pool() {
     let victim = play(&mut blood, PlayerId::TWO, "CS2_120", None);
     advance_to_mana(&mut blood, PlayerId::ONE, 8);
     let primus = play(&mut blood, PlayerId::ONE, "TTN_737", None);
+    assert!(blood.legal_action_options().unwrap().iter().any(|option| {
+        matches!(
+            &option.command,
+            PlayerCommand::UseCardAction { card, action, .. }
+                if *card == primus && action == "titan_1"
+        ) && option.semantic_card_id.as_deref() == Some("TTN_737t")
+    }));
     blood
         .dispatch(PlayerCommand::UseCardAction {
             card: primus,
@@ -4949,6 +4956,18 @@ fn zombeast_only_dispatches_battlecries_valid_for_the_selected_target() {
     let zombeast = hand_card(&game, PlayerId::ONE, "ICC_828t");
     assert_eq!(
         game.state().entities[&zombeast].attached_cards,
+        vec!["OG_309".to_owned(), "UNG_084".to_owned()]
+    );
+    assert_eq!(
+        game.state().entities[&zombeast].public_cards,
+        vec!["OG_309".to_owned(), "UNG_084".to_owned()]
+    );
+    assert_eq!(
+        game.state()
+            .player_view(PlayerId::ONE)
+            .entity(zombeast)
+            .unwrap()
+            .public_cards,
         vec!["OG_309".to_owned(), "UNG_084".to_owned()]
     );
 

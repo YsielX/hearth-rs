@@ -16,13 +16,13 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Summon two Scarab Beetles", value = 1 },
-        { label = "Summon two Frost Widows", value = 2 },
+        { card_id = "ICC_832a", label = "Summon two Scarab Beetles" },
+        { card_id = "ICC_832b", label = "Summon two Frost Widows" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    local token = choice == 1 and "ICC_832t4" or "ICC_832t3"
+    local token = choice == "ICC_832a" and "ICC_832t4" or "ICC_832t3"
     local player = ctx:controller(self)
     ctx:summon(player, token)
     ctx:summon(player, token)
@@ -37,6 +37,14 @@ function card.on_choose_multiple(ctx, self)
 end
 
 card.tokens = {
+    {
+        id = "ICC_832a", name = "Scarab Plague", text = "Summon two 1/5 Scarabs with <b>Taunt</b>.",
+        set = "ICECROWN", type = "spell", class = "druid", collectible = false, cost = 7,
+    },
+    {
+        id = "ICC_832b", name = "Spider Plague", text = "[x]Summon two 1/2\nSpiders with <b>Poisonous</b>.",
+        set = "ICECROWN", type = "spell", class = "druid", collectible = false, cost = 7,
+    },
     {
         id = "ICC_832t3", name = "Frost Widow", text = "<b>Poisonous</b>",
         set = "ICECROWN", type = "minion", class = "druid",

@@ -518,7 +518,13 @@ fn glimmerroot_uses_the_opponents_starting_deck_after_current_cards_are_removed(
         public_choice
             .options
             .iter()
-            .all(|option| option.value == ChoiceOptionValueView::Opaque)
+            .all(|option| matches!(option.value, ChoiceOptionValueView::Card(_)))
+    );
+    assert!(
+        public_choice
+            .options
+            .iter()
+            .all(|option| option.semantic_card_ids.len() == 1)
     );
     game.dispatch(PlayerCommand::Choose { index: correct })
         .unwrap();

@@ -191,7 +191,7 @@ action_effects = {
 }
 ```
 
-Cards may additionally declare `card_actions`, `action_targets`, and `action_target_modes`. Conditions are read-only. Effects receive the actual Mana spent and optional target. Forge, Prepare, and Titan abilities use this interface; Rust does not identify those keywords.
+Cards may additionally declare `card_actions`, `action_targets`, and `action_target_modes`. Conditions are read-only. Effects receive the actual Mana spent and optional target. `action_semantic_cards = { action_id = "TOKEN_ID" }` attaches a player-visible card definition to a sub-action such as a Titan ability. Forge, Prepare, and Titan abilities use this interface; Rust does not identify those keywords.
 
 ## Read-only context
 
@@ -401,7 +401,7 @@ The current hook entity is automatically recorded as the effect source.
 
 `cast_spell` creates a spell from its definition; `cast_existing_spell` casts an existing entity from a hidden or terminal zone. Both accept `{ target = entity, skip_if_invalid = true, random_target = true, choice_policy = "random" }`. Target randomization and automatic choices are explicit policies instead of hidden script-data flags. Repeated random casting belongs in Lua; `cardlib.random_spell` composes authoritative `random_value` and `cast_spell` operations.
 
-`create_card` accepts `destination`, optional hand `position`, `attack`, `health`, `cost`, `spell_damage`, `keywords`, `attached_scripts`, and `started_in_deck`. `consume_sideboard_card` only removes the selected identity; scripts compose it with `create_card(..., { started_in_deck = true })` in the same transactional command. Composition formulas belong in Lua; `cardlib.fusion.create_minion` is the reusable fusion implementation. Files with `module_type = "library"` are exposed under `cardlib[id]`, validated and included in the deterministic pack hash, but are not registered as cards.
+`create_card` accepts `destination`, optional hand `position`, `attack`, `health`, `cost`, `spell_damage`, `keywords`, `attached_scripts`, `public_cards`, and `started_in_deck`. `public_cards` describes a composite card without executing those definitions as attached scripts; `ctx:add_public_card(entity, card_id)` appends a later component. `consume_sideboard_card` only removes the selected identity; scripts compose it with `create_card(..., { started_in_deck = true })` in the same transactional command. Composition formulas belong in Lua; `cardlib.fusion.create_minion` is the reusable fusion implementation. Files with `module_type = "library"` are exposed under `cardlib[id]`, validated and included in the deterministic pack hash, but are not registered as cards.
 
 `damage_ignoring_spell_damage` follows the normal damage/event pipeline but does not add the source controller's Spell Damage. `spend_mana` atomically spends up to the player's current Mana (temporary Mana first) and publishes `mana_spent` for the actual positive amount. `increment_player_data` atomically adds a signed delta to a player script-data key, publishes `player_script_data_changed` with `old/new/delta`, and avoids lost updates from one snapshot. Death records store whether the minion's base definition has Deathrattle: Silence does not clear this flag, and attached Deathrattles do not set it.
 
@@ -446,6 +446,19 @@ Discover does not invent a pool. Card Lua filters immutable definitions by class
 Pending options, the source, hook name, typed payload, RNG counter, and remaining queue serialize into snapshots/replays. Resume hooks are module functions by name; closures and coroutines are not stored.
 
 Choice values may be `nil`, boolean, signed integer, UTF-8 string, dense arrays, string-key objects, or recursive combinations within documented depth/node/string limits.
+
+For an official Choose One-style branch, define each noncollectible option card and pass its ID through `card_id` instead of an opaque `value`:
+
+```lua
+ctx:choose_options(player, "Choose One", {
+    { card_id = "EX1_164a", label = "Gain 2 Mana Crystals" },
+    { card_id = "EX1_164b", label = "Draw 3 cards" },
+}, "chosen")
+```
+
+This publishes a `ChoiceValue::Card`, so clients and training policies can inspect the option definition. The resume hook receives the card ID string. Selecting it does not create, play, or cast the option card; the original card's continuation resolves the branch.
+
+An option may provide both `card_id` and `value`. The card stays public while the resume hook receives the arbitrary payload. Optional `card_ids = { ... }` adds further public semantic cards, for example both a Rewind button and the minion it would replace.
 
 ## Triggers and events
 

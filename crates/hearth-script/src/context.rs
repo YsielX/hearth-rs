@@ -1001,6 +1001,15 @@ pub(super) fn build_context(
                     })
                     .transpose()?
                     .unwrap_or_default();
+                let public_cards = spec
+                    .get::<Option<Table>>("public_cards")?
+                    .map(|values| {
+                        values
+                            .sequence_values::<String>()
+                            .collect::<mlua::Result<Vec<_>>>()
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
                 output.borrow_mut().push(EffectSpec::CreateCard {
                     source,
                     player: parse_player(player)?,
@@ -1013,6 +1022,7 @@ pub(super) fn build_context(
                     base_spell_damage: spec.get("spell_damage")?,
                     keywords,
                     attached_scripts,
+                    public_cards,
                     started_in_deck: spec
                         .get::<Option<bool>>("started_in_deck")?
                         .unwrap_or_default(),
@@ -1020,6 +1030,18 @@ pub(super) fn build_context(
                 Ok(())
             },
         )?,
+    )?;
+    let output = effects.clone();
+    ctx.set(
+        "add_public_card",
+        lua.create_function(move |_, (_ctx, target, card_id): (Table, u64, String)| {
+            output.borrow_mut().push(EffectSpec::AddPublicCard {
+                source,
+                target: EntityId(target),
+                card_id,
+            });
+            Ok(())
+        })?,
     )?;
     let output = effects.clone();
     ctx.set(
@@ -2040,6 +2062,8 @@ pub(super) fn build_context(
                     options.push(ChoiceOption {
                         label: entity.name.clone(),
                         value: ChoiceValue::Entity(id),
+                        public_card_id: None,
+                        public_card_ids: Vec::new(),
                     });
                 }
                 output.borrow_mut().push(EffectSpec::RequestChoice {
@@ -2072,6 +2096,8 @@ pub(super) fn build_context(
                         candidate.map(|card_id| ChoiceOption {
                             label: card_id.clone(),
                             value: ChoiceValue::Card(card_id),
+                            public_card_id: None,
+                            public_card_ids: Vec::new(),
                         })
                     })
                     .collect::<mlua::Result<Vec<_>>>()?;
@@ -2088,6 +2114,7 @@ pub(super) fn build_context(
         )?,
     )?;
     let output = effects.clone();
+    let definitions = catalog.clone();
     ctx.set(
         "choose_options",
         lua.create_function(
@@ -2102,9 +2129,53 @@ pub(super) fn build_context(
                 let mut options = Vec::new();
                 for choice in choices.sequence_values::<Table>() {
                     let choice = choice?;
+                    let card_id = choice.get::<Option<String>>("card_id")?;
+                    let public_card_ids = choice
+                        .get::<Option<Table>>("card_ids")?
+                        .map(|values| {
+                            values
+                                .sequence_values::<String>()
+                                .collect::<mlua::Result<Vec<_>>>()
+                        })
+                        .transpose()?
+                        .unwrap_or_default();
+                    for public_card_id in &public_card_ids {
+                        if !definitions.contains_key(public_card_id) {
+                            return Err(mlua::Error::runtime(format!(
+                                "choice references unknown card definition {public_card_id}"
+                            )));
+                        }
+                    }
+                    let (label, value, public_card_id) = if let Some(card_id) = card_id {
+                        let definition = definitions.get(&card_id).ok_or_else(|| {
+                            mlua::Error::runtime(format!(
+                                "choice references unknown card definition {card_id}"
+                            ))
+                        })?;
+                        let value = choice
+                            .get::<Option<Value>>("value")?
+                            .map(lua_to_choice_value)
+                            .transpose()?
+                            .unwrap_or_else(|| ChoiceValue::Card(card_id.clone()));
+                        (
+                            choice
+                                .get::<Option<String>>("label")?
+                                .unwrap_or_else(|| definition.name.clone()),
+                            value,
+                            Some(card_id),
+                        )
+                    } else {
+                        (
+                            choice.get("label")?,
+                            lua_to_choice_value(choice.get("value")?)?,
+                            None,
+                        )
+                    };
                     options.push(ChoiceOption {
-                        label: choice.get("label")?,
-                        value: lua_to_choice_value(choice.get("value")?)?,
+                        label,
+                        value,
+                        public_card_id,
+                        public_card_ids,
                     });
                 }
                 output.borrow_mut().push(EffectSpec::RequestChoice {

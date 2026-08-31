@@ -33,7 +33,7 @@ AREAS = {
         ["hero", "hero_power", "weapon", "board", "hand", "secret", "public_objective"]
     )
 }
-TENSOR_SCHEMA_VERSION = 1
+TENSOR_SCHEMA_VERSION = 2
 
 
 def _stable_bucket(value: str | None, size: int) -> int:
@@ -70,9 +70,20 @@ class Tensorizer:
         entity_state = torch.zeros(
             self.config.max_entities, self.config.entity_state_dim, dtype=torch.float32
         )
+        entity_public_cards = torch.zeros(
+            self.config.max_entities, self.config.max_entity_cards, dtype=torch.long
+        )
+        entity_public_card_mask = torch.zeros(
+            self.config.max_entities, self.config.max_entity_cards, dtype=torch.bool
+        )
         entity_mask = torch.zeros(self.config.max_entities, dtype=torch.bool)
         for i, entity in enumerate(entities):
             entity_cards[i] = self.catalog.index(entity.get("card_id"))
+            for j, card_id in enumerate(
+                entity.get("public_cards", [])[: self.config.max_entity_cards]
+            ):
+                entity_public_cards[i, j] = self.catalog.index(card_id)
+                entity_public_card_mask[i, j] = True
             values = [
                 float(entity.get("attack", 0)) / 20,
                 float(entity.get("max_health", 0)) / 20,
@@ -198,6 +209,12 @@ class Tensorizer:
         )
         action_targets = torch.full((count,), -1, dtype=torch.long)
         action_choice_cards = torch.full((count,), self.catalog.UNK, dtype=torch.long)
+        action_semantic_cards = torch.zeros(
+            count, self.config.max_action_cards, dtype=torch.long
+        )
+        action_semantic_card_mask = torch.zeros(
+            count, self.config.max_action_cards, dtype=torch.bool
+        )
         action_numeric = torch.zeros(count, self.config.action_numeric_dim)
         choice_options = (obs.get("pending_choice") or {}).get("options", [])
         for i, action in enumerate(actions):
@@ -215,15 +232,38 @@ class Tensorizer:
             if choice_index is not None and choice_index < len(choice_options):
                 option = choice_options[choice_index]
                 value = option.get("value", {})
-                action_choice_cards[i] = self.catalog.index(value.get("card_id"))
+                choice_card_id = value.get("card_id")
+                if choice_card_id:
+                    action_choice_cards[i] = self.catalog.index(choice_card_id)
+                choice_entity = value.get("entity")
+                if choice_entity in ref_to_position:
+                    action_targets[i] = ref_to_position[choice_entity]
             else:
                 option = {}
+            semantic_card_ids = []
+            if action.get("semantic_card_id"):
+                semantic_card_ids.append(action["semantic_card_id"])
+            value_card_id = (option.get("value") or {}).get("card_id")
+            if value_card_id:
+                semantic_card_ids.append(value_card_id)
+            semantic_card_ids.extend(option.get("semantic_card_ids", []))
+            semantic_card_ids = list(dict.fromkeys(semantic_card_ids))
+            if semantic_card_ids:
+                action_choice_cards[i] = self.catalog.index(semantic_card_ids[0])
+            else:
+                action_semantic_cards[i, 0] = self.catalog.UNK
+                action_semantic_card_mask[i, 0] = True
+            for j, card_id in enumerate(
+                semantic_card_ids[: self.config.max_action_cards]
+            ):
+                action_semantic_cards[i, j] = self.catalog.index(card_id)
+                action_semantic_card_mask[i, j] = True
             values = [
                 float(action.get("mana_cost", 0)) / 10,
                 float(action.get("board_position", 0) or 0) / 7,
                 float(choice_index or 0) / 10,
                 len(action.get("sources", [])) / max(self.config.max_action_sources, 1),
-                float(target is not None),
+                float(action_targets[i].item() >= 0),
                 float(action.get("card_action") is not None),
                 float(_stable_bucket(action.get("card_action"), 32)) / 31,
                 float(_stable_bucket(option.get("label"), 128)) / 127,
@@ -239,6 +279,8 @@ class Tensorizer:
             "global_state": global_state,
             "entity_cards": entity_cards,
             "entity_state": entity_state,
+            "entity_public_cards": entity_public_cards,
+            "entity_public_card_mask": entity_public_card_mask,
             "entity_mask": entity_mask,
             "deck_cards": deck_cards,
             "deck_mask": deck_mask,
@@ -252,6 +294,8 @@ class Tensorizer:
             "action_source_mask": action_source_mask,
             "action_targets": action_targets,
             "action_choice_cards": action_choice_cards,
+            "action_semantic_cards": action_semantic_cards,
+            "action_semantic_card_mask": action_semantic_card_mask,
             "action_numeric": action_numeric,
         }
 
@@ -267,6 +311,8 @@ def collate(samples: Sequence[dict[str, torch.Tensor]]) -> dict[str, torch.Tenso
         "action_source_mask",
         "action_targets",
         "action_choice_cards",
+        "action_semantic_cards",
+        "action_semantic_card_mask",
         "action_numeric",
     }
     for key in samples[0]:

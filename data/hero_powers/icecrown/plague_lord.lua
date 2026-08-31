@@ -12,14 +12,14 @@ local power = {
 
 function power.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "+3 Attack this turn", value = 1 },
-        { label = "Gain 3 Armor", value = 2 },
+        { card_id = "ICC_832pb", label = "+3 Attack this turn" },
+        { card_id = "ICC_832pa", label = "Gain 3 Armor" },
     }, "chosen")
 end
 
 function power.chosen(ctx, self, choice)
     local player = ctx:controller(self)
-    if choice == 1 then
+    if choice == "ICC_832pb" then
         cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
     else
         ctx:gain_armor(player, 3)
@@ -31,5 +31,10 @@ function power.on_choose_multiple(ctx, self)
     cardlib.effects.buff_until_end_of_turn(ctx, ctx:player(player).hero, 3, 0)
     ctx:gain_armor(player, 3)
 end
+
+power.tokens = {
+    { id = "ICC_832pa", name = "Scarab Shell", text = "+$d3 Armor.", set = "ICECROWN", type = "spell", class = "druid", collectible = false, cost = 2 },
+    { id = "ICC_832pb", name = "Spider Fangs", text = "+$a3 Attack.", set = "ICECROWN", type = "spell", class = "druid", collectible = false, cost = 2 },
+}
 
 return power

@@ -7,12 +7,14 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Spider Form", value = "ICC_051t" },
-        { label = "Scarab Form", value = "ICC_051t2" },
+        { card_id = "ICC_051a", label = "Spider Form" },
+        { card_id = "ICC_051b", label = "Scarab Form" },
     }, "swarm_form_chosen")
 end
 
-function card.swarm_form_chosen(ctx, self, choice) cardlib.effects.transform(ctx, self, choice) end
+function card.swarm_form_chosen(ctx, self, choice)
+    cardlib.effects.transform(ctx, self, choice == "ICC_051a" and "ICC_051t" or "ICC_051t2")
+end
 function card.on_choose_multiple(ctx, self) cardlib.effects.transform(ctx, self, "ICC_051t3") end
 
 card.tokens = {

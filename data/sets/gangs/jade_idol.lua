@@ -24,13 +24,13 @@ end
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Summon a Jade Golem", value = 1 },
-        { label = "Shuffle 3 Jade Idols into your deck", value = 2 },
+        { card_id = "CFM_602a", label = "Summon a Jade Golem" },
+        { card_id = "CFM_602b", label = "Shuffle 3 Jade Idols into your deck" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then summon_jade(ctx, self) else shuffle_idols(ctx, self) end
+    if choice == "CFM_602a" then summon_jade(ctx, self) else shuffle_idols(ctx, self) end
 end
 
 function card.on_choose_multiple(ctx, self)
@@ -43,5 +43,10 @@ function card.summon_jade_golem(ctx, self)
     local size = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
     cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", size, size)
 end
+
+card.tokens = {
+    { id = "CFM_602a", name = "Cut from Jade", text = "Summon a{1} {0} <b>Jade Golem</b>.", set = "GANGS", type = "spell", class = "druid", collectible = false, cost = 1 },
+    { id = "CFM_602b", name = "Jade Stash", text = "Shuffle 3 Jade Idols into your deck.", set = "GANGS", type = "spell", class = "druid", collectible = false, cost = 1 },
+}
 
 return card

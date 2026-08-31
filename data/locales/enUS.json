@@ -200,6 +200,16 @@
     "text": "<b>Choose One -</b> Deal $2 damage; or Summon two 1/1 Saplings."
   },
   {
+    "id": "AT_037a",
+    "name": "Grasping Roots",
+    "text": "Deal $2 damage."
+  },
+  {
+    "id": "AT_037b",
+    "name": "One, Two, Trees!",
+    "text": "Summon two 1/1 Saplings."
+  },
+  {
     "id": "AT_037t",
     "name": "Sapling",
     "text": ""
@@ -835,6 +845,16 @@
     "text": "<b>Choose One -</b> Transform into a 5/2 minion; or a 2/5 minion."
   },
   {
+    "id": "BRM_010a",
+    "name": "Firecat Form",
+    "text": ""
+  },
+  {
+    "id": "BRM_010b",
+    "name": "Fire Hawk Form",
+    "text": ""
+  },
+  {
     "id": "BRM_010t",
     "name": "Druid of the Flame",
     "text": ""
@@ -1125,6 +1145,16 @@
     "text": "<b>Choose One -</b> Gain 10 Armor; or Refresh your Mana Crystals."
   },
   {
+    "id": "CFM_308a",
+    "name": "Forgotten Armor",
+    "text": "Gain 10 Armor."
+  },
+  {
+    "id": "CFM_308b",
+    "name": "Forgotten Mana",
+    "text": "Refresh your Mana Crystals."
+  },
+  {
     "id": "CFM_310",
     "name": "Call in the Finishers",
     "text": "Summon four\n1/1 Murlocs."
@@ -1248,6 +1278,16 @@
     "id": "CFM_602",
     "name": "Jade Idol",
     "text": "<b>Choose One -</b> Summon a{1} {0} <b>Jade Golem</b>; or Shuffle 3 copies of this card into your deck."
+  },
+  {
+    "id": "CFM_602a",
+    "name": "Cut from Jade",
+    "text": "Summon a{1} {0} <b>Jade Golem</b>."
+  },
+  {
+    "id": "CFM_602b",
+    "name": "Jade Stash",
+    "text": "Shuffle 3 Jade Idols into your deck."
   },
   {
     "id": "CFM_603",
@@ -3130,9 +3170,29 @@
     "text": "<b>Choose One -</b>\nDeal $3 damage to a minion; or $1 damage\nand draw a card."
   },
   {
+    "id": "EX1_154a",
+    "name": "Solar Wrath",
+    "text": "Deal $3 damage to a minion."
+  },
+  {
+    "id": "EX1_154b",
+    "name": "Nature's Wrath",
+    "text": "Deal $1 damage to a minion. Draw a card."
+  },
+  {
     "id": "EX1_155",
     "name": "Mark of Nature",
     "text": "<b>Choose One -</b> Give a minion +4 Attack; or +4 Health and <b>Taunt</b>."
+  },
+  {
+    "id": "EX1_155a",
+    "name": "Tiger's Fury",
+    "text": "Give a minion\n+4 Attack."
+  },
+  {
+    "id": "EX1_155b",
+    "name": "Thick Hide",
+    "text": "Give a minion\n+4 Health and <b>Taunt</b>."
   },
   {
     "id": "EX1_158",
@@ -3148,6 +3208,16 @@
     "id": "EX1_160",
     "name": "Power of the Wild",
     "text": "<b>Choose One -</b> Give your minions +1/+1; or Summon a 3/2 Panther."
+  },
+  {
+    "id": "EX1_160a",
+    "name": "Summon a Panther",
+    "text": "Summon a 3/2 Panther."
+  },
+  {
+    "id": "EX1_160b",
+    "name": "Leader of the Pack",
+    "text": "Give your minions +1/+1."
   },
   {
     "id": "EX1_160t",
@@ -3170,9 +3240,29 @@
     "text": "<b>Choose One -</b> Gain 2 Mana Crystals; or Draw 3 cards."
   },
   {
+    "id": "EX1_164a",
+    "name": "Rampant Growth",
+    "text": "Gain 2 Mana Crystals."
+  },
+  {
+    "id": "EX1_164b",
+    "name": "Enrich",
+    "text": "Draw 3 cards."
+  },
+  {
     "id": "EX1_165",
     "name": "Druid of the Claw",
     "text": "[x]<b>Choose One -</b> Transform\ninto a 7/6 with <b>Rush</b>;\nor a 4/9 with <b>Taunt</b>."
+  },
+  {
+    "id": "EX1_165a",
+    "name": "Cat Form",
+    "text": "<b>Rush</b>"
+  },
+  {
+    "id": "EX1_165b",
+    "name": "Bear Form",
+    "text": "<b>Taunt</b>"
   },
   {
     "id": "EX1_165t1",
@@ -3188,6 +3278,16 @@
     "id": "EX1_166",
     "name": "Keeper of the Grove",
     "text": "<b>Choose One -</b> Deal 2 damage; or <b>Silence</b> a minion."
+  },
+  {
+    "id": "EX1_166a",
+    "name": "Moonfire",
+    "text": "Deal 2 damage."
+  },
+  {
+    "id": "EX1_166b",
+    "name": "Dispel",
+    "text": "<b>Silence</b> a minion."
   },
   {
     "id": "EX1_169",
@@ -3208,6 +3308,16 @@
     "id": "EX1_178",
     "name": "Ancient of War",
     "text": "<b>Choose One -</b>\n+5 Attack; or +5 Health and <b>Taunt</b>."
+  },
+  {
+    "id": "EX1_178a",
+    "name": "Rooted",
+    "text": "+5 Health and <b>Taunt</b>."
+  },
+  {
+    "id": "EX1_178b",
+    "name": "Uproot",
+    "text": "+5 Attack."
   },
   {
     "id": "EX1_238",
@@ -3793,6 +3903,16 @@
     "id": "EX1_573",
     "name": "Cenarius",
     "text": "<b>Choose One -</b> Give your other minions +2/+2; or Summon two 2/2 Treants with <b>Taunt</b>."
+  },
+  {
+    "id": "EX1_573a",
+    "name": "Demigod's Favor",
+    "text": "Give your other minions +2/+2."
+  },
+  {
+    "id": "EX1_573b",
+    "name": "Shan'do's Lesson",
+    "text": "Summon two 2/2 Treants with <b>Taunt</b>."
   },
   {
     "id": "EX1_573t",
@@ -4405,6 +4525,16 @@
     "text": "<b>Taunt</b>. <b>Choose One -</b>\n+1 Attack; or +1 Health."
   },
   {
+    "id": "GVG_030a",
+    "name": "Attack Mode",
+    "text": "+1 Attack."
+  },
+  {
+    "id": "GVG_030b",
+    "name": "Tank Mode",
+    "text": "+1 Health."
+  },
+  {
     "id": "GVG_031",
     "name": "Recycle",
     "text": "Shuffle an enemy minion into your opponent's deck."
@@ -4413,6 +4543,16 @@
     "id": "GVG_032",
     "name": "Grove Tender",
     "text": "<b>Choose One -</b> Give each player a Mana Crystal; or Each player draws a card."
+  },
+  {
+    "id": "GVG_032a",
+    "name": "Gift of Mana",
+    "text": "Give each player a Mana Crystal."
+  },
+  {
+    "id": "GVG_032b",
+    "name": "Gift of Cards",
+    "text": "Each player draws a card."
   },
   {
     "id": "GVG_033",
@@ -4458,6 +4598,16 @@
     "id": "GVG_041",
     "name": "Dark Wispers",
     "text": "<b>Choose One -</b> Summon 5 Wisps; or Give a minion +5/+5 and <b>Taunt</b>."
+  },
+  {
+    "id": "GVG_041a",
+    "name": "Call the Guardians",
+    "text": "+5/+5 and <b>Taunt</b>."
+  },
+  {
+    "id": "GVG_041b",
+    "name": "Nature's Defense",
+    "text": "Summon 5 Wisps."
   },
   {
     "id": "GVG_042",
@@ -5810,9 +5960,29 @@
     "text": "[x]<b>Choose One -</b>\nSummon 2 <b>Poisonous</b>\nSpiders; or 2 Scarabs\nwith <b>Taunt</b>."
   },
   {
+    "id": "ICC_832a",
+    "name": "Scarab Plague",
+    "text": "Summon two 1/5 Scarabs with <b>Taunt</b>."
+  },
+  {
+    "id": "ICC_832b",
+    "name": "Spider Plague",
+    "text": "[x]Summon two 1/2\nSpiders with <b>Poisonous</b>."
+  },
+  {
     "id": "ICC_832p",
     "name": "Plague Lord",
     "text": "<b>Choose One -</b>\n+$a3 Attack this turn;\nor Gain $d3 Armor."
+  },
+  {
+    "id": "ICC_832pa",
+    "name": "Scarab Shell",
+    "text": "+$d3 Armor."
+  },
+  {
+    "id": "ICC_832pb",
+    "name": "Spider Fangs",
+    "text": "+$a3 Attack."
   },
   {
     "id": "ICC_832t3",
@@ -6548,6 +6718,16 @@
     "id": "LOE_115",
     "name": "Raven Idol",
     "text": "<b>Choose One -</b>\n<b>Discover</b> a minion; or <b>Discover</b> a spell."
+  },
+  {
+    "id": "LOE_115a",
+    "name": "Break Free",
+    "text": "<b>Discover</b> a minion."
+  },
+  {
+    "id": "LOE_115b",
+    "name": "Awakened",
+    "text": "<b>Discover</b> a spell."
   },
   {
     "id": "LOE_116",
@@ -7365,9 +7545,29 @@
     "text": "<b>Choose One -</b>\nDeal $5 damage to a minion; or $2 damage to all enemy minions."
   },
   {
+    "id": "NEW1_007a",
+    "name": "Stellar Drift",
+    "text": "Deal $2 damage to all enemy minions."
+  },
+  {
+    "id": "NEW1_007b",
+    "name": "Starlord",
+    "text": "Deal $5 damage to a minion."
+  },
+  {
     "id": "NEW1_008",
     "name": "Ancient of Lore",
     "text": "<b>Choose One -</b> Draw 2 cards; or Restore #7 Health."
+  },
+  {
+    "id": "NEW1_008a",
+    "name": "Ancient Teachings",
+    "text": "Draw 2 cards."
+  },
+  {
+    "id": "NEW1_008b",
+    "name": "Ancient Secrets",
+    "text": "Restore 7 Health."
   },
   {
     "id": "NEW1_009",
@@ -7638,6 +7838,16 @@
     "id": "OG_047",
     "name": "Feral Rage",
     "text": "<b>Choose One -</b> Give your hero +4 Attack this turn; or Gain 8 Armor."
+  },
+  {
+    "id": "OG_047a",
+    "name": "Evolve Spines",
+    "text": "Give your hero +4 Attack this turn."
+  },
+  {
+    "id": "OG_047b",
+    "name": "Evolve Scales",
+    "text": "Gain 8 Armor."
   },
   {
     "id": "OG_048",
@@ -7950,6 +8160,16 @@
     "text": "<b>Choose One -</b> Summon seven 1/1 Wisps; or Give your minions +2/+2."
   },
   {
+    "id": "OG_195a",
+    "name": "Many Wisps",
+    "text": "Summon seven 1/1 Wisps."
+  },
+  {
+    "id": "OG_195b",
+    "name": "Big Wisps",
+    "text": "Give your minions +2/+2."
+  },
+  {
     "id": "OG_195c",
     "name": "Wisp",
     "text": ""
@@ -7968,6 +8188,16 @@
     "id": "OG_202",
     "name": "Mire Keeper",
     "text": "[x]<b>Choose One -</b> Summon a\n2/2 Slime; or Gain an\nempty Mana Crystal."
+  },
+  {
+    "id": "OG_202a",
+    "name": "Y'Shaarj's Strength",
+    "text": "Summon a 2/2 Slime."
+  },
+  {
+    "id": "OG_202b",
+    "name": "Yogg-Saron's Magic",
+    "text": "Gain an empty Mana Crystal."
   },
   {
     "id": "OG_202c",
@@ -8700,6 +8930,16 @@
     "text": "<b>Rewind</b>\nAdd a random minion\nto your hand. It costs\n(3) less."
   },
   {
+    "id": "TIME_000ta",
+    "name": "Keep Timeline",
+    "text": "Do nothing.\n<i>This timeline is\nperfect as-is!</i>"
+  },
+  {
+    "id": "TIME_000tb",
+    "name": "Rewind Timeline",
+    "text": "<b>Rewind</b> the card's effect."
+  },
+  {
     "id": "TIME_053",
     "name": "Sandmaw",
     "text": ""
@@ -8708,6 +8948,16 @@
     "id": "TIME_211",
     "name": "Lady Azshara",
     "text": "[x]<b>Fabled</b>. <b>Choose One -</b>\nEmpower Zin-Azshari; or\nThe Well of Eternity. <i>(The\n  other gets destroyed!)</i>"
+  },
+  {
+    "id": "TIME_211a",
+    "name": "Empower Zin-Azshari",
+    "text": "[x]The minions summoned\nby Zin-Azshari will have\ndoubled stats. Destroy\nThe Well of Eternity."
+  },
+  {
+    "id": "TIME_211b",
+    "name": "Empower the Well",
+    "text": "The spells created by The Well of Eternity will cast twice.\nDestroy Zin-Azshari."
   },
   {
     "id": "TIME_211t1",
@@ -8908,6 +9158,21 @@
     "id": "TTN_858",
     "name": "Amitus, the Peacekeeper",
     "text": "<b>Titan</b>\n<b>Taunt</b>. Your minions\ncan't take more than 2 damage at a time."
+  },
+  {
+    "id": "TTN_858t1",
+    "name": "Reinforced",
+    "text": "Draw 2 minions. Set their Attack, Health, and Cost to 2."
+  },
+  {
+    "id": "TTN_858t2",
+    "name": "Empowered",
+    "text": "Give your other\nminions +2/+2."
+  },
+  {
+    "id": "TTN_858t3",
+    "name": "Pacified",
+    "text": "Set the Attack and Health of all enemy minions to 2."
   },
   {
     "id": "ULD_208",

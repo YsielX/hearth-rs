@@ -70,6 +70,7 @@ pub struct EntityObservation {
     pub location_cooldown: u8,
     pub keywords: Vec<String>,
     pub silenced: bool,
+    pub public_cards: Vec<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -114,6 +115,7 @@ pub enum ChoiceOptionValueObservation {
 pub struct ChoiceOptionObservation {
     pub label: String,
     pub value: ChoiceOptionValueObservation,
+    pub semantic_card_ids: Vec<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -159,6 +161,7 @@ fn encode_choice(
             Ok(ChoiceOptionObservation {
                 label: option.label.clone(),
                 value,
+                semantic_card_ids: option.semantic_card_ids.clone(),
             })
         })
         .collect::<Result<Vec<_>, EnvError>>()?;
@@ -208,6 +211,7 @@ pub(crate) fn build_observation(
                 location_cooldown: entity.location_cooldown,
                 keywords: entity.keywords.clone(),
                 silenced: entity.silenced,
+                public_cards: entity.public_cards.clone(),
             });
             Ok(reference)
         };
@@ -339,14 +343,17 @@ mod tests {
                         id: EntityId(99),
                         card_id: "ENTITY_CARD".to_owned(),
                     }),
+                    semantic_card_ids: vec!["ENTITY_SEMANTIC".to_owned()],
                 },
                 ChoiceOptionView {
                     label: "Card".to_owned(),
                     value: ChoiceOptionValueView::Card("CARD".to_owned()),
+                    semantic_card_ids: vec!["CARD".to_owned()],
                 },
                 ChoiceOptionView {
                     label: "Secret payload".to_owned(),
                     value: ChoiceOptionValueView::Opaque,
+                    semantic_card_ids: Vec::new(),
                 },
             ],
         };
@@ -359,6 +366,7 @@ mod tests {
                 card_id
             } if card_id == "ENTITY_CARD"
         ));
+        assert_eq!(choice.options[0].semantic_card_ids, ["ENTITY_SEMANTIC"]);
         assert!(matches!(
             &choice.options[1].value,
             ChoiceOptionValueObservation::Card { card_id } if card_id == "CARD"

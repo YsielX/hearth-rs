@@ -50,6 +50,7 @@ impl<R: CardRuntime> Game<R> {
                 base_spell_damage,
                 keywords,
                 attached_scripts,
+                public_cards,
                 started_in_deck,
             } => self.create_card_from_spec(CardCreation {
                 source,
@@ -63,8 +64,25 @@ impl<R: CardRuntime> Game<R> {
                 base_spell_damage,
                 keywords,
                 attached_scripts,
+                public_cards,
                 started_in_deck,
             }),
+            EffectSpec::AddPublicCard {
+                source: _,
+                target,
+                card_id,
+            } => {
+                self.runtime
+                    .definition(&card_id)
+                    .ok_or_else(|| GameError::UnknownCard(card_id.clone()))?;
+                let entity = self
+                    .state
+                    .entities
+                    .get_mut(&target)
+                    .ok_or(GameError::UnknownEntity(target))?;
+                entity.public_cards.push(card_id);
+                Ok(Vec::new())
+            }
             EffectSpec::ConsumeSideboardCard {
                 source: _,
                 player,

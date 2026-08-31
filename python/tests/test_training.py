@@ -139,6 +139,47 @@ class TrainingTest(unittest.TestCase):
             encoded["action_choice_cards"][1].item(),
         )
 
+    def test_tensorizer_encodes_choice_entity_and_composite_card_semantics(self) -> None:
+        decision = deepcopy(self.env.reset(seed=10))
+        entity = decision["observation"]["entities"][0]
+        entity["public_cards"] = ["CS2_029", "CS2_024"]
+        entity_ref = entity["entity"]
+        decision["observation"]["phase"] = "choice"
+        decision["observation"]["pending_choice"] = {
+            "prompt": "Choose an entity",
+            "options": [
+                {
+                    "label": "Target",
+                    "value": {
+                        "kind": "entity",
+                        "entity": entity_ref,
+                        "card_id": entity["card_id"],
+                    },
+                    "semantic_card_ids": ["CS2_029", "CS2_024"],
+                }
+            ],
+        }
+        decision["actions"] = [
+            {"index": 0, "kind": "choose", "choice_index": 0}
+        ]
+
+        encoded = Tensorizer(self.catalog, self.config).encode(
+            decision, demo_config()["decks"][0]
+        )
+        self.assertEqual(encoded["action_targets"].tolist(), [0])
+        self.assertEqual(
+            encoded["action_semantic_cards"][0, :3].tolist(),
+            [
+                self.catalog.index(entity["card_id"]),
+                self.catalog.index("CS2_029"),
+                self.catalog.index("CS2_024"),
+            ],
+        )
+        self.assertEqual(
+            encoded["entity_public_cards"][0, :2].tolist(),
+            [self.catalog.index("CS2_029"), self.catalog.index("CS2_024")],
+        )
+
     def test_ppo_builds_terminal_returns_and_updates(self) -> None:
         episode = play_episode(
             self.env,
@@ -181,6 +222,11 @@ class TrainingTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "model.pt"
             save_checkpoint(path, model, self.catalog, phase="test")
+            legacy_payload = torch.load(path, map_location="cpu", weights_only=False)
+            legacy_payload["tensor_schema_version"] = 1
+            legacy_payload["model_config"].pop("max_action_cards")
+            legacy_payload["model_config"].pop("max_entity_cards")
+            torch.save(legacy_payload, path)
             entries = list(self.env.card_catalog)
             extra = deepcopy(entries[0])
             extra["definition"]["id"] = "TEST_NEW_CARD"
@@ -196,6 +242,9 @@ class TrainingTest(unittest.TestCase):
                 restored.card_id_embedding.num_embeddings, len(expanded.card_ids)
             )
             self.assertEqual(payload["migration"]["new_cards"], 1)
+            self.assertEqual(
+                payload["migration"]["tensor_schema"], {"from": 1, "to": 2}
+            )
             new_row = restored.card_id_embedding.weight[expanded.index("TEST_NEW_CARD")]
             self.assertEqual(int(torch.count_nonzero(new_row).item()), 0)
 

@@ -37,6 +37,11 @@ local function discover_rune_card(ctx, self, rune)
 end
 
 card.action_target_modes = { titan_1 = "required" }
+card.action_semantic_cards = {
+    titan_1 = "TTN_737t",
+    titan_2 = "TTN_737t1",
+    titan_3 = "TTN_737t3",
+}
 card.action_targets = {
     titan_1 = function(ctx, self) return ctx:enemy_minions(self) end,
 }

@@ -15,13 +15,13 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Transform into a 5/2 minion", value = 1 },
-        { label = "Transform into a 2/5 minion", value = 2 },
+        { card_id = "BRM_010a", label = "Transform into a 5/2 minion" },
+        { card_id = "BRM_010b", label = "Transform into a 2/5 minion" },
     }, "chosen")
 end
 
 function card.chosen(ctx, self, choice)
-    cardlib.effects.transform(ctx, self, choice == 1 and "BRM_010t" or "BRM_010t2")
+    cardlib.effects.transform(ctx, self, choice == "BRM_010a" and "BRM_010t" or "BRM_010t2")
 end
 
 function card.on_choose_multiple(ctx, self)
@@ -29,6 +29,16 @@ function card.on_choose_multiple(ctx, self)
 end
 
 card.tokens = {
+    {
+        id = "BRM_010a", name = "Firecat Form", text = "",
+        set = "BRM", type = "minion", class = "druid", rarity = "common",
+        collectible = false, cost = 3, attack = 5, health = 2, tags = { "elemental", "beast" },
+    },
+    {
+        id = "BRM_010b", name = "Fire Hawk Form", text = "",
+        set = "BRM", type = "minion", class = "druid", rarity = "common",
+        collectible = false, cost = 3, attack = 2, health = 5, tags = { "elemental", "beast" },
+    },
     {
         id = "BRM_010t", name = "Druid of the Flame", text = "",
         set = "BRM", type = "minion", class = "druid", rarity = "common",

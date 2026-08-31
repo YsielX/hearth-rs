@@ -13,10 +13,12 @@ class ModelConfig:
     history_numeric_dim: int = 14
     action_numeric_dim: int = 9
     max_entities: int = 64
+    max_entity_cards: int = 16
     max_history: int = 96
     max_history_entities: int = 4
     max_deck_cards: int = 40
     max_action_sources: int = 10
+    max_action_cards: int = 4
     transformer_layers: int = 2
     attention_heads: int = 4
     dropout: float = 0.1

@@ -4,10 +4,10 @@ local card = { api_version = 1, id = "UNG_101", name = "Shellshifter",
     cost = 4, attack = 3, health = 3, keywords = { "choose_one" } }
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "5/3 with Stealth", value = 1 }, { label = "3/5 with Taunt", value = 2 },
+        { card_id = "UNG_101a", label = "5/3 with Stealth" }, { card_id = "UNG_101b", label = "3/5 with Taunt" },
     }, "chosen")
 end
-function card.chosen(ctx, self, choice) cardlib.effects.transform(ctx, self, choice == 1 and "UNG_101t" or "UNG_101t2") end
+function card.chosen(ctx, self, choice) cardlib.effects.transform(ctx, self, choice == "UNG_101a" and "UNG_101t" or "UNG_101t2") end
 function card.on_choose_multiple(ctx, self) cardlib.effects.transform(ctx, self, "UNG_101t3") end
 card.tokens = {
     { id = "UNG_101a", name = "Raptor Form", text = "<b>Stealth</b>", set = "UNGORO", type = "minion", class = "druid", rarity = "rare", cost = 4, attack = 5, health = 3, tags = { "beast" }, keywords = { "stealth" } },

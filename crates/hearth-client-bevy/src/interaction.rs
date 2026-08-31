@@ -316,6 +316,7 @@ mod tests {
         LegalAction {
             command,
             mana_cost: 0,
+            semantic_card_id: None,
         }
     }
 

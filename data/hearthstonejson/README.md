@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](zhCN/README.md) | [繁體中文](zhTW/README.md)
 
-`selected.enUS.json` is the source snapshot for the 1,999 implemented official definitions as of 2026-08-30. It is derived from:
+`selected.enUS.json` is the source snapshot for the 2,052 implemented official definitions as of 2026-08-31. It is derived from:
 
 ```text
 https://api.hearthstonejson.com/v1/latest/enUS/cards.json

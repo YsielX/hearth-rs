@@ -528,6 +528,7 @@ mod tests {
             location_cooldown: 0,
             keywords: Vec::new(),
             silenced: false,
+            public_cards: Vec::new(),
         }
     }
 
@@ -593,7 +594,11 @@ mod tests {
     }
 
     fn legal(command: PlayerCommand, mana_cost: u8) -> LegalAction {
-        LegalAction { command, mana_cost }
+        LegalAction {
+            command,
+            mana_cost,
+            semantic_card_id: None,
+        }
     }
 
     #[test]

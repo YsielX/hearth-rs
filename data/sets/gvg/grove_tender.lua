@@ -15,8 +15,8 @@ local card = {
 
 function card.on_choose_one(ctx, self)
     ctx:choose_options(ctx:controller(self), "Choose One", {
-        { label = "Give each player a Mana Crystal", value = 1 },
-        { label = "Each player draws a card", value = 2 },
+        { card_id = "GVG_032a", label = "Give each player a Mana Crystal" },
+        { card_id = "GVG_032b", label = "Each player draws a card" },
     }, "chosen")
 end
 
@@ -33,7 +33,7 @@ local function draw_cards(ctx, self)
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then give_mana(ctx, self)
+    if choice == "GVG_032a" then give_mana(ctx, self)
     else draw_cards(ctx, self) end
 end
 
@@ -41,5 +41,10 @@ function card.on_choose_multiple(ctx, self)
     give_mana(ctx, self)
     draw_cards(ctx, self)
 end
+
+card.tokens = {
+    { id = "GVG_032a", name = "Gift of Mana", text = "Give each player a Mana Crystal.", set = "GVG", type = "spell", class = "druid", collectible = false, cost = 3 },
+    { id = "GVG_032b", name = "Gift of Cards", text = "Each player draws a card.", set = "GVG", type = "spell", class = "druid", collectible = false, cost = 3 },
+}
 
 return card

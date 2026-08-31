@@ -393,7 +393,7 @@ ctx:increment_player_data(player, key, delta)
 
 `cast_spell` 從定義建立法術，`cast_existing_spell` 施放隱藏區或終止區中的既有實體；兩者都接受 `{ target = entity, skip_if_invalid = true, random_target = true, choice_policy = "random" }`。隨機目標和自動抉擇現在是顯式策略，不再借用隱藏指令碼資料。連續隨機施法由 Lua 組合，公共庫 `cardlib.random_spell` 重用權威 `random_value` 與 `cast_spell`。
 
-`create_card` 支援 `destination`、可選手牌 `position`、`attack`、`health`、`cost`、`spell_damage`、`keywords`、`attached_scripts` 和 `started_in_deck`。`consume_sideboard_card` 只移除指定身分；指令碼在同一個事務命令中把它與 `create_card(..., { started_in_deck = true })` 組合。屬性合成公式留在 Lua；`cardlib.fusion.create_minion` 是可重用的合成手下實作。宣告 `module_type = "library"` 的檔案會暴露為 `cardlib[id]`，參與校驗和確定性卡包雜湊，但不會註冊成卡牌。
+`create_card` 支援 `destination`、可選手牌 `position`、`attack`、`health`、`cost`、`spell_damage`、`keywords`、`attached_scripts`、`public_cards` 和 `started_in_deck`。`public_cards` 只公開描述合成牌，不會執行這些定義的指令碼；`ctx:add_public_card(entity, card_id)` 可追加後續元件。`consume_sideboard_card` 只移除指定身分；指令碼在同一個事務命令中把它與 `create_card(..., { started_in_deck = true })` 組合。屬性合成公式留在 Lua；`cardlib.fusion.create_minion` 是可重用的合成手下實作。宣告 `module_type = "library"` 的檔案會暴露為 `cardlib[id]`，參與校驗和確定性卡包雜湊，但不會註冊成卡牌。
 
 `damage_ignoring_spell_damage` 仍走普通順序傷害與事件流程，但不疊加來源控制者的法術傷害。`spend_mana` 原子地花費玩家當前可用法力（優先臨時法力），並按實際正數花費發布 `mana_spent`。`increment_player_data` 對玩家指令碼資料執行原子有符號累加，發布帶 `old/new/delta` 的 `player_script_data_changed`，避免同一快照收集出的多個觸發器互相覆蓋。死亡記錄保存卡牌定義是否原生具有死亡之聲：沉默不清除此標記，附加死亡之聲也不會設定它。
 
@@ -769,6 +769,19 @@ end
 ```
 
 `value` 可為 `nil`、boolean、有符號整數、UTF-8 字串、稠密陣列或純字串鍵物件，並可遞迴組合。玩家看到 `label`，resume hook 收到對應 `value`。同類的 `ctx:random_value(values, resume_hook)` 讓 Rust RNG 從任意可序列化值陣列中選擇；它與 `random_entity` 一樣增加隨機計數併發布 `random_choice_made`。
+
+官方「抉擇」類分支應把每個選項定義成非收藏卡，並透過 `card_id` 而不是不透明的 `value` 提交：
+
+```lua
+ctx:choose_options(player, "選擇一個", {
+    { card_id = "EX1_164a", label = "獲得兩個法力水晶" },
+    { card_id = "EX1_164b", label = "抽三張牌" },
+}, "chosen")
+```
+
+這樣公開觀察會得到 `ChoiceValue::Card`，客戶端和訓練策略都能讀取選項牌定義；resume hook 收到卡牌 ID 字串。選擇選項不會建立、打出或施放該選項牌，仍由母牌的 continuation 結算對應分支。
+
+選項也可以同時提供 `card_id` 和 `value`：卡牌定義負責公開語義，resume hook 仍收到任意結構 payload。可選的 `card_ids = { ... }` 會補充更多公開語義卡，例如同時描述「回溯」按鈕以及將被替換的手下。
 
 ## 狀態穩定後的命名序列
 

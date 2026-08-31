@@ -39,16 +39,16 @@ local function choose_damage_target(ctx, self)
 end
 
 function card.on_choose_one(ctx, self)
-    local options = { { label = "Deal 2 damage", value = 1 } }
+    local options = { { card_id = "AT_037a", label = "Deal 2 damage" } }
     if #ctx:board(ctx:controller(self)) < 7 then
-        options[#options + 1] = { label = "Summon two 1/1 Saplings", value = 2 }
+        options[#options + 1] = { card_id = "AT_037b", label = "Summon two 1/1 Saplings" }
     end
-    if #options == 1 then card.chosen(ctx, self, 1)
+    if #options == 1 then card.chosen(ctx, self, options[1].card_id)
     else ctx:choose_options(ctx:controller(self), "Choose One", options, "chosen") end
 end
 
 function card.chosen(ctx, self, choice)
-    if choice == 1 then choose_damage_target(ctx, self) else summon_saplings(ctx, self) end
+    if choice == "AT_037a" then choose_damage_target(ctx, self) else summon_saplings(ctx, self) end
 end
 
 function card.deal_damage(ctx, self, target) cardlib.effects.damage(ctx, target, 2) end
@@ -59,6 +59,8 @@ function card.on_choose_multiple(ctx, self)
 end
 
 card.tokens = {
+    { id = "AT_037a", spell_school = "nature", name = "Grasping Roots", text = "Deal $2 damage.", set = "TGT", type = "spell", class = "druid", collectible = false, cost = 1 },
+    { id = "AT_037b", spell_school = "nature", name = "One, Two, Trees!", text = "Summon two 1/1 Saplings.", set = "TGT", type = "spell", class = "druid", collectible = false, cost = 1 },
     { id = "AT_037t", name = "Sapling", text = "", set = "TGT", type = "minion",
       class = "druid", cost = 1, attack = 1, health = 1 },
 }
