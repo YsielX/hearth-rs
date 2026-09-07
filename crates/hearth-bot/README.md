@@ -1,21 +1,24 @@
 # hearth-bot
 
-`hearth-bot` provides deterministic, non-cheating Easy, Normal, and Hard controllers. Every policy consumes only `PlayerView` plus the authoritative list of `LegalAction` values; none can read the opponent's hand, deck order, Secret identities, hidden aura sources, RNG, or replay. `DifficultyBot` selects the policy while the original `SimpleBot` remains the Normal-compatible controller.
+Heuristic controllers using `PlayerView` and the engine's legal actions. Card-aware evaluation also reads public card definitions. The bot has no access to hidden hands, deck order, or RNG state.
 
-Easy chooses the first stable non-concede action and is intentionally naive. Normal uses the baseline plan below. Hard replaces opening-hand cards costing four or more, takes advantageous trades before spending Mana, then follows the same deterministic planning rules. The same visible state and difficulty always produce the same command.
+## Modules
 
-Decision order:
+| Module | Responsibility |
+| --- | --- |
+| `controller` | Difficulty settings and `PlayerController` implementations |
+| `policy` | Decision flow and public action-selection entry points |
+| `combat` | Board lethal, trades, and face attacks |
+| `spending` | Mana combinations, target preferences, and locations |
+| `effects` | Recognized card-effect descriptions |
+| `evaluation` | Card-aware action scores and material estimates |
+| `tests` | Shared fixtures, policy tests, and tactical evaluation tests |
 
-1. If the currently legal attacks from friendly board minions contain enough damage to kill the opposing Hero, attack face until lethal.
-2. Choose a currently legal combination that leaves as little Mana unspent as possible. Dynamic costs are supplied by the engine rather than reimplemented by the Bot.
-3. Make advantageous minion trades.
-4. Use a ready Location, then attack face when legal.
-5. When Taunt or another rule prevents attacking face, take the least costly forced trade.
-6. End the turn; never Concede voluntarily.
+`lib.rs` re-exports `BotDifficulty`, `DifficultyBot`, `SimpleBot`, `choose_action`, `choose_action_for`, `choose_action_with_cards`, and `position_value`.
 
-An advantageous trade must kill the defender and either preserve the attacker or exchange it for a strictly more valuable defender. Combat value uses current Attack and remaining Health, with small public-keyword premiums for Taunt, Divine Shield, Poisonous, Lifesteal, Windfury, Mega-Windfury, and Deathrattle. Divine Shield and Poisonous also affect the kill/survival calculation directly.
+The CLI, app, and Python environment use `choose_action_with_cards`. Recognized damage, healing, draw, and buff effects receive tactical scores; other effects use the base policy. Easy difficulty retains its simple action order.
 
-Run a Bot mirror:
+Run a bot mirror:
 
 ```bash
 cargo run -p hearth-cli --release -- play \

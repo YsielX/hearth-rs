@@ -50,6 +50,10 @@ impl PyHearthEnv {
         self.inner.decision().map(to_json).transpose()
     }
 
+    fn heuristic_action(&self, decision_id: u64) -> PyResult<usize> {
+        self.inner.heuristic_action(decision_id).map_err(runtime_error)
+    }
+
     fn reset_json(&mut self, seed: u64) -> PyResult<String> {
         let decision = self.inner.reset(seed).map_err(runtime_error)?;
         to_json(decision)
@@ -78,6 +82,16 @@ impl PyHearthEnv {
             .pack_hash()
             .map(str::to_owned)
             .map_err(runtime_error)
+    }
+
+    #[staticmethod]
+    fn engine_build() -> &'static str {
+        env!("HEARTH_ENGINE_BUILD")
+    }
+
+    #[staticmethod]
+    fn observation_schema_version() -> u32 {
+        hearth_env::OBSERVATION_SCHEMA_VERSION
     }
 
     fn card_ids(&self) -> PyResult<Vec<String>> {

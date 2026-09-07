@@ -8,3 +8,6 @@ publish = false
 [dependencies]
 hearth-core = { path = "../hearth-core" }
 serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

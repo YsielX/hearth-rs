@@ -2459,6 +2459,7 @@ version = "0.1.0"
 dependencies = [
  "hearth-core",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -2497,6 +2498,7 @@ dependencies = [
 name = "hearth-env"
 version = "0.1.0"
 dependencies = [
+ "hearth-bot",
  "hearth-core",
  "hearth-script",
  "serde",

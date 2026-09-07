@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from ._native import HearthEnv as _NativeHearthEnv
+from .build import source_fingerprint
 
 
 class HearthEnv:
@@ -27,6 +28,16 @@ class HearthEnv:
         max_steps: int = 1000,
         history_limit: int | None = None,
     ) -> None:
+        expected = source_fingerprint()
+        actual = (
+            _NativeHearthEnv.engine_build()
+            if hasattr(_NativeHearthEnv, "engine_build")
+            else None
+        )
+        if expected is not None and expected != actual:
+            raise RuntimeError(
+                "native extension is stale; rebuild with VIRTUAL_ENV=.venv .venv/bin/maturin develop --release --offline"
+            )
         self._native = _NativeHearthEnv(
             str(data_path),
             json.dumps(dict(match_config), separators=(",", ":")),
@@ -45,6 +56,14 @@ class HearthEnv:
     @property
     def pack_hash(self) -> str:
         return self._native.pack_hash()
+
+    @property
+    def engine_build(self) -> str:
+        return self._native.engine_build()
+
+    @property
+    def observation_schema_version(self) -> int:
+        return self._native.observation_schema_version()
 
     @property
     def card_ids(self) -> list[str]:
@@ -85,6 +104,9 @@ class HearthEnv:
         )
         self._decision = transition["next"]
         return transition
+
+    def heuristic_action(self, decision_id: int) -> int:
+        return self._native.heuristic_action(decision_id)
 
     def replay(self) -> dict[str, Any]:
         """Return operator-only reproducibility data, never a policy observation."""

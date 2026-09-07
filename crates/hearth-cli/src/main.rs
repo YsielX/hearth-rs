@@ -287,9 +287,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             let legal_actions = game.legal_action_options()?;
             let view = game.state().player_view(input_player);
-            let command = controllers[input_player.index()]
-                .choose_action(&view, &legal_actions)
-                .map_err(io::Error::other)?;
+            let command = if matches!(controllers[input_player.index()], Controller::Bot(_)) {
+                hearth_bot::choose_action_with_cards(
+                    hearth_bot::BotDifficulty::Normal, &view, &legal_actions,
+                    |id| game.runtime().definition(id),
+                )
+            } else {
+                controllers[input_player.index()].choose_action(&view, &legal_actions)
+            }.map_err(io::Error::other)?;
             println!(
                 "{}: {}",
                 input_player,

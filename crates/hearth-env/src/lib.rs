@@ -87,6 +87,8 @@ pub enum EnvError {
     PublicHistoryRewound { processed: usize, available: usize },
     #[error("environment has no active game")]
     MissingGame,
+    #[error("heuristic bot: {0}")]
+    Bot(String),
 }
 
 struct CachedDecision {
@@ -190,6 +192,22 @@ impl HearthEnv {
 
     pub fn decision(&self) -> Option<&Decision> {
         self.current.as_ref().map(|decision| &decision.public)
+    }
+
+    pub fn heuristic_action(&self, decision_id: u64) -> Result<usize, EnvError> {
+        let cached = self.current.as_ref().ok_or(EnvError::EpisodeEnded)?;
+        if cached.public.id != decision_id {
+            return Err(EnvError::StaleDecision { expected: cached.public.id, received: decision_id });
+        }
+        let game = self.game.as_ref().ok_or(EnvError::MissingGame)?;
+        let view = game.state().player_view(game.state().input_player());
+        let legal = game.legal_action_options()?;
+        let command = hearth_bot::choose_action_with_cards(
+            hearth_bot::BotDifficulty::Normal, &view, &legal,
+            |id| game.runtime().definition(id),
+        ).map_err(EnvError::Bot)?;
+        cached.commands.iter().position(|candidate| candidate == &command)
+            .ok_or_else(|| EnvError::Bot("selected command is absent from the current decision".into()))
     }
 
     pub fn step(&mut self, decision_id: u64, action_index: usize) -> Result<Transition, EnvError> {
@@ -423,7 +441,10 @@ mod tests {
         assert!(json.to_string().find("random_counter").is_none());
         assert!(json.to_string().find("command").is_none());
         assert!(json.to_string().find("sequence").is_none());
-        assert_eq!(decision.observation.schema_version, 7);
+        assert_eq!(
+            decision.observation.schema_version,
+            OBSERVATION_SCHEMA_VERSION
+        );
     }
 
     #[test]

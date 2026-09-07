@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use hearth_bot::DifficultyBot;
-use hearth_core::{LegalAction, Locale, PlayerCommand, PlayerController, PlayerId, PlayerView};
+use hearth_core::{CardRuntime, LegalAction, Locale, PlayerCommand, PlayerId, PlayerView};
 
 use crate::{AppError, BotDifficulty};
 
@@ -157,9 +157,10 @@ impl GameSession {
         let player = self.session.state().input_player();
         let view = self.session.view_for(player);
         let legal = self.session.legal_action_options()?;
-        let command = self
-            .bot
-            .choose_action(&view, &legal)
+        let command = hearth_bot::choose_action_with_cards(
+            self.bot.difficulty(), &view, &legal,
+            |id| self.session.runtime().definition(id),
+        )
             .map_err(AppError::Controller)?;
         self.session.dispatch(command)?;
         Ok(true)
