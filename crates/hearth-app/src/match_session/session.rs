@@ -127,6 +127,27 @@ impl MatchSession {
         self.game.legal_action_options().map_err(AppError::from)
     }
 
+    /// Builds an owned viewer-safe request; it can be sent from another thread.
+    pub fn llm_request(&self) -> Result<hearth_llm::DecisionRequest, AppError> {
+        let player = self.state().input_player();
+        hearth_llm::DecisionRequest::prepare(
+            &self.view_for(player),
+            &self.legal_action_options()?,
+            &self.state().player(player).starting_deck,
+            self.runtime().pack_hash(),
+            |id| self.runtime().definition(id),
+        )
+        .map_err(|e| AppError::Controller(e.to_string()))
+    }
+
+    pub fn dispatch_llm(&mut self, decision: &hearth_llm::LlmDecision) -> Result<(), AppError> {
+        let command = self
+            .llm_request()?
+            .resolve(&decision.label)
+            .map_err(|e| AppError::Controller(e.to_string()))?;
+        self.dispatch(command)
+    }
+
     pub fn valid_targets(&self, source: EntityId) -> Result<Vec<EntityId>, AppError> {
         self.game.valid_targets(source).map_err(AppError::from)
     }

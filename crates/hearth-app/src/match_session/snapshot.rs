@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::BotDifficulty;
 
-use super::MatchMode;
+use super::{MatchMode, OpponentKind};
 
 pub const GAME_SESSION_SNAPSHOT_VERSION: u32 = 1;
 
@@ -18,5 +18,7 @@ pub struct GameSessionSnapshot {
     pub match_mode: MatchMode,
     #[serde(default)]
     pub bot_difficulty: BotDifficulty,
+    #[serde(default)]
+    pub opponent_kind: OpponentKind,
     pub deck_names: [String; 2],
 }

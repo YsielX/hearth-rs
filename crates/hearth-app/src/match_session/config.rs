@@ -15,6 +15,15 @@ pub struct MatchConfig {
     pub human_player: PlayerId,
     pub match_mode: MatchMode,
     pub bot_difficulty: BotDifficulty,
+    pub opponent_kind: OpponentKind,
+    pub llm: hearth_llm::LlmConfig,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Eq, Serialize)]
+pub enum OpponentKind {
+    #[default]
+    Heuristic,
+    Llm,
 }
 
 /// Controller-neutral inputs required to construct an authoritative match.
@@ -48,6 +57,8 @@ impl MatchConfig {
             human_player: PlayerId::ONE,
             match_mode: MatchMode::VsBot,
             bot_difficulty: BotDifficulty::Normal,
+            opponent_kind: OpponentKind::Heuristic,
+            llm: hearth_llm::LlmConfig::default(),
         }
     }
 

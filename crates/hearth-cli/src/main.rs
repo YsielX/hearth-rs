@@ -6,7 +6,7 @@ use std::sync::mpsc::{self, RecvTimeoutError};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use hearth_app::{MatchSession, MatchSetup};
+use hearth_app::{LlmBot, LlmConfig, MatchSession, MatchSetup};
 use hearth_bot::SimpleBot;
 use hearth_core::{
     CardKind, CardRuntime, EntityId, GameOutcome, GameSnapshot, LegalAction, Locale, PlayerCommand,
@@ -45,6 +45,7 @@ struct CliOptions {
     locale: Locale,
     controllers: [ControllerKind; 2],
     debug_state: bool,
+    llm: LlmConfig,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -52,6 +53,7 @@ enum ControllerKind {
     Interactive,
     Bot,
     Fuzzer,
+    Llm,
 }
 
 impl std::str::FromStr for ControllerKind {
@@ -61,9 +63,10 @@ impl std::str::FromStr for ControllerKind {
         match value.to_ascii_lowercase().as_str() {
             "interactive" | "human" | "cli" => Ok(Self::Interactive),
             "bot" => Ok(Self::Bot),
+            "llm" => Ok(Self::Llm),
             "fuzzer" | "fuzz" => Ok(Self::Fuzzer),
             _ => Err(format!(
-                "unknown controller {value}; expected interactive, bot, or fuzzer"
+                "unknown controller {value}; expected interactive, bot, llm, or fuzzer"
             )),
         }
     }
@@ -74,6 +77,7 @@ enum Controller {
     Interactive,
     Bot(SimpleBot),
     Fuzzer(FuzzController),
+    Llm,
 }
 
 impl Controller {
@@ -82,6 +86,7 @@ impl Controller {
             ControllerKind::Interactive => Self::Interactive,
             ControllerKind::Bot => Self::Bot(SimpleBot),
             ControllerKind::Fuzzer => Self::Fuzzer(FuzzController::new(seed)),
+            ControllerKind::Llm => Self::Llm,
         }
     }
 
@@ -96,6 +101,7 @@ impl Controller {
     ) -> Result<PlayerCommand, String> {
         match self {
             Self::Interactive => Err("interactive controller requires terminal input".to_owned()),
+            Self::Llm => Err("LLM controller requires a prepared decision".to_owned()),
             Self::Bot(bot) => bot.choose_action(view, legal_actions),
             Self::Fuzzer(fuzzer) => fuzzer.choose_action(view, legal_actions),
         }
@@ -131,6 +137,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     };
     let locale = options.locale;
+    let llm = options
+        .controllers
+        .contains(&ControllerKind::Llm)
+        .then(|| LlmBot::new(options.llm.clone()))
+        .transpose()?;
     let mut game = if let Some(path) = &options.snapshot {
         let snapshot: GameSnapshot = serde_json::from_str(&std::fs::read_to_string(path)?)?;
         println!(
@@ -289,12 +300,22 @@ fn main() -> Result<(), Box<dyn Error>> {
             let view = game.state().player_view(input_player);
             let command = if matches!(controllers[input_player.index()], Controller::Bot(_)) {
                 hearth_bot::choose_action_with_cards(
-                    hearth_bot::BotDifficulty::Normal, &view, &legal_actions,
+                    hearth_bot::BotDifficulty::Normal,
+                    &view,
+                    &legal_actions,
                     |id| game.runtime().definition(id),
                 )
+            } else if matches!(controllers[input_player.index()], Controller::Llm) {
+                let request = game.llm_request()?;
+                let result = llm
+                    .as_ref()
+                    .expect("LLM controller has a client")
+                    .decide(&request)?;
+                request.resolve(&result.label).map_err(|e| e.to_string())
             } else {
                 controllers[input_player.index()].choose_action(&view, &legal_actions)
-            }.map_err(io::Error::other)?;
+            }
+            .map_err(io::Error::other)?;
             println!(
                 "{}: {}",
                 input_player,
@@ -620,6 +641,7 @@ fn parse_play_options(
         locale: Locale::EnUs,
         controllers: [ControllerKind::Interactive, ControllerKind::Interactive],
         debug_state: false,
+        llm: LlmConfig::from_env(),
     };
     let mut show_help = false;
     while let Some(argument) = args.next() {
@@ -662,6 +684,18 @@ fn parse_play_options(
                         })?
             }
             "--debug-state" => options.debug_state = true,
+            "--llm-env" => options
+                .llm
+                .apply_env_file(required_value(&mut args, "--llm-env")?)?,
+            "--llm-url" => options.llm.base_url = required_value(&mut args, "--llm-url")?,
+            "--llm-model" => options.llm.model = required_value(&mut args, "--llm-model")?,
+            "--llm-key" => options.llm.api_key = required_value(&mut args, "--llm-key")?,
+            "--llm-timeout" => {
+                options.llm.timeout_seconds = required_value(&mut args, "--llm-timeout")?
+                    .parse()
+                    .map_err(|_| io::Error::other("--llm-timeout must be an integer"))?
+            }
+            "--llm-no-json" => options.llm.json_mode = false,
             "--help" | "-h" => {
                 show_help = true;
             }
@@ -1204,7 +1238,7 @@ fn print_usage() {
         "Usage: hearth-cli <COMMAND> [OPTIONS]\n\
          \n\
          Commands:\n\
-           play  run an interactive, bot, or fuzzer-controlled game\n\
+           play  run an interactive, bot, llm, or fuzzer-controlled game\n\
            fuzz  run deterministic state-machine fuzzing\n\
          \n\
          Run `hearth-cli <COMMAND> --help` for command-specific options."
@@ -1216,9 +1250,9 @@ fn print_play_usage(locale: Locale) {
         "{}",
         lt!(
             locale,
-            "Usage: hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]",
-            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]",
-            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|fuzzer] [--player-two interactive|bot|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]"
+            "Usage: hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|llm|fuzzer] [--player-two interactive|bot|llm|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state] [--llm-env PATH] [--llm-url URL] [--llm-model MODEL] [--llm-key KEY] [--llm-timeout N] [--llm-no-json]",
+            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|llm|fuzzer] [--player-two interactive|bot|llm|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state] [--llm-env PATH] [--llm-url URL] [--llm-model MODEL] [--llm-key KEY] [--llm-timeout N] [--llm-no-json]",
+            "用法：hearth-cli play [--data DIR] [--deck-one FILE] [--deck-two FILE] [--player-one interactive|bot|llm|fuzzer] [--player-two interactive|bot|llm|fuzzer] [--seed N] [--locale enUS|zhCN|zhTW] [--replay FILE | --snapshot FILE] [--debug-state]"
         )
     );
 }
@@ -1239,6 +1273,65 @@ fn print_fuzz_usage() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn imports_llm_env_before_later_model_override() {
+        let path = std::env::temp_dir().join(format!("hearth-cli-llm-{}.env", std::process::id()));
+        std::fs::write(&path, "OPENAI_API_URL=https://example.com/v1\nOPENAI_API_KEY=test-key\nOPENAI_MODEL=file-model\n").unwrap();
+        let result = parse_play_options(
+            std::path::Path::new("."),
+            [
+                "--player-one".into(),
+                "llm".into(),
+                "--llm-env".into(),
+                path.to_string_lossy().into_owned(),
+                "--llm-model".into(),
+                "override-model".into(),
+            ]
+            .into_iter(),
+        );
+        std::fs::remove_file(path).unwrap();
+        let CliInvocation::Play(options) = result.unwrap().unwrap() else {
+            panic!("expected play");
+        };
+        assert_eq!(options.llm.base_url, "https://example.com/v1");
+        assert_eq!(options.llm.api_key, "test-key");
+        assert_eq!(options.llm.model, "override-model");
+    }
+
+    #[test]
+    fn llm_can_control_either_player_with_explicit_connection_settings() {
+        let invocation = parse_play_options(
+            std::path::Path::new("."),
+            [
+                "--player-one",
+                "llm",
+                "--player-two",
+                "bot",
+                "--llm-url",
+                "http://localhost:1234/v1",
+                "--llm-model",
+                "local-model",
+                "--llm-key",
+                "test",
+                "--llm-no-json",
+            ]
+            .into_iter()
+            .map(str::to_owned),
+        )
+        .unwrap()
+        .unwrap();
+        let CliInvocation::Play(options) = invocation else {
+            panic!("expected play");
+        };
+        assert_eq!(
+            options.controllers,
+            [ControllerKind::Llm, ControllerKind::Bot]
+        );
+        assert_eq!(options.llm.model, "local-model");
+        assert!(!options.llm.json_mode);
+        options.llm.validate().unwrap();
+    }
 
     #[test]
     fn automated_hidden_actions_do_not_leak_entity_ids() {

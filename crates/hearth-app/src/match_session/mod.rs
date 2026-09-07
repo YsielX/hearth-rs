@@ -4,7 +4,7 @@ mod session;
 mod snapshot;
 mod timeout;
 
-pub use config::{MatchConfig, MatchMode, MatchSetup, starting_player_for_seed};
+pub use config::{MatchConfig, MatchMode, MatchSetup, OpponentKind, starting_player_for_seed};
 pub use controller::GameSession;
 pub use session::MatchSession;
 pub use snapshot::{GAME_SESSION_SNAPSHOT_VERSION, GameSessionSnapshot};

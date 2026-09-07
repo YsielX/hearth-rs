@@ -1,16 +1,17 @@
 [package]
-name = "hearth-app"
+name = "hearth-llm"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
 
 [dependencies]
-base64.workspace = true
-hearth-bot = { path = "../hearth-bot" }
-hearth-llm = { path = "../hearth-llm" }
 hearth-core = { path = "../hearth-core" }
-hearth-script = { path = "../hearth-script" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
+blake3 = "1"
+ureq = { version = "3.4", default-features = false, features = ["rustls"] }
+
+[dev-dependencies]
+hearth-script = { path = "../hearth-script" }

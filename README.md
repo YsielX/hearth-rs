@@ -21,6 +21,7 @@ crates/
 ├── hearth-app/            # Shared match sessions, deck services, and presentation text
 ├── hearth-cli/            # `play` and `fuzz` commands
 ├── hearth-client-bevy/    # Bevy 0.19 native graphical client
+├── hearth-llm/            # Modular LLM opponent and expert-label client
 ├── hearth-bot/            # Non-cheating deterministic baseline Bot
 └── hearth-fuzz/           # State-machine fuzzing library (no binary)
 decks/demo.json            # Mixed-class mechanics showcase
@@ -353,3 +354,5 @@ cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ## Scope
 
 This remains a rules prototype, not a complete Hearthstone server. The keyword layer covers Constructed, but the card library is a representative official subset. Battlegrounds and Mercenaries mode-specific keywords are outside this CLI ruleset. When a future mechanic cannot be expressed through existing generic boundaries, extend a reusable rule or atomic effect—never branch on a specific card or keyword ID.
+
+LLM opponents are available through **Settings → LLM settings**, then **VS LLM** on the deck selection screen. CLI supports `--player-one llm` / `--player-two llm`. See [hearth-llm](crates/hearth-llm/README.md) for connection settings and the reusable Rust teacher API.

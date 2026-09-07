@@ -11,8 +11,8 @@ use bevy::prelude::*;
 use bevy::render::view::screenshot::{Screenshot, save_to_disk};
 use bevy::window::{MonitorSelection, PrimaryWindow, WindowMode, WindowPlugin, WindowResolution};
 use hearth_app::{
-    AppError, BotDifficulty, DeckLibrary, DeckList, GameSession, GameSessionSnapshot, MatchConfig,
-    MatchMode, export_deckstring, import_deckstring,
+    AppError, BotDifficulty, DeckLibrary, DeckList, GameSession, GameSessionSnapshot, LlmConfig,
+    MatchConfig, MatchMode, OpponentKind, export_deckstring, import_deckstring,
 };
 use hearth_core::{
     CardKind, EntityId, EntityView, LegalAction, PlayerCommand, PlayerId, PlayerView,
@@ -59,6 +59,7 @@ mod frontend;
 mod game_art;
 mod i18n;
 mod interaction;
+mod llm_settings;
 mod opponent_hand;
 mod player_resources;
 mod targeting_guide;
@@ -112,6 +113,13 @@ enum UiAction {
     OpenMainMenu,
     QuitApplication,
     OpenSettings,
+    OpenLlmSettings,
+    CloseLlmSettings,
+    SaveLlmSettings,
+    ToggleLlmJsonMode,
+    RetryBot,
+    UseHeuristicOnce,
+    SetOpponentKind(OpponentKind),
     OpenDeckSelect,
     OpenDeckBuilder,
     ContinueMatch,
@@ -198,6 +206,8 @@ const fn default_ui_scale_percent() -> u16 {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize)]
 struct PersistedClientSettings {
+    #[serde(default)]
+    llm: LlmConfig,
     version: u32,
     locale: hearth_core::Locale,
     turn_seconds: u64,
@@ -248,6 +258,7 @@ struct FrontendOptions<'w, 's> {
     display: ResMut<'w, DisplaySettings>,
     ui_scale: ResMut<'w, UiScale>,
     emotes: ResMut<'w, EmoteState>,
+    playback: ResMut<'w, BotPlaybackState>,
     primary_window: Query<'w, 's, &'static mut Window, With<PrimaryWindow>>,
 }
 
@@ -317,7 +328,8 @@ fn main() {
                 })
                 .unwrap_or(Ok(None))
         }) {
-            Ok(Some(restored)) => {
+            Ok(Some(mut restored)) => {
+                restored.set_llm_config(config.llm.clone());
                 session = restored;
                 sync_frontend_to_restored_match(&mut frontend, &library, &session);
                 frontend.resume_available = true;
@@ -451,7 +463,9 @@ fn parse_config_from(
     if let Some(settings) = persisted.as_ref() {
         config.locale = settings.locale;
         config.bot_difficulty = settings.bot_difficulty;
+        config.llm = settings.llm.clone();
     }
+    config.llm.apply_env();
     let mut args = arguments.iter().cloned();
     while let Some(argument) = args.next() {
         match argument.as_str() {
@@ -478,6 +492,27 @@ fn parse_config_from(
                     _ => return Err("--human expects 1 or 2".to_owned()),
                 };
             }
+            "--llm" => {
+                config.match_mode = MatchMode::VsBot;
+                config.opponent_kind = OpponentKind::Llm;
+            }
+            "--llm-env" => config
+                .llm
+                .apply_env_file(required_path(&mut args, "--llm-env")?)
+                .map_err(|error| error.to_string())?,
+            "--llm-url" => config.llm.base_url = args.next().ok_or("--llm-url requires a value")?,
+            "--llm-model" => {
+                config.llm.model = args.next().ok_or("--llm-model requires a value")?
+            }
+            "--llm-key" => config.llm.api_key = args.next().ok_or("--llm-key requires a value")?,
+            "--llm-timeout" => {
+                config.llm.timeout_seconds = args
+                    .next()
+                    .ok_or("--llm-timeout requires a value")?
+                    .parse()
+                    .map_err(|_| "invalid LLM timeout")?
+            }
+            "--llm-no-json" => config.llm.json_mode = false,
             "--hotseat" => config.match_mode = MatchMode::Hotseat,
             "--bot-difficulty" => {
                 config.bot_difficulty = args
@@ -515,7 +550,7 @@ fn parse_config_from(
                 println!(
                     "hearth-client-bevy [--data PATH] [--deck-one PATH] [--deck-two PATH] \
                      [--seed N] [--locale enUS|zhCN|zhTW] [--human 1|2] [--screenshot PATH] \
-                     [--quick-start] [--hotseat] [--bot-difficulty easy|normal|hard] \
+                     [--quick-start] [--hotseat|--llm] [--bot-difficulty easy|normal|hard] \n                     [--llm-env PATH] [--llm-url URL] [--llm-model MODEL] [--llm-key KEY] [--llm-timeout N] [--llm-no-json] \
                      [--turn-seconds N] \
                      [--fullscreen|--windowed] [--ui-scale 80|100|120] \
                      [--settings PATH|--no-settings] [--resume PATH|--no-resume]"
@@ -576,10 +611,11 @@ fn resolve_settings_path(
                 index += 1;
             }
             "--quick-start" | "--hotseat" | "--no-resume" | "--fullscreen" | "--windowed"
-            | "--help" | "-h" => index += 1,
+            | "--llm" | "--llm-no-json" | "--help" | "-h" => index += 1,
             "--data" | "--deck-one" | "--deck-two" | "--seed" | "--locale" | "--human"
             | "--screenshot" | "--turn-seconds" | "--resume" | "--ui-scale"
-            | "--bot-difficulty" => index += 2,
+            | "--bot-difficulty" | "--llm-url" | "--llm-model" | "--llm-key" | "--llm-timeout"
+            | "--llm-env" => index += 2,
             _ => index += 1,
         }
     }
@@ -614,10 +650,11 @@ fn resolve_resume_path(
                 index += 1;
             }
             "--quick-start" | "--hotseat" | "--no-settings" | "--fullscreen" | "--windowed"
-            | "--help" | "-h" => index += 1,
+            | "--llm" | "--llm-no-json" | "--help" | "-h" => index += 1,
             "--data" | "--deck-one" | "--deck-two" | "--seed" | "--locale" | "--human"
             | "--screenshot" | "--turn-seconds" | "--settings" | "--ui-scale"
-            | "--bot-difficulty" => index += 2,
+            | "--bot-difficulty" | "--llm-url" | "--llm-model" | "--llm-key" | "--llm-timeout"
+            | "--llm-env" => index += 2,
             _ => index += 1,
         }
     }
@@ -698,6 +735,7 @@ fn save_client_settings(
     turn_seconds: u64,
     bot_difficulty: BotDifficulty,
     display: DisplaySettings,
+    llm: &LlmConfig,
 ) -> Result<(), String> {
     let Some(path) = store.path.as_deref() else {
         return Ok(());
@@ -713,6 +751,7 @@ fn save_client_settings(
         })?;
     }
     let settings = PersistedClientSettings {
+        llm: llm.clone(),
         version: CLIENT_SETTINGS_VERSION,
         locale,
         turn_seconds,
@@ -862,6 +901,7 @@ fn sync_frontend_to_restored_match(
     session: &GameSession,
 ) {
     frontend.config.match_mode = session.match_mode();
+    frontend.config.opponent_kind = session.opponent_kind();
     frontend.config.human_player = session.human_player();
     frontend.config.bot_difficulty = session.bot_difficulty();
     let deck_index = |player| {
@@ -1262,6 +1302,76 @@ fn handle_ui_click(
             frontend.status = None;
             None
         }
+        UiAction::OpenLlmSettings => {
+            if frontend.scene != ClientScene::Settings {
+                frontend.settings_return = frontend.scene;
+            }
+            frontend.scene = ClientScene::LlmSettings;
+            frontend.status = None;
+            None
+        }
+        UiAction::CloseLlmSettings => {
+            frontend.scene = ClientScene::Settings;
+            frontend.status = None;
+            None
+        }
+        UiAction::ToggleLlmJsonMode => {
+            frontend.config.llm.json_mode = !frontend.config.llm.json_mode;
+            None
+        }
+        UiAction::SaveLlmSettings => {
+            match frontend.config.llm.validate() {
+                Err(error) => frontend.status = Some(error.to_string()),
+                Ok(()) => {
+                    session.set_llm_config(frontend.config.llm.clone());
+                    options.playback.retry();
+                    ui.error = None;
+                    frontend.status = Some(
+                        match save_client_settings(
+                            &options.settings,
+                            frontend.config.locale,
+                            options.timer.default_seconds,
+                            frontend.config.bot_difficulty,
+                            *options.display,
+                            &frontend.config.llm,
+                        ) {
+                            Ok(()) => pick(
+                                frontend.config.locale,
+                                "Applied. API key is kept for this session only.",
+                                "已应用。API Key 仅在本次运行中保留。",
+                                "已套用。API Key 僅在本次執行中保留。",
+                            )
+                            .to_owned(),
+                            Err(error) => settings_save_error(frontend.config.locale, &error),
+                        },
+                    );
+                }
+            }
+            None
+        }
+        UiAction::RetryBot | UiAction::UseHeuristicOnce => {
+            options.playback.retry();
+            ui.error = None;
+            if matches!(action, UiAction::UseHeuristicOnce) && session.is_llm_turn() {
+                match session.advance_heuristic_once() {
+                    Ok(_) => {
+                        ui.interaction.reset_after_dispatch();
+                        ui.page = 0;
+                        ui.error =
+                            sync_match_resume(&options.resume, &session, &mut frontend).err();
+                    }
+                    Err(error) => ui.error = Some(error.to_string()),
+                }
+            }
+            frontend.match_menu_open = false;
+            None
+        }
+        UiAction::SetOpponentKind(kind) => {
+            frontend.config.match_mode = MatchMode::VsBot;
+            frontend.config.opponent_kind = kind;
+            frontend.status = None;
+            None
+        }
         UiAction::OpenSettings => {
             frontend.settings_return = frontend.scene;
             frontend.scene = ClientScene::Settings;
@@ -1289,6 +1399,7 @@ fn handle_ui_click(
         }
         UiAction::SetMatchMode(mode) => {
             frontend.config.match_mode = mode;
+            frontend.config.opponent_kind = OpponentKind::Heuristic;
             frontend.handoff_player = None;
             frontend.pending_delete_deck = None;
             frontend.status = Some(match (frontend.config.locale, mode) {
@@ -1327,6 +1438,7 @@ fn handle_ui_click(
                 options.timer.default_seconds,
                 frontend.config.bot_difficulty,
                 *options.display,
+                &frontend.config.llm,
             ) {
                 frontend.status = Some(settings_save_error(frontend.config.locale, &error));
             }
@@ -1673,7 +1785,9 @@ fn handle_ui_click(
                             locale,
                             &session.snapshot(),
                         ) {
-                            Ok(localized) => {
+                            Ok(mut localized) => {
+                                localized.set_llm_config(frontend.config.llm.clone());
+                                options.playback.retry();
                                 *session = localized;
                                 if let Err(error) =
                                     sync_match_resume(&options.resume, &session, &mut frontend)
@@ -1695,6 +1809,7 @@ fn handle_ui_click(
                         options.timer.default_seconds,
                         frontend.config.bot_difficulty,
                         *options.display,
+                        &frontend.config.llm,
                     ) {
                         frontend.status = Some(settings_save_error(locale, &error));
                     }
@@ -1732,6 +1847,7 @@ fn handle_ui_click(
                 options.timer.default_seconds,
                 frontend.config.bot_difficulty,
                 *options.display,
+                &frontend.config.llm,
             ) {
                 frontend.status = Some(settings_save_error(frontend.config.locale, &error));
             }
@@ -1749,6 +1865,7 @@ fn handle_ui_click(
                         options.timer.default_seconds,
                         frontend.config.bot_difficulty,
                         *options.display,
+                        &frontend.config.llm,
                     ) {
                         frontend.status = Some(settings_save_error(frontend.config.locale, &error));
                     }
@@ -1773,6 +1890,7 @@ fn handle_ui_click(
                     options.timer.default_seconds,
                     frontend.config.bot_difficulty,
                     *options.display,
+                    &frontend.config.llm,
                 ) {
                     frontend.status = Some(settings_save_error(frontend.config.locale, &error));
                 }
@@ -1836,6 +1954,8 @@ fn is_match_menu_action(action: &UiAction) -> bool {
     matches!(
         action,
         UiAction::CloseMatchMenu
+            | UiAction::RetryBot
+            | UiAction::UseHeuristicOnce
             | UiAction::OpenMatchSettings
             | UiAction::PauseMatch
             | UiAction::RequestConcede
@@ -1896,6 +2016,15 @@ fn start_selected_match(
     session: &mut GameSession,
     ui: &mut UiState,
 ) -> Result<(), String> {
+    if frontend.config.match_mode == MatchMode::VsBot
+        && frontend.config.opponent_kind == OpponentKind::Llm
+    {
+        frontend
+            .config
+            .llm
+            .validate()
+            .map_err(|error| error.to_string())?;
+    }
     frontend.apply_selected_decks(&catalog.0)?;
     let next = GameSession::load(&frontend.config).map_err(|error| error.to_string())?;
     frontend.handoff_player = next.is_hotseat().then(|| next.human_player());
@@ -2359,6 +2488,11 @@ fn handle_match_menu_shortcut(
         ui.dirty = true;
         return;
     }
+    if frontend.scene == ClientScene::LlmSettings {
+        frontend.scene = ClientScene::Settings;
+        ui.dirty = true;
+        return;
+    }
     if frontend.scene == ClientScene::Settings && frontend.settings_return == ClientScene::Match {
         frontend.scene = ClientScene::Match;
         frontend.settings_return = ClientScene::MainMenu;
@@ -2414,6 +2548,7 @@ fn toggle_fullscreen_shortcut(
         timer.default_seconds,
         frontend.config.bot_difficulty,
         *display,
+        &frontend.config.llm,
     ) {
         let message = settings_save_error(frontend.config.locale, &error);
         if frontend.scene == ClientScene::Match {
@@ -2654,6 +2789,23 @@ fn spawn_match_menu_overlay(
                         pick(locale, "RESUME", "继续对局", "繼續對戰"),
                         UiAction::CloseMatchMenu,
                     );
+                    if session.is_llm_turn() {
+                        spawn_action_button(
+                            menu,
+                            pick(locale, "RETRY LLM", "重试 LLM", "重試 LLM"),
+                            UiAction::RetryBot,
+                        );
+                        spawn_action_button(
+                            menu,
+                            pick(
+                                locale,
+                                "HEURISTIC: ONE ACTION",
+                                "启发式代走一步",
+                                "啟發式代走一步",
+                            ),
+                            UiAction::UseHeuristicOnce,
+                        );
+                    }
                     spawn_action_button(
                         menu,
                         pick(locale, "SETTINGS", "设置", "設定"),
@@ -3551,6 +3703,29 @@ fn spawn_action_panel(
         TextColor(TEXT),
     ));
     if view.outcome.is_none() && view.input_player != session.human_player() {
+        if session.is_llm_turn() && ui.error.is_some() {
+            parent.spawn((
+                Text::new(ui.error.as_deref().unwrap_or_default()),
+                text_font(16.0),
+                TextColor(TARGET_HINT),
+            ));
+            spawn_action_button(
+                parent,
+                pick(locale, "RETRY LLM", "重试 LLM", "重試 LLM"),
+                UiAction::RetryBot,
+            );
+            spawn_action_button(
+                parent,
+                pick(
+                    locale,
+                    "HEURISTIC: ONE ACTION",
+                    "启发式代走一步",
+                    "啟發式代走一步",
+                ),
+                UiAction::UseHeuristicOnce,
+            );
+            return;
+        }
         parent.spawn((
             Text::new(pick(
                 locale,
@@ -3814,7 +3989,11 @@ fn spawn_action_panel(
                 ),
             }
         } else {
-            let difficulty = bot_difficulty_label(locale, session.bot_difficulty());
+            let difficulty = if session.opponent_kind() == OpponentKind::Llm {
+                "LLM"
+            } else {
+                bot_difficulty_label(locale, session.bot_difficulty())
+            };
             let order = opening_order_label(locale, session.starting_player(), view.viewer);
             match locale {
                 hearth_core::Locale::EnUs => format!(
@@ -4189,6 +4368,81 @@ fn text_font(size: f32) -> TextFont {
 mod tests {
     use super::*;
 
+    #[test]
+    fn imports_llm_env_with_explicit_model_and_preserves_path_parsing() {
+        let temp = TempSettings::new();
+        let path = temp.0.join("--no-settings");
+        fs::create_dir_all(&temp.0).unwrap();
+        fs::write(
+            &path,
+            "OPENAI_API_URL=https://example.com/v1\nOPENAI_API_KEY=test-key\n",
+        )
+        .unwrap();
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let args = [
+            "--llm".into(),
+            "--llm-env".into(),
+            path.to_string_lossy().into_owned(),
+            "--llm-model".into(),
+            "test-model".into(),
+        ];
+        let options = parse_config_from(&root, &args, None, None).unwrap();
+        assert_eq!(options.config.opponent_kind, OpponentKind::Llm);
+        assert_eq!(options.config.llm.model, "test-model");
+        assert_eq!(options.config.llm.api_key, "test-key");
+        options.config.llm.validate().unwrap();
+        let flag_value = ["--llm-env".into(), "--no-settings".into()];
+        assert_eq!(
+            resolve_settings_path(&flag_value, Some(temp.path())).unwrap(),
+            Some(temp.path())
+        );
+    }
+
+    #[test]
+    fn llm_settings_keep_keys_out_of_disk_and_cli_values_do_not_become_flags() {
+        let path =
+            std::env::temp_dir().join(format!("hearth-llm-settings-{}.json", std::process::id()));
+        let llm = LlmConfig {
+            base_url: "https://example.com/v1".into(),
+            model: "test-model".into(),
+            api_key: "secret-not-for-disk".into(),
+            ..Default::default()
+        };
+        let store = ClientSettingsStore {
+            path: Some(path.clone()),
+        };
+        save_client_settings(
+            &store,
+            hearth_core::Locale::EnUs,
+            75,
+            BotDifficulty::Normal,
+            DisplaySettings::default(),
+            &llm,
+        )
+        .unwrap();
+        let json = fs::read_to_string(&path).unwrap();
+        assert!(!json.contains("secret-not-for-disk"));
+        let persisted = load_client_settings(&path).unwrap().unwrap();
+        assert_eq!(persisted.llm.model, "test-model");
+        assert!(persisted.llm.api_key.is_empty());
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let args = [
+            "--llm",
+            "--llm-key",
+            "--no-settings",
+            "--llm-model",
+            "override",
+        ]
+        .map(str::to_owned);
+        let options = parse_config_from(&root, &args, Some(path.clone()), None).unwrap();
+        assert_eq!(options.settings_path, Some(path.clone()));
+        assert_eq!(options.config.opponent_kind, OpponentKind::Llm);
+        assert_eq!(options.config.llm.base_url, llm.base_url);
+        assert_eq!(options.config.llm.model, "override");
+        assert_eq!(options.config.llm.api_key, "--no-settings");
+        fs::remove_file(path).unwrap();
+    }
+
     struct TempSettings(PathBuf);
 
     impl TempSettings {
@@ -4235,11 +4489,13 @@ mod tests {
             30,
             BotDifficulty::Hard,
             display,
+            &LlmConfig::default(),
         )
         .unwrap();
         assert_eq!(
             load_client_settings(&path).unwrap(),
             Some(PersistedClientSettings {
+                llm: LlmConfig::default(),
                 version: CLIENT_SETTINGS_VERSION,
                 locale: hearth_core::Locale::ZhCn,
                 turn_seconds: 30,
@@ -4325,6 +4581,7 @@ mod tests {
         assert_eq!(
             load_client_settings(&path).unwrap(),
             Some(PersistedClientSettings {
+                llm: LlmConfig::default(),
                 version: CLIENT_SETTINGS_VERSION,
                 locale: hearth_core::Locale::ZhTw,
                 turn_seconds: 45,
@@ -4342,6 +4599,7 @@ mod tests {
         assert_eq!(
             load_client_settings(&path).unwrap(),
             Some(PersistedClientSettings {
+                llm: LlmConfig::default(),
                 version: CLIENT_SETTINGS_VERSION,
                 locale: hearth_core::Locale::EnUs,
                 turn_seconds: 60,

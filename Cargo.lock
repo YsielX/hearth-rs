@@ -2447,6 +2447,7 @@ dependencies = [
  "base64 0.22.1",
  "hearth-bot",
  "hearth-core",
+ "hearth-llm",
  "hearth-script",
  "serde",
  "serde_json",
@@ -2522,6 +2523,19 @@ version = "0.1.0"
 dependencies = [
  "hearth-core",
  "hearth-script",
+]
+
+[[package]]
+name = "hearth-llm"
+version = "0.1.0"
+dependencies = [
+ "blake3",
+ "hearth-core",
+ "hearth-script",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.20",
+ "ureq",
 ]
 
 [[package]]

@@ -6,7 +6,9 @@ use std::{
 use bevy::input_focus::tab_navigation::TabIndex;
 use bevy::prelude::*;
 use bevy::text::{EditableText, TextCursorStyle, TextEditChange};
-use hearth_app::{BotDifficulty, CardCatalogEntry, DeckLibrary, DeckList, MatchConfig, MatchMode};
+use hearth_app::{
+    BotDifficulty, CardCatalogEntry, DeckLibrary, DeckList, MatchConfig, MatchMode, OpponentKind,
+};
 
 use crate::card_preview::{InspectableCard, hide_card_preview, show_card_preview};
 use crate::game_art::GameArt;
@@ -49,6 +51,7 @@ pub enum ClientScene {
     #[default]
     MainMenu,
     Settings,
+    LlmSettings,
     DeckSelect,
     DeckBuilder,
     DeckCode,
@@ -138,7 +141,8 @@ impl FrontendState {
 
     pub fn pauses_match_progress(&self) -> bool {
         self.match_menu_open
-            || (self.scene == ClientScene::Settings && self.settings_return == ClientScene::Match)
+            || (matches!(self.scene, ClientScene::Settings | ClientScene::LlmSettings)
+                && self.settings_return == ClientScene::Match)
     }
 
     pub fn open_builder(&mut self, library: &DeckLibrary) {
@@ -351,6 +355,7 @@ pub fn spawn_frontend(
 ) {
     match state.scene {
         ClientScene::MainMenu => spawn_main_menu(root, state, &catalog.0),
+        ClientScene::LlmSettings => crate::llm_settings::spawn_llm_settings(root, state),
         ClientScene::Settings => spawn_settings(root, state, timer, display),
         ClientScene::DeckSelect => spawn_deck_select(root, state, &catalog.0),
         ClientScene::DeckBuilder => spawn_deck_builder(root, state, &catalog.0, art, asset_server),
@@ -670,6 +675,13 @@ fn spawn_settings(
             });
         spawn_frontend_button(
             settings,
+            pick(locale, "LLM SETTINGS", "LLM 设置", "LLM 設定"),
+            UiAction::OpenLlmSettings,
+            ACTION,
+            260.0,
+        );
+        spawn_frontend_button(
+            settings,
             pick(locale, "BACK", "返回", "返回"),
             UiAction::CloseSettings,
             FRIENDLY,
@@ -767,9 +779,9 @@ fn spawn_deck_select(
             } else {
                 pick(
                     locale,
-                    "Select decks for you and the built-in AI",
-                    "为你和内置 AI 分别选择套牌",
-                    "為你和內建 AI 分別選擇牌組",
+                    "Select decks for you and your opponent",
+                    "为你和对手分别选择套牌",
+                    "為你和對手分別選擇牌組",
                 )
             },
         );
@@ -793,12 +805,32 @@ fn spawn_deck_select(
                 spawn_small_button(
                     modes,
                     pick(locale, "VS BUILT-IN AI", "对战内置 AI", "對戰內建 AI"),
-                    UiAction::SetMatchMode(MatchMode::VsBot),
-                    if state.config.match_mode == MatchMode::VsBot {
+                    UiAction::SetOpponentKind(OpponentKind::Heuristic),
+                    if state.config.match_mode == MatchMode::VsBot
+                        && state.config.opponent_kind == OpponentKind::Heuristic
+                    {
                         CARD_SELECTED
                     } else {
                         ACTION
                     },
+                );
+                spawn_small_button(
+                    modes,
+                    pick(locale, "VS LLM", "对战 LLM", "對戰 LLM"),
+                    UiAction::SetOpponentKind(OpponentKind::Llm),
+                    if state.config.match_mode == MatchMode::VsBot
+                        && state.config.opponent_kind == OpponentKind::Llm
+                    {
+                        CARD_SELECTED
+                    } else {
+                        ACTION
+                    },
+                );
+                spawn_small_button(
+                    modes,
+                    pick(locale, "LLM SETTINGS", "LLM 设置", "LLM 設定"),
+                    UiAction::OpenLlmSettings,
+                    ACTION,
                 );
                 spawn_small_button(
                     modes,
@@ -811,7 +843,9 @@ fn spawn_deck_select(
                     },
                 );
             });
-        if state.config.match_mode == MatchMode::VsBot {
+        if state.config.match_mode == MatchMode::VsBot
+            && state.config.opponent_kind == OpponentKind::Heuristic
+        {
             screen
                 .spawn(Node {
                     width: percent(100),
@@ -1910,7 +1944,7 @@ fn spawn_page_controls(
         });
 }
 
-fn spawn_frontend_button(
+pub(crate) fn spawn_frontend_button(
     parent: &mut ChildSpawnerCommands,
     label: &str,
     action: UiAction,

@@ -7,6 +7,51 @@ use super::*;
 use crate::{AppError, BotDifficulty, DeckList};
 
 #[test]
+fn llm_session_rejects_late_labels_and_keeps_credentials_out_of_snapshots() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let mut config = MatchConfig::demo(&root);
+    config.opponent_kind = OpponentKind::Llm;
+    config.human_player = starting_player_for_seed(config.seed).opponent();
+    config.llm = crate::LlmConfig {
+        base_url: "https://example.com/v1".into(),
+        model: "test".into(),
+        api_key: "do-not-save-this-key".into(),
+        ..Default::default()
+    };
+    let mut session = GameSession::load(&config).unwrap();
+    assert!(session.is_llm_turn());
+    let (_, request) = session.prepare_llm_turn().unwrap();
+    let decision = crate::LlmDecision {
+        label: crate::ExpertLabel {
+            request_id: request.request_id().into(),
+            action_index: 0,
+            acceptable_actions: vec![0],
+            reason: String::new(),
+        },
+        prompt_version: "test".into(),
+        requested_model: "test".into(),
+        response_model: None,
+        response_id: None,
+        usage: serde_json::Value::Null,
+        elapsed_ms: 0,
+    };
+    let snapshot = session.snapshot();
+    let json = serde_json::to_string(&snapshot).unwrap();
+    assert!(!json.contains("do-not-save-this-key"));
+    assert!(!json.contains("example.com"));
+    let mut restored =
+        GameSession::from_snapshot(&config.data_dir, config.locale, &snapshot).unwrap();
+    assert_eq!(restored.opponent_kind(), OpponentKind::Llm);
+    assert!(restored.prepare_llm_turn().is_err());
+    restored.set_llm_config(config.llm);
+    restored.prepare_llm_turn().unwrap();
+    session.apply_llm_decision(&decision).unwrap();
+    let before = serde_json::to_string(&session.snapshot()).unwrap();
+    assert!(session.session.dispatch_llm(&decision).is_err());
+    assert_eq!(serde_json::to_string(&session.snapshot()).unwrap(), before);
+}
+
+#[test]
 fn constructed_hero_powers_are_discovered_from_starting_hero_metadata() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let runtime = LuaCardRuntime::load_dir(root.join("data")).unwrap();

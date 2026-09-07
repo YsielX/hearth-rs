@@ -1,7 +1,10 @@
-use std::time::Duration;
+use std::{
+    sync::{Mutex, mpsc},
+    time::Duration,
+};
 
 use bevy::prelude::*;
-use hearth_app::GameSession;
+use hearth_app::{GameSession, LlmDecision, LlmError};
 
 use crate::frontend::{ClientScene, FrontendState};
 use crate::{MatchResumeStore, UiState, sync_match_resume};
@@ -14,6 +17,7 @@ pub(crate) struct BotPlaybackState {
     timer: Timer,
     armed: bool,
     failed: bool,
+    pending: Option<Mutex<mpsc::Receiver<Result<LlmDecision, LlmError>>>>,
 }
 
 impl Default for BotPlaybackState {
@@ -26,7 +30,16 @@ impl Default for BotPlaybackState {
             ),
             armed: false,
             failed: false,
+            pending: None,
         }
+    }
+}
+
+impl BotPlaybackState {
+    pub(crate) fn retry(&mut self) {
+        self.pending = None;
+        self.armed = false;
+        self.failed = false;
     }
 }
 
@@ -40,8 +53,7 @@ pub(crate) fn update_bot_playback(
 ) {
     if playback.match_number != Some(frontend.match_number) {
         playback.match_number = Some(frontend.match_number);
-        playback.armed = false;
-        playback.failed = false;
+        playback.retry();
     }
     if frontend.pauses_match_progress() {
         return;
@@ -50,11 +62,39 @@ pub(crate) fn update_bot_playback(
         && frontend.handoff_player.is_none()
         && session.is_bot_turn();
     if !active {
-        playback.armed = false;
-        playback.failed = false;
+        playback.retry();
         return;
     }
     if playback.failed {
+        return;
+    }
+    if let Some(pending) = &playback.pending {
+        let result = pending.lock().expect("LLM receiver lock").try_recv();
+        let result = match result {
+            Ok(result) => result.map_err(|e| e.to_string()).and_then(|decision| {
+                session
+                    .apply_llm_decision(&decision)
+                    .map_err(|e| e.to_string())
+            }),
+            Err(mpsc::TryRecvError::Empty) => return,
+            Err(mpsc::TryRecvError::Disconnected) => {
+                Err("LLM worker stopped; retry from the match menu".into())
+            }
+        };
+        playback.pending = None;
+        playback.armed = false;
+        ui.dirty = true;
+        match result {
+            Ok(()) => {
+                ui.interaction.reset_after_dispatch();
+                ui.page = 0;
+                ui.error = sync_match_resume(&resume, &session, &mut frontend).err();
+            }
+            Err(error) => {
+                ui.error = Some(error);
+                playback.failed = true;
+            }
+        }
         return;
     }
     if !playback.armed {
@@ -66,6 +106,31 @@ pub(crate) fn update_bot_playback(
         return;
     }
     if !playback.timer.tick(time.delta()).just_finished() {
+        return;
+    }
+
+    if session.is_llm_turn() {
+        match session.prepare_llm_turn() {
+            Ok((bot, request)) => {
+                let (sender, receiver) = mpsc::channel();
+                match std::thread::Builder::new()
+                    .name("hearth-llm".into())
+                    .spawn(move || {
+                        let _ = sender.send(bot.decide(&request));
+                    }) {
+                    Ok(_) => playback.pending = Some(Mutex::new(receiver)),
+                    Err(_) => {
+                        ui.error = Some("Unable to start LLM worker".into());
+                        playback.failed = true;
+                    }
+                }
+            }
+            Err(error) => {
+                ui.error = Some(error.to_string());
+                playback.failed = true;
+            }
+        }
+        ui.dirty = true;
         return;
     }
 
@@ -103,5 +168,21 @@ mod tests {
             state.timer.duration(),
             Duration::from_secs_f32(BOT_ACTION_DELAY_SECONDS)
         );
+    }
+
+    #[test]
+    fn retry_discards_in_flight_results_and_recovers_from_failure() {
+        let (sender, receiver) = mpsc::channel();
+        let mut state = BotPlaybackState {
+            pending: Some(Mutex::new(receiver)),
+            failed: true,
+            armed: true,
+            ..Default::default()
+        };
+        state.retry();
+        assert!(state.pending.is_none());
+        assert!(!state.failed);
+        assert!(!state.armed);
+        assert!(sender.send(Err(LlmError::Transport)).is_err());
     }
 }

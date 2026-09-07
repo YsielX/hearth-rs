@@ -21,6 +21,7 @@ crates/
 ├── hearth-app/            # CLI/GUI 共用的对局会话、套牌库与应用服务
 ├── hearth-cli/            # `play` 和 `fuzz` 子命令
 ├── hearth-client-bevy/    # Bevy 0.19 原生图形客户端
+├── hearth-llm/            # Modular LLM opponent and expert-label client
 ├── hearth-bot/            # 不读取隐藏信息的确定性基础 Bot
 └── hearth-fuzz/           # 状态机 Fuzzer 库（无独立二进制）
 decks/demo.json            # 官方卡演示牌组
@@ -320,6 +321,12 @@ cargo run -p hearth-cli --release -- play \
 控制器只能接收玩家视角投影和引擎给出的合法操作元数据，不能读取原始 `GameState`。玩家视角会排除双方牌库顺序（也包括自己的牌库顺序）、对手手牌和普通奥秘身份、脚本数据、隐藏光环来源、RNG 状态以及 replay；任务、任务线和支线任务则按官方规则保持公开。CLI 事件输出会隐藏对手抽牌、生成到手牌的卡、未揭示奥秘名称、隐藏选择和隐藏随机抽样。双交互玩家热座模式使用清屏交接；普通对局中禁止导出包含权威隐藏状态的 replay/snapshot，只有显式传入 `--debug-state` 才会开启该调试能力。
 
 基础 [`hearth-bot`](crates/hearth-bot/README.md) 按“场攻斩杀、规划当前合法操作以尽量打满费用、优势交换、踢脸”的顺序行动。嘲讽等攻击限制仍完全由引擎决定，因为 Bot 只会从引擎枚举的合法攻击中选择。
+
+## LLM 陪玩
+
+新增可复用的 [`hearth-llm`](crates/hearth-llm/README.md)：在图形客户端「设置 → LLM 设置」填写 URL、模型名和 API Key，再在选牌页选择「对战 LLM」。Key 仅保留在本次运行中。支持兼容 Chat Completions 的远程接口及本地模型。
+
+CLI 可通过 `--player-one llm` 或 `--player-two llm` 选择 LLM；连接配置支持 `HEARTH_LLM_URL`、`HEARTH_LLM_MODEL`、`HEARTH_LLM_API_KEY` 环境变量。请求构造、标签校验和 HTTP 调用也可供 Rust 训练调度器直接调用。
 
 ## 验证
 

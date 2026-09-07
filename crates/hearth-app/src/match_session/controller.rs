@@ -5,7 +5,7 @@ use hearth_core::{CardRuntime, LegalAction, Locale, PlayerCommand, PlayerId, Pla
 
 use crate::{AppError, BotDifficulty};
 
-use super::config::{MatchConfig, MatchMode};
+use super::config::{MatchConfig, MatchMode, OpponentKind};
 use super::session::MatchSession;
 use super::snapshot::{GAME_SESSION_SNAPSHOT_VERSION, GameSessionSnapshot};
 
@@ -15,6 +15,8 @@ pub struct GameSession {
     pub(super) human_player: PlayerId,
     pub(super) match_mode: MatchMode,
     pub(super) bot: DifficultyBot,
+    opponent_kind: OpponentKind,
+    llm: hearth_llm::LlmConfig,
 }
 
 impl GameSession {
@@ -24,6 +26,8 @@ impl GameSession {
             human_player: config.human_player,
             match_mode: config.match_mode,
             bot: DifficultyBot::new(config.bot_difficulty),
+            opponent_kind: config.opponent_kind,
+            llm: config.llm.clone(),
         })
     }
 
@@ -34,6 +38,7 @@ impl GameSession {
             human_player: self.human_player,
             match_mode: self.match_mode,
             bot_difficulty: self.bot.difficulty(),
+            opponent_kind: self.opponent_kind,
             deck_names: self.session.deck_names.clone(),
         }
     }
@@ -58,6 +63,8 @@ impl GameSession {
             human_player: snapshot.human_player,
             match_mode: snapshot.match_mode,
             bot: DifficultyBot::new(snapshot.bot_difficulty),
+            opponent_kind: snapshot.opponent_kind,
+            llm: hearth_llm::LlmConfig::default(),
         })
     }
 
@@ -75,6 +82,44 @@ impl GameSession {
 
     pub fn bot_difficulty(&self) -> BotDifficulty {
         self.bot.difficulty()
+    }
+
+    pub fn opponent_kind(&self) -> OpponentKind {
+        self.opponent_kind
+    }
+
+    /// Connection settings live outside game snapshots and replays.
+    pub fn set_llm_config(&mut self, config: hearth_llm::LlmConfig) {
+        self.llm = config;
+    }
+
+    pub fn is_llm_turn(&self) -> bool {
+        self.is_bot_turn() && self.opponent_kind == OpponentKind::Llm
+    }
+
+    pub fn prepare_llm_turn(
+        &self,
+    ) -> Result<(hearth_llm::LlmBot, hearth_llm::DecisionRequest), AppError> {
+        if !self.is_llm_turn() {
+            return Err(AppError::Controller(
+                "LLM does not own the current input".into(),
+            ));
+        }
+        let bot = hearth_llm::LlmBot::new(self.llm.clone())
+            .map_err(|e| AppError::Controller(e.to_string()))?;
+        Ok((bot, self.session.llm_request()?))
+    }
+
+    pub fn apply_llm_decision(
+        &mut self,
+        decision: &hearth_llm::LlmDecision,
+    ) -> Result<(), AppError> {
+        if !self.is_llm_turn() {
+            return Err(AppError::Controller(
+                "LLM no longer owns the current input".into(),
+            ));
+        }
+        self.session.dispatch_llm(decision)
     }
 
     pub fn starting_player(&self) -> PlayerId {
@@ -148,19 +193,35 @@ impl GameSession {
     }
 
     /// Advances at most one automated action, returning whether one was
-    /// dispatched. This is intentionally deterministic and uses the same bot
-    /// policy as advance_bot.
+    /// dispatched. LLM mode blocks on HTTP; graphical clients should instead
+    /// prepare_llm_turn on the engine thread and call LlmBot::decide on a worker.
     pub fn advance_bot_once(&mut self) -> Result<bool, AppError> {
+        if !self.is_bot_turn() {
+            return Ok(false);
+        }
+        if self.is_llm_turn() {
+            let (bot, request) = self.prepare_llm_turn()?;
+            let decision = bot
+                .decide(&request)
+                .map_err(|e| AppError::Controller(e.to_string()))?;
+            self.apply_llm_decision(&decision)?;
+            return Ok(true);
+        }
+        self.advance_heuristic_once()
+    }
+
+    /// Explicit, caller-selected fallback. Never produces an expert label.
+    pub fn advance_heuristic_once(&mut self) -> Result<bool, AppError> {
         if !self.is_bot_turn() {
             return Ok(false);
         }
         let player = self.session.state().input_player();
         let view = self.session.view_for(player);
         let legal = self.session.legal_action_options()?;
-        let command = hearth_bot::choose_action_with_cards(
-            self.bot.difficulty(), &view, &legal,
-            |id| self.session.runtime().definition(id),
-        )
+        let command =
+            hearth_bot::choose_action_with_cards(self.bot.difficulty(), &view, &legal, |id| {
+                self.session.runtime().definition(id)
+            })
             .map_err(AppError::Controller)?;
         self.session.dispatch(command)?;
         Ok(true)

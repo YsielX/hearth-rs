@@ -8,3 +8,4 @@ __pycache__/
 /runs/
 /training-data/
 train.md
+key.env

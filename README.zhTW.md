@@ -21,6 +21,7 @@ crates/
 ├── hearth-app/            # CLI/GUI 共用的對局工作階段、牌組庫與應用服務
 ├── hearth-cli/            # `play` 和 `fuzz` 子命令
 ├── hearth-client-bevy/    # Bevy 0.19 原生圖形客戶端
+├── hearth-llm/            # Modular LLM opponent and expert-label client
 ├── hearth-bot/            # 不讀取隱藏資訊的確定性基礎 Bot
 └── hearth-fuzz/           # 狀態機 Fuzzer 函式庫（無獨立二進位）
 decks/demo.json            # 官方卡演示牌組
@@ -306,3 +307,5 @@ cargo run -p hearth-cli --release -- fuzz --seeds 100 --steps 180
 ## 邊界
 
 這仍是規則原型，不是完整爐石服務端。關鍵詞層已經覆蓋構築模式詞表，但卡牌庫仍是 1999 個官方定義，並不等於完整官方卡池；酒館戰棋、傭兵戰紀的模式專屬關鍵詞也不在本 CLI 對戰規則範圍內。新增一種現有鉤子無法描述的基礎規則時，應優先增加通用規則鉤子或原子效果，而不是在 Rust 中判斷具體卡牌或關鍵詞名。
+
+LLM 陪玩可在「設定 → LLM 設定」填寫 URL、模型名稱和 API Key，再於選牌頁選擇「對戰 LLM」。CLI 支援 `--player-one llm` / `--player-two llm`。連線設定與 Rust 教師介面請見 [hearth-llm](crates/hearth-llm/README.md)。

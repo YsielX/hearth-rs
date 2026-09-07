@@ -11,9 +11,10 @@ pub use deck::{
     export_deckstring, import_deckstring,
 };
 pub use hearth_bot::BotDifficulty;
+pub use hearth_llm::{DecisionRequest, ExpertLabel, LlmBot, LlmConfig, LlmDecision, LlmError};
 pub use match_session::{
     GAME_SESSION_SNAPSHOT_VERSION, GameSession, GameSessionSnapshot, MatchConfig, MatchMode,
-    MatchSession, MatchSetup, starting_player_for_seed, timeout_command,
+    MatchSession, MatchSetup, OpponentKind, starting_player_for_seed, timeout_command,
 };
 
 // Compatibility module aliases for callers that used the first shared-text
