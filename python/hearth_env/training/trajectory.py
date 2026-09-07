@@ -10,6 +10,18 @@ from pathlib import Path
 from typing import Any
 
 
+def contains_excluded_cards(value: Any, excluded: frozenset[str]) -> bool:
+    if not excluded:
+        return False
+    if isinstance(value, str):
+        return value in excluded
+    if isinstance(value, dict):
+        return any(contains_excluded_cards(item, excluded) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(contains_excluded_cards(item, excluded) for item in value)
+    return False
+
+
 @dataclass
 class TrainingSample:
     decision: dict[str, Any]
@@ -17,6 +29,9 @@ class TrainingSample:
     action_index: int
     target: float
     weight: float = 1.0
+    acceptable_actions: tuple[int, ...] = ()
+    mechanism: str = "gameplay"
+    action_support: tuple[int, ...] = ()
 
 
 def write_episodes(
@@ -37,7 +52,9 @@ def write_episodes(
     output_path = path if append else path.with_name(f".{path.name}.tmp")
     count = 0
     try:
-        with gzip.open(output_path, "at" if append else "wt", encoding="utf-8") as output:
+        with gzip.open(
+            output_path, "at" if append else "wt", encoding="utf-8"
+        ) as output:
             for episode in episodes:
                 output.write(json.dumps(episode, separators=(",", ":")))
                 output.write("\n")
@@ -68,6 +85,8 @@ def episode_samples(
 ) -> Iterator[TrainingSample]:
     if episode.get("truncated") and not behavior_clone:
         return
+    if str(episode.get("source", "")).startswith("synthetic_"):
+        raise ValueError("retired synthetic curriculum is not accepted")
     decks = episode["match_config"]["decks"]
     rewards = episode.get("rewards", [0.0, 0.0])
     for step in episode.get("steps", []):
@@ -78,6 +97,13 @@ def episode_samples(
             action_index=int(step["action_index"]),
             target=float(rewards[seat]),
             weight=float(step.get("weight", 1.0)),
+            acceptable_actions=tuple(
+                int(index) for index in step.get("acceptable_actions", ())
+            ),
+            mechanism=str(episode.get("mechanism", "gameplay")),
+            action_support=tuple(
+                int(index) for index in step.get("action_support", ())
+            ),
         )
 
 
@@ -87,10 +113,38 @@ def stream_samples(
     behavior_clone: bool = False,
     shuffle_buffer: int = 4096,
     seed: int = 0,
+    expected_pack_hash: str | None = None,
+    expected_engine_build: str | None = None,
+    excluded_cards: Sequence[str] = (),
+    for_evaluation: bool = False,
 ) -> Iterator[TrainingSample]:
+    if for_evaluation and (expected_pack_hash is None or expected_engine_build is None):
+        raise ValueError("evaluation data requires explicit pack and engine versions")
     rng = random.Random(seed)
     buffer: list[TrainingSample] = []
     for episode in read_episodes(paths):
+        if (
+            expected_pack_hash is not None
+            and episode.get("pack_hash") != expected_pack_hash
+        ):
+            raise ValueError(
+                "training data card pack differs; regenerate or explicitly migrate data"
+            )
+        if (
+            expected_engine_build is not None
+            and episode.get("engine_build") != expected_engine_build
+        ):
+            raise ValueError(
+                "training data engine differs; regenerate or explicitly migrate data"
+            )
+        if contains_excluded_cards(episode, frozenset(excluded_cards)):
+            raise ValueError("supervised training data contains held-out cards")
+        if (
+            (expected_pack_hash is not None or expected_engine_build is not None)
+            and episode.get("held_out_evaluation")
+            and not for_evaluation
+        ):
+            raise ValueError("evaluation-only examples cannot be used for training")
         for sample in episode_samples(episode, behavior_clone=behavior_clone):
             buffer.append(sample)
             if len(buffer) >= shuffle_buffer:

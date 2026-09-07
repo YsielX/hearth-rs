@@ -36,6 +36,9 @@ def play_episode(
     *,
     capture_replay: bool = False,
 ) -> dict[str, Any]:
+    for policy in policies:
+        if isinstance(policy, HeuristicPolicy):
+            policy.env = env
     steps: list[dict[str, Any]] = []
     decision: dict[str, Any] | None = None
     action_index: int | None = None
@@ -43,10 +46,12 @@ def play_episode(
         decision = env.reset(seed=seed, match_config=match_config)
         while decision is not None:
             seat = int(decision["actor_seat"])
-            action_index = policies[seat].choose(
-                decision, match_config["decks"][seat]
-            )
-            steps.append({"decision": decision, "action_index": action_index})
+            action_index = policies[seat].choose(decision, match_config["decks"][seat])
+            step = {"decision": decision, "action_index": action_index}
+            behavior = getattr(policies[seat], "last_behavior", None)
+            if behavior is not None:
+                step["behavior"] = dict(behavior)
+            steps.append(step)
             transition = env.step(action_index)
             decision = transition["next"]
     except Exception as error:
@@ -56,7 +61,8 @@ def play_episode(
             replay = {"capture_error": repr(replay_error)}
         return {
             "format_version": 1,
-            "observation_schema_version": 3,
+            "observation_schema_version": env.observation_schema_version,
+            "engine_build": env.engine_build,
             "pack_hash": env.pack_hash,
             "seed": seed,
             "match_config": match_config,
@@ -76,7 +82,8 @@ def play_episode(
         }
     episode = {
         "format_version": 1,
-        "observation_schema_version": 3,
+        "observation_schema_version": env.observation_schema_version,
+        "engine_build": env.engine_build,
         "pack_hash": env.pack_hash,
         "seed": seed,
         "match_config": match_config,
@@ -125,9 +132,10 @@ def _worker_init(
 
 
 def _policy(spec: dict[str, Any], seed: int) -> Policy:
+    seed = int(spec.get("policy_seed", seed))
     kind = spec.get("kind", "heuristic")
     if kind == "heuristic":
-        return HeuristicPolicy(seed, float(spec.get("noise", 0.08)))
+        return HeuristicPolicy()
     if kind == "random":
         return RandomPolicy(seed)
     if kind != "model":
@@ -214,38 +222,50 @@ class ParallelCollector:
     def collect(
         self, jobs: Sequence[RolloutJob], *, progress_every: int = 0
     ) -> list[dict[str, Any]]:
-        return list(self.iter_collect(jobs, progress_every=progress_every))
+        # Restore job order only after collection; slow jobs never prevent
+        # replacement work from being submitted to free workers.
+        ordered: list[dict[str, Any] | None] = [None] * len(jobs)
+        for index, episode in self.iter_indexed(jobs, progress_every=progress_every):
+            ordered[index] = episode
+        if any(episode is None for episode in ordered):
+            raise RuntimeError("collector lost a rollout result")
+        return [episode for episode in ordered if episode is not None]
 
     def iter_collect(
         self, jobs: Sequence[RolloutJob], *, progress_every: int = 0
     ) -> Iterator[dict[str, Any]]:
-        """Yield episodes in job order with bounded in-flight results."""
+        """Stream completed episodes immediately; order is unspecified."""
+        for _, episode in self.iter_indexed(jobs, progress_every=progress_every):
+            yield episode
 
-        pending_jobs = iter(enumerate(jobs))
+    def iter_indexed(
+        self, jobs: Sequence[RolloutJob], *, progress_every: int = 0
+    ) -> Iterator[tuple[int, dict[str, Any]]]:
+        pending = iter(enumerate(jobs))
         futures: dict[Any, tuple[int, RolloutJob]] = {}
-        ready: dict[int, dict[str, Any]] = {}
-        in_flight_limit = self.workers * 2
 
-        def submit_next() -> bool:
+        def submit() -> None:
             try:
-                index, job = next(pending_jobs)
+                index, job = next(pending)
             except StopIteration:
-                return False
+                return
             futures[self.executor.submit(_worker_play, job)] = (index, job)
-            return True
 
-        for _ in range(min(len(jobs), in_flight_limit)):
-            submit_next()
-
+        for _ in range(min(len(jobs), self.workers * 2)):
+            submit()
         completed = 0
-        next_index = 0
-        while futures or ready:
-            if next_index in ready:
-                episode = ready.pop(next_index)
-                next_index += 1
+        while futures:
+            done, _ = wait(futures, return_when=FIRST_COMPLETED)
+            for future in done:
+                index, job = futures.pop(future)
+                try:
+                    episode = future.result()
+                except Exception as error:
+                    raise RuntimeError(
+                        f"rollout failed: seed={job.seed}, job_index={index}"
+                    ) from error
+                submit()
                 completed += 1
-                while len(futures) + len(ready) < in_flight_limit and submit_next():
-                    pass
                 if progress_every > 0 and (
                     completed % progress_every == 0 or completed == len(jobs)
                 ):
@@ -254,34 +274,16 @@ class ParallelCollector:
                     self.failures += 1
                     if self.failure_dir is not None:
                         self.failure_dir.mkdir(parents=True, exist_ok=True)
-                        path = self.failure_dir / (
-                            f"failure-{episode['seed']}-{next_index - 1:06d}.json"
+                        path = (
+                            self.failure_dir
+                            / f"failure-{episode['seed']}-{index:06d}.json"
                         )
-                        path.write_text(
-                            json.dumps(episode, indent=2), encoding="utf-8"
-                        )
+                        path.write_text(json.dumps(episode, indent=2), encoding="utf-8")
                     if self.failures > self.max_failures:
                         raise RuntimeError(
-                            f"rollout failure threshold exceeded: {self.failures} > "
-                            f"{self.max_failures}; reproduction saved under "
-                            f"{self.failure_dir}"
+                            f"rollout failure threshold exceeded: {self.failures}; reproduction under {self.failure_dir}"
                         )
-                yield episode
-                continue
-
-            done, _ = wait(futures, return_when=FIRST_COMPLETED)
-            for future in done:
-                index, job = futures.pop(future)
-                try:
-                    ready[index] = future.result()
-                except Exception as error:
-                    classes = job.match_config.get("classes", ["?", "?"])
-                    raise RuntimeError(
-                        f"rollout failed: seed={job.seed}, classes={classes}, "
-                        f"job_index={index}"
-                    ) from error
-            while len(futures) + len(ready) < in_flight_limit and submit_next():
-                pass
+                yield index, episode
 
     def close(self) -> None:
         self.executor.shutdown(wait=True, cancel_futures=True)

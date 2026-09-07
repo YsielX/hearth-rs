@@ -11,6 +11,37 @@ from .catalog import CardCatalog
 from .decks import Deck, DeckPool
 
 
+def deck_fingerprint(deck: Deck) -> str:
+    payload = {
+        "class": deck.card_class,
+        "cards": sorted(deck.cards),
+        "hero_power": deck.hero_power,
+        "unrestricted": deck.unrestricted,
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+def load_split_paths(path: str | Path, split: str) -> list[str]:
+    manifest = json.loads(Path(path).read_text(encoding="utf-8"))
+    if split not in {"train", "validation", "test"}:
+        raise ValueError(f"unknown deck split: {split}")
+    records = manifest["splits"][split]
+    if not records:
+        raise ValueError(f"deck split is empty: {split}")
+    result = []
+    for record in records:
+        deck_path = Path(record["path"])
+        if not deck_path.is_absolute():
+            deck_path = Path(path).parent / deck_path
+        deck = Deck.from_file(deck_path)
+        if record.get("fingerprint") and record["fingerprint"] != deck_fingerprint(
+            deck
+        ):
+            raise ValueError(f"deck changed since split creation: {deck_path}")
+        result.append(str(deck_path))
+    return result
+
+
 def _source_cards(path: Path) -> Counter[str]:
     value = json.loads(path.read_text(encoding="utf-8"))
     result: Counter[str] = Counter()
@@ -102,7 +133,9 @@ def write_deck_split(
             + ["validation"] * validation_count
             + ["test"] * test_count
         )
-        for class_index, (cluster, split) in enumerate(zip(clusters, splits, strict=True)):
+        for class_index, (cluster, split) in enumerate(
+            zip(clusters, splits, strict=True)
+        ):
             digest = hashlib.sha256(
                 "\0".join(str(path) for path in cluster).encode()
             ).hexdigest()[:12]
@@ -114,6 +147,7 @@ def write_deck_split(
                     "name": Deck.from_file(path).name,
                     "class": card_class,
                     "cluster": cluster_id,
+                    "fingerprint": deck_fingerprint(Deck.from_file(path)),
                 }
                 assignments[split].append(record)
                 members.append(str(path))
@@ -127,7 +161,8 @@ def write_deck_split(
             )
 
     manifest = {
-        "format_version": 1,
+        "format_version": 2,
+        "pack_hash": catalog.pack_hash,
         "seed": seed,
         "distance": "30 minus multiset intersection; connected at <=4 replacements",
         "clusters": cluster_records,

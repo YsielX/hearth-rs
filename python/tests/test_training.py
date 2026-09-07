@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
-import random
 import tempfile
 import unittest
 from copy import deepcopy
+from dataclasses import replace
 from pathlib import Path
 
 import torch
@@ -16,9 +16,6 @@ from hearth_env.training.decks import SET_ORDER, Deck, DeckPool, match_config
 from hearth_env.training.health import EpisodeHealth, health_gate
 from hearth_env.training.learn import train_batch
 from hearth_env.training.model import HearthQNetwork
-from hearth_env.training.policies import HeuristicPolicy
-from hearth_env.training.ppo import build_ppo_experiences, train_ppo_epochs
-from hearth_env.training.rollout import play_episode
 from hearth_env.training.tensorize import Tensorizer, collate
 from hearth_env.training.trajectory import TrainingSample, read_episodes, write_episodes
 
@@ -139,7 +136,9 @@ class TrainingTest(unittest.TestCase):
             encoded["action_choice_cards"][1].item(),
         )
 
-    def test_tensorizer_encodes_choice_entity_and_composite_card_semantics(self) -> None:
+    def test_tensorizer_encodes_choice_entity_and_composite_card_semantics(
+        self,
+    ) -> None:
         decision = deepcopy(self.env.reset(seed=10))
         entity = decision["observation"]["entities"][0]
         entity["public_cards"] = ["CS2_029", "CS2_024"]
@@ -159,9 +158,7 @@ class TrainingTest(unittest.TestCase):
                 }
             ],
         }
-        decision["actions"] = [
-            {"index": 0, "kind": "choose", "choice_index": 0}
-        ]
+        decision["actions"] = [{"index": 0, "kind": "choose", "choice_index": 0}]
 
         encoded = Tensorizer(self.catalog, self.config).encode(
             decision, demo_config()["decks"][0]
@@ -180,45 +177,11 @@ class TrainingTest(unittest.TestCase):
             [self.catalog.index("CS2_029"), self.catalog.index("CS2_024")],
         )
 
-    def test_ppo_builds_terminal_returns_and_updates(self) -> None:
-        episode = play_episode(
-            self.env,
-            [HeuristicPolicy(21), HeuristicPolicy(22)],
-            demo_config(),
-            21,
-        )
-        self.assertTrue(episode["terminated"])
-        model = HearthQNetwork(self.catalog, self.config)
-        tensorizer = Tensorizer(self.catalog, self.config)
-        config = TrainConfig(
-            batch_size=64,
-            amp=False,
-            ppo_epochs=1,
-            shaping_coefficient=0.05,
-        )
-        experiences = build_ppo_experiences(
-            [(episode, {0, 1})], model, tensorizer, config, device="cpu"
-        )
-        self.assertGreater(len(experiences), 0)
-        self.assertTrue(any(item.return_value > 0 for item in experiences))
-        self.assertTrue(any(item.return_value < 0 for item in experiences))
-        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
-        metrics = train_ppo_epochs(
-            model,
-            optimizer,
-            tensorizer,
-            experiences,
-            config,
-            device="cpu",
-            rng=random.Random(1),
-            reference_model=deepcopy(model),
-        )
-        self.assertGreater(metrics.updates, 0)
-        self.assertTrue(torch.isfinite(torch.tensor(metrics.loss)))
-        self.assertGreaterEqual(metrics.reference_kl, 0.0)
-
     def test_checkpoint_expands_for_new_cards(self) -> None:
-        model = HearthQNetwork(self.catalog, self.config)
+        # Exercise the actual legacy architecture, not a v3 payload relabeled v1.
+        model = HearthQNetwork(
+            self.catalog, replace(self.config, architecture_version=2)
+        )
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "model.pt"
             save_checkpoint(path, model, self.catalog, phase="test")

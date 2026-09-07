@@ -9,7 +9,8 @@ import torch
 from .catalog import CARD_FEATURE_SCHEMA_VERSION, CardCatalog
 from .config import ModelConfig
 from .model import HearthQNetwork
-from .tensorize import TENSOR_SCHEMA_VERSION
+from .tensorize import TENSOR_SCHEMA_VERSION, tensor_schema_version
+from hearth_env._native import HearthEnv as NativeEnv
 
 CHECKPOINT_VERSION = 1
 
@@ -29,8 +30,9 @@ def save_checkpoint(
     path.parent.mkdir(parents=True, exist_ok=True)
     payload: dict[str, Any] = {
         "checkpoint_version": CHECKPOINT_VERSION,
-        "observation_schema_version": 3,
-        "tensor_schema_version": TENSOR_SCHEMA_VERSION,
+        "observation_schema_version": NativeEnv.observation_schema_version(),
+        "engine_build": NativeEnv.engine_build(),
+        "tensor_schema_version": tensor_schema_version(model.config),
         "model_config": model.config.to_dict(),
         "catalog": catalog.manifest(),
         "model": model.state_dict(),
@@ -43,7 +45,9 @@ def save_checkpoint(
     if extra_state:
         overlap = set(payload).intersection(extra_state)
         if overlap:
-            raise ValueError(f"extra checkpoint state uses reserved keys: {sorted(overlap)}")
+            raise ValueError(
+                f"extra checkpoint state uses reserved keys: {sorted(overlap)}"
+            )
         payload.update(extra_state)
     temporary = path.with_suffix(path.suffix + f".tmp-{os.getpid()}")
     torch.save(payload, temporary)
@@ -61,7 +65,7 @@ def load_checkpoint(
     if payload.get("checkpoint_version") != CHECKPOINT_VERSION:
         raise ValueError("unsupported checkpoint version")
     checkpoint_tensor_schema = payload.get("tensor_schema_version")
-    if checkpoint_tensor_schema not in {1, TENSOR_SCHEMA_VERSION}:
+    if checkpoint_tensor_schema not in {1, 2, TENSOR_SCHEMA_VERSION}:
         raise ValueError("tensor schema differs from checkpoint")
     old_manifest = payload["catalog"]
     if old_manifest.get("feature_schema_version") != CARD_FEATURE_SCHEMA_VERSION:
@@ -70,12 +74,23 @@ def load_checkpoint(
         raise ValueError(
             f"card pack differs: checkpoint={old_manifest['pack_hash']} current={catalog.pack_hash}"
         )
+    if strict_pack and payload.get("engine_build") != NativeEnv.engine_build():
+        raise ValueError(
+            "engine build differs; resume/evaluation requires the frozen engine"
+        )
     config = ModelConfig.from_dict(payload["model_config"])
+    if (
+        config.architecture_version >= 3
+        and checkpoint_tensor_schema != tensor_schema_version(config)
+    ):
+        raise ValueError("semantic architecture and tensor schema are incompatible")
     if config.card_hash_dim != catalog.hash_dim:
         raise ValueError("card hash dimension differs from checkpoint")
     model = HearthQNetwork(catalog, config)
-    saved = payload["model"]
-    old_embedding = saved.pop("card_id_embedding.weight")
+    saved = dict(payload["model"])
+    embedding_owner, embedding_key = model, ""
+    embedding_key += "card_id_embedding.weight"
+    old_embedding = saved.pop(embedding_key)
     incompatible = model.load_state_dict(saved, strict=False)
     unexpected = [
         key for key in incompatible.unexpected_keys if key != "card_feature_table"
@@ -83,7 +98,7 @@ def load_checkpoint(
     missing = [
         key
         for key in incompatible.missing_keys
-        if key != "card_id_embedding.weight" and not key.startswith("value_head.")
+        if key != embedding_key and not key.startswith("value_head.")
     ]
     if unexpected or missing:
         raise ValueError(
@@ -93,11 +108,11 @@ def load_checkpoint(
     new_indices = catalog.id_to_index
     with torch.no_grad():
         for card_id in set(new_indices) - set(old_indices):
-            model.card_id_embedding.weight[new_indices[card_id]].zero_()
+            embedding_owner.card_id_embedding.weight[new_indices[card_id]].zero_()
         for card_id, old_index in old_indices.items():
             new_index = new_indices.get(card_id)
             if new_index is not None and old_index < old_embedding.shape[0]:
-                model.card_id_embedding.weight[new_index].copy_(
+                embedding_owner.card_id_embedding.weight[new_index].copy_(
                     old_embedding[old_index]
                 )
     model.to(device)
@@ -109,7 +124,7 @@ def load_checkpoint(
         "new_cards": len((set(new_indices) - set(old_indices)) - special),
         "tensor_schema": {
             "from": checkpoint_tensor_schema,
-            "to": TENSOR_SCHEMA_VERSION,
+            "to": tensor_schema_version(config),
         },
     }
     return model, payload

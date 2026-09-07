@@ -92,9 +92,7 @@ class EpisodeHealth:
                 continue
             if tuple(alternative.get("sources", [])) != sources:
                 continue
-            alternative_target = entities.get(
-                int(alternative.get("target", -1)), {}
-            )
+            alternative_target = entities.get(int(alternative.get("target", -1)), {})
             if alternative_target.get("area") != "board":
                 continue
             remaining = max(
@@ -141,12 +139,8 @@ def health_gate(
     failures: list[str] = []
     if health.errors:
         failures.append(f"errors={health.errors}")
-    if summary["avoidable_end_turn_rate"] > max_avoidable_end_turn_rate:
-        failures.append(
-            "avoidable_end_turn_rate="
-            f"{summary['avoidable_end_turn_rate']:.3%} > "
-            f"{max_avoidable_end_turn_rate:.3%}"
-        )
+    # Ending a turn while actions remain can be optimal resource management.
+    # Keep the diagnostic, but never use style to select league membership.
     if summary["truncation_rate"] > max_truncation_rate:
         failures.append(
             f"truncation_rate={summary['truncation_rate']:.3%} > "

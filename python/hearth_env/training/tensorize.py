@@ -33,7 +33,11 @@ AREAS = {
         ["hero", "hero_power", "weapon", "board", "hand", "secret", "public_objective"]
     )
 }
-TENSOR_SCHEMA_VERSION = 2
+TENSOR_SCHEMA_VERSION = 3
+
+
+def tensor_schema_version(config: ModelConfig) -> int:
+    return 3 if config.architecture_version == 3 else 2
 
 
 def _stable_bucket(value: str | None, size: int) -> int:
@@ -248,6 +252,11 @@ class Tensorizer:
                 semantic_card_ids.append(value_card_id)
             semantic_card_ids.extend(option.get("semantic_card_ids", []))
             semantic_card_ids = list(dict.fromkeys(semantic_card_ids))
+            if (
+                self.config.architecture_version >= 3
+                and len(semantic_card_ids) > self.config.max_action_cards
+            ):
+                raise ValueError("action semantic card capacity exceeded")
             if semantic_card_ids:
                 action_choice_cards[i] = self.catalog.index(semantic_card_ids[0])
             else:
@@ -275,7 +284,7 @@ class Tensorizer:
             limit = min(len(values), self.config.action_numeric_dim)
             action_numeric[i, :limit] = torch.tensor(values[:limit])
 
-        return {
+        output = {
             "global_state": global_state,
             "entity_cards": entity_cards,
             "entity_state": entity_state,
@@ -298,6 +307,11 @@ class Tensorizer:
             "action_semantic_card_mask": action_semantic_card_mask,
             "action_numeric": action_numeric,
         }
+        if self.config.architecture_version >= 3:
+            from .semantic_tensorize import augment
+
+            augment(self, decision, self_deck, output)
+        return output
 
 
 def collate(samples: Sequence[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
@@ -330,6 +344,60 @@ def collate(samples: Sequence[dict[str, torch.Tensor]]) -> dict[str, torch.Tenso
     output["action_mask"] = torch.zeros(len(samples), max_actions, dtype=torch.bool)
     for i, sample in enumerate(samples):
         output["action_mask"][i, : sample["action_kinds"].shape[0]] = True
+    # Trim padding to the largest real sequence in this batch. One dummy entry
+    # keeps empty histories/memory well-defined, without quadratic padded work.
+    groups = {
+        "entity": (
+            "entity_cards",
+            "entity_state",
+            "entity_public_cards",
+            "entity_public_card_mask",
+            "entity_mask",
+            "entity_keywords",
+            "entity_kinds",
+        ),
+        "history": tuple(key for key in output if key.startswith("history_")),
+        "deck": ("deck_cards", "deck_mask"),
+        "memory": tuple(key for key in output if key.startswith("memory_")),
+        "fact": tuple(key for key in output if key.startswith("fact_")),
+    }
+    for prefix, keys in groups.items():
+        mask = output.get(f"{prefix}_mask")
+        if mask is None:
+            continue
+        length = max(int(mask.sum(1).max().item()), 1)
+        for key in keys:
+            if key in output:
+                output[key] = output[key][:, :length]
+    # Inner lists are usually much shorter than their protocol capacities.
+    # Use the last occupied slot, not the count: references may contain holes.
+    inner_groups = {
+        "history_card_mask": (
+            "history_cards",
+            "history_card_mask",
+            "history_roles",
+            "history_refs",
+            "history_entity_values",
+        ),
+        "entity_public_card_mask": ("entity_public_cards", "entity_public_card_mask"),
+        "action_source_mask": ("action_sources", "action_source_mask"),
+        "action_semantic_card_mask": (
+            "action_semantic_cards",
+            "action_semantic_card_mask",
+        ),
+    }
+    for mask_key, keys in inner_groups.items():
+        mask = output.get(mask_key)
+        if mask is None:
+            continue
+        positions = torch.arange(1, mask.shape[2] + 1, device=mask.device)
+        length = max(int((mask * positions).amax().item()), 1)
+        for key in keys:
+            if key in output:
+                output[key] = output[key][:, :, :length]
+    if "fact_bytes" in output:
+        length = max(int(output["fact_bytes"].ne(0).sum(-1).max().item()), 1)
+        output["fact_bytes"] = output["fact_bytes"][:, :, :length]
     return output
 
 

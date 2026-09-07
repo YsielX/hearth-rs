@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
 import time
 from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import Any
+
+import torch
 
 from hearth_env import HearthEnv
 
@@ -17,25 +20,27 @@ from .config import ModelConfig, TrainConfig, resolve_device
 from .decks import Deck, DeckPool, match_config
 from .diagnostics import attack_target_diagnostic
 from .dmc import train_dmc
-from .evaluate import paired_evaluate
+from .evaluate import paired_evaluate, paired_configurations
 from .health import EpisodeHealth
 from .interactive import play_interactive_match
-from .manifests import write_deck_split
+from .manifests import write_deck_split, load_split_paths
 from .model import HearthQNetwork, parameter_count
 from .policies import HeuristicPolicy, ModelPolicy, RandomPolicy
 from .ppo import train_ppo
 from .rollout import ParallelCollector, RolloutJob, play_episode
 from .tensorize import Tensorizer
-from .trajectory import write_episodes
+from .trajectory import write_episodes, contains_excluded_cards
 
 ROOT = Path(__file__).parents[3]
 
 
 def _default_deck_paths() -> list[str]:
     frozen_throne = sorted((ROOT / "decks/frozen_throne").glob("*.json"))
-    return [str(path) for path in frozen_throne] + [
-        str(ROOT / "decks/quest_rogue.json")
-    ]
+    return (
+        [str(path) for path in frozen_throne]
+        + [str(ROOT / "decks/quest_rogue.json")]
+        + [str(path) for path in sorted((ROOT / "decks/training").glob("*.json"))]
+    )
 
 
 def _decks(paths: list[str]) -> list[Deck]:
@@ -68,6 +73,7 @@ def _env_and_catalog(
 
 def _train_config(args: argparse.Namespace) -> TrainConfig:
     return TrainConfig(
+        excluded_cards=tuple(getattr(args, "excluded_cards", ())),
         device=args.device,
         seed=args.seed,
         bc_learning_rate=args.bc_learning_rate,
@@ -78,8 +84,12 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
         max_steps=args.max_steps,
         history_limit=args.history_limit,
         bc_epochs=getattr(args, "epochs", 3),
-        dmc_iterations=getattr(args, "iterations", 1000),
-        ppo_iterations=getattr(args, "iterations", 1000),
+        dmc_iterations=getattr(args, "iterations", 1000)
+        if args.command == "train-dmc"
+        else 1000,
+        ppo_iterations=getattr(args, "iterations", 1000)
+        if args.command != "train-dmc"
+        else 1000,
         episodes_per_iteration=getattr(args, "episodes_per_iteration", 64),
         updates_per_iteration=getattr(args, "updates_per_iteration", 128),
         replay_warmup=getattr(args, "replay_warmup", 2000),
@@ -90,14 +100,15 @@ def _train_config(args: argparse.Namespace) -> TrainConfig:
         checkpoint_every=getattr(args, "checkpoint_every", 10),
         league_snapshot_every=getattr(args, "league_snapshot_every", 25),
         ppo_epochs=getattr(args, "ppo_epochs", 4),
+        ppo_temperature=getattr(args, "ppo_temperature", 1.0),
         ppo_clip=getattr(args, "ppo_clip", 0.2),
         value_clip=getattr(args, "value_clip", 0.2),
         value_coefficient=getattr(args, "value_coefficient", 0.5),
         entropy_coefficient=getattr(args, "entropy_coefficient", 0.01),
-        gamma=getattr(args, "gamma", 0.995),
-        gae_lambda=getattr(args, "gae_lambda", 0.95),
-        shaping_coefficient=getattr(args, "shaping_coefficient", 0.05),
-        reference_kl_coefficient=getattr(args, "reference_kl_coefficient", 0.02),
+        gamma=getattr(args, "gamma", 1.0),
+        gae_lambda=getattr(args, "gae_lambda", 0.98),
+        reference_kl_coefficient=getattr(args, "reference_kl_coefficient", 0.0),
+        ppo_bc_coefficient=getattr(args, "ppo_bc_coefficient", 0.0),
     )
 
 
@@ -125,20 +136,27 @@ def command_catalog(args: argparse.Namespace) -> None:
 def command_collect_bc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
-    demonstrations = _bc_decks(decks)
-    print(f"deck pool: {len(decks)} total, {len(demonstrations)} heuristic-compatible")
+    demonstrations = decks if args.teacher_checkpoint else _bc_decks(decks)
+    print(f"deck pool: {len(decks)} total, {len(demonstrations)} demonstration decks")
+    teacher_spec = (
+        {"kind": "model", "checkpoint": args.teacher_checkpoint}
+        if args.teacher_checkpoint
+        else {"kind": "heuristic"}
+    )
     pool = DeckPool(
         catalog,
         demonstrations,
         seed=args.seed,
         curated_probability=args.curated_probability,
         perturb_probability=args.perturb_probability,
+        card_pool=args.card_pool,
+        excluded_cards=getattr(args, "excluded_cards", ()),
     )
     jobs = [
         RolloutJob(
             pool.sample_match(),
             args.seed + index,
-            ({"kind": "heuristic", "noise": args.noise},) * 2,
+            (teacher_spec,) * 2,
         )
         for index in range(args.episodes)
     ]
@@ -148,6 +166,18 @@ def command_collect_bc(args: argparse.Namespace) -> None:
     def counted(episodes: Iterable[dict[str, Any]]) -> Iterator[dict[str, Any]]:
         nonlocal decisions
         for episode in episodes:
+            if episode.get("error"):
+                raise RuntimeError(
+                    f"demonstration environment error: {episode['error']}"
+                )
+            if contains_excluded_cards(episode, frozenset(args.excluded_cards)):
+                continue
+            episode["source"] = (
+                "model_demonstration"
+                if args.teacher_checkpoint
+                else "heuristic_demonstration"
+            )
+            episode["teacher_checkpoint"] = args.teacher_checkpoint
             decisions += len(episode["steps"])
             yield episode
 
@@ -169,12 +199,29 @@ def command_collect_bc(args: argparse.Namespace) -> None:
                 ),
             )
     else:
+        teacher = None
+        if args.teacher_checkpoint:
+            teacher, _ = load_checkpoint(args.teacher_checkpoint, catalog, device="cpu")
         episodes = (
             play_episode(
                 env,
                 [
-                    HeuristicPolicy(job.seed, args.noise),
-                    HeuristicPolicy(job.seed ^ 1, args.noise),
+                    ModelPolicy(
+                        teacher,
+                        Tensorizer(catalog, teacher.config),
+                        device="cpu",
+                        seed=job.seed,
+                    )
+                    if teacher is not None
+                    else HeuristicPolicy(),
+                    ModelPolicy(
+                        teacher,
+                        Tensorizer(catalog, teacher.config),
+                        device="cpu",
+                        seed=job.seed ^ 1,
+                    )
+                    if teacher is not None
+                    else HeuristicPolicy(),
                 ],
                 job.match_config,
                 job.seed,
@@ -215,16 +262,20 @@ def _strict_replay(env: HearthEnv, episode: dict[str, Any]) -> None:
         transition = env.step(int(step["action_index"]))
         decision = transition["next"]
     if env.replay() != episode["replay"]:
-        raise ValueError("authoritative replay differs after deterministic re-execution")
+        raise ValueError(
+            "authoritative replay differs after deterministic re-execution"
+        )
 
 
 def command_split_decks(args: argparse.Namespace) -> None:
+    if not args.include_complex:
+        args.deck = [
+            path for path in args.deck if Deck.from_file(path).strategy != "combo"
+        ]
     decks = _decks(args.deck)
     _, catalog = _env_and_catalog(args, decks)
     manifest = write_deck_split(args.deck, args.output_dir, catalog, seed=args.seed)
-    split_counts = {
-        name: len(records) for name, records in manifest["splits"].items()
-    }
+    split_counts = {name: len(records) for name, records in manifest["splits"].items()}
     cluster_counts = {
         name: sum(1 for cluster in manifest["clusters"] if cluster["split"] == name)
         for name in manifest["splits"]
@@ -235,7 +286,7 @@ def command_split_decks(args: argparse.Namespace) -> None:
 def command_stability(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
     env, catalog = _env_and_catalog(args, decks)
-    pool = DeckPool(catalog, decks, seed=args.seed)
+    pool = DeckPool(catalog, decks, seed=args.seed, card_pool=args.card_pool)
     rng = random.Random(args.seed)
     replay_indices = set(rng.sample(range(args.episodes), min(100, args.episodes)))
     jobs: list[RolloutJob] = []
@@ -287,13 +338,17 @@ def command_stability(args: argparse.Namespace) -> None:
                     replayed += 1
     else:
         for job in jobs:
-            policies = [
-                HeuristicPolicy(job.seed),
-                HeuristicPolicy(job.seed ^ 1),
-            ] if job.policies[0]["kind"] == "heuristic" else [
-                RandomPolicy(job.seed),
-                RandomPolicy(job.seed ^ 1),
-            ]
+            policies = (
+                [
+                    HeuristicPolicy(),
+                    HeuristicPolicy(),
+                ]
+                if job.policies[0]["kind"] == "heuristic"
+                else [
+                    RandomPolicy(job.seed),
+                    RandomPolicy(job.seed ^ 1),
+                ]
+            )
             episode = play_episode(
                 env,
                 policies,
@@ -339,17 +394,33 @@ def command_train_bc(args: argparse.Namespace) -> None:
             transformer_layers=args.layers,
         ),
         initial_model=initial_model,
+        replay_shards=args.replay_input,
+        replay_fraction=args.replay_fraction,
+        validation_shards=args.validation_input,
     )
 
 
 def command_evaluate_bc(args: argparse.Namespace) -> None:
     decks = _decks(args.deck)
-    _, catalog = _env_and_catalog(args, decks)
+    env, catalog = _env_and_catalog(args, decks)
     device = resolve_device(args.device)
     model, payload = load_checkpoint(args.checkpoint, catalog, device=device)
     print(
         json.dumps(
             {
+                "checkpoint": str(args.checkpoint),
+                "checkpoint_sha256": hashlib.sha256(
+                    Path(args.checkpoint).read_bytes()
+                ).hexdigest(),
+                "pack_hash": env.pack_hash,
+                "engine_build": env.engine_build,
+                "inputs": [
+                    {
+                        "path": str(path),
+                        "sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+                    }
+                    for path in args.input
+                ],
                 "checkpoint_step": payload.get("step", 0),
                 **evaluate_behavior_clone(
                     catalog,
@@ -373,6 +444,8 @@ def command_train_dmc(args: argparse.Namespace) -> None:
         seed=args.seed,
         curated_probability=args.curated_probability,
         perturb_probability=args.perturb_probability,
+        card_pool=args.card_pool,
+        excluded_cards=getattr(args, "excluded_cards", ()),
     )
     train_dmc(
         args.data,
@@ -401,6 +474,8 @@ def command_train_ppo(args: argparse.Namespace) -> None:
         seed=args.seed,
         curated_probability=args.curated_probability,
         perturb_probability=args.perturb_probability,
+        card_pool=args.card_pool,
+        excluded_cards=getattr(args, "excluded_cards", ()),
     )
     train_ppo(
         args.data,
@@ -417,6 +492,7 @@ def command_train_ppo(args: argparse.Namespace) -> None:
         ),
         specialist_probability=args.specialist_probability,
         reference_checkpoint=args.reference,
+        bc_shards=args.bc_input,
     )
 
 
@@ -432,8 +508,56 @@ def command_evaluate(args: argparse.Namespace) -> None:
         seed=args.seed,
         curated_probability=args.curated_probability,
         perturb_probability=args.perturb_probability,
+        card_pool=args.card_pool,
+        excluded_cards=getattr(args, "excluded_cards", ()),
     )
-    matches = [pool.sample_match() for _ in range(args.matches)]
+    swap_decks = not args.mirror
+    if args.match_list:
+        frozen = json.loads(Path(args.match_list).read_text(encoding="utf-8"))
+        if (
+            frozen["pack_hash"] != env.pack_hash
+            or frozen["engine_build"] != env.engine_build
+        ):
+            raise ValueError(
+                "evaluation match list requires its frozen card pack and engine"
+            )
+        matches, args.seed = frozen["matches"], frozen["seed"]
+        swap_decks = bool(frozen.get("swap_decks", True))
+        if args.mirror and swap_decks:
+            raise ValueError("--mirror conflicts with the frozen four-game pairing")
+    else:
+        if args.matches < len(decks) and args.balanced:
+            raise ValueError("balanced evaluation needs at least one match per deck")
+        if args.balanced:
+            random.Random(args.seed).shuffle(decks)
+        matches = (
+            [
+                match_config(
+                    decks[i % len(decks)], decks[(i + 1 + i // len(decks)) % len(decks)]
+                )
+                for i in range(args.matches)
+            ]
+            if args.balanced
+            else [pool.sample_match() for _ in range(args.matches)]
+        )
+        if args.mirror:
+            for config in matches:
+                for key in ("decks", "hero_powers", "classes", "sideboards"):
+                    if key in config:
+                        config[key] = [config[key][0], config[key][0]]
+    frozen_matches = {
+        "pack_hash": env.pack_hash,
+        "engine_build": env.engine_build,
+        "seed": args.seed,
+        "matches": matches,
+        "swap_decks": swap_decks,
+    }
+    if args.output:
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.with_suffix(".matches.json").write_text(
+            json.dumps(frozen_matches, indent=2), encoding="utf-8"
+        )
     if args.opponent_checkpoint:
         opponent_model, _ = load_checkpoint(
             args.opponent_checkpoint, catalog, device=device
@@ -443,20 +567,59 @@ def command_evaluate(args: argparse.Namespace) -> None:
             opponent_model, opponent_tensorizer, device=device, seed=seed
         )
     else:
-        opponent_factory = lambda seed: HeuristicPolicy(seed)
+        opponent_factory = lambda seed: HeuristicPolicy()
+    episodes = None
+    if args.workers > 0:
+        jobs = []
+        opponent_spec = (
+            {"kind": "model", "checkpoint": args.opponent_checkpoint}
+            if args.opponent_checkpoint
+            else {"kind": "heuristic"}
+        )
+        for index, base in enumerate(matches):
+            game_seed = args.seed + index
+            for config, seat in paired_configurations(base, swap_decks=swap_decks):
+                specs = [
+                    {**opponent_spec, "policy_seed": game_seed},
+                    {**opponent_spec, "policy_seed": game_seed ^ 0xA5A5},
+                ]
+                specs[seat] = {
+                    "kind": "model",
+                    "checkpoint": args.checkpoint,
+                    "policy_seed": game_seed ^ 0x5A5A,
+                }
+                jobs.append(RolloutJob(config, game_seed, tuple(specs)))
+        with ParallelCollector(
+            args.data,
+            matches[0],
+            workers=args.workers,
+            max_steps=args.max_steps,
+            history_limit=args.history_limit,
+            card_hash_dim=catalog.hash_dim,
+            failure_dir=Path(args.output).with_suffix(".failures")
+            if args.output
+            else None,
+        ) as collector:
+            episodes = collector.collect(jobs, progress_every=max(len(jobs) // 10, 1))
     result = paired_evaluate(
         env,
         lambda seed: ModelPolicy(model, tensorizer, device=device, seed=seed),
         opponent_factory,
         matches,
         seed=args.seed,
+        episodes=episodes,
+        swap_decks=swap_decks,
     )
     report = {
+        "pack_hash": env.pack_hash,
+        "engine_build": env.engine_build,
+        "checkpoint": str(args.checkpoint),
+        "opponent_checkpoint": args.opponent_checkpoint,
         "checkpoint_step": payload.get("step", 0),
+        "swap_decks": swap_decks,
         **result.summary(),
         "by_matchup": {
-            name: value.summary()
-            for name, value in sorted(result.by_matchup.items())
+            name: value.summary() for name, value in sorted(result.by_matchup.items())
         },
     }
     rendered = json.dumps(report, indent=2)
@@ -478,12 +641,14 @@ def command_diagnose_attacks(args: argparse.Namespace) -> None:
         seed=args.seed,
         curated_probability=args.curated_probability,
         perturb_probability=args.perturb_probability,
+        card_pool=args.card_pool,
+        excluded_cards=getattr(args, "excluded_cards", ()),
     )
     jobs: list[RolloutJob] = []
     for index in range(args.matches):
         model_seat = index % 2
         model = {"kind": "model", "checkpoint": args.checkpoint}
-        opponent = {"kind": "heuristic", "noise": 0.0}
+        opponent = {"kind": "heuristic"}
         policies = (model, opponent) if model_seat == 0 else (opponent, model)
         jobs.append(RolloutJob(pool.sample_match(), args.seed + index, policies))
     if args.workers > 0:
@@ -504,18 +669,14 @@ def command_diagnose_attacks(args: argparse.Namespace) -> None:
         tensorizer = Tensorizer(catalog, model.config)
         episodes = []
         for index, job in enumerate(jobs):
-            model_policy = ModelPolicy(
-                model, tensorizer, device=device, seed=job.seed
-            )
-            opponent_policy = HeuristicPolicy(job.seed ^ 1, noise=0.0)
+            model_policy = ModelPolicy(model, tensorizer, device=device, seed=job.seed)
+            opponent_policy = HeuristicPolicy()
             policies = (
                 [model_policy, opponent_policy]
                 if index % 2 == 0
                 else [opponent_policy, model_policy]
             )
-            episodes.append(
-                play_episode(env, policies, job.match_config, job.seed)
-            )
+            episodes.append(play_episode(env, policies, job.match_config, job.seed))
     annotated = [(episode, {index % 2}) for index, episode in enumerate(episodes)]
     report = {
         "checkpoint": args.checkpoint,
@@ -534,9 +695,7 @@ def command_play_model(args: argparse.Namespace) -> None:
     human_deck = Deck.from_file(args.human_deck)
     ai_deck = Deck.from_file(args.ai_deck)
     human_seat = args.human_seat - 1
-    decks = (
-        [human_deck, ai_deck] if human_seat == 0 else [ai_deck, human_deck]
-    )
+    decks = [human_deck, ai_deck] if human_seat == 0 else [ai_deck, human_deck]
     env, catalog = _env_and_catalog(args, decks)
     device = resolve_device(args.device)
     model, _ = load_checkpoint(args.checkpoint, catalog, device=device)
@@ -569,7 +728,7 @@ def command_smoke(args: argparse.Namespace) -> None:
     tensorizer = Tensorizer(catalog, config)
     policy = ModelPolicy(model, tensorizer, device=device, epsilon=0.2, seed=args.seed)
     episode = play_episode(
-        env, [policy, HeuristicPolicy(args.seed)], env.match_config, args.seed
+        env, [policy, HeuristicPolicy()], env.match_config, args.seed
     )
     print(
         json.dumps(
@@ -587,93 +746,25 @@ def command_smoke(args: argparse.Namespace) -> None:
     )
 
 
-def command_pipeline(args: argparse.Namespace) -> None:
-    """Run the BC warm start followed by league-based PPO self-play."""
-
-    decks = _decks(args.deck)
-    env, catalog = _env_and_catalog(args, decks)
-    pool = DeckPool(catalog, decks, seed=args.seed)
-    demonstration_decks = _bc_decks(decks)
-    demonstration_pool = DeckPool(catalog, demonstration_decks, seed=args.seed)
-    print(
-        f"deck pool: {len(decks)} total, "
-        f"{len(demonstration_decks)} heuristic-compatible"
-    )
-    run_dir = Path(args.run_dir)
-    demonstrations = run_dir / "bc" / "heuristic.jsonl.gz"
-    bc_checkpoint = run_dir / "bc" / "model.pt"
-    jobs = [
-        RolloutJob(
-            demonstration_pool.sample_match(),
-            args.seed + index,
-            ({"kind": "heuristic", "noise": args.noise},) * 2,
-        )
-        for index in range(args.bc_episodes)
-    ]
-    if args.workers > 0:
-        with ParallelCollector(
-            args.data,
-            jobs[0].match_config,
-            workers=args.workers,
-            max_steps=args.max_steps,
-            history_limit=args.history_limit,
-            card_hash_dim=catalog.hash_dim,
-            failure_dir=run_dir / "failures",
-            max_failures=0,
-        ) as collector:
-            write_episodes(
-                demonstrations,
-                collector.iter_collect(jobs, progress_every=max(len(jobs) // 20, 1)),
-            )
-    else:
-        episodes = (
-            play_episode(
-                env,
-                [
-                    HeuristicPolicy(job.seed, args.noise),
-                    HeuristicPolicy(job.seed ^ 1, args.noise),
-                ],
-                job.match_config,
-                job.seed,
-            )
-            for job in jobs
-        )
-        write_episodes(demonstrations, episodes)
-    config = _train_config(args)
-    config.bc_epochs = args.bc_epochs
-    model_config = ModelConfig(
-        hidden_dim=args.hidden_dim,
-        card_hash_dim=args.card_hash_dim,
-        transformer_layers=args.layers,
-    )
-    train_behavior_clone(
-        catalog,
-        [demonstrations],
-        bc_checkpoint,
-        config,
-        model_config=model_config,
-    )
-    train_ppo(
-        args.data,
-        catalog,
-        pool,
-        run_dir / "ppo",
-        config,
-        initial_checkpoint=bc_checkpoint,
-        specialist_probability=args.specialist_probability,
-    )
-
-
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(prog="hearth-train")
     root.add_argument("--data", default="data")
     root.add_argument("--deck", action="append", default=[])
+    root.add_argument(
+        "--deck-manifest", help="Frozen train/validation/test deck manifest"
+    )
+    root.add_argument("--split", choices=("train", "validation", "test"))
+    root.add_argument(
+        "--card-split", help="Held-out simple card manifest (applies to training)"
+    )
     root.add_argument("--seed", type=int, default=0)
     root.add_argument("--max-steps", type=int, default=1000)
     root.add_argument("--history-limit", type=int, default=96)
     root.add_argument("--card-hash-dim", type=int, default=256)
+    root.add_argument("--card-pool", choices=("all", "era"), default="all")
     root.add_argument("--device", default="auto")
     root.add_argument("--workers", type=int, default=0)
+    root.add_argument("--torch-threads", type=int, default=8)
     root.add_argument("--hidden-dim", type=int, default=128)
     root.add_argument("--layers", type=int, default=2)
     root.add_argument("--batch-size", type=int, default=128)
@@ -685,9 +776,32 @@ def parser() -> argparse.ArgumentParser:
     catalog = commands.add_parser("catalog")
     catalog.set_defaults(function=command_catalog)
 
+    def coverage_report(args):
+        from .coverage import decision_coverage
+        from .trajectory import read_episodes
+
+        report = decision_coverage(read_episodes(args.input))
+        path = Path(args.output)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(
+            json.dumps(
+                {key: value for key, value in report.items() if key != "cards"},
+                indent=2,
+            )
+        )
+
+    coverage = commands.add_parser("coverage")
+    coverage.add_argument("--input", action="append", required=True)
+    coverage.add_argument("--output", required=True)
+    coverage.set_defaults(function=coverage_report)
+
     collect = commands.add_parser("collect-bc")
     collect.add_argument("--episodes", type=int, default=1000)
-    collect.add_argument("--noise", type=float, default=0.08)
+    collect.add_argument(
+        "--teacher-checkpoint",
+        help="Visible-information model demonstrator; never a PPO behavior policy",
+    )
     collect.add_argument("--curated-probability", type=float, default=1.0)
     collect.add_argument("--perturb-probability", type=float, default=0.0)
     collect.add_argument("--output", required=True)
@@ -695,6 +809,11 @@ def parser() -> argparse.ArgumentParser:
 
     split = commands.add_parser("split-decks")
     split.add_argument("--output-dir", required=True)
+    split.add_argument(
+        "--include-complex",
+        action="store_true",
+        help="Also include combo/OTK decks in the split",
+    )
     split.set_defaults(function=command_split_decks)
 
     stability = commands.add_parser("stability")
@@ -707,6 +826,9 @@ def parser() -> argparse.ArgumentParser:
     bc.add_argument("--output", required=True)
     bc.add_argument("--epochs", type=int, default=3)
     bc.add_argument("--init")
+    bc.add_argument("--replay-input", action="append", default=[])
+    bc.add_argument("--replay-fraction", type=float, default=0.3)
+    bc.add_argument("--validation-input", action="append", default=[])
     bc.set_defaults(function=command_train_bc)
 
     evaluate_bc = commands.add_parser("evaluate-bc")
@@ -744,26 +866,44 @@ def parser() -> argparse.ArgumentParser:
     ppo.add_argument("--iterations", type=int, default=1000)
     ppo.add_argument("--episodes-per-iteration", type=int, default=64)
     ppo.add_argument("--ppo-epochs", type=int, default=4)
+    ppo.add_argument(
+        "--ppo-temperature",
+        type=float,
+        default=1.0,
+        help="Positive finite temperature shared by online actors and PPO likelihoods; greedy evaluation and auxiliary BC stay untempered",
+    )
     ppo.add_argument("--ppo-clip", type=float, default=0.2)
     ppo.add_argument("--value-clip", type=float, default=0.2)
     ppo.add_argument("--value-coefficient", type=float, default=0.5)
     ppo.add_argument("--entropy-coefficient", type=float, default=0.01)
-    ppo.add_argument("--gamma", type=float, default=0.995)
-    ppo.add_argument("--gae-lambda", type=float, default=0.95)
-    ppo.add_argument("--shaping-coefficient", type=float, default=0.05)
-    ppo.add_argument("--reference-kl-coefficient", type=float, default=0.02)
+    ppo.add_argument("--gamma", type=float, default=1.0)
+    ppo.add_argument("--gae-lambda", type=float, default=0.98)
+    ppo.add_argument("--reference-kl-coefficient", type=float, default=0.0)
+    ppo.add_argument("--bc-input", action="append", default=[])
+    ppo.add_argument("--ppo-bc-coefficient", type=float, default=0.0)
     ppo.add_argument("--checkpoint-every", type=int, default=10)
     ppo.add_argument("--league-snapshot-every", type=int, default=25)
     ppo.add_argument("--specialist-probability", type=float, default=0.1)
-    ppo.add_argument("--curated-probability", type=float, default=1.0)
-    ppo.add_argument("--perturb-probability", type=float, default=0.0)
+    ppo.add_argument("--curated-probability", type=float, default=0.8)
+    ppo.add_argument("--perturb-probability", type=float, default=0.15)
     ppo.set_defaults(function=command_train_ppo)
 
     evaluate = commands.add_parser("evaluate")
+    evaluate.add_argument(
+        "--mirror",
+        action="store_true",
+        help="Use identical decks on both sides and two games per seed, swapping model seats",
+    )
     evaluate.add_argument("--checkpoint", required=True)
     evaluate.add_argument("--opponent-checkpoint")
     evaluate.add_argument("--matches", type=int, default=100)
     evaluate.add_argument("--output")
+    evaluate.add_argument(
+        "--match-list", help="Replay a saved .matches.json evaluation schedule"
+    )
+    evaluate.add_argument(
+        "--balanced", action="store_true", help="Cycle through every supplied deck"
+    )
     evaluate.add_argument("--curated-probability", type=float, default=1.0)
     evaluate.add_argument("--perturb-probability", type=float, default=0.0)
     evaluate.set_defaults(function=command_evaluate)
@@ -781,41 +921,55 @@ def parser() -> argparse.ArgumentParser:
     play_model.add_argument("--human-deck", required=True)
     play_model.add_argument("--ai-deck", required=True)
     play_model.add_argument("--human-seat", type=int, choices=(1, 2), default=1)
-    play_model.add_argument("--locale", choices=("enUS", "zhCN", "zhTW"), default="zhCN")
+    play_model.add_argument(
+        "--locale", choices=("enUS", "zhCN", "zhTW"), default="zhCN"
+    )
     play_model.set_defaults(function=command_play_model)
 
     smoke = commands.add_parser("smoke")
     smoke.set_defaults(function=command_smoke)
 
-    pipeline = commands.add_parser("pipeline")
-    pipeline.add_argument("--run-dir", required=True)
-    pipeline.add_argument("--bc-episodes", type=int, default=10_000)
-    pipeline.add_argument("--bc-epochs", type=int, default=3)
-    pipeline.add_argument("--noise", type=float, default=0.08)
-    pipeline.add_argument("--iterations", type=int, default=1000)
-    pipeline.add_argument("--episodes-per-iteration", type=int, default=64)
-    pipeline.add_argument("--updates-per-iteration", type=int, default=128)
-    pipeline.add_argument("--replay-warmup", type=int, default=2000)
-    pipeline.add_argument("--checkpoint-every", type=int, default=10)
-    pipeline.add_argument("--league-snapshot-every", type=int, default=25)
-    pipeline.add_argument("--specialist-probability", type=float, default=0.1)
-    pipeline.add_argument("--ppo-epochs", type=int, default=4)
-    pipeline.add_argument("--ppo-clip", type=float, default=0.2)
-    pipeline.add_argument("--value-clip", type=float, default=0.2)
-    pipeline.add_argument("--value-coefficient", type=float, default=0.5)
-    pipeline.add_argument("--entropy-coefficient", type=float, default=0.01)
-    pipeline.add_argument("--gamma", type=float, default=0.995)
-    pipeline.add_argument("--gae-lambda", type=float, default=0.95)
-    pipeline.add_argument("--shaping-coefficient", type=float, default=0.05)
-    pipeline.add_argument("--reference-kl-coefficient", type=float, default=0.02)
-    pipeline.set_defaults(function=command_pipeline)
     return root
 
 
 def main() -> None:
     args = parser().parse_args()
+    if args.torch_threads < 1:
+        raise ValueError("--torch-threads must be positive")
+    torch.set_num_threads(args.torch_threads)
+    args.excluded_cards = []
+    if args.card_split:
+        split = json.loads(Path(args.card_split).read_text(encoding="utf-8"))
+        if args.command in {
+            "train-bc",
+            "train-ppo",
+            "train-dmc",
+            "collect-bc",
+        }:
+            args.excluded_cards = split["held_out_cards"]
+    if args.deck_manifest:
+        if args.deck or not args.split:
+            raise ValueError(
+                "--deck-manifest requires --split and cannot be mixed with --deck"
+            )
+        if (
+            args.command in {"train-bc", "train-ppo", "train-dmc", "collect-bc"}
+            and args.split != "train"
+        ):
+            raise ValueError("training commands require the train split")
+        args.deck = load_split_paths(args.deck_manifest, args.split)
+    elif args.split:
+        raise ValueError("--split requires --deck-manifest")
     if not args.deck:
         args.deck = _default_deck_paths()
+    if args.excluded_cards:
+        args.deck = [
+            path
+            for path in args.deck
+            if not set(Deck.from_file(path).cards).intersection(args.excluded_cards)
+        ]
+        if not args.deck:
+            raise ValueError("no training decks remain after held-out card exclusion")
     args.function(args)
 
 

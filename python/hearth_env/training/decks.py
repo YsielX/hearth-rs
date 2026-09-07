@@ -55,6 +55,7 @@ class Deck:
     source: str | None = None
     adapted: bool = False
     era_cutoff: str | None = None
+    protected_cards: tuple[str, ...] = ()
 
     @classmethod
     def from_file(cls, path: str | Path) -> Deck:
@@ -75,6 +76,7 @@ class Deck:
             source=value.get("source"),
             adapted=bool(value.get("adapted", False)),
             era_cutoff=value.get("era_cutoff"),
+            protected_cards=tuple(value.get("protected_cards", ())),
         )
 
 
@@ -98,6 +100,8 @@ class DeckPool:
         seed: int = 0,
         curated_probability: float = 0.5,
         perturb_probability: float = 0.35,
+        card_pool: str = "era",
+        excluded_cards: Sequence[str] = (),
     ) -> None:
         if not curated:
             raise ValueError("at least one curated deck is required")
@@ -114,11 +118,17 @@ class DeckPool:
         self.rng = random.Random(seed)
         self.curated_probability = curated_probability
         self.perturb_probability = perturb_probability
+        if card_pool not in {"era", "all"}:
+            raise ValueError("card_pool must be era or all")
+        self.card_pool = card_pool
+        self.excluded_cards = frozenset(excluded_cards)
+        if any(self.excluded_cards.intersection(deck.cards) for deck in curated):
+            raise ValueError("curated training deck contains held-out cards")
         self._curated_by_class = {
             card_class: [deck for deck in self.curated if deck.card_class == card_class]
             for card_class in sorted({deck.card_class for deck in self.curated})
         }
-        self.allowed_sets = self._common_era_sets()
+        self.allowed_sets = self._common_era_sets() if card_pool == "era" else None
         self._pools = self._class_pools()
 
     def _common_era_sets(self) -> frozenset[str] | None:
@@ -141,9 +151,21 @@ class DeckPool:
     def _class_pools(self) -> dict[str, list[str]]:
         result: dict[str, list[str]] = {}
         deckable = {"hero", "minion", "spell", "weapon", "location"}
-        represented_classes = {deck.card_class for deck in self.curated}
+        represented_classes = (
+            set(DEFAULT_HERO_POWERS)
+            if self.card_pool == "all"
+            else {deck.card_class for deck in self.curated}
+        )
         for card_id, entry in self.catalog.entries.items():
             definition = entry["definition"]
+            if card_id in self.excluded_cards or definition.get("set") == "HERO_SKINS":
+                continue
+            # These require an explicit constructed list, not an arbitrary
+            # 30-card sample. The coverage report must account for them.
+            if definition.get("sideboard_size", 0) or definition.get(
+                "deck_size"
+            ) not in (None, 0, 30):
+                continue
             if not definition.get("collectible", False):
                 continue
             if (
@@ -161,21 +183,51 @@ class DeckPool:
             cards.sort()
         return result
 
-    def _perturb(self, deck: Deck, fraction: float = 0.2) -> Deck:
+    def _runes_fit(self, cards: Sequence[str]) -> bool:
+        required = {name: 0 for name in ("blood", "frost", "unholy")}
+        for card in cards:
+            for name, value in (
+                self.catalog.entries[card]["definition"].get("rune_cost") or {}
+            ).items():
+                required[name] = max(required.get(name, 0), int(value))
+        return sum(required.values()) <= 3
+
+    def _perturb(self, deck: Deck, fraction: float = 0.1) -> Deck:
         cards = list(deck.cards)
         pool = self._pools.get(deck.card_class, list(deck.cards))
         counts = Counter(cards)
         replacements = max(1, round(len(cards) * fraction))
-        for index in self.rng.sample(range(len(cards)), min(replacements, len(cards))):
+        highlander = len(counts) == len(cards)
+        replaceable = [
+            i
+            for i, card in enumerate(cards)
+            if card not in deck.protected_cards
+            and str(self.catalog.entries[card]["definition"].get("rarity", "")).lower()
+            != "legendary"
+        ]
+        for index in self.rng.sample(replaceable, min(replacements, len(replaceable))):
             previous = cards[index]
+            original = self.catalog.entries[previous]["definition"]
             counts[previous] -= 1
             candidates = []
             for card_id in pool:
                 rarity = str(
                     self.catalog.entries[card_id]["definition"].get("rarity", "")
                 ).lower()
-                maximum = 1 if rarity == "legendary" else 2
-                if counts[card_id] < maximum:
+                replacement_definition = self.catalog.entries[card_id]["definition"]
+                maximum = 1 if rarity == "legendary" or highlander else 2
+                fits_role = (
+                    replacement_definition.get("kind") == original.get("kind")
+                    and abs(
+                        replacement_definition.get("cost", 0) - original.get("cost", 0)
+                    )
+                    <= 1
+                )
+                if (
+                    counts[card_id] < maximum
+                    and fits_role
+                    and self._runes_fit(cards[:index] + [card_id] + cards[index + 1 :])
+                ):
                     candidates.append(card_id)
             replacement = self.rng.choice(candidates) if candidates else previous
             cards[index] = replacement
@@ -192,6 +244,7 @@ class DeckPool:
             source=deck.source,
             adapted=True,
             era_cutoff=deck.era_cutoff,
+            protected_cards=deck.protected_cards,
         )
 
     def perturb(self, deck: Deck, fraction: float = 0.2) -> Deck:
@@ -202,17 +255,42 @@ class DeckPool:
     def _random(self) -> Deck:
         card_class = self.rng.choice(sorted(self._pools))
         pool = self._pools[card_class]
-        cards = tuple(
-            self.rng.sample(pool, 30)
-            if len(pool) >= 30
-            else (self.rng.choice(pool) for _ in range(30))
-        )
+        cards: list[str] = []
+        counts: Counter[str] = Counter()
+        for low, high, count in ((0, 2, 10), (3, 4, 10), (5, 6, 6), (7, 100, 4)):
+            for _ in range(count):
+                candidates = [
+                    card
+                    for card in pool
+                    if counts[card]
+                    < (
+                        1
+                        if self.catalog.entries[card]["definition"].get("rarity")
+                        == "legendary"
+                        else 2
+                    )
+                    and self._runes_fit([*cards, card])
+                ]
+                if not candidates:
+                    raise ValueError(
+                        f"not enough legal cards to construct {card_class}"
+                    )
+                curved = [
+                    card
+                    for card in candidates
+                    if low
+                    <= self.catalog.entries[card]["definition"].get("cost", 0)
+                    <= high
+                ]
+                card = self.rng.choice(curved or candidates)
+                cards.append(card)
+                counts[card] += 1
         return Deck(
             name=f"random-{card_class}",
             card_class=card_class,
-            cards=cards,
+            cards=tuple(cards),
             hero_power=DEFAULT_HERO_POWERS[card_class],
-            era_cutoff=self._latest_known_cutoff(),
+            era_cutoff=self._latest_known_cutoff() if self.card_pool == "era" else None,
         )
 
     def sample(self) -> Deck:

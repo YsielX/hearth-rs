@@ -8,6 +8,7 @@ import torch
 from torch.nn import functional as F
 
 from .config import TrainConfig
+from .distribution import policy_logits
 from .model import HearthQNetwork, selected_q
 from .tensorize import Tensorizer, collate, move_batch
 from .trajectory import TrainingSample
@@ -19,6 +20,44 @@ class LossMetrics:
     accuracy: float | None = None
     dmc_loss: float | None = None
     bc_loss: float | None = None
+
+
+def imitation_logits(
+    logits: torch.Tensor, samples: Sequence[TrainingSample]
+) -> torch.Tensor:
+    """Condition supervised comparisons without changing the acting policy."""
+    support = torch.ones_like(logits, dtype=torch.bool)
+    for row, sample in enumerate(samples):
+        if not sample.action_support:
+            continue
+        if any(
+            index < 0 or index >= len(sample.decision["actions"])
+            for index in sample.action_support
+        ):
+            raise ValueError("demonstration contains an invalid action support")
+        support[row] = False
+        support[row, list(sample.action_support)] = True
+    return logits.masked_fill(~support, -torch.inf)
+
+
+def imitation_loss(
+    logits: torch.Tensor, samples: Sequence[TrainingSample]
+) -> tuple[torch.Tensor, torch.Tensor]:
+    accepted = torch.zeros_like(logits, dtype=torch.bool)
+    for row, sample in enumerate(samples):
+        labels = sample.acceptable_actions or (sample.action_index,)
+        if any(
+            index < 0 or index >= len(sample.decision["actions"]) for index in labels
+        ):
+            raise ValueError("demonstration contains an invalid accepted action")
+        if sample.action_support and not set(labels).issubset(sample.action_support):
+            raise ValueError("accepted actions must be inside the conditional support")
+        accepted[row, list(labels)] = True
+    logits = imitation_logits(logits, samples)
+    log_all = logits.log_softmax(1)
+    losses = -torch.logsumexp(log_all.masked_fill(~accepted, -torch.inf), 1)
+    correct = accepted.gather(1, logits.argmax(1, keepdim=True)).squeeze(1)
+    return losses, correct
 
 
 def _sample_batch(
@@ -50,7 +89,6 @@ def train_batch(
     *,
     behavior_clone: bool,
 ) -> LossMetrics:
-    model.train()
     batch, actions, targets, weights = _sample_batch(samples, tensorizer, device)
     amp_enabled = config.amp and device.startswith("cuda")
     context = (
@@ -62,8 +100,9 @@ def train_batch(
     with context:
         q_values = model(batch)
         if behavior_clone:
-            per_item = F.cross_entropy(q_values, actions, reduction="none")
-            accuracy = float((q_values.argmax(1) == actions).float().mean().item())
+            q_values = policy_logits(q_values, batch)
+            per_item, correct = imitation_loss(q_values, samples)
+            accuracy = float(correct.float().mean().item())
         else:
             per_item = F.smooth_l1_loss(
                 selected_q(q_values, actions), targets, reduction="none"
@@ -114,9 +153,10 @@ def train_mixed_batch(
         if bc_encoded is not None:
             bc_batch, bc_actions, _, bc_weights = bc_encoded
             bc_values = model(bc_batch)
-            bc_per_item = F.cross_entropy(bc_values, bc_actions, reduction="none")
+            bc_values = policy_logits(bc_values, bc_batch)
+            bc_per_item, correct = imitation_loss(bc_values, bc_samples)
             bc_loss = (bc_per_item * bc_weights).sum() / bc_weights.sum().clamp_min(1.0)
-            accuracy = float((bc_values.argmax(1) == bc_actions).float().mean().item())
+            accuracy = float(correct.float().mean().item())
         loss = dmc_loss + bc_weight * bc_loss
     loss.backward()
     torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_clip)

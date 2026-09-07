@@ -6,13 +6,19 @@ from torch import nn
 from .catalog import CardCatalog
 from .config import ModelConfig
 from .tensorize import ACTION_KINDS
+from .semantic_model import SemanticEncoder
 
 
-class HearthQNetwork(nn.Module):
+class HearthQNetwork(SemanticEncoder, nn.Module):
     """One shared state encoder followed by a score for every legal action."""
 
     def __init__(self, catalog: CardCatalog, config: ModelConfig) -> None:
         super().__init__()
+        if config.architecture_version not in {1, 2, 3}:
+            raise ValueError("unsupported model architecture version")
+        if config.architecture_version >= 3:
+            self._init_semantic(catalog, config)
+            return
         self.config = config
         hidden = config.hidden_dim
         features = torch.tensor(catalog.feature_matrix(), dtype=torch.float32)
@@ -79,6 +85,11 @@ class HearthQNetwork(nn.Module):
         nn.init.zeros_(self.value_head[-1].bias)
 
     def encode_card(self, indices: torch.Tensor) -> torch.Tensor:
+        if self.config.architecture_version >= 3:
+            table = getattr(self, "_forward_card_table", None)
+            if table is None:
+                table = self._semantic_card_table()
+            return table[indices]
         safe = indices.clamp(0, self.card_feature_table.shape[0] - 1)
         semantic = self.card_semantic(self.card_feature_table[safe])
         return semantic + self.card_id_embedding(safe)
@@ -91,10 +102,12 @@ class HearthQNetwork(nn.Module):
     def _encode_state(
         self, batch: dict[str, torch.Tensor]
     ) -> tuple[torch.Tensor, torch.Tensor]:
+        if self.config.architecture_version >= 3:
+            return self._encode_semantic_state(batch)
         public_card_values = self.encode_card(batch["entity_public_cards"])
-        public_card_weights = batch["entity_public_card_mask"].to(
-            public_card_values.dtype
-        ).unsqueeze(-1)
+        public_card_weights = (
+            batch["entity_public_card_mask"].to(public_card_values.dtype).unsqueeze(-1)
+        )
         # Keep multiplicity: two identical Starship pieces are semantically
         # different from one even though their mean embedding is identical.
         public_card_context = (public_card_values * public_card_weights).sum(2)
@@ -133,10 +146,10 @@ class HearthQNetwork(nn.Module):
         )
         return entity, context
 
-    def policy_value(
+    def action_features(
         self, batch: dict[str, torch.Tensor]
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        """Return masked policy logits and the actor-relative state value."""
+        """Return differentiable public action features and state context."""
 
         entity, context = self._encode_state(batch)
 
@@ -163,9 +176,11 @@ class HearthQNetwork(nn.Module):
         target_context = target_context * has_target
 
         action_card_values = self.encode_card(batch["action_semantic_cards"])
-        action_card_weights = batch["action_semantic_card_mask"].to(
-            action_card_values.dtype
-        ).unsqueeze(-1)
+        action_card_weights = (
+            batch["action_semantic_card_mask"]
+            .to(action_card_values.dtype)
+            .unsqueeze(-1)
+        )
         action_card_context = (action_card_values * action_card_weights).sum(
             2
         ) / action_card_weights.sum(2).clamp_min(1)
@@ -181,6 +196,15 @@ class HearthQNetwork(nn.Module):
             ],
             dim=-1,
         )
+        if self.config.architecture_version >= 3:
+            self._forward_card_table = None
+        return action, context
+
+    def policy_value(
+        self, batch: dict[str, torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return masked policy logits and the actor-relative state value."""
+        action, context = self.action_features(batch)
         logits = self.action_scorer(action).squeeze(-1)
         logits = logits.masked_fill(
             ~batch["action_mask"], torch.finfo(logits.dtype).min

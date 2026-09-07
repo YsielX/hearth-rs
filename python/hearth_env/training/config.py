@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
 from typing import Any
 
 
 @dataclass(frozen=True)
 class ModelConfig:
+    architecture_version: int = 3
+    text_vocabulary: tuple[str, ...] = ()
+    text_dim: int = 48
+    max_card_tokens: int = 256
+    max_memory: int = 512
+    max_facts: int = 96
     hidden_dim: int = 128
     card_hash_dim: int = 256
     entity_state_dim: int = 32
@@ -15,7 +22,7 @@ class ModelConfig:
     max_entities: int = 64
     max_entity_cards: int = 16
     max_history: int = 96
-    max_history_entities: int = 4
+    max_history_entities: int = 16
     max_deck_cards: int = 40
     max_action_sources: int = 10
     max_action_cards: int = 4
@@ -24,15 +31,20 @@ class ModelConfig:
     dropout: float = 0.1
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        result = asdict(self)
+        return result
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> ModelConfig:
+        value = dict(value)
+        value.setdefault("architecture_version", 2)
+        value["text_vocabulary"] = tuple(value.get("text_vocabulary", ()))
         return cls(**value)
 
 
 @dataclass
 class TrainConfig:
+    excluded_cards: tuple[str, ...] = ()
     device: str = "auto"
     seed: int = 0
     bc_learning_rate: float = 3e-4
@@ -60,14 +72,19 @@ class TrainConfig:
     bc_regularization_start: float = 0.2
     bc_regularization_end: float = 0.05
     ppo_epochs: int = 4
+    ppo_temperature: float = 1.0
     ppo_clip: float = 0.2
     value_clip: float = 0.2
     value_coefficient: float = 0.5
     entropy_coefficient: float = 0.01
-    gamma: float = 0.995
-    gae_lambda: float = 0.95
-    shaping_coefficient: float = 0.05
-    reference_kl_coefficient: float = 0.02
+    gamma: float = 1.0
+    gae_lambda: float = 0.98
+    reference_kl_coefficient: float = 0.0
+    ppo_bc_coefficient: float = 0.0
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.ppo_temperature) or self.ppo_temperature <= 0:
+            raise ValueError("PPO temperature must be positive and finite")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -20,7 +20,14 @@ from .model import HearthQNetwork
 from .policies import HeuristicPolicy, ModelPolicy
 from .rollout import ParallelCollector, RolloutJob, play_episode
 from .tensorize import Tensorizer
-from .trajectory import ReplayBuffer, read_episodes, stream_samples, write_episodes
+from .trajectory import (
+    ReplayBuffer,
+    read_episodes,
+    stream_samples,
+    write_episodes,
+    contains_excluded_cards,
+)
+from hearth_env._native import HearthEnv as NativeEnv
 
 
 def _epsilon(config: TrainConfig, iteration: int) -> float:
@@ -61,7 +68,9 @@ def train_dmc(
     if checkpoint:
         model, payload = load_checkpoint(checkpoint, catalog, device=device)
         start_step = int(payload.get("step", 0)) if resume_checkpoint else 0
-        start_iteration = int(payload.get("dmc_iteration", 0)) if resume_checkpoint else 0
+        start_iteration = (
+            int(payload.get("dmc_iteration", 0)) if resume_checkpoint else 0
+        )
         migration = payload.get("migration", {})
         print(
             "checkpoint migration "
@@ -81,7 +90,9 @@ def train_dmc(
         if payload.get("phase") != "dmc":
             raise ValueError("--resume requires a DMC checkpoint")
         if payload.get("migration", {}).get("new_cards"):
-            raise ValueError("cannot resume optimizer state after expanding the card catalog")
+            raise ValueError(
+                "cannot resume optimizer state after expanding the card catalog"
+            )
         if not payload.get("optimizer"):
             raise ValueError("resume checkpoint does not contain optimizer state")
         optimizer.load_state_dict(payload["optimizer"])
@@ -91,6 +102,8 @@ def train_dmc(
         rollout_paths = sorted((run_dir / "rollouts").glob("iteration-*.jsonl.gz"))
         restored_episodes = 0
         for episode in read_episodes(rollout_paths):
+            if contains_excluded_cards(episode, frozenset(train_config.excluded_cards)):
+                continue
             if not episode.get("truncated") and not episode.get("error"):
                 replay.extend_episode(episode)
                 restored_episodes += 1
@@ -99,7 +112,14 @@ def train_dmc(
             f"from_episodes={restored_episodes}"
         )
     bc_samples = list(
-        stream_samples(bc_shards, behavior_clone=True, seed=train_config.seed)
+        stream_samples(
+            bc_shards,
+            behavior_clone=True,
+            seed=train_config.seed,
+            expected_pack_hash=catalog.pack_hash,
+            expected_engine_build=NativeEnv.engine_build(),
+            excluded_cards=train_config.excluded_cards,
+        )
     )
     if bc_shards and not bc_samples:
         raise ValueError("BC regularization shards contain no decisions")
@@ -151,7 +171,7 @@ def train_dmc(
                     "epsilon": epsilon,
                 }
                 if rng.random() < specialist_probability:
-                    opponent: dict[str, Any] = {"kind": "heuristic", "noise": 0.15}
+                    opponent: dict[str, Any] = {"kind": "heuristic"}
                 else:
                     opponent = {
                         "kind": "model",
@@ -180,11 +200,7 @@ def train_dmc(
                     policies = []
                     for seat, spec in enumerate(job.policies):
                         if spec["kind"] == "heuristic":
-                            policies.append(
-                                HeuristicPolicy(
-                                    job.seed ^ seat, spec.get("noise", 0.08)
-                                )
-                            )
+                            policies.append(HeuristicPolicy())
                             continue
                         path = Path(spec["checkpoint"])
                         if path == actor_path:
@@ -217,6 +233,10 @@ def train_dmc(
                     and Path(spec.get("checkpoint", "")) == actor_path
                 }
                 health.add(episode, controlled_seats=current_seats)
+                if contains_excluded_cards(
+                    episode, frozenset(train_config.excluded_cards)
+                ):
+                    continue
                 if not episode["truncated"] and not episode.get("error"):
                     completed += 1
                     new_samples += replay.extend_episode(episode)
@@ -293,9 +313,7 @@ def train_dmc(
                 )
             if (iteration + 1) % train_config.league_snapshot_every == 0:
                 if gate_failures:
-                    print(
-                        "league promotion rejected: " + "; ".join(gate_failures)
-                    )
+                    print("league promotion rejected: " + "; ".join(gate_failures))
                 else:
                     save_checkpoint(
                         league.directory / f"snapshot-{iteration + 1:06d}.pt",
