@@ -10,7 +10,8 @@ permissions:
 
 jobs:
   update:
-    if: github.event.head_commit.message == 'chore(release): update published v0.1.1 notes'
+    if: >-
+      github.event.head_commit.message == 'chore(release): update published v0.1.1 notes'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
