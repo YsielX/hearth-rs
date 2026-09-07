@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "hearth-env"
-version = "0.1.0"
+version = "0.1.1"
 requires-python = ">=3.10"
 description = "Python transport for the hearth-rs reinforcement-learning environment adapter"
 
