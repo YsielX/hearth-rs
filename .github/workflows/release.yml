@@ -89,5 +89,5 @@ jobs:
         with:
           name: hearth-rs ${{ github.ref_name }}
           body_path: docs/releases/${{ github.ref_name }}.md
-          generate_release_notes: true
+          generate_release_notes: false
           files: release-assets/*
