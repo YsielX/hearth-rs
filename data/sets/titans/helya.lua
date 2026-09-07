@@ -26,7 +26,6 @@ end
 
 local function plague_damage(ctx, self, card_id)
     local player = ctx:controller(self)
-    cardlib.plagues.reshuffle_if_unending(ctx, player, card_id)
     cardlib.effects.damage_ignoring_spell_damage(ctx, ctx:player(player).hero, 2)
     return player
 end
