@@ -529,6 +529,7 @@ mod tests {
             keywords: Vec::new(),
             silenced: false,
             public_cards: Vec::new(),
+            public_counters: Default::default(),
         }
     }
 
@@ -571,6 +572,7 @@ mod tests {
             resources: BTreeMap::new(),
             resources_spent: BTreeMap::new(),
             public_statuses: Vec::new(),
+            public_counters: Default::default(),
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,

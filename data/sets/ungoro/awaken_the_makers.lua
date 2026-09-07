@@ -15,8 +15,8 @@ card.triggers = {{
             and has_keyword(ctx, event.entity, "deathrattle")
     end,
     effect = function(ctx, self)
-        local progress = ctx:get_data(self, "quest_progress") + 1
-        ctx:set_data(self, "quest_progress", progress)
+        local progress = ctx:get_data(self, "public:quest_progress") + 1
+        ctx:set_data(self, "public:quest_progress", progress)
         if progress >= 6 then
             ctx:set_data(self, "completed", 1)
             ctx:reveal_secret(self)

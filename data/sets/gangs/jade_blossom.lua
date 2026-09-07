@@ -13,13 +13,13 @@ local card = {
 
 function card.on_play(ctx, self)
     local player = ctx:controller(self)
-    ctx:increment_player_data(player, "jade_golem_count", 1)
+    ctx:increment_player_data(player, "public:jade_golem_count", 1)
     ctx:continue_with("summon_jade_golem")
 end
 
 function card.summon_jade_golem(ctx, self)
     local player = ctx:controller(self)
-    local size = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
+    local size = math.min(30, ctx:get_player_data(player, "public:jade_golem_count"))
     cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", size, size)
     ctx:gain_mana_crystals(player, 1, false)
 end

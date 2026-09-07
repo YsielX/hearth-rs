@@ -1,7 +1,7 @@
 local function buff_cthun(ctx, player)
     ctx:grant_player_keyword(player, "cthun_buffs")
-    ctx:increment_player_data(player, "cthun_attack_buff", 1)
-    ctx:increment_player_data(player, "cthun_health_buff", 1)
+    ctx:increment_player_data(player, "public:cthun_attack_buff", 1)
+    ctx:increment_player_data(player, "public:cthun_health_buff", 1)
 end
 
 return {

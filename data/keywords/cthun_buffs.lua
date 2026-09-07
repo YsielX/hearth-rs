@@ -25,7 +25,7 @@ end
 local function apply_historical_total(ctx, entity, player)
     if not entity or ctx:entity(entity).card_id ~= "OG_280" then return end
     for _, stat in ipairs({ "attack", "health" }) do
-        local total = ctx:get_player_data(player, "cthun_" .. stat .. "_buff") or 0
+        local total = ctx:get_player_data(player, "public:cthun_" .. stat .. "_buff") or 0
         local applied = ctx:get_data(entity, applied_key(stat)) or 0
         local missing = total - applied
         if missing > 0 then
@@ -43,8 +43,8 @@ end
 local function mark_transformed_baseline(ctx, entity)
     if not entity or ctx:entity(entity).card_id ~= "OG_280" then return end
     local player = ctx:controller(entity)
-    ctx:set_data(entity, applied_key("attack"), ctx:get_player_data(player, "cthun_attack_buff") or 0)
-    ctx:set_data(entity, applied_key("health"), ctx:get_player_data(player, "cthun_health_buff") or 0)
+    ctx:set_data(entity, applied_key("attack"), ctx:get_player_data(player, "public:cthun_attack_buff") or 0)
+    ctx:set_data(entity, applied_key("health"), ctx:get_player_data(player, "public:cthun_health_buff") or 0)
 end
 
 return {
@@ -60,10 +60,10 @@ return {
             condition = function(ctx, self, event)
                 return event.player == ctx:controller(self)
                     and event.delta ~= 0
-                    and (event.key == "cthun_attack_buff" or event.key == "cthun_health_buff")
+                    and (event.key == "public:cthun_attack_buff" or event.key == "public:cthun_health_buff")
             end,
             effect = function(ctx, self, event)
-                local stat = event.key == "cthun_attack_buff" and "attack" or "health"
+                local stat = event.key == "public:cthun_attack_buff" and "attack" or "health"
                 for _, entity in ipairs(cthuns(ctx, event.player)) do
                     add_stat(ctx, entity, stat, event.delta)
                     local key = applied_key(stat)

@@ -37,8 +37,8 @@ local card = {
             effect = function(ctx, self, event)
                 local played = ctx:entity(event.entity)
                 local name = ctx:card_definition(played.card_id).name
-                local key = "played:" .. name
-                if #key > 64 then key = "played:" .. played.card_id end
+                local key = "public:played:" .. name
+                if #key > 64 then key = "public:played:" .. played.card_id end
                 local count = ctx:get_data(self, key) + 1
                 ctx:set_data(self, key, count)
                 if count >= 4 then

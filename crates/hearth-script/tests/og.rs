@@ -228,11 +228,11 @@ fn cthun_buffs_are_atomic_for_one_heal_group_apply_across_zones_and_unlock_ten_a
     play(&mut game, PlayerId::ONE, "TEST_OG_HEAL_FRIENDS", None);
 
     assert_eq!(
-        game.state().player(PlayerId::ONE).script_data["cthun_attack_buff"],
+        game.state().player(PlayerId::ONE).script_data["public:cthun_attack_buff"],
         2
     );
     assert_eq!(
-        game.state().player(PlayerId::ONE).script_data["cthun_health_buff"],
+        game.state().player(PlayerId::ONE).script_data["public:cthun_health_buff"],
         2
     );
 

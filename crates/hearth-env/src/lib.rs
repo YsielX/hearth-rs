@@ -35,7 +35,7 @@ use action::encode_action;
 use history::ViewerMemory;
 use observation::build_observation;
 
-pub const OBSERVATION_SCHEMA_VERSION: u32 = 7;
+pub const OBSERVATION_SCHEMA_VERSION: u32 = 8;
 
 /// Operator/training metadata. This is deliberately not part of `Decision`,
 /// so a policy cannot mistake implementation source for in-game information.

@@ -342,6 +342,7 @@ mod tests {
             resources: Default::default(),
             resources_spent: Default::default(),
             public_statuses: Vec::new(),
+            public_counters: Default::default(),
             overload_pending: 0,
             overloaded_mana: 0,
             fatigue: 0,

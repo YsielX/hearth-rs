@@ -6,12 +6,12 @@ local card = {
 }
 function card.on_deathrattle(ctx, self)
     local player = ctx:controller(self)
-    ctx:increment_player_data(player, "jade_golem_count", 1)
+    ctx:increment_player_data(player, "public:jade_golem_count", 1)
     ctx:continue_with("summon_jade_swarmer_golem")
 end
 function card.summon_jade_swarmer_golem(ctx, self)
     local player = ctx:controller(self)
-    local n = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
+    local n = math.min(30, ctx:get_player_data(player, "public:jade_golem_count"))
     cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", n, n)
 end
 return card

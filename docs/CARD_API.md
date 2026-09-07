@@ -565,3 +565,17 @@ tests may explicitly use `Game::new_unrestricted*`; a CLI sandbox deck may set
 - Keep locale selection out of gameplay decisions.
 - Use named continuations when later logic must observe state after earlier effects commit.
 - A hook has an approximately 200,000-instruction budget; one command may resolve at most 10,000 effects.
+
+### Public script counters and policy observations
+
+Only script-data keys beginning with `public:` are exported through
+`EntityView.public_counters` / `PlayerStateView.public_counters` and the RL
+observation. The exported map strips the prefix. For example,
+`public:jade_golem_count` becomes `jade_golem_count`. Ordinary keys remain private.
+
+Use this convention for public quest progress and persistent visible bonuses
+needed to distinguish game states. Never use it for secrets, unrevealed choices,
+or hidden-card bookkeeping. Update all readers, writers, and comparisons against
+`player_script_data_changed` together when renaming a key. Public counters are
+part of observation schema 8; core changes require rebuilding the Python native
+extension before collecting compatible training data.

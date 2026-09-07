@@ -71,6 +71,7 @@ pub struct EntityObservation {
     pub keywords: Vec<String>,
     pub silenced: bool,
     pub public_cards: Vec<String>,
+    pub public_counters: BTreeMap<String, i64>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -94,6 +95,7 @@ pub struct PlayerObservation {
     pub resources: BTreeMap<String, u32>,
     pub resources_spent: BTreeMap<String, u32>,
     pub public_statuses: Vec<String>,
+    pub public_counters: BTreeMap<String, i64>,
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
@@ -212,6 +214,7 @@ pub(crate) fn build_observation(
                 keywords: entity.keywords.clone(),
                 silenced: entity.silenced,
                 public_cards: entity.public_cards.clone(),
+                public_counters: entity.public_counters.clone(),
             });
             Ok(reference)
         };
@@ -286,6 +289,7 @@ pub(crate) fn build_observation(
             resources: player.resources.clone(),
             resources_spent: player.resources_spent.clone(),
             public_statuses: player.public_statuses.clone(),
+            public_counters: player.public_counters.clone(),
             overload_pending: player.overload_pending,
             overloaded_mana: player.overloaded_mana,
             fatigue: player.fatigue,

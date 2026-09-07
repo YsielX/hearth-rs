@@ -7,6 +7,33 @@ use crate::{
     PublicEntity, PublicEventRecord, Zone,
 };
 
+fn public_counters(data: &BTreeMap<String, i64>) -> BTreeMap<String, i64> {
+    data.iter()
+        .filter_map(|(key, value)| {
+            key.strip_prefix("public:")
+                .map(|key| (key.to_owned(), *value))
+        })
+        .collect()
+}
+
+#[cfg(test)]
+mod public_counter_tests {
+    use super::*;
+
+    #[test]
+    fn only_explicit_public_counters_cross_the_view_boundary() {
+        let private = BTreeMap::from([
+            ("secret_card_id".to_owned(), 12),
+            ("pending_target".to_owned(), 999),
+            ("public:quest_progress".to_owned(), 3),
+        ]);
+        assert_eq!(
+            public_counters(&private),
+            BTreeMap::from([("quest_progress".to_owned(), 3)])
+        );
+    }
+}
+
 /// An entity projection containing only information visible to one player.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct EntityView {
@@ -29,6 +56,8 @@ pub struct EntityView {
     pub keywords: Vec<String>,
     pub silenced: bool,
     pub public_cards: Vec<CardId>,
+    /// Script counters explicitly declared public by the `public:` namespace.
+    pub public_counters: BTreeMap<String, i64>,
 }
 
 impl EntityView {
@@ -53,6 +82,7 @@ impl EntityView {
             keywords: entity.keywords.clone(),
             silenced: entity.silenced,
             public_cards: entity.public_cards.clone(),
+            public_counters: public_counters(&entity.script_data),
         }
     }
 
@@ -96,6 +126,7 @@ pub struct PlayerStateView {
     pub resources_spent: BTreeMap<String, u32>,
     /// Public, persistent status labels, independent of executable rules.
     pub public_statuses: Vec<String>,
+    pub public_counters: BTreeMap<String, i64>,
     pub overload_pending: u8,
     pub overloaded_mana: u8,
     pub fatigue: u32,
@@ -228,6 +259,7 @@ impl GameState {
                 resources: player.resources.clone(),
                 resources_spent: player.resources_spent.clone(),
                 public_statuses: player.public_statuses.clone(),
+                public_counters: public_counters(&player.script_data),
                 overload_pending: player.overload_pending,
                 overloaded_mana: player.overloaded_mana,
                 fatigue: player.fatigue,

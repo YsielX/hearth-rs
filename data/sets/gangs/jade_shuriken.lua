@@ -11,12 +11,12 @@ end
 function card.on_combo(ctx, self, target)
     cardlib.effects.damage(ctx, target, 3)
     local player = ctx:controller(self)
-    ctx:increment_player_data(player, "jade_golem_count", 1)
+    ctx:increment_player_data(player, "public:jade_golem_count", 1)
     ctx:continue_with("summon_jade_shuriken_golem")
 end
 function card.summon_jade_shuriken_golem(ctx, self)
     local player = ctx:controller(self)
-    local n = math.min(30, ctx:get_player_data(player, "jade_golem_count"))
+    local n = math.min(30, ctx:get_player_data(player, "public:jade_golem_count"))
     cardlib.effects.summon_with_base_stats(ctx, player, "CFM_712_t01", n, n)
 end
 return card
