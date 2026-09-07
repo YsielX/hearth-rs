@@ -1352,6 +1352,10 @@ impl CardRuntime for LuaCardRuntime {
                 });
             }
         }
+        // Lua map traversal is not ordered across independent runtimes. Keep
+        // indexed legal actions and seeded policy sampling reproducible while
+        // preserving every available action and its target specification.
+        output.sort_by(|left, right| left.id.cmp(&right.id));
         Ok(output)
     }
 

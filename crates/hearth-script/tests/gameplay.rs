@@ -1978,6 +1978,33 @@ fn choose_primus_rune_card(game: &mut Game<LuaCardRuntime>, rune: &str) -> Strin
 }
 
 #[test]
+fn titan_action_indices_are_stable_across_runtime_reloads() {
+    let mut game = game_with_classes(
+        repeated("TTN_737"),
+        repeated("CS2_120"),
+        ["death_knight", "neutral"],
+    );
+    advance_to_mana(&mut game, PlayerId::TWO, 2);
+    play(&mut game, PlayerId::TWO, "CS2_120", None);
+    advance_to_mana(&mut game, PlayerId::ONE, 8);
+    let primus = play(&mut game, PlayerId::ONE, "TTN_737", None);
+    let replay = game.replay();
+    let expected = game.legal_action_options().unwrap();
+    for _ in 0..8 {
+        let restored = Game::from_replay(LuaCardRuntime::load_dir(data_path()).unwrap(), &replay)
+            .unwrap();
+        let specifications = restored.runtime().card_actions(restored.state(), primus).unwrap();
+        assert_eq!(
+            specifications.iter().map(|spec| spec.id.as_str()).collect::<Vec<_>>(),
+            vec!["titan_1", "titan_2", "titan_3"],
+        );
+        // Indexed clients and seeded policy sampling require the entire legal
+        // command list, including targets and semantic cards, to stay stable.
+        assert_eq!(restored.legal_action_options().unwrap(), expected);
+    }
+}
+
+#[test]
 fn the_primus_resolves_all_three_runes_and_discovers_from_the_matching_pool() {
     let mut blood = game_with_classes(
         repeated("TTN_737"),
