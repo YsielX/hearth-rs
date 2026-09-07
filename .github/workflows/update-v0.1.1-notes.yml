@@ -1,0 +1,59 @@
+name: Update v0.1.1 release notes
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/update-v0.1.1-notes.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    if: github.event.head_commit.message == 'chore(release): update published v0.1.1 notes'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Update release body
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          import json
+          import os
+          import urllib.request
+
+          base = "https://api.github.com/repos/YsielX/hearth-rs/releases"
+          headers = {
+              "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "Content-Type": "application/json",
+          }
+
+          def api(url, method="GET", data=None):
+              request = urllib.request.Request(
+                  url,
+                  data=None if data is None else json.dumps(data).encode(),
+                  headers=headers,
+                  method=method,
+              )
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.load(response)
+
+          body = (
+              "- Added LLM opponents to the GUI and CLI.\n"
+              "- Added URL, API key, and `key.env` configuration.\n"
+              "- Added reusable Rust teacher-label APIs.\n"
+              "- Refactored bot evaluation and training inputs.\n"
+              "- Fixed card action ordering and Unending Plague reshuffling.\n"
+          )
+          before = api(base + "/tags/v0.1.1")
+          assert before["tag_name"] == "v0.1.1"
+          after = api(base + "/" + str(before["id"]), "PATCH", {"body": body})
+          assert after["body"] == body
+          assert after["tag_name"] == before["tag_name"]
+          assert sorted(a["id"] for a in after["assets"]) == sorted(a["id"] for a in before["assets"])
+          print("Updated v0.1.1 release notes.")
